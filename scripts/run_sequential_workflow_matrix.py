@@ -4,7 +4,7 @@
 This is the concurrency wrapper for whatever workflow sequences are currently active.
 Each flow runs in its own rsync-materialized checkout so parallel runs do not race on
 `data/workflow-sessions.json`, workflow-session artifact directories, Codex home
-roots, tool caches, or Truthmark temporary outputs. After lanes finish, this
+roots, or tool caches. After lanes finish, this
 controller copies the lane artifacts back and merges only the produced workflow
 session records into the controller checkout.
 """
@@ -76,6 +76,41 @@ CLAUDE_LIFECYCLE_V1_MODEL_CONDITION = {
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
 }
+CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID = "claude-code-anthropic-sonnet-5-high"
+CLAUDE_ANTHROPIC_PREPARATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json"
+)
+CLAUDE_ANTHROPIC_AUTHORIZATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810.json"
+)
+CLAUDE_ANTHROPIC_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
+)
+CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE = {
+    0: Path(
+        "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+    ),
+    1: CLAUDE_ANTHROPIC_AUTHORIZATION_REL,
+    2: Path(
+        "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810-r2.json"
+    ),
+}
+CLAUDE_ANTHROPIC_SONNET_R1_RECOVERY_AUTHORITY_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-r1-fastify-no-provider-recovery-authorization-20260811.json"
+)
+CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts"
+)
+CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID = "claude-code-anthropic-opus-5-high"
+CLAUDE_ANTHROPIC_OPUS_PREPARATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json"
+)
+CLAUDE_ANTHROPIC_OPUS_AUTHORIZATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+)
+CLAUDE_ANTHROPIC_OPUS_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-attempts"
+)
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -86,6 +121,44 @@ class UnsafeLaneOutputError(ValueError):
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text())
+
+
+def direct_anthropic_campaign(
+    model_condition_id: str | None,
+    replicate_index: int = 0,
+) -> dict[str, Any] | None:
+    campaigns = {
+        CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID: {
+            "preparation": CLAUDE_ANTHROPIC_PREPARATION_REL,
+            "authorization": CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE.get(
+                replicate_index,
+                Path(f"sources/evaluations/audits/unsupported-anthropic-replicate-{replicate_index}.json"),
+            ),
+            "attempt_dir": CLAUDE_ANTHROPIC_ATTEMPT_DIR,
+            "campaign_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1",
+            "model_condition": {
+                "id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+                "runtime_id": "claude-code",
+                "provider": "anthropic",
+                "model": "claude-sonnet-5",
+                "reasoning_effort": "high",
+            },
+        },
+        CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID: {
+            "preparation": CLAUDE_ANTHROPIC_OPUS_PREPARATION_REL,
+            "authorization": CLAUDE_ANTHROPIC_OPUS_AUTHORIZATION_REL,
+            "attempt_dir": CLAUDE_ANTHROPIC_OPUS_ATTEMPT_DIR,
+            "campaign_id": "claude-code-anthropic-opus-5-high-lifecycle-v1",
+            "model_condition": {
+                "id": CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID,
+                "runtime_id": "claude-code",
+                "provider": "anthropic",
+                "model": "claude-opus-5",
+                "reasoning_effort": "high",
+            },
+        },
+    }
+    return campaigns.get(model_condition_id)
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -169,13 +242,16 @@ def safe_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "-", value).strip("-")
 
 
-def workflow_lane_environment(tmp: Path) -> dict[str, str]:
+def workflow_lane_environment(tmp: Path, *, allow_auth_sync: bool = False) -> dict[str, str]:
     env = os.environ.copy()
     for name in workflow.AMBIENT_GIT_OBJECT_ENV_VARS:
         env.pop(name, None)
     env["TMPDIR"] = str(tmp)
     env["SKIP_PAIR_VALIDATION"] = "1"
-    env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
+    if allow_auth_sync:
+        env.pop("WORKFLOW_LANE_DISABLE_AUTH_SYNC", None)
+    else:
+        env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"] = "1"
     return env
 
 
@@ -235,9 +311,31 @@ def clone_published_checkout(destination: Path, expected_commit: str) -> None:
     env = os.environ.copy()
     for name in workflow.AMBIENT_GIT_OBJECT_ENV_VARS:
         env.pop(name, None)
+    upstream_name = subprocess.check_output(
+        ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"],
+        cwd=ROOT,
+        text=True,
+    ).strip()
+    if not upstream_name.startswith("origin/"):
+        raise ValueError("provider lane source must track a published origin branch")
+    published_branch = upstream_name.removeprefix("origin/")
+    published_ref = f"refs/heads/{published_branch}"
+    branch_probe = subprocess.run(
+        ["git", "ls-remote", workflow.TRUSTED_REPOSITORY_ORIGIN, published_ref],
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if branch_probe.returncode != 0 or not any(
+        line.split() == [line.split()[0], published_ref]
+        for line in branch_probe.stdout.splitlines()
+        if line.split()
+    ):
+        published_branch = workflow.TRUSTED_REPOSITORY_REF.removeprefix("refs/heads/")
     subprocess.run(
         [
-            "git", "clone", "--no-local", "--single-branch", "--branch", "phase-3",
+            "git", "clone", "--no-local", "--single-branch", "--branch", published_branch,
             workflow.TRUSTED_REPOSITORY_ORIGIN, str(destination),
         ],
         env=env,
@@ -310,11 +408,12 @@ def claude_lifecycle_v1_attempt_path(
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
+    attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
 ) -> Path:
-    if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or replicate_index != 0:
+    if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or type(replicate_index) is not int or replicate_index < 0:
         raise ValueError("Claude Code Lifecycle V1 attempt identity is not authorized")
     lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-    return root / CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / f"{lane}-r0.json"
+    return root / attempt_dir / f"{lane}-r{replicate_index}.json"
 
 
 def claude_lifecycle_v1_run_gate(
@@ -436,6 +535,11 @@ def reserve_claude_lifecycle_v1_attempt(
     expected_session_binding: dict[str, Any],
     run_root: Path,
     root: Path = ROOT,
+    model_condition: dict[str, str] | None = None,
+    authority_rel: Path = CLAUDE_LIFECYCLE_V1_AUTHORITY_REL,
+    attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
+    owner_authorization_message_id: str = "1533397324384964609",
+    allow_existing_recovery: bool = False,
 ) -> Path:
     """Reserve one immutable Claude Code Lifecycle V1 identity before a lane clone."""
     if (
@@ -446,9 +550,19 @@ def reserve_claude_lifecycle_v1_attempt(
         or not isinstance(expected_session_binding.get("selected_execution"), dict)
     ):
         raise ValueError("Claude Code Lifecycle V1 receipt binding does not match the requested identity")
-    path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root)
+    condition = model_condition or CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
+    path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root, attempt_dir)
     if path.exists():
-        raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
+        if not (
+            allow_existing_recovery
+            and claude_anthropic_sonnet_r1_recovery_authorized(
+                sequence_id,
+                replicate_index,
+                root,
+            )
+        ):
+            raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
+        return path
     payload = {
         "schema_version": 1,
         "attempt_status": "reserved-before-provider-task",
@@ -456,11 +570,11 @@ def reserve_claude_lifecycle_v1_attempt(
         "sequence_id": sequence_id,
         "replicate_index": replicate_index,
         "profile_id": "baseline-claude-code-no-mcp",
-        "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
-        "model": "gpt-5.6-sol",
-        "reasoning_effort": "high",
-        "owner_authorization_message_id": "1533397324384964609",
-        "authority_path": str(CLAUDE_LIFECYCLE_V1_AUTHORITY_REL),
+        "model_condition_id": condition["id"],
+        "model": condition["model"],
+        "reasoning_effort": condition["reasoning_effort"],
+        "owner_authorization_message_id": owner_authorization_message_id,
+        "authority_path": str(authority_rel),
         "orchestrator": str(run_root),
         "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
         "expected_session_binding": expected_session_binding,
@@ -471,12 +585,217 @@ def reserve_claude_lifecycle_v1_attempt(
     return path
 
 
+def claude_anthropic_sonnet_r1_recovery_authorized(
+    sequence_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> bool:
+    """Authorize only the owner-directed recovery of the invalid Fastify r1 reservation."""
+    if sequence_id != "fastify-lifecycle-sequence-v1" or replicate_index != 1:
+        return False
+    receipt_rel = (
+        CLAUDE_ANTHROPIC_ATTEMPT_DIR
+        / "fastify-r1.json"
+    ).as_posix()
+    receipt_path = root / receipt_rel
+    recovery_path = root / CLAUDE_ANTHROPIC_SONNET_R1_RECOVERY_AUTHORITY_REL
+    original_authority_path = root / CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE[1]
+    try:
+        receipt_raw = receipt_path.read_bytes()
+        receipt = json.loads(receipt_raw)
+        recovery = load_json(recovery_path)
+        original_authority = load_json(original_authority_path)
+        registry = load_json(root / "data/workflow-sessions.json")
+    except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError):
+        return False
+    matching_sessions = [
+        session
+        for session in registry.get("sessions", [])
+        if (
+            session.get("task_sequence", {}).get("sequence_id") == sequence_id
+            and session.get("replicate_index") == replicate_index
+            and session.get("profile", {}).get("profile_id") == "baseline-claude-code-no-mcp"
+            and session.get("agent", {}).get("model_condition_id")
+            == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+        )
+    ]
+    expected_owner = {
+        "source": "discord",
+        "message_id": "1536722705674666125",
+        "request": "We will rerun r1. clear the invalid occupant, prepare for claude code r1 run. once done, run it",
+        "authorized_action": "one serialized Claude Code Sonnet/high Lifecycle V1 r1 Fastify+Beets recovery run",
+    }
+    expected_contract = {
+        "sequence_id": sequence_id,
+        "replicate_index": 1,
+        "profile_id": "baseline-claude-code-no-mcp",
+        "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "original_attempt_receipt_path": receipt_rel,
+        "original_attempt_receipt_sha256": hashlib.sha256(receipt_raw).hexdigest(),
+        "provider_execution_disposition": "reservation-only-no-canonical-session-or-usage-evidence",
+        "authorized_provider_run_count": 1,
+        "same_replicate_recovery": True,
+    }
+    expected_receipt = {
+        "attempt_status": "reserved-before-provider-task",
+        "task_family_generation": "lifecycle-v1",
+        "sequence_id": sequence_id,
+        "replicate_index": 1,
+        "profile_id": "baseline-claude-code-no-mcp",
+        "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+        "model": "claude-sonnet-5",
+        "reasoning_effort": "high",
+        "provider_result": None,
+        "immutable_identity_receipt": True,
+    }
+    return bool(
+        isinstance(receipt, dict)
+        and all(receipt.get(key) == value for key, value in expected_receipt.items())
+        and receipt.get("authority_path") == str(CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE[1])
+        and recovery.get("schema_version") == 1
+        and recovery.get("status") == "owner-authorized-no-provider-recovery"
+        and recovery.get("owner_recovery_authorization") == expected_owner
+        and recovery.get("recovery_contract") == expected_contract
+        and original_authority.get("status") == "owner-authorized-provider-run"
+        and original_authority.get("authorized_replicate_index") == 1
+        and original_authority.get("provider_calls") == 0
+        and original_authority.get("provider_tokens") == 0
+        and original_authority.get("completed_sequences") == []
+        and not matching_sessions
+    )
+
+
 def claude_baseline_run_gate(
     registry: dict[str, Any],
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
+    model_condition_id: str | None = None,
 ) -> tuple[bool, str]:
+    campaign = direct_anthropic_campaign(model_condition_id, replicate_index)
+    if campaign is not None:
+        expected_model = campaign["model_condition"]
+        preparation_rel = campaign["preparation"]
+        authorization_rel = campaign["authorization"]
+        attempt_dir = campaign["attempt_dir"]
+        preparation_path = root / preparation_rel
+        if not preparation_path.is_file():
+            return False, f"missing direct-Anthropic Claude Code preparation authority: {preparation_rel}"
+        try:
+            preparation = load_json(preparation_path)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable direct-Anthropic Claude Code preparation authority: {exc}"
+        condition = preparation.get("model_condition", {})
+        if (
+            preparation.get("status") not in {
+                "frozen-provider-free-protocols-account-pending",
+                "repaired-provider-free-protocols-account-pending",
+            }
+            or condition != {**expected_model, "runtime_version": "2.1.220"}
+        ):
+            return False, "direct-Anthropic Claude Code preparation authority does not match the frozen model identity"
+        authorization_path = root / authorization_rel
+        if not authorization_path.is_file():
+            return False, f"missing direct-Anthropic Claude Code baseline authorization: {authorization_rel}"
+        try:
+            authorization = load_json(authorization_path)
+        except (OSError, ValueError) as exc:
+            return False, f"unreadable direct-Anthropic Claude Code baseline authorization: {exc}"
+        account_home = os.environ.get("TOKEN_EVAL_CLAUDE_ACCOUNT_HOME")
+        if not account_home or not Path(account_home).is_dir():
+            return False, "direct-Anthropic Claude Code account home is not supplied through TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
+        expected_protocols = {
+            item.get("sequence_id"): item
+            for item in authorization.get("protocols", [])
+            if isinstance(item, dict)
+        }
+        expected_agent = {
+            "runtime_id": expected_model["runtime_id"],
+            "provider": expected_model["provider"],
+            "model": expected_model["model"],
+            "model_condition_id": expected_model["id"],
+            "reasoning_effort": expected_model["reasoning_effort"],
+            "runtime_version_condition": "captured-at-run-and-bound-to-record",
+        }
+        expected_order = list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        header_ok = (
+            authorization.get("schema_version") == 1
+            and authorization.get("status") == "owner-authorized-provider-run"
+            and authorization.get("campaign_id") == campaign["campaign_id"]
+            and authorization.get("task_family_generation") == "lifecycle-v1"
+            and authorization.get("authorized_replicate_index") == replicate_index
+            and authorization.get("sequence_order") == expected_order
+            and authorization.get("max_parallel") == 1
+            and authorization.get("allowed_paid_baseline_runs") == 2
+            and authorization.get("allowed_model_turns") == 6
+            and authorization.get("serialization_required") is True
+            and authorization.get("model_condition") == expected_model
+            and authorization.get("first_valid_sample_policy") is True
+            and authorization.get("rerun_after_attempt_receipt") is False
+            and type(authorization.get("provider_calls")) is int
+            and 0 <= authorization.get("provider_calls") <= authorization.get("allowed_model_turns")
+            and type(authorization.get("provider_tokens")) is int
+            and authorization.get("provider_tokens") >= 0
+            and isinstance(authorization.get("notes"), str)
+            and bool(authorization.get("notes"))
+            and [item.get("sequence_id") for item in authorization.get("protocols", []) if isinstance(item, dict)] == expected_order
+        )
+        if not header_ok or set(expected_protocols) != set(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER):
+            return False, "direct-Anthropic Claude Code baseline authorization does not match the bounded identity, scope, or budget"
+        for active_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
+            binding = expected_protocols[active_id]
+            protocol_path = root / str(binding.get("protocol_path", ""))
+            try:
+                protocol_raw = protocol_path.read_bytes()
+                protocol = json.loads(protocol_raw)
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+                return False, f"direct-Anthropic baseline protocol is unreadable: {active_id}: {exc}"
+            descriptor = protocol.get("selected_execution", {}).get("descriptor", {})
+            agent = descriptor.get("agent_condition", {}) if isinstance(descriptor, dict) else {}
+            if (
+                hashlib.sha256(protocol_raw).hexdigest() != binding.get("protocol_sha256")
+                or protocol.get("status") != "frozen-ready-not-run"
+                or protocol.get("task_fixture", {}).get("sequence_id") != active_id
+                or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding.get("baseline_pool_fingerprint")
+                or descriptor.get("selected_profile", {}).get("profile_id") != "baseline-claude-code-no-mcp"
+                or agent != expected_agent
+            ):
+                return False, f"direct-Anthropic baseline authorization has stale protocol binding: {active_id}"
+        try:
+            receipt = claude_lifecycle_v1_attempt_path(
+                sequence_id,
+                replicate_index,
+                root,
+                attempt_dir,
+            )
+        except ValueError as exc:
+            return False, str(exc)
+        if receipt.exists():
+            if not claude_anthropic_sonnet_r1_recovery_authorized(
+                sequence_id,
+                replicate_index,
+                root,
+            ):
+                return False, f"direct-Anthropic Claude Code identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
+            recovery_reason = "; owner-authorized same-replicate recovery cleared reservation-only Fastify r1 occupant"
+        else:
+            recovery_reason = ""
+        occupied = next(
+            (
+                session
+                for session in registry.get("sessions", [])
+                if session.get("task_sequence", {}).get("sequence_id") == sequence_id
+                and session.get("replicate_index") == replicate_index
+                and session.get("profile", {}).get("profile_id") == "baseline-claude-code-no-mcp"
+                and session.get("agent", {}).get("model_condition_id") == expected_model["id"]
+            ),
+            None,
+        )
+        if occupied is not None:
+            return False, f"direct-Anthropic Claude Code identity is already occupied by session {occupied.get('session_id')}"
+        return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/high baseline is unoccupied{recovery_reason}"
     if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
         return claude_lifecycle_v1_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
@@ -554,6 +873,48 @@ def claude_baseline_run_gate(
     if occupied is not None:
         return False, f"Claude Code baseline identity is already occupied by session {occupied.get('session_id')}"
     return True, "owner-authorized Claude Code Sol/high baseline is unoccupied"
+
+
+SERIALIZED_REPLICATION_PROFILE_IDS = {
+    "baseline-bare-codex",
+    "baseline-claude-code-no-mcp",
+    "runtime-opencode-codex-product-v1",
+}
+SERIALIZED_REPLICATION_GENERATIONS = {"baseline-v3", "baseline-v4", "lifecycle-v1"}
+
+
+def serialized_replication_lanes(
+    jobs: list[tuple[str, str]], *, replicate_index: int
+) -> list[tuple[str, str]]:
+    """Lanes an owner-authorized replication must run one at a time."""
+    selected: list[tuple[str, str]] = []
+    for sequence_id, profile_id in jobs:
+        if profile_id not in SERIALIZED_REPLICATION_PROFILE_IDS:
+            continue
+        generation = workflow.load_sequence(sequence_id).get("task_family_generation")
+        if generation not in SERIALIZED_REPLICATION_GENERATIONS:
+            continue
+        if replicate_index > 0 or (
+            profile_id == "runtime-opencode-codex-product-v1" and generation == "lifecycle-v1"
+        ):
+            selected.append((sequence_id, profile_id))
+    return selected
+
+
+def requires_serialized_replication(
+    sequences: list[str],
+    treatment_profiles: list[str] | None,
+    *,
+    baseline_profile_id: str,
+    replicate_index: int,
+) -> bool:
+    """Whether the requested lanes -- before planning -- must be serialized."""
+    requested = [
+        (sequence_id, profile)
+        for sequence_id in sequences
+        for profile in (treatment_profiles or [baseline_profile_id])
+    ]
+    return bool(serialized_replication_lanes(requested, replicate_index=replicate_index))
 
 
 def plan_workflow_jobs(
@@ -995,6 +1356,65 @@ def expected_session_binding_for_protocol(
     }
 
 
+def claude_anthropic_sonnet_treatment_attempt_path(
+    sequence_id: str,
+    profile_id: str,
+    replicate_index: int,
+    root: Path = ROOT,
+) -> Path:
+    if (
+        sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        or not profile_id
+        or profile_id == "baseline-claude-code-no-mcp"
+        or type(replicate_index) is not int
+        or replicate_index < 0
+    ):
+        raise ValueError("direct-Anthropic Sonnet treatment identity is not authorized")
+    lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
+    return root / CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR / (
+        f"{safe_name(lane)}-{safe_name(profile_id)}-r{replicate_index}.json"
+    )
+
+
+def reserve_claude_anthropic_sonnet_treatment_attempt(
+    *,
+    sequence_id: str,
+    profile_id: str,
+    replicate_index: int,
+    expected_session_binding: dict[str, Any],
+    run_root: Path,
+    root: Path = ROOT,
+) -> Path:
+    """Occupy a paid Sonnet treatment slot before any provider task starts."""
+    path = claude_anthropic_sonnet_treatment_attempt_path(
+        sequence_id, profile_id, replicate_index, root
+    )
+    if expected_session_binding.get("sequence_id") != sequence_id or expected_session_binding.get("profile_id") != profile_id:
+        raise ValueError("Sonnet treatment receipt binding does not match the requested identity")
+    if path.exists():
+        raise FileExistsError(f"immutable Sonnet treatment attempt receipt already exists: {path}")
+    atomic_write_json(
+        path,
+        {
+            "schema_version": 1,
+            "attempt_status": "reserved-before-provider-task",
+            "task_family_generation": "lifecycle-v1",
+            "sequence_id": sequence_id,
+            "replicate_index": replicate_index,
+            "profile_id": profile_id,
+            "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
+            "model": "claude-sonnet-5",
+            "reasoning_effort": "high",
+            "orchestrator": f"workflow-matrix:{run_root.name}",
+            "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
+            "expected_session_binding": expected_session_binding,
+            "provider_result": None,
+            "immutable_identity_receipt": True,
+        },
+    )
+    return path
+
+
 def run_flow_lane(
     *,
     sequence_id: str,
@@ -1025,6 +1445,7 @@ def run_flow_lane(
     if provider_capable and not published_launch_commit:
         raise ValueError("provider-capable lane requires a certified published launch commit")
     parent_claude_receipt_binding: dict[str, Any] | None = None
+    parent_claude_treatment_receipt: Path | None = None
     parent_opencode_receipt_binding: dict[str, Any] | None = None
     if (
         provider_capable
@@ -1069,10 +1490,71 @@ def run_flow_lane(
             protocol_path=parent_protocol,
             root=ROOT,
         )
+        direct_campaign = (
+            direct_anthropic_campaign(model_condition.get("id"), replicate_index)
+            if isinstance(model_condition, dict)
+            else None
+        )
         reserve_claude_lifecycle_v1_attempt(
             sequence_id=sequence_id,
             replicate_index=replicate_index,
             expected_session_binding=parent_claude_receipt_binding,
+            run_root=lane_root,
+            root=ROOT,
+            model_condition=(
+                model_condition
+                if direct_campaign is not None
+                else None
+            ),
+            authority_rel=(
+                direct_campaign["authorization"]
+                if direct_campaign is not None
+                else CLAUDE_LIFECYCLE_V1_AUTHORITY_REL
+            ),
+            attempt_dir=(
+                direct_campaign["attempt_dir"]
+                if direct_campaign is not None
+                else CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR
+            ),
+            owner_authorization_message_id=(
+                "user-request-current-session"
+                if direct_campaign is not None
+                else "1533397324384964609"
+            ),
+            allow_existing_recovery=(
+                direct_campaign is not None
+                and claude_anthropic_sonnet_r1_recovery_authorized(
+                    sequence_id,
+                    replicate_index,
+                    ROOT,
+                )
+            ),
+        )
+    if (
+        provider_capable
+        and isinstance(model_condition, dict)
+        and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+        and treatment_profile != "baseline-claude-code-no-mcp"
+        and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+    ):
+        parent_protocol = find_protocol(
+            ROOT,
+            sequence_id,
+            treatment_profile,
+            model_condition_override=model_condition,
+        )
+        parent_binding = expected_session_binding_for_protocol(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            protocol_path=parent_protocol,
+            root=ROOT,
+        )
+        parent_claude_treatment_receipt = reserve_claude_anthropic_sonnet_treatment_attempt(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            expected_session_binding=parent_binding,
             run_root=lane_root,
             root=ROOT,
         )
@@ -1080,6 +1562,10 @@ def run_flow_lane(
         clone_published_checkout(checkout, published_launch_commit)
     else:
         rsync_checkout(ROOT, checkout)
+    if parent_claude_treatment_receipt is not None:
+        child_receipt = checkout / parent_claude_treatment_receipt.relative_to(ROOT)
+        child_receipt.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(parent_claude_treatment_receipt, child_receipt)
     before_session_ids = {
         str(session.get("session_id"))
         for session in load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
@@ -1115,7 +1601,13 @@ def run_flow_lane(
         cmd.extend(["--session-id", f"prepare-{lane_id}"])
     if source_codex_home is not None:
         cmd.extend(["--source-codex-home", str(source_codex_home)])
-    env = workflow_lane_environment(tmp)
+    env = workflow_lane_environment(
+        tmp,
+        allow_auth_sync=(
+            isinstance(model_condition, dict)
+            and direct_anthropic_campaign(model_condition.get("id"), replicate_index) is not None
+        ),
+    )
     pass_fds: tuple[int, ...] = ()
     if production_lock_fd is not None:
         env[workflow.PRODUCTION_LOCK_FD_ENV] = str(production_lock_fd)
@@ -2176,31 +2668,94 @@ def publish_ready_comparisons(
     return published
 
 
-PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES + (
-    Path("scripts/test_opencode_workflow_runtime.py"),
-)
+PROTECTED_CONTROL_PLANE_FILES = workflow.PAID_LAUNCH_PROTECTED_FILES
+
+
+@contextmanager
+def isolated_validation_test_checkout(root: Path = ROOT):
+    """Run contract tests from a disposable snapshot, never from the mutable controller worktree."""
+    verify_protected_control_plane_files(root)
+    temp_root = Path(tempfile.mkdtemp(prefix="workflow-validation-test-"))
+    checkout = temp_root / "checkout"
+    try:
+        subprocess.run(
+            ["git", "clone", "--quiet", "--no-local", str(root), str(checkout)],
+            cwd=root,
+            check=True,
+        )
+        diff = subprocess.run(
+            ["git", "diff", "--binary", "HEAD"],
+            cwd=root,
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout
+        if diff:
+            subprocess.run(
+                ["git", "apply", "--binary", "-"],
+                cwd=checkout,
+                input=diff,
+                check=True,
+            )
+        untracked_output = subprocess.run(
+            ["git", "ls-files", "--others", "--exclude-standard"],
+            cwd=root,
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+        ).stdout or ""
+        untracked = untracked_output.splitlines()
+        for relative_text in untracked:
+            relative = Path(relative_text)
+            source = root / relative
+            destination = checkout / relative
+            if source.is_symlink():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.unlink(missing_ok=True)
+                destination.symlink_to(source.readlink())
+            elif source.is_dir():
+                shutil.copytree(source, destination, symlinks=True, dirs_exist_ok=True)
+            elif source.is_file():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
+        yield checkout
+    finally:
+        chmod_tree(temp_root)
+        shutil.rmtree(temp_root, ignore_errors=True)
 
 
 def restore_protected_control_plane_files(root: Path = ROOT) -> None:
+    """Recover only missing protected files from HEAD for legacy callers/tests."""
     for relative in PROTECTED_CONTROL_PLANE_FILES:
-        if not (root / relative).is_file():
-            tracked = subprocess.run(
-                ["git", "cat-file", "-e", f"HEAD:{relative.as_posix()}"],
-                cwd=root,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
-            if tracked.returncode != 0:
-                continue
-            subprocess.run(
-                [
-                    "git", "restore", "--source=HEAD", "--staged", "--worktree",
-                    "--", str(relative),
-                ],
-                cwd=root,
-                check=True,
-            )
+        path = root / relative
+        if path.is_file() and not path.is_symlink():
+            continue
+        tracked = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{relative.as_posix()}"],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if tracked.returncode != 0:
+            continue
+        subprocess.run(
+            ["git", "restore", "--source=HEAD", "--staged", "--worktree", "--", relative.as_posix()],
+            cwd=root,
+            check=True,
+        )
+
+
+def verify_protected_control_plane_files(root: Path = ROOT) -> None:
+    missing = [
+        relative.as_posix()
+        for relative in PROTECTED_CONTROL_PLANE_FILES
+        if not (root / relative).is_file() or (root / relative).is_symlink()
+    ]
+    if missing:
+        raise RuntimeError(
+            "protected control-plane file is missing; refusing to mutate the worktree: "
+            + ", ".join(missing)
+        )
 
 
 def refresh_generated_runbook(root: Path = ROOT) -> None:
@@ -2400,40 +2955,47 @@ def controller_validation_python() -> str:
 
 
 def run_validation(summary_dir: Path, validation_python: str | None = None) -> dict[str, Any]:
-    truthmark_candidates = [
-        shutil.which("truthmark"),
-        "/opt/data/.local/bin/truthmark",
-        str(Path.home() / ".local/bin/truthmark"),
-    ]
-    truthmark = next(
-        (candidate for candidate in truthmark_candidates if candidate and Path(candidate).is_file()),
-        truthmark_candidates[-1],
-    )
+    restore_protected_control_plane_files(ROOT)
     validation_env = os.environ.copy()
-    validation_env["PATH"] = f"{Path(truthmark).parent}:{validation_env.get('PATH', '')}"
     validation_python = validation_python or controller_validation_python()
     commands = [
         [validation_python, "scripts/validate_repository.py"],
         [validation_python, "scripts/test_workflow_evaluation_contract.py"],
+        [validation_python, "scripts/test_claude_code_usage_contract.py"],
         ["git", "diff", "--check"],
-        [truthmark, "check", "--json"],
-        [truthmark, "index", "--json"],
     ]
     results: list[dict[str, Any]] = []
     for idx, cmd in enumerate(commands, start=1):
         out = summary_dir / f"validation-{idx}-{safe_name(cmd[0])}.txt"
+        is_contract_test = len(cmd) > 1 and cmd[1] == "scripts/test_workflow_evaluation_contract.py"
+        command_cwd = ROOT
         with out.open("w") as log:
             try:
-                proc = subprocess.run(
-                    cmd, cwd=ROOT, text=True, stdout=log, stderr=subprocess.STDOUT, env=validation_env
-                )
+                if is_contract_test:
+                    with isolated_validation_test_checkout(ROOT) as test_checkout:
+                        command_cwd = test_checkout
+                        proc = subprocess.run(
+                            cmd,
+                            cwd=test_checkout,
+                            text=True,
+                            stdout=log,
+                            stderr=subprocess.STDOUT,
+                            env=validation_env,
+                        )
+                else:
+                    proc = subprocess.run(
+                        cmd,
+                        cwd=ROOT,
+                        text=True,
+                        stdout=log,
+                        stderr=subprocess.STDOUT,
+                        env=validation_env,
+                    )
                 return_code = proc.returncode
             except OSError as exc:
                 log.write(f"unable to execute {cmd[0]}: {exc}\n")
                 return_code = 127
-        results.append({"command": cmd, "exit_code": return_code, "output": str(out)})
-        if len(cmd) > 1 and cmd[1] == "scripts/test_workflow_evaluation_contract.py":
-            restore_protected_control_plane_files(ROOT)
+        results.append({"command": cmd, "cwd": str(command_cwd), "exit_code": return_code, "output": str(out)})
     return {"passed": all(item["exit_code"] == 0 for item in results), "results": results}
 
 
@@ -2694,6 +3256,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.prepare_only:
             return "missing"
         sequence = workflow.load_sequence(sequence_id)
+        if (
+            isinstance(model_condition, dict)
+            and model_condition.get("runtime_id") == "claude-code"
+        ):
+            session = workflow.find_comparison_baseline_record(
+                registry, sequence, baseline_profile_id, args.replicate_index
+            )
+            return workflow.reviewed_session_reuse_state(session, ROOT)
         if replacement_runtime:
             session = workflow.find_pool_profile_record(
                 registry, sequence, baseline_profile_id, args.replicate_index
@@ -2706,7 +3276,20 @@ def main(argv: list[str] | None = None) -> int:
     def profile_state(sequence_id: str, profile_id: str) -> str:
         sequence = workflow.load_sequence(sequence_id)
         session = workflow.find_pool_profile_record(registry, sequence, profile_id, args.replicate_index)
-        return workflow.reviewed_session_reuse_state(session, ROOT)
+        state = workflow.reviewed_session_reuse_state(session, ROOT)
+        if state == "reusable":
+            return state
+        if (
+            isinstance(model_condition, dict)
+            and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
+            and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        ):
+            attempt = claude_anthropic_sonnet_treatment_attempt_path(
+                sequence_id, profile_id, args.replicate_index, ROOT
+            )
+            if attempt.exists():
+                return "occupied"
+        return state
 
     def treatment_gate(sequence_id: str) -> tuple[bool, str]:
         return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
@@ -2724,7 +3307,11 @@ def main(argv: list[str] | None = None) -> int:
             if args.dry_run:
                 return True, "dry-run only; no provider spend"
             return claude_baseline_run_gate(
-                registry, sequence_id, args.replicate_index, ROOT
+                registry,
+                sequence_id,
+                args.replicate_index,
+                ROOT,
+                model_condition_id=str(model_condition.get("id")),
             )
         return workflow.baseline_v2_pilot_run_gate(
             workflow.load_sequence(sequence_id), ROOT, args.replicate_index
@@ -2735,6 +3322,17 @@ def main(argv: list[str] | None = None) -> int:
             passed, reason = treatment_gate(sequence_id)
             if not passed:
                 raise ValueError(f"treatments are blocked for {sequence_id}: {reason}")
+    # Serialization is a property of the requested lanes, not of the planned ones, so reject a
+    # parallel replication plan before any authority resolution. Otherwise an unrelated gate --
+    # a superseded replication authority, say -- masks the argument error and the operator never
+    # learns the plan was also non-serial. The post-plan check below still guards the real set.
+    if requires_serialized_replication(
+        sequences,
+        treatment_profiles,
+        baseline_profile_id=baseline_profile_id,
+        replicate_index=args.replicate_index,
+    ) and args.max_parallel != 1:
+        raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     jobs = (
         [(sequence_id, profile) for sequence_id in sequences for profile in (treatment_profiles or [baseline_profile_id])]
         if args.prepare_only
@@ -2755,20 +3353,8 @@ def main(argv: list[str] | None = None) -> int:
             args.replicate_index,
             prepare_only=args.prepare_only,
         )
-    serialized_replication_jobs = [
-        (sequence_id, profile_id)
-        for sequence_id, profile_id in jobs
-        if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}
-        and (
-            args.replicate_index > 0
-            or (
-                profile_id == "runtime-opencode-codex-product-v1"
-                and workflow.load_sequence(sequence_id).get("task_family_generation") == "lifecycle-v1"
-            )
-        )
-        and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
-    ]
-    if serialized_replication_jobs and args.max_parallel != 1:
+    planned_serialized_lanes = serialized_replication_lanes(jobs, replicate_index=args.replicate_index)
+    if planned_serialized_lanes and args.max_parallel != 1:
         raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     published_launch_commit = None
     if not args.prepare_only and not args.dry_run:
@@ -2894,7 +3480,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.replicate_index,
                 published_comparisons,
             )
-        restore_protected_control_plane_files()
+        verify_protected_control_plane_files()
         refresh_generated_runbook()
         if not args.prepare_only and merge_summary.get("merged_session_count", 0):
             refresh_cumulative_usage_audit()

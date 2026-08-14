@@ -4,11 +4,47 @@
   "evidence_snapshot": "2026-08-08",
   "source_registry": {
     "path": "data/workflow-sessions.json",
-    "sha256": "0d9435b48dfe5ef8337dddc9dfceccbcb2d4e1b8649062fc462e66d7178f745f"
+    "sha256": "324073e05a3aa79868515561714647bae1301eb4ab26b5ffb36f5c6b4764d359"
   },
   "model_condition": {
     "Codex": "codex-openai-gpt-5-6-sol-high",
     "OpenCode": "opencode-openai-gpt-5-6-sol-high"
+  },
+  "claude_code_baseline_selection": {
+    "Sonnet 5": {
+      "condition_id": "claude-code-anthropic-sonnet-5-high",
+      "model": "claude-sonnet-5",
+      "session_ids": [
+        "baseline-claude-code-fastify-20260808-p-70516277e342-r0",
+        "baseline-claude-code-beets-20260808-p-ab14b9edcf57-r0"
+      ],
+      "sessions": 2,
+      "provider_tokens": 6207153,
+      "weighted_tokens": 897108.2
+    },
+    "Opus 5": {
+      "condition_id": "claude-code-anthropic-opus-5-high",
+      "model": "claude-opus-5",
+      "session_ids": [
+        "baseline-claude-code-fastify-20260808-p-5e155b3359d4-r0",
+        "baseline-claude-code-beets-20260808-p-73f4146eb5f6-r0"
+      ],
+      "sessions": 2,
+      "provider_tokens": 7343190,
+      "weighted_tokens": 1167276.7
+    },
+    "matched_baselines": {
+      "codex_provider_tokens": 2465836,
+      "opencode_provider_tokens": 3877912,
+      "codex_weighted_tokens": 516037.8,
+      "opencode_weighted_tokens": 731053.6
+    },
+    "selection": {
+      "selected_condition_id": "claude-code-anthropic-sonnet-5-high",
+      "opus_vs_sonnet_weighted_pct": 30.12,
+      "sonnet_vs_codex_weighted_pct": 73.85,
+      "sonnet_vs_opencode_weighted_pct": 22.71
+    }
   },
   "sequences": [
     "fastify",

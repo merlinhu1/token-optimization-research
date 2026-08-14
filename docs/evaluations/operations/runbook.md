@@ -17,6 +17,20 @@ A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressi
 
 Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
+## Claude Code direct-Anthropic preparation
+
+Authority: `sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`repaired-provider-free-protocols-account-pending`).
+Condition: `claude-code-anthropic-sonnet-5-high` — `anthropic/claude-sonnet-5` with `high` effort.
+Prepared treatment profiles: 16 (19 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
+Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 6,207,153 provider tokens; native qualification passed 30/30 lanes and the serialized Sonnet treatment authorization is active (23/30 treatment lanes are retained; SDL-MCP excluded).
+
+Authority: `sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`frozen-provider-free-protocols-account-pending`).
+Condition: `claude-code-anthropic-opus-5-high` — `anthropic/claude-opus-5` with `high` effort.
+Prepared treatment profiles: 0 (0 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
+Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 7,343,190 provider tokens; treatment execution remains blocked.
+
+Account setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence.
+
 ## Active sequences
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
@@ -41,7 +55,7 @@ Before changing a sequence to `active`, require:
 - controller-only affected-component compile commands plus one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
 - cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
-- a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
+- a machine-validated compile-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -54,27 +68,18 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 
 
 ## Paid execution
 
-Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-claude-code-hook-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
+Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-repowise-codex-product-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-claude-code-hook-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v1` (r0, r1), `beets-lifecycle-sequence-v1` (r0, r1). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json), `beets-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json). Paid pilot execution is not authorized for `fastify-lifecycle-sequence-v1`, `beets-lifecycle-sequence-v1`; provider-capable commands are suppressed until the explicit authorization authority is updated.
+
+Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
-SEQUENCE_ID=fastify-lifecycle-sequence-v1
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
-python3 scripts/validate_repository.py
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
-
-SEQUENCE_ID=beets-lifecycle-sequence-v1
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high
-python3 scripts/validate_repository.py
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --dry-run
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 ```
 
-Earlier active-default baseline pools are retained but are not reusable for the current contract generation: `beets-lifecycle-sequence-v0` pool `b440da225a3a` (r0, r1, r2, r3), `fastify-lifecycle-sequence-v0` pool `769d40697529` (r0, r1, r2, r3), `terraform-lifecycle-sequence-v0` pool `ded8609b4172` (r0, r1, r2, r3).
-
-Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `2fd6c85014dc` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `82943cffbb9a` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `8a88427b8c16` (r0), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `be9d43b94b02` (r0, r1, r2), `beets-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `fcc8438d2077` (r0, r1, r3), `beets-lifecycle-sequence-v1` under `claude-code-openrouter-gpt-5-6-sol-high` pool `9a5946763429` (r0), `beets-lifecycle-sequence-v1` under `opencode-openrouter-gpt-5-6-sol-high` pool `b56ac15f5520` (r0), `fastify-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `2e0426814326` (r0), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bb0e89ed9794` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `bd9fd65385d9` (r0, r1, r2), `fastify-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `e3f3816c31d8` (r0), `fastify-lifecycle-sequence-v1` under `claude-code-openrouter-gpt-5-6-sol-high` pool `9596a3c4032d` (r0), `fastify-lifecycle-sequence-v1` under `opencode-openrouter-gpt-5-6-sol-high` pool `f85684d4777d` (r0), `terraform-lifecycle-sequence-v0` under `claude-code-openrouter-gpt-5-6-sol-high` pool `938e4812b1d4` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `5811b463c1e9` (r0, r1, r2), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `5caa11b3fa2b` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `6dbcb1227f80` (r0), `terraform-lifecycle-sequence-v0` under `codex-openai-gpt-5-6-sol-high` pool `ca21cbff5ed5` (r0, r1, r2). They do not satisfy active-default baseline requirements or define active-default treatment-pair reuse. OpenCode pools may define substrate-matched treatment reuse under their own frozen protocols.
+Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v1` under `claude-code-anthropic-opus-5-high` pool `73f4146eb5f6` (r0), `beets-lifecycle-sequence-v1` under `claude-code-anthropic-sonnet-5-high` pool `ab14b9edcf57` (r0, r1, r2), `beets-lifecycle-sequence-v1` under `claude-code-openrouter-gpt-5-6-sol-high` pool `9a5946763429` (r0), `beets-lifecycle-sequence-v1` under `codex-openai-gpt-5-6-sol-high` pool `d8cfc5066f76` (r0, r1, r2), `beets-lifecycle-sequence-v1` under `opencode-openrouter-gpt-5-6-sol-high` pool `b56ac15f5520` (r0), `fastify-lifecycle-sequence-v1` under `claude-code-anthropic-opus-5-high` pool `5e155b3359d4` (r0), `fastify-lifecycle-sequence-v1` under `claude-code-anthropic-sonnet-5-high` pool `70516277e342` (r0, r1, r2), `fastify-lifecycle-sequence-v1` under `claude-code-openrouter-gpt-5-6-sol-high` pool `9596a3c4032d` (r0), `fastify-lifecycle-sequence-v1` under `codex-openai-gpt-5-6-sol-high` pool `72ac148f730b` (r0, r1, r2), `fastify-lifecycle-sequence-v1` under `opencode-openrouter-gpt-5-6-sol-high` pool `f85684d4777d` (r0). They do not satisfy active-default baseline requirements or define active-default treatment-pair reuse. OpenCode pools may define substrate-matched treatment reuse under their own frozen protocols.
 
 Cross-runtime comparison names use accepted-replicate ordinal, not matching raw runtime-local `rN` labels. Current explicit pairs are `lifecycle-v1-sol-high-accepted-pair-01`, `lifecycle-v1-sol-high-accepted-pair-02`. See `docs/evaluations/design/lifecycle-v1-accepted-replicate-pairing.md`.
 

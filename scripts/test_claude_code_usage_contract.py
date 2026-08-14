@@ -4,14 +4,19 @@
 from __future__ import annotations
 
 import json
+import sys
 import tempfile
 import unittest
 from unittest import mock
 from pathlib import Path
 
-import extract_claude_code_usage
-import opencode_workflow_adapter
-import validate_repository
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import extract_claude_code_usage
+from scripts import opencode_workflow_adapter
+from scripts import validate_repository
 
 
 class ClaudeUsageContractTest(unittest.TestCase):

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "rejected-after-completed-provider-execution-before-registry-publication",
+  "session_id": "artifact-ponytail-claude-code-plugin-beets-20260810-p-ab14b9edcf57-r0",
+  "sequence_id": "beets-lifecycle-sequence-v1",
+  "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+  "replicate_index": 0,
+  "model_condition_id": "claude-code-anthropic-sonnet-5-high",
+  "provider": "anthropic",
+  "runtime": "claude-code",
+  "failure_class": "strict_compact_artifact_ingress_rejection_after_completed_tasks",
+  "codex_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "task_outcomes": [
+    {
+      "task_alias": "task-01",
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "accepted": true,
+      "verifier_passed": true
+    },
+    {
+      "task_alias": "task-02",
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "accepted": true,
+      "verifier_passed": true
+    },
+    {
+      "task_alias": "task-03",
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "accepted": true,
+      "verifier_passed": true
+    }
+  ],
+  "provider_usage_attribution": "attributable-to-completed-provider-run",
+  "reported_total_provider_tokens": 3922832,
+  "usage_breakdown": {
+    "fresh_input_tokens": 370614,
+    "cached_input_tokens": 3551814,
+    "cache_write_tokens": 370492,
+    "output_tokens": 404,
+    "reasoning_tokens": 0
+  },
+  "weighted_token_cost": 728219.4,
+  "usage_interpretation": "Provider usage is attributable to the complete three-task Claude trajectory. Every task exited 0 and passed verification, but the session run record was accepted=false and strict compact-artifact ingress rejected publication before registry merge. This is retained evidence, not a completed published evaluation result.",
+  "strict_ingress": "failed",
+  "ingress_error": "strict compact artifact ingress validation failed; evidence retained and identity remains occupied",
+  "artifacts_retained": "compact four-file bundle in this directory",
+  "attempt_receipt": "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts/beets-artifact-ponytail-claude-code-plugin-v1-r0.json",
+  "manifest_sha256": "0980bddfc81fdf8b46dddb3f32d1f9f9d815179bff9baa4368f102320036dff5",
+  "source_orchestrator": "workflow-matrix-20260810T081957004162Z-p3512238-r0"
+}

@@ -1,0 +1,199 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..83fca84 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,20 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      // Conditional assignment to avoid creating a new ContentType instance
++      // if it has already been assigned while handling the request.
++      if (!this[kRequestContentType]) {
++        const ctHeader = this.headers['content-type']
++        if (ctHeader === undefined) {
++          return undefined
++        }
++        this[kRequestContentType] = ContentType.from(ctHeader)
++      }
++      return this[kRequestContentType].mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+
+# --- task-02-agent ---
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..bff25cf 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap: Fifo } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -50,12 +52,27 @@ class ContentType {
+   #string
+ 
+   /**
+-   * Create a ContentType instance from a header value.
++   * cache is a shared, bounded cache of previously parsed content-type
++   * header values, keyed by the raw header value. It avoids re-parsing
++   * (and re-allocating) a ContentType instance for a header value that
++   * has already been seen.
++   * @type {Fifo}
++   */
++  static cache = new Fifo(100)
++
++  /**
++   * Create a ContentType instance from a header value, reusing a
++   * previously parsed instance from the shared cache when available.
+    * @param {string} headerValue
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let found = ContentType.cache.get(headerValue)
++    if (found === undefined) {
++      found = new ContentType(headerValue)
++      ContentType.cache.set(headerValue, found)
++    }
++    return found
+   }
+ 
+   constructor (headerValue) {
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..83fca84 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,20 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      // Conditional assignment to avoid creating a new ContentType instance
++      // if it has already been assigned while handling the request.
++      if (!this[kRequestContentType]) {
++        const ctHeader = this.headers['content-type']
++        if (ctHeader === undefined) {
++          return undefined
++        }
++        this[kRequestContentType] = ContentType.from(ctHeader)
++      }
++      return this[kRequestContentType].mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {
+
+# --- task-03-agent ---
+diff --git a/fastify.js b/fastify.js
+index 7c015f9..7ae158f 100644
+--- a/fastify.js
++++ b/fastify.js
+@@ -675,12 +675,12 @@ function fastify (serverOptions) {
+       return options.frameworkErrors(new FST_ERR_MAX_PARAM_LENGTH(path), request, reply)
+     }
+     const body = JSON.stringify({
+-      error: 'Bad Request',
++      error: 'URI Too Long',
+       code: 'FST_ERR_MAX_PARAM_LENGTH',
+       message: `'${path}' is exceeding the max param length`,
+-      statusCode: 413
++      statusCode: 414
+     })
+-    res.writeHead(413, {
++    res.writeHead(414, {
+       'Content-Type': 'application/json',
+       'Content-Length': Buffer.byteLength(body)
+     })
+diff --git a/lib/content-type.js b/lib/content-type.js
+index aeab8cd..bff25cf 100644
+--- a/lib/content-type.js
++++ b/lib/content-type.js
+@@ -1,5 +1,7 @@
+ 'use strict'
+ 
++const { FifoMap: Fifo } = require('toad-cache')
++
+ /**
+  * keyValuePairsReg is used to split the parameters list into associated
+  * key value pairings. The leading `(?:^|;)\s*` anchor ensures the regex
+@@ -50,12 +52,27 @@ class ContentType {
+   #string
+ 
+   /**
+-   * Create a ContentType instance from a header value.
++   * cache is a shared, bounded cache of previously parsed content-type
++   * header values, keyed by the raw header value. It avoids re-parsing
++   * (and re-allocating) a ContentType instance for a header value that
++   * has already been seen.
++   * @type {Fifo}
++   */
++  static cache = new Fifo(100)
++
++  /**
++   * Create a ContentType instance from a header value, reusing a
++   * previously parsed instance from the shared cache when available.
+    * @param {string} headerValue
+    * @returns {ContentType | undefined}
+    */
+   static from (headerValue) {
+-    return new ContentType(headerValue)
++    let found = ContentType.cache.get(headerValue)
++    if (found === undefined) {
++      found = new ContentType(headerValue)
++      ContentType.cache.set(headerValue, found)
++    }
++    return found
+   }
+ 
+   constructor (headerValue) {
+diff --git a/lib/errors.js b/lib/errors.js
+index 1aea926..24abe8a 100644
+--- a/lib/errors.js
++++ b/lib/errors.js
+@@ -374,7 +374,7 @@ const codes = {
+   FST_ERR_MAX_PARAM_LENGTH: createError(
+     'FST_ERR_MAX_PARAM_LENGTH',
+     "'%s' is exceeding the max param length",
+-    413,
++    414,
+     URIError
+   ),
+   FST_ERR_ASYNC_CONSTRAINT: createError(
+diff --git a/lib/request.js b/lib/request.js
+index 13b3085..83fca84 100644
+--- a/lib/request.js
++++ b/lib/request.js
+@@ -284,6 +284,20 @@ Object.defineProperties(Request.prototype, {
+       this.additionalHeaders = headers
+     }
+   },
++  mediaType: {
++    get () {
++      // Conditional assignment to avoid creating a new ContentType instance
++      // if it has already been assigned while handling the request.
++      if (!this[kRequestContentType]) {
++        const ctHeader = this.headers['content-type']
++        if (ctHeader === undefined) {
++          return undefined
++        }
++        this[kRequestContentType] = ContentType.from(ctHeader)
++      }
++      return this[kRequestContentType].mediaType
++    }
++  },
+   getValidationFunction: {
+     value: function (httpPartOrSchema) {
+       if (typeof httpPartOrSchema === 'string') {

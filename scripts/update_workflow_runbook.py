@@ -18,6 +18,18 @@ FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
 PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
+CLAUDE_DIRECT_CAMPAIGNS = (
+    (
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json",
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json",
+    ),
+    (
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json",
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json",
+    ),
+)
+CLAUDE_SONNET_TREATMENT_AUTHORITY = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json"
+CLAUDE_SONNET_TREATMENT_QUALIFICATION = ROOT / "sources" / "evaluations" / "audits" / "corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json"
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -30,6 +42,84 @@ ARTIFACT_FILES = ("run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def claude_direct_preparation_text() -> str:
+    sections = []
+    for preparation_path, authorization_path in CLAUDE_DIRECT_CAMPAIGNS:
+        if not preparation_path.is_file():
+            continue
+        preparation = load_json(preparation_path)
+        condition = preparation.get("model_condition", {})
+        tools = preparation.get("tools", [])
+        protocol_count = sum(len(item.get("protocols", [])) for item in tools if isinstance(item, dict))
+        shared = preparation.get("shared_protocol") or {}
+        baseline_count = len(shared.get("baseline_protocols", []))
+        if not baseline_count:
+            baseline_count = len((preparation.get("source_scope") or {}).get("protocols", []))
+        authorization = load_json(authorization_path) if authorization_path.is_file() else {}
+        treatment_authorization = (
+            load_json(CLAUDE_SONNET_TREATMENT_AUTHORITY)
+            if CLAUDE_SONNET_TREATMENT_AUTHORITY.is_file()
+            else {}
+        )
+        treatment_qualification = (
+            load_json(CLAUDE_SONNET_TREATMENT_QUALIFICATION)
+            if CLAUDE_SONNET_TREATMENT_QUALIFICATION.is_file()
+            else {}
+        )
+        if (
+            authorization.get("status") == "owner-authorized-provider-run"
+            and authorization.get("execution_status") == "completed"
+        ):
+            completed = ", ".join(str(item) for item in authorization.get("completed_sequences", []))
+            if condition.get("id") == "claude-code-anthropic-sonnet-5-high" and treatment_authorization.get("status") == "owner-authorized-provider-capable":
+                qualification_summary = treatment_qualification.get("summary", {})
+                treatment_profiles = treatment_authorization.get("profiles", [])
+                treatment_sequences = set(treatment_authorization.get("sequence_order", []))
+                session_records = load_json(SESSIONS).get("sessions", [])
+                completed_lanes = sum(
+                    session.get("status") == "completed"
+                    and session.get("session_role") == "individual_tool_treatment"
+                    and session.get("replicate_index") == treatment_authorization.get("replicate_index")
+                    and session.get("profile", {}).get("profile_id") in treatment_profiles
+                    and session.get("task_sequence", {}).get("sequence_id") in treatment_sequences
+                    and session.get("agent", {}).get("model_condition_id") == condition.get("id")
+                    for session in session_records
+                )
+                expected_lanes = len(treatment_profiles) * len(treatment_sequences)
+                treatment_state = (
+                    f"{completed_lanes}/{expected_lanes} treatment lanes are retained"
+                    if completed_lanes
+                    else "the treatment matrix is ready to launch"
+                )
+                execution_line = (
+                    f"Baseline-only execution completed for `{completed}` with "
+                    f"{authorization.get('provider_tokens', 0):,} provider tokens; native qualification passed "
+                    f"{qualification_summary.get('passed', 0)}/{qualification_summary.get('expected', 0)} lanes and "
+                    f"the serialized Sonnet treatment authorization is active ({treatment_state}; SDL-MCP excluded)."
+                )
+            else:
+                execution_line = (
+                    f"Baseline-only execution completed for `{completed}` with "
+                    f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
+                )
+        elif authorization.get("status") == "owner-authorized-provider-run":
+            execution_line = (
+                f"Baseline-only execution is owner-authorized under `{authorization_path.relative_to(ROOT)}`; "
+                "run Fastify then Beets at r0 with one lane at a time. Treatment execution remains blocked."
+            )
+        else:
+            execution_line = "Execution remains blocked until the owner account, native-surface qualification, and serialized owner authorization are present."
+        sections.append("\n".join([
+            f"Authority: `{preparation_path.relative_to(ROOT)}` (`{preparation.get('status')}`).",
+            f"Condition: `{condition.get('id')}` — `{condition.get('provider')}/{condition.get('model')}` with `{condition.get('reasoning_effort')}` effort.",
+            f"Prepared treatment profiles: {len(tools)} ({protocol_count} treatment plus {baseline_count} baseline frozen provider-free protocol files across the active Fastify and Beets sequences).",
+            execution_line,
+        ]))
+    if not sections:
+        return "_No direct-Anthropic Claude Code preparation authority is present._"
+    return "\n\n".join(sections) + "\n\nAccount setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence."
 
 
 def fixture_map() -> dict[str, dict[str, Any]]:
@@ -414,6 +504,10 @@ A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressi
 
 Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
+## Claude Code direct-Anthropic preparation
+
+{claude_direct_preparation_text()}
+
 ## Active sequences
 
 {active_table}
@@ -435,7 +529,7 @@ Before changing a sequence to `active`, require:
 - controller-only affected-component compile commands plus one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
 - cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
-- a machine-validated compile-passing provider pilot before any treatment protocol can be frozen, prepared, or run.
+- a machine-validated compile-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
 
 A no-model prepare for a frozen candidate is allowed:
 

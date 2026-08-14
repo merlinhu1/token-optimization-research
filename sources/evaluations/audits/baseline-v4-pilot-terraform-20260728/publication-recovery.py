@@ -71,7 +71,7 @@ def main() -> int:
             )
             if not complete:
                 raise RuntimeError("recovered authoritative outputs are incomplete")
-            matrix.restore_protected_control_plane_files()
+            matrix.verify_protected_control_plane_files()
             if not EXPECTED_TEST.is_file():
                 raise RuntimeError("protected contract test disappeared during recovery")
             matrix.refresh_generated_runbook()

@@ -9,6 +9,7 @@ for forbidden tool surfaces before a run can be accepted.
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -38,6 +39,7 @@ CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
 CLAUDE_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE", "/opt/data/.local/bin/claude"))
 CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
 CLAUDE_OPENROUTER_ENV_FILE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_OPENROUTER_ENV", "/opt/data/home/.config/claude-code/openrouter.env"))
+CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
 OPENCODE_BIN_V2 = Path("/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe")
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
@@ -49,6 +51,7 @@ OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/openco
 OPENCODE_ADAPTER_V6 = Path("/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V7 = Path("/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py")
 OPENCODE_ADAPTER_V8 = Path("/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_V9 = Path("/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py")
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -83,6 +86,7 @@ FORBIDDEN_BASELINE_TERMS = [
     "caveman",
     "dcp",
     "sdl-mcp",
+    "repowise",
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
@@ -93,6 +97,21 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
+    "retrieval-cartog-claude-code-product-v1": "cartog-claude-code-product-v1",
+    "behavior-caveman-claude-code-skill-v1": "caveman",
+    "retrieval-codegraph-claude-code-mcp-v1": "codegraph-claude-code-mcp-v1",
+    "codescope-claude-code-mcp-v1": "codescope-claude-code-mcp-v1",
+    "retrieval-graphify-claude-code-skill-v1": "graphify-claude-code-skill-v1",
+    "integrated-leanctx-claude-code-hybrid-v1": "leanctx-claude-code-hybrid-v1",
+    "terminal-lowfat-claude-code-hook-v1": "lowfat-claude-code-hook-v1",
+    "artifact-ponytail-claude-code-plugin-v1": "ponytail",
+    "retrieval-serena-claude-code-mcp-v1": "serena-claude-code-mcp-v1",
+    "retrieval-sigmap-claude-code-mcp-v1": "sigmap-claude-code-mcp-v1",
+    "terminal-snip-claude-code-hook-v1": "snip-claude-code-hook-v1",
+    "integrated-token-savior-claude-code-product-v1": "token-savior-claude-code-product-v1",
+    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice-claude-code-hook-v1",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-claude-code-mcp-v1",
+    "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
@@ -128,6 +147,8 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
+    "retrieval-repowise-codex-product-v2": "repowise-codex-product-v2",
+    "retrieval-repowise-opencode-product-v2": "repowise-opencode-product-v2",
 }
 CODEGRAPH_BIN = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 CARTOG_ROOT = Path("/opt/data/tool-candidates/cartog")
@@ -166,6 +187,8 @@ GRAPHIFY_WHEEL = GRAPHIFY_ROOT / "dist" / "graphifyy-0.9.1-py3-none-any.whl"
 JCODEMUNCH_WHEEL = JCODEMUNCH_ROOT / "dist" / "jcodemunch_mcp-1.108.114-py3-none-any.whl"
 JCODEMUNCH_COMMIT = "fbc14e40c7057ebc6d718fb48083d30522afe15f"
 JCODEMUNCH_GUIDANCE_INSTALLER = "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+REPOWISE_ROOT = Path("/opt/data/tool-candidates/repowise")
+REPOWISE_WHEEL = Path("/opt/data/tool-candidates/repowise-wheel/repowise-0.39.0-py3-none-any.whl")
 SNIP_BIN = SNIP_ROOT / "snip"
 UV_BIN = Path("/opt/data/opt/uv/uv")
 RTK_BIN = Path("/opt/data/tool-candidates/rtk/target/release/rtk")
@@ -180,8 +203,11 @@ SDL_MCP_CLI = SDL_MCP_ROOT / "dist" / "cli" / "index.js"
 SDL_MCP_NATIVE = SDL_MCP_ROOT / "node_modules/sdl-mcp-native-linux-x64-gnu/sdl-mcp-native.linux-x64-gnu.node"
 SDL_MCP_LADYBUG = SDL_MCP_ROOT / "node_modules/@ladybugdb/core-linux-x64/lbugjs.node"
 PONYTAIL_COMMIT = "40e50d9e03242aa5dd53ac771950f9127362b25f"
+CAVEMAN_COMMIT = "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"
 PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_marketplace.py"
+CLAUDE_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_claude_marketplace.py"
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+CLAUDE_README_HOOK_INSTALLER = "{repository_root}/scripts/install_claude_readme_hooks.py"
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
     "sdl-mcp-codex-product-v1": {
@@ -430,6 +456,47 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "metadata_name": "codegraph-warmup-metadata.json",
             "timeout_seconds": 1200,
         },
+    },
+    "repowise-codex-product-v2": {
+        "display_name": "RepoWise 0.39.0 provider-backed Codex MCP, hooks, and guidance",
+        "lane_name": "retrieval-repowise-codex-product-v2",
+        "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-index",
+        "mcp_server": "repowise",
+        "allowed_terms": ["repowise"],
+        "data_dir_name": "repowise-codex-product-v2",
+        "mcp_command": "{tool_data_dir}/venv/bin/repowise",
+        "mcp_args": ["mcp"],
+        "path_entries": ["{tool_data_dir}/venv/bin"],
+        "env": {"REPOWISE_PROVIDER": "codex_cli", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
+        "mounts": [str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
+        "diff_exclude_paths": [".repowise", ".mcp.json", ".codex", "AGENTS.md"],
+        "codex_features": {"hooks": True},
+        "host_integration": {
+            "install_commands": [
+                [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
+                ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "codex_cli", "--no-prose", "--no-claude-md", "--no-editor-setup", "--codex", "--agents", "--no-workspace", "{repo}"],
+            ],
+            "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
+            "required_files": [
+                "{tool_data_dir}/venv/bin/repowise",
+                "{repo}/.repowise/wiki.db",
+                "{repo}/.repowise/config.yaml",
+                "{repo}/.mcp.json",
+                "{repo}/.codex/config.toml",
+                "{repo}/.codex/hooks.json",
+                "{repo}/AGENTS.md",
+            ],
+            "timeout_seconds": 3600,
+        },
+        "preflight_command": ["{tool_data_dir}/venv/bin/repowise", "--version"],
+        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+        "artifact_identities": [
+            {"path": str(REPOWISE_WHEEL), "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4", "kind": "python-wheel"},
+            {"path": str(REPOWISE_ROOT / "README.md"), "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a", "kind": "product-guidance-source"},
+        ],
+        "tool_manifest_identity": "current-file-v1",
+        "default_tool_state": "warm-index+official-codex-hooks+product-guidance",
     },
     "cartog": {
         "display_name": "Cartog",
@@ -1038,25 +1105,76 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "default_tool_state": "active-hook-and-instruction-layer",
     },
     "caveman": {
-        "display_name": "Caveman",
+        "display_name": "Caveman Claude Code native plugin",
         "lane_name": "behavior-caveman",
-        "surface": "behavioral-output-compression/mcp-description-compression",
+        "surface": "claude-code-native-plugin/sessionstart+userpromptsubmit-hooks+skills",
         "allowed_terms": ["caveman"],
         "data_dir_name": "caveman",
-        "mounts": [str(CAVEMAN_ROOT)],
-        "preflight_command": ["node", str(CAVEMAN_ROOT / "src" / "tools" / "caveman-init.js"), "--help"],
-        "prompt_instructions_command": ["python3", "-c", f"from pathlib import Path; print(Path({str(CAVEMAN_ROOT / 'skills' / 'caveman' / 'SKILL.md')!r}).read_text())"],
-        "default_tool_state": "active-instruction-layer",
+        "mounts": [str(CAVEMAN_ROOT), CLAUDE_MARKETPLACE_PREPARER],
+        "claude_features": {"hooks": True, "plugin": "caveman"},
+        "host_integration_backend": "docker",
+        "host_integration": {
+            "controller_install_commands": [[
+                "python3", CLAUDE_MARKETPLACE_PREPARER,
+                "--source", str(CAVEMAN_ROOT),
+                "--expected-commit", CAVEMAN_COMMIT,
+                "--marketplace-root", "{tool_data_dir}/marketplace",
+                "--marketplace-name", "caveman",
+                "--plugin-name", "caveman",
+            ]],
+            "install_commands": [
+                ["claude", "plugin", "marketplace", "add", "{tool_data_dir}/marketplace"],
+                ["claude", "plugin", "install", "caveman@caveman"],
+            ],
+            "verify_commands": [[
+                "bash", "-lc",
+                "set -o pipefail; claude plugin list --json | python3 -c 'import sys; assert \"caveman\" in sys.stdin.read()'",
+            ]],
+            "required_files": [
+                "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                "{tool_data_dir}/marketplace/.claude-plugin/marketplace.json",
+                "{tool_data_dir}/marketplace/plugins/caveman/.claude-plugin/plugin.json",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["claude", "plugin", "list", "--json"],
+        "default_tool_state": "active-native-plugin-hooks-and-skills",
     },
     "ponytail": {
-        "display_name": "Ponytail",
+        "display_name": "Ponytail Claude Code native plugin",
         "lane_name": "artifact-ponytail",
-        "surface": "artifact/code-minimization-policy",
+        "surface": "claude-code-native-plugin/sessionstart+userpromptsubmit+subagentstart-hooks+skills+commands",
         "allowed_terms": ["ponytail"],
         "data_dir_name": "ponytail",
-        "mounts": [str(PONYTAIL_ROOT)],
-        "preflight_command": ["node", "-e", "const {getPonytailInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getPonytailInstructions('full').split('\\n')[0]);"],
-        "prompt_instructions_command": ["node", "-e", "const {getFallbackInstructions}=require('/opt/data/ponytail/hooks/ponytail-instructions.js'); console.log(getFallbackInstructions('full'));"],
+        "mounts": [str(PONYTAIL_ROOT), CLAUDE_MARKETPLACE_PREPARER],
+        "claude_features": {"hooks": True, "plugin": "ponytail"},
+        "host_integration_backend": "docker",
+        "host_integration": {
+            "controller_install_commands": [[
+                "python3", CLAUDE_MARKETPLACE_PREPARER,
+                "--source", str(PONYTAIL_ROOT),
+                "--expected-commit", PONYTAIL_COMMIT,
+                "--marketplace-root", "{tool_data_dir}/marketplace",
+                "--marketplace-name", "ponytail",
+                "--plugin-name", "ponytail",
+            ]],
+            "install_commands": [
+                ["claude", "plugin", "marketplace", "add", "{tool_data_dir}/marketplace"],
+                ["claude", "plugin", "install", "ponytail@ponytail"],
+            ],
+            "verify_commands": [[
+                "bash", "-lc",
+                "set -o pipefail; claude plugin list --json | python3 -c 'import sys; assert \"ponytail\" in sys.stdin.read()'",
+            ]],
+            "required_files": [
+                "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                "{tool_data_dir}/marketplace/.claude-plugin/marketplace.json",
+                "{tool_data_dir}/marketplace/plugins/ponytail/.claude-plugin/plugin.json",
+            ],
+            "timeout_seconds": 300,
+        },
+        "preflight_command": ["claude", "plugin", "list", "--json"],
+        "default_tool_state": "active-native-plugin-hooks-and-skills",
     },
 }
 
@@ -2090,6 +2208,45 @@ TOOL_CONFIGS.update(
             diff_exclude_paths=["AGENTS.md"],
             default_tool_state="warm-index+product-guidance",
         ),
+        "repowise-opencode-product-v2": _opencode_treatment_config(
+            "repowise",
+            display_name="RepoWise 0.39.0 provider-backed OpenCode MCP with product guidance",
+            lane_name="retrieval-repowise-opencode-product-v2",
+            surface="opencode-mcp+product-guidance+provider-backed-index",
+            allowed_terms=["repowise"],
+            mounts=[str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
+            adapter_path=OPENCODE_ADAPTER_V9,
+            path_entries=["{tool_data_dir}/venv/bin"],
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_PROVIDER": "opencode", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
+            host_integration={
+                "install_commands": [
+                    [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+                    [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
+                    ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "opencode", "--no-prose", "--no-claude-md", "--no-editor-setup", "--no-codex", "--agents", "--no-workspace", "{repo}"],
+                ],
+                "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
+                "required_files": [
+                    "{tool_data_dir}/venv/bin/repowise",
+                    "{repo}/.repowise/wiki.db",
+                    "{repo}/.repowise/config.yaml",
+                    "{repo}/.mcp.json",
+                    "{repo}/AGENTS.md",
+                ],
+                "timeout_seconds": 3600,
+            },
+            mcp_server="repowise",
+            mcp_command="{tool_data_dir}/venv/bin/repowise",
+            mcp_args=["mcp"],
+            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
+            artifact_identities=[
+                {"path": str(REPOWISE_WHEEL), "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4", "kind": "python-wheel"},
+                {"path": str(REPOWISE_ROOT / "README.md"), "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a", "kind": "product-guidance-source"},
+                {"path": str(OPENCODE_ADAPTER_V9), "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e", "kind": "runtime-adapter"},
+            ],
+            effective_host_config={"required": True, "source": "adapter-probe"},
+            diff_exclude_paths=[".repowise", ".mcp.json", "AGENTS.md"],
+            default_tool_state="warm-index+product-guidance",
+        ),
         "leanctx-opencode-hybrid-v1": _opencode_treatment_config(
             "leanctx",
             display_name="LeanCTX official OpenCode hybrid integration v1",
@@ -2298,6 +2455,285 @@ TOOL_CONFIGS["opencode-openrouter-product-v1"] = {
 }
 
 
+def _claude_readme_config(
+    base_name: str,
+    *,
+    lane_name: str,
+    surface: str,
+    install_commands: list[list[str]],
+    verify_commands: list[list[str]],
+    required_files: list[str],
+    diff_exclude_paths: list[str],
+    timeout_seconds: int = 900,
+    mcp_args: list[str] | None = None,
+    env: dict[str, str] | None = None,
+    warmup: dict[str, Any] | None = None,
+    claude_features: dict[str, Any] | None = None,
+    mounts: list[str | Path] | None = None,
+    backend: str = "docker",
+) -> dict[str, Any]:
+    """Clone a historical adapter and bind the pinned README's Claude surface."""
+    config = copy.deepcopy(TOOL_CONFIGS[base_name])
+    config.update(
+        {
+            "lane_name": lane_name,
+            "surface": surface,
+            "diff_exclude_paths": diff_exclude_paths,
+            "host_integration_backend": backend,
+            "mounts": list(mounts) if mounts is not None else config.get("mounts", []),
+            "host_integration": {
+                "install_commands": install_commands,
+                "verify_commands": verify_commands,
+                "required_files": required_files,
+                "timeout_seconds": timeout_seconds,
+            },
+        }
+    )
+    if (claude_features or {}).get("mcp"):
+        config["mcp_handshake"] = {
+            "required": True,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120,
+        }
+    if mcp_args is not None:
+        config["mcp_args"] = mcp_args
+    if env is not None:
+        config["env"] = env
+    if warmup is not None:
+        config["warmup"] = warmup
+    if claude_features is not None:
+        config["claude_features"] = claude_features
+    return config
+
+
+TOOL_CONFIGS.update(
+    {
+        "cartog-claude-code-product-v1": _claude_readme_config(
+            "cartog",
+            lane_name="retrieval-cartog-claude-code-product-v1",
+            surface="claude-code-readme-product-init+index+ide+mcp",
+            install_commands=[
+                [str(CARTOG_BIN), "init"],
+                [str(CARTOG_BIN), "ide", "--client", "claude-code", "--scope", "all", "--no-watch"],
+                [str(CARTOG_BIN), "index"],
+            ],
+            verify_commands=[[str(CARTOG_BIN), "--version"]],
+            required_files=[
+                "{repo}/.cartog.toml",
+                "{repo}/.mcp.json",
+                "{repo}/.cartog/db.sqlite",
+                "{codex_home}/claude-config/settings.json",
+            ],
+            diff_exclude_paths=[".cartog", ".cartog.toml", ".mcp.json", ".claude", "CLAUDE.md"],
+            timeout_seconds=1200,
+            mcp_args=["serve"],
+            claude_features={"mcp": True},
+        ),
+        "codegraph-claude-code-mcp-v1": _claude_readme_config(
+            "codegraph",
+            lane_name="retrieval-codegraph-claude-code-mcp-v1",
+            surface="claude-code-readme-install+init+mcp",
+            install_commands=[
+                [str(CODEGRAPH_BIN), "install", "--target", "claude", "--yes"],
+                [str(CODEGRAPH_BIN), "init", "{repo}"],
+            ],
+            verify_commands=[[str(CODEGRAPH_BIN), "--version"]],
+            required_files=[
+                "{codex_home}/home/.claude.json",
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+            ],
+            diff_exclude_paths=[".codegraph", ".claude", ".mcp.json", "CLAUDE.md"],
+            mcp_args=["serve", "--mcp"],
+            claude_features={"mcp": True},
+        ),
+        "codescope-claude-code-mcp-v1": _claude_readme_config(
+            "codescope",
+            lane_name="codescope-claude-code-mcp-v1",
+            surface="claude-code-readme-init+bundled-surreal+mcp",
+            install_commands=[
+                [
+                    "/bin/bash",
+                    "-lc",
+                    "set -euo pipefail; mkdir -p {codex_home}/home/.codescope/bin; cp "
+                    + str(CODESCOPE_SURREAL_BIN)
+                    + " {codex_home}/home/.codescope/bin/surreal; chmod 755 {codex_home}/home/.codescope/bin/surreal",
+                ],
+                [str(CODESCOPE_BIN), "init", "--agent", "claude-code", "{repo}"],
+            ],
+            verify_commands=[[str(CODESCOPE_BIN), "--version"]],
+            required_files=[
+                "{codex_home}/home/.codescope/bin/surreal",
+                "{repo}/.mcp.json",
+            ],
+            diff_exclude_paths=[".codescope", ".mcp.json", ".claude", "CLAUDE.md"],
+            timeout_seconds=1200,
+            claude_features={"mcp": True},
+        ),
+        "graphify-claude-code-skill-v1": _claude_readme_config(
+            "graphify",
+            lane_name="retrieval-graphify-claude-code-skill-v1",
+            surface="claude-code-readme-claude-install+pretooluse-hook+mcp",
+            install_commands=[[str(UV_BIN), "tool", "run", "--from", str(GRAPHIFY_WHEEL), "graphify", "claude", "install"]],
+            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(GRAPHIFY_WHEEL), "graphify", "--help"]],
+            required_files=[
+                "{repo}/CLAUDE.md",
+                "{repo}/.claude/settings.json",
+            ],
+            diff_exclude_paths=["graphify-out", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"mcp": True, "hooks": True, "guidance_append": "graphify"},
+        ),
+        "leanctx-claude-code-hybrid-v1": _claude_readme_config(
+            "leanctx-codex-hybrid-v1",
+            lane_name="integrated-leanctx-claude-code-hybrid-v1",
+            surface="claude-code-readme-init+hybrid-hooks+skill+mcp",
+            install_commands=[[str(LEANCTX_BINARY), "init", "--agent", "claude"]],
+            verify_commands=[[str(LEANCTX_BINARY), "--version"]],
+            required_files=[
+                "{codex_home}/claude-config/.claude.json",
+                "{codex_home}/claude-config/settings.json",
+                "{codex_home}/claude-config/CLAUDE.md",
+                "{codex_home}/claude-config/hooks/lean-ctx-redirect-native",
+                "{codex_home}/claude-config/skills/lean-ctx/SKILL.md",
+                "{repo}/AGENTS.md",
+                "{repo}/LEAN-CTX.md",
+                "{repo}/.claude/settings.local.json",
+            ],
+            diff_exclude_paths=[".lean-ctx", ".claude", "AGENTS.md", "LEAN-CTX.md", ".mcp.json"],
+            claude_features={"hooks": True, "mcp": True, "skill": "lean-ctx"},
+        ),
+        "lowfat-claude-code-hook-v1": _claude_readme_config(
+            "lowfat",
+            lane_name="terminal-lowfat-claude-code-hook-v1",
+            surface="claude-code-readme-pretooluse+posttooluse-hooks",
+            install_commands=[
+                [
+                    "python3",
+                    CLAUDE_README_HOOK_INSTALLER,
+                    "--tool",
+                    "lowfat",
+                    "--settings",
+                    "{codex_home}/claude-config/settings.json",
+                ],
+            ],
+            verify_commands=[[str(LOWFAT_BIN), "--version"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True},
+            backend="host",
+        ),
+        "serena-claude-code-mcp-v1": _claude_readme_config(
+            "serena",
+            lane_name="retrieval-serena-claude-code-mcp-v1",
+            surface="claude-code-readme-setup+mcp",
+            install_commands=[
+                [str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "init"],
+                [
+                    "claude", "mcp", "add", "--scope", "user", "serena", "--",
+                    str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena",
+                    "start-mcp-server", "--transport", "stdio", "--context", "claude-code",
+                    "--mode", "no-onboarding", "--mode", "no-memories", "--project-from-cwd",
+                ],
+            ],
+            verify_commands=[
+                [str(UV_BIN), "tool", "run", "--from", str(SERENA_ROOT), "serena", "--help"],
+                ["claude", "mcp", "get", "serena"],
+            ],
+            required_files=["{codex_home}/claude-config/.claude.json"],
+            diff_exclude_paths=[".serena", ".mcp.json", ".claude", "CLAUDE.md"],
+            mcp_args=[
+                "tool", "run", "--from", str(SERENA_ROOT), "serena", "start-mcp-server",
+                "--transport", "stdio", "--context", "claude-code", "--mode", "no-onboarding",
+                "--mode", "no-memories", "--project-from-cwd",
+            ],
+            claude_features={"mcp": True},
+        ),
+        "sigmap-claude-code-mcp-v1": _claude_readme_config(
+            "sigmap",
+            lane_name="retrieval-sigmap-claude-code-mcp-v1",
+            surface="claude-code-readme-mcp-install+context-map",
+            install_commands=[[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "install", "claude", "--global"]],
+            verify_commands=[[str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "mcp", "list", "--json"]],
+            required_files=["{repo}/.claude/settings.json"],
+            diff_exclude_paths=[".context", ".mcp.json", ".claude", "CLAUDE.md"],
+            warmup={
+                "cleanup_paths": [".context"],
+                "command": [str(NODE_BIN), str(SIGMAP_ROOT / "gen-context.js"), "--adapter", "claude", "--no-track"],
+                "kind": "signature-map-build",
+                "metadata_name": "sigmap-warmup-metadata.json",
+                "output_name": "sigmap-warmup-output.txt",
+                "timeout_seconds": 900,
+            },
+            claude_features={"mcp": True},
+        ),
+        "snip-claude-code-hook-v1": _claude_readme_config(
+            "snip",
+            lane_name="terminal-snip-claude-code-hook-v1",
+            surface="claude-code-readme-init+pretooluse-hook",
+            install_commands=[[str(SNIP_BIN), "init", "--agent", "claude-code"]],
+            verify_commands=[[str(SNIP_BIN), "hook-audit"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".snip", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True},
+        ),
+        "token-savior-claude-code-product-v1": _claude_readme_config(
+            "token-savior",
+            lane_name="integrated-token-savior-claude-code-product-v1",
+            surface="claude-code-readme-init+hooks+mcp",
+            install_commands=[[str(UV_BIN), "tool", "run", "--from", str(TOKEN_SAVIOR_WHEEL), "ts", "init", "--agent", "claude", "--yes"]],
+            verify_commands=[[str(UV_BIN), "tool", "run", "--from", str(TOKEN_SAVIOR_WHEEL), "ts", "init", "--agent", "claude", "--dry-run", "--yes"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".token-savior", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True, "mcp": True},
+        ),
+        "tokenjuice-claude-code-hook-v1": _claude_readme_config(
+            "tokenjuice",
+            lane_name="terminal-tokenjuice-claude-code-hook-v1",
+            surface="claude-code-readme-install+pretooluse-hook",
+            install_commands=[[str(TOKENJUICE_BIN), "install", "claude-code"]],
+            verify_commands=[[str(TOKENJUICE_BIN), "doctor", "claude-code"]],
+            required_files=["{codex_home}/claude-config/settings.json"],
+            diff_exclude_paths=[".tokenjuice", ".claude", "CLAUDE.md", ".mcp.json"],
+            claude_features={"hooks": True},
+        ),
+        "jcodemunch-claude-code-mcp-v1": _claude_readme_config(
+            "jcodemunch-mcp",
+            lane_name="retrieval-jcodemunch-claude-code-mcp-v1",
+            surface="claude-code-readme-init+mcp+policy+hooks+index",
+            install_commands=[
+                [
+                    str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "init",
+                    "--client", "claude-code", "--claude-md", "project", "--hooks", "--index", "--audit",
+                    "--yes", "--no-share-savings",
+                ],
+                [
+                    "/bin/bash", "-lc",
+                    "set -euo pipefail; "
+                    "claude mcp remove --scope local jcodemunch >/dev/null 2>&1 || true; "
+                    "claude mcp remove --scope user jcodemunch >/dev/null 2>&1 || true; "
+                    "claude mcp remove --scope project jcodemunch >/dev/null 2>&1 || true; "
+                    f"exec claude mcp add --scope user jcodemunch -- {UV_BIN} tool run --from {JCODEMUNCH_WHEEL} "
+                    "jcodemunch-mcp serve --transport stdio --log-level ERROR",
+                ],
+            ],
+            verify_commands=[
+                [str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "--help"],
+                ["claude", "mcp", "get", "jcodemunch"],
+            ],
+            required_files=[
+                "{codex_home}/claude-config/.claude.json",
+                "{codex_home}/claude-config/settings.json",
+                "{repo}/CLAUDE.md",
+                "{repo}/AGENTS.md",
+                "{codex_home}/home/.code-index/config.jsonc",
+            ],
+            diff_exclude_paths=[".code-index", ".jcodemunch", ".mcp.json", "CLAUDE.md", "AGENTS.md", ".claude"],
+            claude_features={"hooks": True, "mcp": True, "guidance_append": "Code Exploration Policy"},
+        ),
+    }
+)
+
+
 def rel_or_abs(path_text: str) -> Path:
     path = Path(path_text)
     return path if path.is_absolute() else ROOT / path
@@ -2405,6 +2841,23 @@ def active_tool_config(record: dict[str, Any], pid: str) -> dict[str, Any] | Non
     return TOOL_CONFIGS[ids[0]]
 
 
+def require_repowise_provider_contract(profile_id: str) -> None:
+    """Fail closed if a RepoWise profile could silently fall back to retrieval-only."""
+    expected = {
+        "repowise-codex-product-v2": "codex_cli",
+        "repowise-opencode-product-v2": "opencode",
+    }.get(str(PROFILE_TOOL_CONFIG_OVERRIDES.get(profile_id, "")))
+    if expected is None:
+        return
+    cfg = TOOL_CONFIGS[str(PROFILE_TOOL_CONFIG_OVERRIDES[profile_id])]
+    if (cfg.get("env") or {}).get("REPOWISE_PROVIDER") != expected:
+        raise ValueError(f"{profile_id} must set REPOWISE_PROVIDER={expected}")
+    commands = (cfg.get("host_integration") or {}).get("install_commands") or []
+    init = commands[-1] if commands else []
+    if "--provider" not in init or expected not in init:
+        raise ValueError(f"{profile_id} init must explicitly select provider {expected}")
+
+
 def codex_model_args(record: dict[str, Any]) -> list[str]:
     """Return Codex CLI args that bind the recorded model condition."""
     agent = record.get("agent") or {}
@@ -2451,6 +2904,39 @@ def render_tool_value(value: Any, record: dict[str, Any], codex_home: Path, cfg:
 
 def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any]) -> list[str]:
     return [render_tool_value(arg, record, codex_home, cfg) for arg in cfg.get("mcp_args", [])]
+
+
+def prepare_claude_mcp_config(
+    record: dict[str, Any],
+    pid: str,
+    claude_home: Path,
+) -> Path | None:
+    """Materialize one lane-private Claude MCP file from the pinned tool config."""
+    cfg = active_tool_config(record, pid)
+    server = str((cfg or {}).get("mcp_server") or "")
+    if not cfg or not server:
+        return None
+    command = render_tool_value(str(cfg.get("mcp_command", "")), record, claude_home, cfg)
+    if not command:
+        raise ValueError(f"Claude MCP profile {pid} has no server command")
+    config_path = claude_home / "claude-config" / "mcp.json"
+    config_path.write_text(json.dumps({
+        "mcpServers": {
+            server: {
+                "type": "stdio",
+                "command": command,
+                "args": render_mcp_args(record, claude_home, cfg),
+                "env": render_tool_env(
+                    claude_home,
+                    cfg,
+                    rel_or_abs(record["target"]["repository_path"])
+                    if record.get("target")
+                    else ROOT,
+                ),
+            }
+        }
+    }, indent=2) + "\n")
+    return config_path
 
 
 def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> None:
@@ -2600,8 +3086,23 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
     return codex_home
 
 
-def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
-    """Create a lane-private Claude Code home without copying global state."""
+def _claude_account_credential(source_home: Path) -> Path | None:
+    """Resolve the Claude OAuth file without copying unrelated account state."""
+    candidates = [
+        source_home / ".credentials.json",
+        source_home / ".claude" / ".credentials.json",
+    ]
+    return next((path for path in candidates if path.is_file()), None)
+
+
+def prepare_claude_home(
+    pid: str,
+    run_dir: Path,
+    home_root: Path,
+    *,
+    provider: str = "openrouter",
+) -> Path:
+    """Create isolated Claude state and copy only an explicitly supplied OAuth file."""
     claude_home = home_root / pid
     if claude_home.exists():
         make_tree_writable(claude_home)
@@ -2609,16 +3110,40 @@ def prepare_claude_home(pid: str, run_dir: Path, home_root: Path) -> Path:
     claude_home.mkdir(parents=True)
     for subdir in ["home", "python-userbase", "xdg-cache", "xdg-config", "xdg-data", "tmp", "claude-config"]:
         (claude_home / subdir).mkdir(parents=True, exist_ok=True)
+    auth_materialization = "none"
+    auth_source_home: str | None = None
+    auth_file: str | None = None
+    if provider == "anthropic":
+        source_value = os.environ.get(CLAUDE_ACCOUNT_HOME_ENV)
+        credential = _claude_account_credential(Path(source_value).expanduser()) if source_value else None
+        if credential is not None:
+            destination = claude_home / "claude-config" / ".credentials.json"
+            shutil.copy2(credential, destination)
+            os.chmod(destination, 0o600)
+            auth_materialization = "copy-ephemeral-oauth-file"
+            auth_source_home = str(Path(source_value).expanduser())
+            auth_file = credential.name
+        elif not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")):
+            raise FileNotFoundError(
+                f"{CLAUDE_ACCOUNT_HOME_ENV} must point to a Claude account home containing .credentials.json "
+                "for the direct Anthropic condition (or provide ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN)."
+            )
+        else:
+            auth_materialization = "inherited-anthropic-environment-credential"
     manifest = {
         "created_at_utc": dt.datetime.now(dt.UTC).isoformat(),
         "profile_id": pid,
         "runtime_id": "claude-code",
+        "provider": provider,
         "claude_home": str(claude_home),
         "normal_mode": True,
         "copied_global_instructions": False,
         "copied_skills_or_plugins": False,
         "hooks_enabled": False,
         "mcp_servers": [],
+        "auth_materialization": auth_materialization,
+        "auth_source_home": auth_source_home,
+        "auth_file": auth_file,
     }
     (run_dir / "claude-code-home-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     return claude_home
@@ -2726,10 +3251,11 @@ def claude_env(
     *,
     containerized: bool = False,
     cfg: dict[str, Any] | None = None,
+    provider: str = "openrouter",
 ) -> dict[str, str]:
     """Create isolated Claude Code HOME/XDG/config state for one lane."""
     env = codex_env(agent_home, containerized=containerized, cfg=cfg)
-    if CLAUDE_OPENROUTER_ENV_FILE.is_file():
+    if provider == "openrouter" and CLAUDE_OPENROUTER_ENV_FILE.is_file():
         for line in CLAUDE_OPENROUTER_ENV_FILE.read_text(errors="replace").splitlines():
             match = re.match(r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$", line)
             if not match:
@@ -2740,6 +3266,13 @@ def claude_env(
                 value = value[1:-1]
             value = re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", lambda m: env.get(m.group(1), ""), value)
             env[key] = value
+    elif provider == "anthropic":
+        # Do not let an inherited OpenRouter key or endpoint silently change the
+        # direct-account transport. API credentials may still be supplied by the
+        # owner through ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN; the CLI uses its
+        # first-party endpoint by default.
+        env.pop("OPENROUTER_API_KEY", None)
+        env.pop("ANTHROPIC_BASE_URL", None)
     config_dir = agent_home / "claude-config"
     config_dir.mkdir(parents=True, exist_ok=True)
     claude_config = agent_home / "claude-config"
@@ -3073,6 +3606,7 @@ def check_container_runtime(
     codex_home: Path | None = None,
     cfg: dict[str, Any] | None = None,
     agent_runtime: str = "codex-cli",
+    provider: str = "openrouter",
 ) -> dict[str, Any]:
     result: dict[str, Any] = {
         "execution_backend": backend,
@@ -3125,7 +3659,7 @@ def check_container_runtime(
 
     if not result["failure_reasons"]:
         ensure_codex_native_binary_executable()
-        smoke_env = (claude_env(codex_home, containerized=True) if agent_runtime == "claude-code" else codex_env(codex_home, containerized=True, cfg=cfg)) if codex_home else os.environ.copy()
+        smoke_env = (claude_env(codex_home, containerized=True, provider=provider) if agent_runtime == "claude-code" else codex_env(codex_home, containerized=True, cfg=cfg)) if codex_home else os.environ.copy()
         smoke_mounts = docker_tool_mounts(cfg)
         if codex_home:
             add_mount(smoke_mounts, codex_home, mode="rw")
@@ -3314,13 +3848,20 @@ def prepare_profile_integration(
     docker_image: str,
 ) -> dict[str, Any]:
     cfg = active_tool_config(record, pid)
+    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
+    claude_mcp_config = (
+        prepare_claude_mcp_config(record, pid, codex_home)
+        if runtime_id == "claude-code"
+        else None
+    )
     integration = (cfg or {}).get("host_integration") or {}
     artifact_identities = verify_artifact_identities(cfg, record, codex_home) if cfg else []
     identities_passed = all(item["passed"] for item in artifact_identities)
+    native_claude_treatment = runtime_id == "claude-code" and not pid.startswith("baseline-")
     if not integration:
         result = {
             "profile_id": pid,
-            "passed": identities_passed,
+            "passed": identities_passed and not native_claude_treatment,
             "skipped": True,
             "install_exit_codes": [],
             "verify_exit_codes": [],
@@ -3328,17 +3869,29 @@ def prepare_profile_integration(
             "artifact_identities": artifact_identities,
             "post_install_artifacts": [],
             "artifacts": [],
+            "claude_mcp_config": str(claude_mcp_config) if claude_mcp_config else None,
+            "failure_reasons": (
+                ["Claude native treatment has no host_integration contract"]
+                if native_claude_treatment else []
+            ),
         }
         (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
         return result
 
     assert cfg is not None
     integration_backend = str(cfg.get("host_integration_backend") or backend)
+    # Native Claude installers run in the lane's declared backend. The
+    # jCodeMunch adapter uses the mounted Claude entrypoint and lane-private
+    # config, so forcing it onto the controller host would bypass the lane.
     if integration.get("home_dot_codex_alias"):
         prepare_home_dot_codex_alias(codex_home)
-    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
     env = (
-        claude_env(codex_home, containerized=integration_backend == "docker", cfg=cfg)
+        claude_env(
+            codex_home,
+            containerized=integration_backend == "docker",
+            cfg=cfg,
+            provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+        )
         if runtime_id == "claude-code"
         else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     )
@@ -3348,6 +3901,7 @@ def prepare_profile_integration(
     install_exit_codes: list[int] = []
     controller_install_exit_codes: list[int] = []
     verify_exit_codes: list[int] = []
+    host_integration_retry_exit_codes: list[int] = []
 
     for index, raw_command in enumerate(integration.get("controller_install_commands", []), start=1):
         command = [render_tool_value(part, record, codex_home, cfg) for part in raw_command]
@@ -3387,7 +3941,26 @@ def prepare_profile_integration(
             )
             exits.append(proc.returncode)
             artifacts.append(str(artifact.relative_to(ROOT)) if artifact.is_relative_to(ROOT) else str(artifact))
-            if proc.returncode != 0:
+            if proc.returncode == 126 and integration_backend == "host":
+                retry_artifact = run_dir / f"tool-host-{phase}-{index}-retry.txt"
+                retry_proc = run_backend(
+                    command,
+                    backend=integration_backend,
+                    docker_image=docker_image,
+                    cwd=rel_or_abs(record["target"]["repository_path"]) if record.get("target") else codex_home / "home",
+                    env=env,
+                    stdout_path=retry_artifact,
+                    timeout=int(integration.get("timeout_seconds", 300)),
+                    mounts=mounts,
+                )
+                host_integration_retry_exit_codes.append(retry_proc.returncode)
+                exits[-1] = retry_proc.returncode
+                artifacts.append(
+                    str(retry_artifact.relative_to(ROOT))
+                    if retry_artifact.is_relative_to(ROOT)
+                    else str(retry_artifact)
+                )
+            if exits[-1] != 0:
                 break
         if exits and exits[-1] != 0:
             break
@@ -3408,11 +3981,13 @@ def prepare_profile_integration(
         "controller_install_exit_codes": controller_install_exit_codes,
         "install_exit_codes": install_exit_codes,
         "verify_exit_codes": verify_exit_codes,
+        "host_integration_retry_exit_codes": host_integration_retry_exit_codes,
         "missing_required_files": missing_required_files,
         "required_files": [str(path) for path in required_files],
         "artifact_identities": artifact_identities,
         "post_install_artifacts": post_install_artifacts,
         "artifacts": artifacts,
+        "claude_mcp_config": str(claude_mcp_config) if claude_mcp_config else None,
     }
     (run_dir / "tool-host-integration.json").write_text(json.dumps(result, indent=2) + "\n")
 
@@ -3420,10 +3995,18 @@ def prepare_profile_integration(
         manifest_path = run_dir / manifest_name
         if manifest_path.is_file():
             manifest = json.loads(manifest_path.read_text())
+            claude_features = cfg.get("claude_features", {})
+            native_plugin = claude_features.get("plugin")
+            native_skills = claude_features.get("skills", [])
+            manifest["copied_skills_or_plugins"] = bool(
+                passed and (native_plugin or native_skills)
+            )
+            manifest["native_plugins"] = [native_plugin] if passed and native_plugin else []
+            manifest["native_skills"] = list(native_skills) if passed else []
             manifest["hooks_enabled"] = bool(
                 cfg.get("codex_features", {}).get("hooks", False)
-                or cfg.get("claude_features", {}).get("hooks", False)
-            )
+                or claude_features.get("hooks", False)
+            ) and passed
             manifest["host_integration_prepared"] = passed
             manifest["host_integration_receipt"] = str((run_dir / "tool-host-integration.json").relative_to(ROOT))
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
@@ -3442,6 +4025,17 @@ def probe_mcp_handshake(
     cfg = active_tool_config(record, pid)
     handshake = (cfg or {}).get("mcp_handshake") or {}
     receipt_path = run_dir / "mcp-handshake.json"
+    if cfg and cfg.get("mcp_server") and not handshake:
+        result = {
+            "profile_id": pid,
+            "passed": False,
+            "required": True,
+            "attempted": False,
+            "skipped": False,
+            "errors": ["MCP profile is missing a required handshake contract"],
+        }
+        receipt_path.write_text(json.dumps(result, indent=2) + "\n")
+        return result
     required = bool(handshake.get("required"))
     attempt_required = bool(handshake.get("attempt_required", required))
     if not attempt_required:
@@ -3450,7 +4044,17 @@ def probe_mcp_handshake(
         return result
 
     assert cfg is not None
-    env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    runtime_id = str((record.get("agent") or {}).get("runtime_id") or "codex-cli")
+    env = (
+        claude_env(
+            codex_home,
+            containerized=backend == "docker",
+            cfg=cfg,
+            provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+        )
+        if runtime_id == "claude-code"
+        else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
+    )
     env.update(tool_env_for_record(record, pid, codex_home))
     mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     probe_script = ROOT / "scripts" / "probe_mcp_stdio.py"
@@ -3552,7 +4156,8 @@ def preflight_claude_code(
     cfg: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Prove the normal Claude Code control surface without making a provider request."""
-    env = claude_env(claude_home, containerized=backend == "docker", cfg=cfg)
+    provider = str((record.get("agent") or {}).get("provider") or "openrouter")
+    env = claude_env(claude_home, containerized=backend == "docker", cfg=cfg, provider=provider)
     apply_model_network_isolation(env)
     mounts = container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
     repo = Path(rel_or_abs(record["target"]["repository_path"]))
@@ -3571,13 +4176,27 @@ def preflight_claude_code(
         instruction_source = Path()
     source_bytes = instruction_source.read_bytes() if instruction_source.is_file() else b""
     destination_bytes = instruction_destination.read_bytes() if instruction_destination.is_file() else b""
+    source_hash = hashlib.sha256(source_bytes).hexdigest() if source_bytes else ""
+    destination_hash = hashlib.sha256(destination_bytes).hexdigest() if destination_bytes else ""
     instruction_passed = (
         instruction_source.is_file()
         and instruction_destination.is_file()
-        and source_bytes == destination_bytes
+        and source_hash == destination_hash
+        and instruction_manifest.get("source_sha256") == source_hash
+        and instruction_manifest.get("destination_sha256") == destination_hash
         and instruction_manifest.get("byte_identical") is True
         and instruction_manifest.get("claude_auto_discovery_expected") is True
     )
+    native_guidance_append = str((cfg or {}).get("claude_features", {}).get("guidance_append") or "")
+    if not instruction_passed and native_guidance_append:
+        instruction_passed = (
+            instruction_source.is_file()
+            and instruction_destination.is_file()
+            and destination_bytes.startswith(source_bytes.rstrip())
+            and f"## {native_guidance_append}".encode() in destination_bytes
+            and instruction_manifest.get("byte_identical") is True
+            and instruction_manifest.get("claude_auto_discovery_expected") is True
+        )
     version_path = run_dir / "claude-code-version.txt"
     help_path = run_dir / "claude-code-help.txt"
     version = run_backend(
@@ -3592,9 +4211,69 @@ def preflight_claude_code(
     )
     version_text = version_path.read_text(errors="replace") if version_path.exists() else ""
     help_text = help_path.read_text(errors="replace") if help_path.exists() else ""
-    required = ["--output-format", "stream-json", "--model", "--tools", "--resume"]
-    hooks_enabled = bool((cfg or {}).get("claude_features", {}).get("hooks", False))
-    passed = instruction_passed and version.returncode == 0 and help_result.returncode == 0 and all(item in help_text for item in required)
+    required = ["--output-format", "stream-json", "--model", "--effort", "--tools", "--resume"]
+    claude_features = (cfg or {}).get("claude_features", {})
+    hooks_enabled = bool(claude_features.get("hooks", False))
+    plugin_name = str(claude_features.get("plugin") or "")
+    plugin_probe_path = run_dir / "claude-code-plugin-list.json"
+    plugin_probe_exit_code: int | None = None
+    plugin_probe_passed = True
+    plugin_probe_text = ""
+    if plugin_name:
+        plugin_probe = run_backend(
+            ["claude", "plugin", "list", "--json"],
+            backend=backend,
+            docker_image=docker_image,
+            cwd=rel_or_abs(record["target"]["repository_path"]),
+            env=env,
+            stdout_path=plugin_probe_path,
+            timeout=120,
+            mounts=mounts,
+        )
+        plugin_probe_exit_code = plugin_probe.returncode
+        plugin_probe_text = plugin_probe_path.read_text(errors="replace") if plugin_probe_path.exists() else ""
+        plugin_probe_passed = plugin_probe.returncode == 0 and plugin_name in plugin_probe_text
+    auth_status: dict[str, Any] = {"checked": False, "passed": True}
+    if provider == "anthropic":
+        auth_raw = claude_home / "tmp" / "claude-auth-status.json"
+        auth_probe = run_backend(
+            ["claude", "auth", "status", "--json"],
+            backend=backend,
+            docker_image=docker_image,
+            cwd=rel_or_abs(record["target"]["repository_path"]),
+            env=env,
+            stdout_path=auth_raw,
+            timeout=120,
+            mounts=mounts,
+        )
+        try:
+            raw_status = json.loads(auth_raw.read_text()) if auth_raw.is_file() else {}
+        except json.JSONDecodeError:
+            raw_status = {}
+        finally:
+            auth_raw.unlink(missing_ok=True)
+        auth_status = {
+            "checked": True,
+            "passed": (
+                auth_probe.returncode == 0
+                and raw_status.get("loggedIn") is True
+                and str(raw_status.get("apiProvider") or "").lower()
+                not in {"openrouter", "openrouter-compatible"}
+            ),
+            "exit_code": auth_probe.returncode,
+            "logged_in": raw_status.get("loggedIn") is True,
+            "auth_method": raw_status.get("authMethod"),
+            "api_provider": raw_status.get("apiProvider"),
+            "subscription_type": raw_status.get("subscriptionType"),
+        }
+    passed = (
+        instruction_passed
+        and version.returncode == 0
+        and help_result.returncode == 0
+        and all(item in help_text for item in required)
+        and plugin_probe_passed
+        and bool(auth_status.get("passed"))
+    )
     result = {
         "runtime_id": "claude-code",
         "profile_id": pid,
@@ -3605,8 +4284,16 @@ def preflight_claude_code(
         "help_exit_code": help_result.returncode,
         "required_cli_surfaces": required,
         "missing_cli_surfaces": [item for item in required if item not in help_text],
+        "provider": provider,
+        "authentication": auth_status,
         "normal_mode": True,
         "hooks_enabled": hooks_enabled,
+        "native_plugin": {
+            "name": plugin_name or None,
+            "probe_path": str(plugin_probe_path.relative_to(ROOT)) if plugin_name else None,
+            "probe_exit_code": plugin_probe_exit_code,
+            "passed": plugin_probe_passed,
+        },
         "project_instruction_files": {
             "passed": instruction_passed,
             "source": "AGENTS.md",
@@ -3621,12 +4308,17 @@ def preflight_claude_code(
     (run_dir / "claude-code-effective-settings.json").write_text(json.dumps({
         "bare": False,
         "normal_mode": True,
+        "provider": provider,
+        "model": record.get("agent", {}).get("model"),
+        "effort": record.get("agent", {}).get("reasoning_effort"),
         "hooks_enabled": hooks_enabled,
         "permission_mode": "bypassPermissions",
         "tools": ["Bash", "Edit", "Read", "Grep", "Glob"],
-        "mcp_config": [],
-        "plugins": [],
-        "skills": [],
+        "mcp_config": [
+            str(claude_home / "claude-config" / "mcp.json")
+        ] if (claude_home / "claude-config" / "mcp.json").is_file() else [],
+        "plugins": [plugin_name] if plugin_name and plugin_probe_passed else [],
+        "skills": list(claude_features.get("skills", [])) if plugin_probe_passed else [],
     }, indent=2) + "\n")
     return result
 

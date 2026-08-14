@@ -32,6 +32,11 @@ def out(cmd: list[str], cwd: Path, timeout: int = 120) -> str:
     return subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, check=True, timeout=timeout).stdout.strip()
 
 
+def progress(message: str) -> None:
+    """Keep long provider-free qualification stages visible without polluting JSON output."""
+    print(f"qualification: {message}", file=sys.stderr, flush=True)
+
+
 def concealed_paths(sequence: dict) -> list[str]:
     return sorted({str(path) for task in sequence["tasks"] for path in task.get("model_concealed_paths", [])})
 
@@ -191,13 +196,23 @@ def main() -> int:
     fixture_meta = runner.PROJECT_META[sequence["fixture_id"]]
     dependency_command = fixture_meta["dependency_command"]
     qualification_env = qualification_environment(sequence["fixture_id"], checkout)
-    subprocess.run(["bash", "-c", dependency_command], cwd=checkout, env=qualification_env, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, check=True, timeout=2400)
+    progress(f"installing pinned dependencies for {sequence['id']} (40 minute limit)")
+    subprocess.run(
+        ["bash", "-c", dependency_command],
+        cwd=checkout,
+        env=qualification_env,
+        stdout=sys.stderr,
+        stderr=subprocess.STDOUT,
+        check=True,
+        timeout=2400,
+    )
     ordered = sorted(sequence["tasks"], key=lambda item: item["order"])
     records = []
     boundaries = []
     seeded_fail = seeded_compile_zero = seeded_compile_outcomes_valid = fixed_pass = True
 
     for index, task in enumerate(ordered):
+        progress(f"checking task {index + 1}/{len(ordered)}: {task['id']}")
         task_dir = (ROOT / task["prompt_path"]).parent
         patch = task_dir / "seed-regression.patch"
         verifier = task_dir / "verify.sh"
@@ -375,6 +390,7 @@ def main() -> int:
             check=True,
         )
 
+    progress("checking repaired cumulative state")
     cumulative = all(call(["bash", str((ROOT / task["verifier_command"]).resolve())], checkout, env=qualification_env) == 0 for task in ordered)
     aggregate_verifier_exit = 1
     aggregate_verifier_task_exits: list[int] = []
@@ -389,6 +405,7 @@ def main() -> int:
         aggregate = runner.write_verifier(sequence, aggregate_root, aggregate_project)
         aggregate_env = dict(os.environ)
         aggregate_env.pop("WORKFLOW_REPO", None)
+        progress("checking project-wide repaired state (40 minute limit)")
         aggregate_result = subprocess.run(
             ["bash", str(aggregate)],
             cwd=checkout,
@@ -522,6 +539,7 @@ def main() -> int:
 
     payload["task_binding"] = {"algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)", "task_directories": {record["task_id"]: record["task_directory_sha256"] for record in records}}
     write_qualification_atomically(output, payload)
+    progress(f"wrote {output.relative_to(ROOT)}")
     required = ("fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "no_unmerged_paths", "all_expected_model_concealment_declared")
     if generation == "lifecycle-v1":
         required += ("seeded_compile_outcomes_valid", "composite_seed_compile_outcomes_valid")

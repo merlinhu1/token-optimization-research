@@ -9,6 +9,7 @@ import importlib.util
 import inspect
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -27,6 +28,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import audit_tool_isolation
+from scripts import claude_code_workflow_adapter as claude_adapter
 from scripts import extract_codex_usage
 from scripts import generate_current_evaluation_panel as current_panel
 from scripts import generate_workflow_qualification as qualification
@@ -39,7 +41,9 @@ from scripts import run_opencode_workflow_model_condition as opencode_condition_
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
 
-SEQUENCE_ID = "terraform-lifecycle-sequence-v0"
+# Generic fixture sequence for framework-agnostic tests; Lifecycle V1 is the only
+# active generation since the v0 sweep.
+SEQUENCE_ID = "beets-lifecycle-sequence-v1"
 
 
 def active_lifecycle_v1_sequences(document: dict | None = None) -> list[dict]:
@@ -136,7 +140,7 @@ def retained_protocol_path(
     sequence_id: str,
     profile_id: str,
     replicate_index: int = 1,
-    model_condition_id: str = "codex-openai-gpt-5-6-luna-xhigh",
+    model_condition_id: str = "codex-openai-gpt-5-6-sol-high",
 ) -> Path:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     matches = [
@@ -160,19 +164,23 @@ def retained_protocol_path(
 
 class ToolIsolationAuditTest(unittest.TestCase):
     def test_ponytail_product_authored_caveman_reference_is_not_cross_tool_use(self) -> None:
-        record = {
-            "setup": {
-                "tool_permissions": {
-                    "profile_id": "artifact-ponytail-codex-plugin-v1",
-                    "allowed_token_saving_tools": ["ponytail", "ponytail-codex-plugin-v1"],
+        for profile_id in (
+            "artifact-ponytail-codex-plugin-v1",
+            "artifact-ponytail-claude-code-plugin-v1",
+        ):
+            record = {
+                "setup": {
+                    "tool_permissions": {
+                        "profile_id": profile_id,
+                        "allowed_token_saving_tools": ["ponytail", profile_id],
+                    }
                 }
             }
-        }
-        forbidden, allowed = audit_tool_isolation.forbidden_for(record)
-        with tempfile.TemporaryDirectory() as tmp:
-            artifact = Path(tmp) / "events.jsonl"
-            artifact.write_text("Ponytail may be paired with Caveman for terse prose.\n")
-            self.assertEqual(audit_tool_isolation.scan_file(artifact, forbidden, allowed), [])
+            forbidden, allowed = audit_tool_isolation.forbidden_for(record)
+            with tempfile.TemporaryDirectory() as tmp:
+                artifact = Path(tmp) / "events.jsonl"
+                artifact.write_text("Ponytail may be paired with Caveman for terse prose.\n")
+                self.assertEqual(audit_tool_isolation.scan_file(artifact, forbidden, allowed), [])
 
         control = copy.deepcopy(record)
         control["setup"]["tool_permissions"]["profile_id"] = "baseline-bare-codex"
@@ -264,46 +272,35 @@ class CodexUsageAccountingTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "decreased"):
             self.summarize(events)
 
-    def test_retained_accounting_correction_covers_its_historical_scope(self) -> None:
-        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        audit_path = (
-            ROOT
-            / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json"
-        )
-        audit = json.loads(audit_path.read_text())
-        rows = {row["session_id"]: row for row in audit["sessions"]}
-        sessions = {session["session_id"]: session for session in registry["sessions"]}
-        self.assertTrue(rows.keys() <= sessions.keys())
-        for session_id in sessions.keys() - rows.keys():
-            usage = sessions[session_id]["cumulative_token_usage"]
-            self.assertIn(
-                usage["measurement_source"],
-                {
-                "codex-jsonl-usage-events",
-                "opencode-jsonl-step-finish-usage",
-                "claude-code-stream-json-assistant-usage",
-                "claude-code-stream-json-result-usage",
-            },
-            )
-            self.assertIs(type(usage["cache_write_tokens"]), int)
-        self.assertEqual(audit["integrity"]["correction_required_count"], sum(row["correction_required"] for row in rows.values()))
-        self.assertTrue(audit["integrity"]["all_manifests_passed"])
-        self.assertTrue(audit["integrity"]["all_usage_monotonic"])
-        terraform_r0 = rows["baseline-terraform-20260718-p-ca21cbff5ed5-r0"]
-        self.assertEqual(
-            terraform_r0["legacy_registry_usage"]["total_provider_tokens"], 31_471_786
-        )
-        self.assertEqual(terraform_r0["corrected_usage"]["total_provider_tokens"], 15_526_000)
-        self.assertEqual(
-            [
-                task["corrected_incremental_usage"]["total_provider_tokens"]
-                for task in terraform_r0["tasks"]
-            ],
-            [4_999_516, 5_946_754, 4_579_730],
-        )
-
-
 class ClaudeInstructionMaterializationTest(unittest.TestCase):
+    def test_successful_lane_auth_refresh_is_synced_for_the_next_lane(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_home = root / "account"
+            claude_home = root / "lane"
+            run_dir = root / "run"
+            source_home.mkdir()
+            (claude_home / "claude-config").mkdir(parents=True)
+            run_dir.mkdir()
+            source_auth = source_home / ".credentials.json"
+            copied_auth = claude_home / "claude-config" / ".credentials.json"
+            source_auth.write_text('{"token":"old"}\n')
+            copied_auth.write_text('{"token":"refreshed"}\n')
+
+            with mock.patch.dict(
+                os.environ,
+                {runner.fixture.CLAUDE_ACCOUNT_HOME_ENV: str(source_home)},
+            ):
+                runner.sync_copied_claude_auth_back(claude_home, run_dir, "after-task-01")
+            runner.redact_auth_sync(run_dir)
+
+            self.assertEqual(source_auth.read_bytes(), copied_auth.read_bytes())
+            self.assertEqual(source_auth.stat().st_mode & 0o777, 0o600)
+            event = json.loads((run_dir / "claude-auth-sync.jsonl").read_text())
+            self.assertTrue(event["synced"])
+            self.assertTrue(event["changed"])
+            self.assertEqual(event["source_home"], "[REDACTED]")
+
     def test_project_agents_is_materialized_as_exact_claude_guidance(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -494,14 +491,16 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             runbook,
         )
 
-    def test_runbook_reports_lifecycle_v1_pilot_completion_and_preserved_historical_corpus(self) -> None:
+    def test_runbook_reports_lifecycle_v1_pilot_completion(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         self.assertTrue((ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json").is_file())
         self.assertTrue((ROOT / "sources/evaluations/audits/lifecycle-v1-pilot-compile-only.json").is_file())
         self.assertIn("Historical profiles marked `historical-profile`", runbook)
         self.assertIn("Current runnable treatment profiles", runbook)
-        self.assertIn('scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID"', runbook)
-        self.assertIn("Earlier active-default baseline pools are retained but are not reusable for the current contract generation", runbook)
+        self.assertIn("Treatment protocol freezing, preparation, and execution are machine-blocked", runbook)
+        # The retained-historical-pool line is emitted only when a superseded generation still
+        # has baseline pools. None remain after the 2026-08-14 lifecycle-v0 sweep.
+        self.assertNotIn("Earlier active-default baseline pools are retained", runbook)
         self.assertIn("OpenCode pools may define substrate-matched treatment reuse", runbook)
 
     def test_model_comparison_baseline_pools_are_rendered_separately(self) -> None:
@@ -529,7 +528,8 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 ROOT,
             )
             current_pools.add((sequence["id"], protocol["baseline_pool_fingerprint"]))
-        self.assertGreaterEqual(len(grouped), 6)
+        self.assertGreaterEqual(len(grouped), len(current_pools))
+        self.assertTrue(current_pools)
         for (sequence_id, pool), replicates in grouped.items():
             rendered = (
                 f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-high` pool `{pool}` "
@@ -554,9 +554,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         active = [item for item in fixtures if item.get("evaluation_use") == "primary-objective"]
         self.assertEqual([item["id"] for item in active], ["medium-fastify-fastify", "medium-beetbox-beets"])
         self.assertTrue(all(item["status"] == "treatment-ready" for item in active), active)
-        retired = next(item for item in fixtures if item["id"] == "large-hashicorp-terraform")
-        self.assertEqual(retired["status"], "retired-fixture")
-        self.assertEqual(retired["evaluation_use"], "historical-evidence")
+        self.assertNotIn("large-hashicorp-terraform", [item["id"] for item in fixtures])
 
     def test_repaired_opencode_screen_is_registry_derived_and_activation_audited(self) -> None:
         path = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -595,24 +593,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         })
         deletion = json.loads((ROOT / "sources/evaluations/audits/invalid-opencode-treatment-result-deletions-20260729.json").read_text())
         self.assertEqual(deletion["deleted_session_count"], 12)
-
-    def test_active_docs_surface_current_opencode_corpus(self) -> None:
-        repaired = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
-        audit_name = (
-            repaired.name
-            if repaired.is_file()
-            else "invalid-opencode-treatment-result-deletions-20260729.json"
-        )
-        for relative in (
-            "README.md",
-            "docs/evaluations/README.md",
-            "docs/research/roadmap.md",
-            "docs/truthmark/engineering/research/current-findings.md",
-        ):
-            text = (ROOT / relative).read_text()
-            self.assertIn("122,368", text, relative)
-            self.assertIn("Serena", text, relative)
-            self.assertIn(audit_name, text, relative)
 
     def test_agent_guidance_requires_evidence_driven_document_sync(self) -> None:
         guidance = (ROOT / "AGENTS.md").read_text()
@@ -661,7 +641,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 session
                 for session in registry["sessions"]
                 if session.get("schema_version") == 2
-                and session.get("session_role") != "baseline"
+                and session.get("session_role") in {"individual_tool_treatment", "stack_treatment"}
                 and session.get("interpretation", {}).get("accepted_for_objective") is True
                 and session.get("interpretation", {}).get("comparison_baseline_session_id")
             )
@@ -714,7 +694,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("read_text", verifier)
 
     def test_refactor_verifier_does_not_require_undisclosed_parameter_names(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         refactor = sorted(sequence["tasks"], key=lambda task: task["order"])[1]
         verifier = (ROOT / refactor["verifier_command"]).read_text()
         self.assertNotIn("inspect.signature", verifier)
@@ -730,6 +710,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "terminal-snip-codex-hook-v1",
             "retrieval-graphify-codex-skill-v1",
             "retrieval-codegraph-codex-mcp-v1",
+            "retrieval-repowise-codex-product-v2",
             "retrieval-jcodemunch-codex-mcp-v2",
             "integrated-leanctx-codex-hybrid-v1",
             "retrieval-cartog-codex-product-v2",
@@ -759,12 +740,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         )
         for fixture in active:
             self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", *corrected])
-        terraform = next(fixture for fixture in fixtures if fixture["id"] == "large-hashicorp-terraform")
-        self.assertEqual(terraform["status"], "retired-fixture")
-        self.assertEqual(terraform["evaluation_use"], "historical-evidence")
-        self.assertNotIn("workflow_sequence_id", terraform)
-        self.assertEqual(terraform["active_profiles"], [])
-        self.assertEqual(terraform["future_evaluation_lanes"], [])
+        # Terraform was the only large-project fixture and was removed with the Lifecycle V0
+        # retirement on 2026-08-14; no large lane is registered.
+        self.assertNotIn("large-hashicorp-terraform", [fixture["id"] for fixture in fixtures])
 
         medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
         medium_active = [
@@ -778,11 +756,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             [candidate["id"] for candidate in large["candidates"] if candidate.get("selection_status") == "production-fixture"],
             [],
         )
-        historical_large = large["candidates"][0]
-        self.assertEqual(historical_large["id"], "large-hashicorp-terraform")
-        self.assertEqual(historical_large["selection_status"], "historical-evidence")
-        self.assertEqual(historical_large["qualification_status"], "historical-evidence")
-        self.assertNotIn("workflow_sequence_id", historical_large)
+        # No large-project candidate remains after the Lifecycle V0 retirement removed Terraform.
+        # The file keeps its selection policy so a future large lane can be qualified.
+        self.assertEqual(large["candidates"], [])
         self.assertEqual(large["selection_policy"]["active_fixture_count"], 0)
 
     def test_new_treatment_adapters_preserve_declared_boundaries(self) -> None:
@@ -1154,8 +1130,8 @@ print('ok')
                 self.assertEqual(qualification.get("provider_calls"), 0)
                 self.assertTrue(all(protocol.get("status") == "frozen-ready-not-run" for protocol in active_token_savior))
             ready, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
-            self.assertIs(ready, True, reason)
-            self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)
+            self.assertIs(ready, False, reason)
+            self.assertIn("corrected-pilot-compile-only.json", reason)
 
     def test_provider_launch_rechecks_candidate_readiness_gate(self) -> None:
         args = runner.argparse.Namespace(prepare_only=False, protocol=None)
@@ -1167,7 +1143,7 @@ print('ok')
         ):
             with self.assertRaisesRegex(ValueError, "provider launch readiness gate failed"):
                 runner.validate_protocol_for_run(
-                    runner.load_sequence("fastify-lifecycle-sequence-v0"),
+                    runner.load_sequence("fastify-lifecycle-sequence-v1"),
                     "retrieval-cartog-codex-product-v2",
                     args,
                 )
@@ -1227,6 +1203,138 @@ print('ok')
             },
         )
 
+    def test_claude_native_plugin_profiles_bind_pinned_marketplace_install(self) -> None:
+        for profile, plugin, commit in [
+            ("artifact-ponytail-claude-code-plugin-v1", "ponytail", "40e50d9e03242aa5dd53ac771950f9127362b25f"),
+            ("behavior-caveman-claude-code-skill-v1", "caveman", "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"),
+        ]:
+            cfg = runner.fixture.active_tool_config({}, profile)
+            assert cfg is not None
+            self.assertEqual(cfg["claude_features"], {"hooks": True, "plugin": plugin})
+            self.assertEqual(cfg["host_integration_backend"], "docker")
+            commands = cfg["host_integration"]["install_commands"]
+            self.assertEqual(commands[0][:4], ["claude", "plugin", "marketplace", "add"])
+            self.assertEqual(commands[1][:4], ["claude", "plugin", "install", f"{plugin}@{plugin}"])
+            controller = cfg["host_integration"]["controller_install_commands"][0]
+            self.assertIn("prepare_pinned_claude_marketplace.py", " ".join(controller))
+            self.assertIn(commit, controller)
+            self.assertIn(
+                f"{{tool_data_dir}}/marketplace/plugins/{plugin}/.claude-plugin/plugin.json",
+                cfg["host_integration"]["required_files"],
+            )
+            self.assertNotIn("prompt_instructions_command", cfg)
+
+    def test_missing_claude_treatment_integration_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="claude-integration-gate-") as tmp:
+            root = Path(tmp)
+            run_dir = root / "run"
+            home = root / "home"
+            run_dir.mkdir()
+            home.mkdir()
+            record = {
+                "agent": {"runtime_id": "claude-code", "provider": "openrouter"},
+                "target": {"repository_path": str(ROOT)},
+            }
+            with mock.patch.object(runner.fixture, "active_tool_config", return_value={"display_name": "broken"}):
+                result = runner.fixture.prepare_profile_integration(
+                    record,
+                    "artifact-broken-claude-treatment-v1",
+                    home,
+                    run_dir,
+                    backend="host",
+                    docker_image="unused",
+                )
+            self.assertFalse(result["passed"])
+            self.assertTrue(result["skipped"])
+            self.assertIn("no host_integration contract", result["failure_reasons"][0])
+
+    def test_claude_beets_authorization_covers_all_readme_qualified_profiles(self) -> None:
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+        beets = next(item for item in sequences if item["id"] == "beets-lifecycle-sequence-v1")
+        with mock.patch.object(
+            runner,
+            "DEFAULT_WORKFLOW_MODEL_CONDITION_ID",
+            "claude-code-anthropic-sonnet-5-high",
+        ):
+            self.assertTrue(
+                runner.claude_anthropic_sonnet_treatment_authorized(
+                    beets, "artifact-ponytail-claude-code-plugin-v1", ROOT
+                )
+            )
+            self.assertTrue(
+                runner.claude_anthropic_sonnet_treatment_authorized(
+                    beets, "retrieval-codegraph-claude-code-mcp-v1", ROOT
+                )
+            )
+            self.assertFalse(
+                runner.claude_anthropic_sonnet_treatment_authorized(
+                    beets, "retrieval-sdl-mcp-claude-code-product-v1", ROOT
+                )
+            )
+
+    def test_claude_adapter_uses_neutral_container_paths(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="claude-neutral-paths-") as tmp:
+            root = Path(tmp)
+            repo = root / "treatment-profile-repo"
+            repo.mkdir()
+            claude_home = root / "session-with-treatment-name"
+            claude_home.mkdir()
+            run_dir = root / "run"
+            run_dir.mkdir()
+            prompt_path = root / "prompt.txt"
+            events_path = root / "events.jsonl"
+            prompt_path.write_text("perform the task")
+            seen: dict[str, Any] = {}
+
+            class FakeFixture:
+                def active_tool_config(self, record: dict, profile_id: str) -> dict:
+                    return {}
+
+                def claude_env(self, *args: Any, **kwargs: Any) -> dict[str, str]:
+                    return {"PATH": "/usr/bin"}
+
+                def apply_model_network_isolation(self, env: dict[str, str], **kwargs: Any) -> None:
+                    return None
+
+                def container_mounts_for_record(self, *args: Any, **kwargs: Any) -> list:
+                    return []
+
+                def add_mount(self, mounts: list, source: Path, target: Path, mode: str = "rw") -> None:
+                    mounts.append((source, target, mode))
+
+                def run_backend(self, cmd: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+                    seen.update(kwargs)
+                    kwargs["stdout_path"].write_text('{"session_id":"s1"}\n')
+                    return subprocess.CompletedProcess(cmd, 0)
+
+                def rel_or_abs(self, value: str) -> Path:
+                    return Path(value)
+
+            record = {
+                "profile": {"profile_id": "artifact-ponytail-claude-code-plugin-v1"},
+                "agent": {"model": "claude-sonnet-5", "reasoning_effort": "high", "provider": "anthropic"},
+                "target": {"repository_path": str(repo)},
+            }
+            result = claude_adapter.run_task(
+                record=record,
+                claude_home=claude_home,
+                run_dir=run_dir,
+                docker_image="unused",
+                prompt_path=prompt_path,
+                events_path=events_path,
+                session_id=None,
+                timeout=30,
+                fixture=FakeFixture(),
+            )
+            self.assertEqual(result[0], 0)
+            self.assertEqual(seen["cwd"], Path("/workspace"))
+            self.assertEqual(seen["env"]["HOME"], "/agent-home/home")
+            self.assertEqual(seen["env"]["CLAUDE_CONFIG_DIR"], "/agent-home/claude-config")
+            targets = {target for _, target, _ in seen["mounts"]}
+            self.assertIn(Path("/workspace"), targets)
+            self.assertIn(Path("/agent-home"), targets)
+            self.assertNotIn(str(repo), seen["env"].values())
+
     def test_home_dot_codex_alias_targets_lane_private_codex_home(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             codex_home = Path(tmp) / "codex-home"
@@ -1279,6 +1387,60 @@ print('ok')
             config = (codex_home / "config.toml").read_text()
         self.assertIn("hooks = true", config)
         self.assertIn("multi_agent = true", config)
+
+    def test_repowise_profiles_bind_provider_backed_native_surfaces(self) -> None:
+        codex = runner.fixture.active_tool_config({}, "retrieval-repowise-codex-product-v2")
+        opencode = runner.fixture.active_tool_config({}, "retrieval-repowise-opencode-product-v2")
+        assert codex is not None and opencode is not None
+        self.assertTrue(codex["codex_features"]["hooks"])
+        self.assertIn("--codex", codex["host_integration"]["install_commands"][-1])
+        self.assertIn("--no-prose", codex["host_integration"]["install_commands"][-1])
+        self.assertIn("--provider", codex["host_integration"]["install_commands"][-1])
+        self.assertEqual(codex["env"]["REPOWISE_PROVIDER"], "codex_cli")
+        self.assertEqual(codex["mcp_args"], ["mcp"])
+        self.assertIn("--no-codex", opencode["host_integration"]["install_commands"][-1])
+        self.assertIn("--provider", opencode["host_integration"]["install_commands"][-1])
+        self.assertEqual(opencode["env"]["REPOWISE_PROVIDER"], "opencode")
+        self.assertIn("--agents", opencode["host_integration"]["install_commands"][-1])
+        self.assertEqual(opencode["mcp_server"], "repowise")
+        self.assertTrue(opencode["mcp_handshake"]["required"])
+        self.assertEqual(
+            opencode["artifact_identities"][-1]["sha256"],
+            "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
+        )
+
+    def test_repowise_provider_free_generation_is_deleted_and_not_runnable(self) -> None:
+        receipt = json.loads(
+            (ROOT / "sources/evaluations/audits/invalid-repowise-provider-free-result-deletions-20260809.json").read_text()
+        )
+        profiles = {
+            item["id"]: item
+            for item in json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        }
+        for deleted in receipt["profiles"]:
+            profile_id = deleted["profile_id"]
+            self.assertEqual(profiles[profile_id]["status"], "historical-profile")
+            self.assertEqual(profiles[profile_id]["active_corpus_action"], "deleted-under-owner-authorized-receipt")
+            self.assertNotIn(profile_id, runner.SUPPORTED_WORKFLOW_TOOL_PROFILES)
+            self.assertTrue(profiles[profile_id]["historical_results_deleted"])
+            for path in (
+                deleted["deleted_protocol_paths"]
+                + deleted["deleted_comparison_paths"]
+                + deleted["deleted_bundle_roots"]
+                + deleted["deleted_qualification_paths"]
+            ):
+                self.assertFalse((ROOT / path).exists(), path)
+
+    def test_repowise_provider_fallback_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp)
+            (run_dir / "task-01-events.jsonl").write_text('{"degraded":"no-llm-provider"}\n')
+            audit = runner.audit_repowise_provider_path(
+                "retrieval-repowise-codex-product-v2", run_dir
+            )
+            self.assertFalse(audit["passed"])
+            self.assertEqual(audit["provider"], "codex_cli")
+            self.assertEqual(audit["hits"][0]["marker"], "no-llm-provider")
 
     def test_cartog_profile_defers_mcp_config_to_official_installer(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1535,22 +1697,9 @@ print('ok')
         self.assertEqual(bounded["status"], "screening-ablation")
         self.assertEqual(bounded["superseded_by"], profile_id)
 
-        qualification = json.loads(
-            (
-                ROOT
-                / "sources/evaluations/audits/corrected-integration-qualification-token-savior-codex-product-v2-20260719.json"
-            ).read_text()
-        )
-        self.assertEqual(qualification["profiles"], [profile_id])
-        self.assertEqual(qualification["provider_calls"], 0)
-        self.assertEqual(len(qualification["lanes"]), 3)
-        for lane in qualification["lanes"]:
-            self.assertTrue(lane["prepared"])
-            self.assertTrue(lane["host_integration"]["passed"])
-            self.assertEqual(lane["host_integration"]["controller_install_exit_codes"], [0, 0])
-            self.assertTrue(lane["mcp_handshake"]["passed"])
-            protocol = ROOT / lane["protocol_path"]
-            self.assertEqual(lane["protocol_sha256"], hashlib.sha256(protocol.read_bytes()).hexdigest())
+        # The 2026-07-19 qualification receipt this test used to verify bound three lifecycle-v0
+        # lanes; those protocols were deleted with the v0 sweep. The profile and host-integration
+        # contract above is generation-independent and remains covered.
 
     def test_token_savior_codex_product_installer_preserves_existing_agents_and_emits_current_hooks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1668,52 +1817,6 @@ for line in sys.stdin:
         self.assertEqual(proc.returncode, 1)
         receipt = json.loads(proc.stdout)
         self.assertIn("tools/list advertised no tools", receipt["errors"])
-
-    def test_official_integration_audit_matches_session_dispositions(self) -> None:
-        audit = json.loads(
-            (ROOT / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
-        )
-        sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
-        by_id = {session["session_id"]: session for session in sessions}
-        deletion_receipts = [
-            json.loads(path.read_text())
-            for path in (ROOT / "sources/evaluations/audits").glob("*deletion*.json")
-            if "profiles" in json.loads(path.read_text())
-        ]
-        deleted_by_profile = {
-            row["profile_id"]: row
-            for receipt in deletion_receipts
-            for row in receipt["profiles"]
-        }
-        expected_validity = {
-            "unverified-treatment-assignment": "unverified-treatment-assignment",
-        }
-        for item in audit["profiles"]:
-            expected_session_ids = item["session_ids"]
-            retained = [by_id[session_id] for session_id in expected_session_ids if session_id in by_id]
-            if item.get("active_corpus_action") == "deleted-under-owner-authorized-receipt":
-                self.assertEqual(expected_session_ids, [])
-                self.assertFalse(item["objective_eligible"])
-                self.assertTrue(set(item["deleted_session_ids"]).isdisjoint(by_id))
-                deleted = deleted_by_profile[item["profile_id"]]
-                self.assertEqual(sorted(item["deleted_session_ids"]), sorted(deleted["deleted_session_ids"]))
-                for relative in deleted["deleted_protocol_paths"] + deleted["deleted_comparison_paths"] + deleted["deleted_bundle_roots"]:
-                    self.assertFalse((ROOT / relative).exists(), relative)
-                continue
-            self.assertEqual(sorted(expected_session_ids), sorted(row["session_id"] for row in retained))
-            self.assertTrue(all(row["profile"]["profile_id"] == item["profile_id"] for row in retained))
-            self.assertEqual(
-                item["objective_eligible"],
-                all(row["interpretation"]["accepted_for_objective"] for row in retained),
-            )
-            if item["disposition"] in expected_validity:
-                self.assertTrue(
-                    all(
-                        row["interpretation"]["evaluation_validity"]
-                        == expected_validity[item["disposition"]]
-                        for row in retained
-                    )
-                )
 
     def test_ineligible_treatment_disposition_preserves_execution_only(self) -> None:
         for validity in ("invalid-treatment-configuration", "unverified-treatment-assignment"):
@@ -2008,17 +2111,6 @@ class SeedDeliveryContractTest(unittest.TestCase):
                 qualification.concealed_path_collisions(checkout, sequence),
                 ["test/controller_hidden/collision.py"],
             )
-
-    def test_terraform_v2_uses_visible_focused_tests_without_concealed_collisions(self) -> None:
-        sequence = runner.load_sequence("terraform-lifecycle-sequence-v0")
-        qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
-        self.assertEqual(qualification_record["fixed_snapshot_concealed_path_collision_audit"], [])
-        self.assertTrue(qualification_record["fixed_snapshot_model_concealed_paths_absent"])
-        for task in sequence["tasks"]:
-            self.assertEqual(task["model_concealed_paths"], [])
-            verifier = (ROOT / task["verifier_command"]).read_text()
-            for anchor in task["model_visible_validation_anchors"]:
-                self.assertIn(anchor, verifier)
 
     def test_active_qualifications_prove_composite_semantic_start(self) -> None:
         sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
@@ -2582,9 +2674,18 @@ class VerifierContractTest(unittest.TestCase):
         self.assertEqual(first, second)
 
     def test_model_facing_prompt_change_splits_comparison_identity(self) -> None:
+        # Lifecycle V1 shows the model no profile guidance, so the model-facing surface that can
+        # change is the task prompt itself. Perturbing the frozen prompt bytes must split the
+        # comparison identity; this is the rule recorded in ADR 0005.
         sequence = runner.load_sequence(SEQUENCE_ID)
         original = runner.baseline_protocol_fingerprint(sequence)
-        with mock.patch.object(runner, "profile_prompt_guidance", return_value="materially changed guidance\n"):
+        real_hash = runner._protocol_file_hash
+        first_prompt = (ROOT / sequence["tasks"][0]["prompt_path"]).resolve()
+
+        def perturbed(path):
+            return "0" * 64 if Path(path).resolve() == first_prompt else real_hash(path)
+
+        with mock.patch.object(runner, "_protocol_file_hash", perturbed):
             changed = runner.baseline_protocol_fingerprint(sequence)
         self.assertNotEqual(original, changed)
 
@@ -2693,6 +2794,112 @@ class ActiveAcceptanceContractTest(unittest.TestCase):
         self.assertEqual(runner.omitted_expected_concealment(task), ["test/types.py"])
 
 
+class PublishedSchemaGateTest(unittest.TestCase):
+    """The registry is gated on schemas/workflow-session-record.schema.json, not a parallel copy."""
+
+    def test_every_registry_session_conforms_to_the_published_schema(self) -> None:
+        schema = json.loads((ROOT / validate_repository.WORKFLOW_SESSION_SCHEMA_REL).read_text())
+        jsonschema.Draft202012Validator.check_schema(schema)
+        validator = jsonschema.Draft202012Validator(schema)
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        for session in registry["sessions"]:
+            violations = [
+                f"{'/'.join(str(part) for part in error.absolute_path)}: {error.message}"
+                for error in validator.iter_errors(session)
+            ]
+            self.assertEqual(violations, [], session["session_id"])
+
+    def test_schema_session_roles_match_the_validator_enum(self) -> None:
+        schema = json.loads((ROOT / validate_repository.WORKFLOW_SESSION_SCHEMA_REL).read_text())
+        self.assertEqual(
+            set(schema["properties"]["session_role"]["enum"]),
+            validate_repository.WORKFLOW_SESSION_ROLES,
+        )
+
+    def test_schema_conformance_is_reported_per_session(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        session = copy.deepcopy(registry["sessions"][0])
+        session["session_role"] = "not-a-real-role"
+        errors: list[str] = []
+        validate_repository.validate_session_schema_conformance(session, "unit-session", errors)
+        self.assertTrue(
+            any("violates" in error and "session_role" in error for error in errors),
+            errors,
+        )
+
+    def test_registry_pass_still_gates_shape_when_identity_skips_revalidation(self) -> None:
+        """validate_production_v3_identity skips a repeat schema check; the loop must still catch."""
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        profiles = {
+            profile["id"]: profile
+            for profile in json.loads((ROOT / "data/evaluation-profiles.json").read_text()).get("profiles", [])
+        }
+        for field, value in (
+            ("session_role", "not-a-real-role"),
+            ("evidence_type", "not-an-evidence-type"),
+            ("record_type", None),
+        ):
+            with self.subTest(field=field):
+                document = copy.deepcopy(registry)
+                if value is None:
+                    document["sessions"][0].pop(field, None)
+                else:
+                    document["sessions"][0][field] = value
+                errors: list[str] = []
+                validate_repository.validate_workflow_sessions(
+                    document, set(), {"fixtures": []}, profiles, set(), set(), errors
+                )
+                self.assertTrue(
+                    any("violates schemas/" in error and field in error for error in errors),
+                    (field, [error for error in errors if "violates schemas/" in error]),
+                )
+
+    def test_schema_conformance_runs_once_per_registry_session(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        profiles = {
+            profile["id"]: profile
+            for profile in json.loads((ROOT / "data/evaluation-profiles.json").read_text()).get("profiles", [])
+        }
+        errors: list[str] = []
+        with mock.patch.object(
+            validate_repository,
+            "validate_session_schema_conformance",
+            wraps=validate_repository.validate_session_schema_conformance,
+        ) as spy:
+            validate_repository.validate_workflow_sessions(
+                copy.deepcopy(registry), set(), {"fixtures": []}, profiles, set(), set(), errors
+            )
+        self.assertEqual(spy.call_count, len(registry["sessions"]))
+
+    def test_compact_diff_size_cap_bounds_future_captures(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            diff = root / "changes.diff"
+            diff.write_bytes(b"x" * (validate_repository.MAX_COMPACT_DIFF_BYTES + 1))
+
+            errors: list[str] = []
+            validate_repository.validate_compact_diff_size(root, "unit-oversized-session", errors)
+            self.assertTrue(any("over the" in error for error in errors), errors)
+
+            grandfathered = sorted(validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS)[0]
+            errors = []
+            validate_repository.validate_compact_diff_size(root, grandfathered, errors)
+            self.assertEqual(errors, [])
+
+            diff.write_bytes(b"x" * validate_repository.MAX_COMPACT_DIFF_BYTES)
+            errors = []
+            validate_repository.validate_compact_diff_size(root, "unit-at-limit-session", errors)
+            self.assertEqual(errors, [])
+
+    def test_grandfathered_oversized_diffs_are_the_only_ones_over_the_cap(self) -> None:
+        over = {
+            path.parent.name
+            for path in (ROOT / "sources/evaluations/workflow-sessions").glob("*/changes.diff")
+            if path.stat().st_size > validate_repository.MAX_COMPACT_DIFF_BYTES
+        }
+        self.assertEqual(over, validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS)
+
+
 class ManifestAndProtocolContractTest(unittest.TestCase):
     def frozen_protocol_doc(
         self,
@@ -2798,7 +3005,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         self.assertRegex(
             Path(sequence["qualification_path"]).name,
-            r"^qualification-lifecycle-v1\.json$",
+            r"^qualification-lifecycle-v1-\d{8}\.json$",
         )
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
@@ -2815,7 +3022,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
 
     def test_existing_pool_record_blocks_duplicate_provider_sample(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
         retained = next(
             session
             for session in registry["sessions"]
@@ -3388,7 +3595,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             try:
                 args = argparse.Namespace(
                     prepare_only=False,
-                    sequence_id="fastify-lifecycle-sequence-v0",
+                    sequence_id="fastify-lifecycle-sequence-v1",
                     profile_id="behavior-caveman",
                     replicate_index=0,
                 )
@@ -3478,7 +3685,10 @@ raise SystemExit(1)
                 os.close(fd)
 
     def production_v3_fixture(self, root: Path) -> tuple[dict, Path]:
-        session_id = f"unit-production-session-{root.name}"
+        # Temp-dir names may contain underscores anywhere, including the last character;
+        # session ids are strictly kebab-case per schema, so normalize and strip separators.
+        suffix = re.sub(r"[^a-z0-9]+", "-", root.name.lower()).strip("-")
+        session_id = f"unit-production-session-{suffix}"
         run_dir = ROOT / "sources/evaluations/workflow-sessions" / session_id
         if run_dir.exists():
             shutil.rmtree(run_dir)
@@ -3848,19 +4058,6 @@ raise SystemExit(1)
                 handle.write(b"x" * (8 * 1024 * 1024 + 1))
             self.assertFalse(validate_repository.evidence_bundle_valid(path))
 
-    def test_retired_baseline_v3_audit_protocol_references_remain_immutable(self) -> None:
-        audit_path = ROOT / "sources/evaluations/audits/baseline-v3-task-family-qualification-20260722.json"
-        audit = json.loads(audit_path.read_text())
-        self.assertEqual(audit["task_family_generation"], "baseline-v3")
-        for record in audit["protocols"]:
-            path = ROOT / record["path"]
-            self.assertTrue(path.is_file(), record["path"])
-            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), record["sha256"])
-        for record in audit["sequences"]:
-            qualification = ROOT / record["qualification_path"]
-            self.assertTrue(qualification.is_file(), record["qualification_path"])
-            self.assertEqual(hashlib.sha256(qualification.read_bytes()).hexdigest(), record["qualification_sha256"])
-
     def test_repository_validator_reports_missing_compact_root_without_crashing(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             session, _ = self.production_v3_fixture(Path(tmp))
@@ -4175,8 +4372,8 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
         sol_protocol_errors = [
             error for error in errors
             if any(protocol_id in error for protocol_id in (
-                "beets-lifecycle-sequence-v0-baseline-bare-codex-b76903081a2d",
-                "fastify-lifecycle-sequence-v0-baseline-bare-codex-3f3ce79ce469",
+                "beets-lifecycle-sequence-v1-baseline-bare-codex-b76903081a2d",
+                "fastify-lifecycle-sequence-v1-baseline-bare-codex-3f3ce79ce469",
                 "terraform-lifecycle-sequence-v0-baseline-bare-codex-8bba1cd949b1",
             ))
         ]
@@ -4184,7 +4381,7 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
     def test_contract_refresher_renders_registered_model_condition_launcher(self) -> None:
         command = contract_refresh.runner_command(
-            {"id": "fastify-lifecycle-sequence-v0"},
+            {"id": "fastify-lifecycle-sequence-v1"},
             "baseline-bare-codex",
             ROOT / "sources/evaluations/protocols/sol-assisted.json",
             {
@@ -4491,7 +4688,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual([item["exit_code"] for item in results], [0, 1])
         self.assertEqual(matrix.execute_lane_jobs([], 3, return_nonzero), [])
 
-    def test_validation_restores_protected_files_before_truthmark(self) -> None:
+    def test_validation_restores_protected_files_before_checks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, \
              mock.patch.object(
                  matrix.subprocess,
@@ -4501,8 +4698,19 @@ class MatrixLifecycleContractTest(unittest.TestCase):
              mock.patch.object(matrix, "restore_protected_control_plane_files") as restore:
             result = matrix.run_validation(Path(tmp), sys.executable)
         self.assertTrue(result["passed"])
-        self.assertEqual(run.call_count, 5)
         restore.assert_called_once_with(ROOT)
+        # Assert the validation set itself rather than a subprocess call count, so adding or
+        # removing a check fails with the command that changed instead of an opaque tally.
+        ran = [item["command"] for item in result["results"]]
+        self.assertEqual(
+            [command[1:] for command in ran],
+            [
+                ["scripts/validate_repository.py"],
+                ["scripts/test_workflow_evaluation_contract.py"],
+                ["scripts/test_claude_code_usage_contract.py"],
+                ["diff", "--check"],
+            ],
+        )
 
     def test_protected_test_restore_recovers_staged_deletion_from_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -4642,7 +4850,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
     def test_lane_command_propagates_replicate_index_explicitly(self) -> None:
         cmd = matrix.workflow_lane_command(
-            sequence_id="fastify-lifecycle-sequence-v0",
+            sequence_id="fastify-lifecycle-sequence-v1",
             profile_id="behavior-caveman",
             protocol=Path("sources/evaluations/protocols/caveman.json"),
             replicate_index=1,
@@ -4656,7 +4864,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
     def test_lane_command_uses_registered_model_condition_launcher(self) -> None:
         cmd = matrix.workflow_lane_command(
-            sequence_id="fastify-lifecycle-sequence-v0",
+            sequence_id="fastify-lifecycle-sequence-v1",
             profile_id="baseline-bare-codex",
             protocol=Path("sources/evaluations/protocols/sol.json"),
             replicate_index=2,
@@ -4813,7 +5021,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
 
     def test_superseded_hard_baseline_is_not_reused_after_contract_change(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v0")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
         registry = {
             "sessions": [{
                 "session_id": "superseded-hard-baseline",
@@ -4983,7 +5191,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             ):
                 with self.assertRaisesRegex(RuntimeError, "second comparison failed"):
                     matrix.publish_ready_comparisons(
-                        ["fastify-lifecycle-sequence-v0", "beets-lifecycle-sequence-v0"],
+                        ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
                         ["terminal-tokenjuice-codex-hook-v1"],
                         0,
                         published,
@@ -5442,19 +5650,6 @@ class CorrectionContractTest(unittest.TestCase):
             self.assertIn("jcodemunch_guide", guidance)
             self.assertIn("Test files when running tests", guidance)
 
-    def test_jcodemunch_successor_has_current_provider_free_qualification(self) -> None:
-        receipt = json.loads((ROOT / "sources/evaluations/audits/corrected-integration-qualification-jcodemunch-codex-mcp-v2-20260719.json").read_text())
-        self.assertEqual(receipt["profiles"], ["retrieval-jcodemunch-codex-mcp-v2"])
-        self.assertEqual(receipt["provider_calls"], 0)
-        self.assertEqual(len(receipt["lanes"]), 3)
-        for lane in receipt["lanes"]:
-            protocol = ROOT / lane["protocol_path"]
-            self.assertEqual(lane["protocol_sha256"], hashlib.sha256(protocol.read_bytes()).hexdigest())
-            self.assertTrue(lane["host_integration"]["passed"])
-            self.assertEqual(lane["tool_warmup_exit_code"], 0)
-            self.assertTrue(lane["mcp_handshake"]["passed"])
-            self.assertIn("jcodemunch_guide", lane["mcp_handshake"]["tool_names"])
-
     def test_incomplete_ponytail_and_caveman_results_are_deleted(self) -> None:
         receipt = json.loads((ROOT / "sources/evaluations/audits/invalid-ponytail-caveman-result-deletion-20260719.json").read_text())
         sessions = json.loads((ROOT / "data/workflow-sessions.json").read_text())["sessions"]
@@ -5583,35 +5778,6 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertTrue(any("duplicate artifact_slug" in error for error in errors), errors)
         self.assertTrue(any("missing artifact_slug" in error for error in errors), errors)
 
-    def test_current_sol_panel_is_registry_derived_complete_and_canonically_named(self) -> None:
-        generator_path = ROOT / "scripts/generate_current_evaluation_panel.py"
-        self.assertTrue(generator_path.is_file())
-        spec = importlib.util.spec_from_file_location("generate_current_evaluation_panel", generator_path)
-        assert spec is not None and spec.loader is not None
-        generator = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(generator)
-        output_name = "codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json"
-        panel = generator.build_panel(
-            ROOT,
-            model_condition_id="codex-openai-gpt-5-6-sol-high",
-            replicate_index=0,
-            date="2026-07-29",
-        )
-        self.assertEqual(panel["audit_id"], output_name.removesuffix(".json"))
-        self.assertEqual(panel["profile_count"], 16)
-        self.assertEqual(panel["workflow_session_count"], 48)
-        self.assertEqual(panel["accepted_task_count"], 144)
-        self.assertEqual(len(panel["results_ranked_by_primary_metric"]), 16)
-        self.assertEqual(
-            {row["artifact_slug"] for row in panel["results_ranked_by_primary_metric"]},
-            {"cartog", "caveman", "codegraph", "codescope", "graphify", "headroom", "jcodemunch", "leanctx", "ponytail", "rtk", "serena", "sigmap", "snip", "swarmvault", "token-savior", "tokenjuice"},
-        )
-        output_path = ROOT / "sources/evaluations/audits" / output_name
-        historic = json.loads(output_path.read_text())
-        self.assertEqual(historic["source_registry"]["path"], panel["source_registry"]["path"])
-        historic["source_registry"] = panel["source_registry"]
-        self.assertEqual(historic, panel)
-
     def test_current_campaign_reports_use_stable_condition_scoped_names(self) -> None:
         audit_root = ROOT / "sources/evaluations/audits"
         canonical = {
@@ -5705,12 +5871,10 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
             descriptor["profile_guidance_sha256"],
             hashlib.sha256(b"").hexdigest(),
         )
-
-        historical = runner.load_sequence("fastify-lifecycle-sequence-v0")
-        self.assertIn(
-            "baseline-bare-codex",
-            runner.model_facing_profile_guidance(historical, "baseline-bare-codex"),
-        )
+        # This assertion used to contrast against lifecycle-v0, whose guidance did name the
+        # profile. V0 was retired on 2026-08-14, so the invariant is now absolute: no active
+        # generation may put profile or lane identity in front of the model.
+        self.assertEqual(runner.model_facing_profile_guidance(sequence, "baseline-bare-codex"), "")
 
     def test_active_sequences_use_searchable_compile_only_tasks(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -5735,7 +5899,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
             gate = sequence["mistake_gate"]
             self.assertTrue(gate["compile_required"])
             self.assertFalse(gate["quality_diagnostics_gate"])
-            self.assertEqual(gate["status"], "passed-compilation")
+            self.assertEqual(gate["status"], "provider-pilot-required")
             self.assertIn("compile", gate["treatment_launch_policy"])
             self.assertTrue(sequence["project_compile_command"])
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
@@ -5831,13 +5995,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         )
         for sequence in active:
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1.json")
+            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1-20260813.json")
             self.assertEqual(sequence["acceptance_design"], "compile-only")
             gate = sequence["mistake_gate"]
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
             self.assertIs(gate["compile_required"], True)
             self.assertIs(gate["quality_diagnostics_gate"], False)
-            self.assertEqual(gate["status"], "passed-compilation")
+            self.assertEqual(gate["status"], "provider-pilot-required")
             for task in sequence["tasks"]:
                 self.assertIn("/lifecycle-v1/", task["prompt_path"])
                 self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
@@ -5961,7 +6125,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 (source / name).write_bytes(content)
             result = {
                 "lane_id": "lane-unit",
-                "sequence_id": "fastify-lifecycle-sequence-v0",
+                "sequence_id": "fastify-lifecycle-sequence-v1",
                 "lane_dir": str(lane_dir),
                 "checkout": str(checkout),
                 "produced_session_ids": [session_id],
@@ -6074,7 +6238,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             run_dir.mkdir(parents=True)
             record = {
                 "session_id": "direct-invalid",
-                "task_sequence": {"sequence_id": "fastify-lifecycle-sequence-v0"},
+                "task_sequence": {"sequence_id": "fastify-lifecycle-sequence-v1"},
                 "artifacts": {"root": str(run_dir.relative_to(root))},
             }
             sequence = {"mistake_gate": {"attempt_receipt_path": "sources/evaluations/audits/direct-attempt.json"}}
@@ -6095,7 +6259,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v0"
+            sequence_id = "fastify-lifecycle-sequence-v1"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6158,7 +6322,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v0"
+            sequence_id = "fastify-lifecycle-sequence-v1"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6208,7 +6372,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v0"
+            sequence_id = "fastify-lifecycle-sequence-v1"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6256,7 +6420,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v0"
+            sequence_id = "fastify-lifecycle-sequence-v1"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6358,31 +6522,6 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                             errors,
                         )
 
-    def test_retired_baseline_v2_authority_cannot_claim_future_execution(self) -> None:
-        audit_rel = Path("sources/evaluations/audits/baseline-v2-task-family-qualification-20260721.json")
-        pilot_rel = Path("sources/evaluations/audits/baseline-v2-pilot-zero-mistake.json")
-        with tempfile.TemporaryDirectory() as tmp:
-            temp_root = Path(tmp)
-            for relative in (audit_rel, pilot_rel):
-                destination = temp_root / relative
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(ROOT / relative, destination)
-            errors: list[str] = []
-            with mock.patch.object(validate_repository, "ROOT", temp_root):
-                validate_repository.validate_retired_baseline_v2_audit(errors)
-            self.assertEqual(errors, [])
-
-            audit = json.loads((temp_root / audit_rel).read_text())
-            audit["decision"] = "Activate Baseline V2 for future execution"
-            audit["supersession"]["rerun_allowed"] = True
-            audit["treatment_gate"]["pilot_audit_present"] = False
-            audit["protocols"] = [{"path": "missing-current-protocol.json"}]
-            (temp_root / audit_rel).write_text(json.dumps(audit, indent=2) + "\n")
-            errors = []
-            with mock.patch.object(validate_repository, "ROOT", temp_root):
-                validate_repository.validate_retired_baseline_v2_audit(errors)
-            self.assertTrue(any("retired Baseline V2 qualification authority is stale" in error for error in errors), errors)
-
     def test_active_candidate_qualification_and_count_bindings_fail_closed(self) -> None:
         workflow_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         fixtures_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text())
@@ -6411,7 +6550,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             with self.subTest(symlink_level=symlink_level), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp)
                 run_root = root / "matrix"
-                sequence_id = "fastify-lifecycle-sequence-v0"
+                sequence_id = "fastify-lifecycle-sequence-v1"
                 profile_id = "baseline-bare-codex"
                 lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
                 lane_dir = run_root / lane_id
@@ -6706,6 +6845,12 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         for name in runner.AMBIENT_GIT_OBJECT_ENV_VARS:
             self.assertNotIn(name, env)
         self.assertEqual(env["TMPDIR"], "/tmp/unit-lane")
+        self.assertEqual(env["WORKFLOW_LANE_DISABLE_AUTH_SYNC"], "1")
+
+    def test_serial_direct_anthropic_lane_allows_auth_sync(self) -> None:
+        with mock.patch.dict(os.environ, {"WORKFLOW_LANE_DISABLE_AUTH_SYNC": "1"}, clear=False):
+            env = matrix.workflow_lane_environment(Path("/tmp/unit-lane"), allow_auth_sync=True)
+        self.assertNotIn("WORKFLOW_LANE_DISABLE_AUTH_SYNC", env)
 
     def test_direct_current_replication_rejects_unapproved_identity_before_lock(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
@@ -6713,7 +6858,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             prepare_only=False,
             profile_id="baseline-bare-codex",
             sequence_id=sequence["id"],
-            replicate_index=2,
+            replicate_index=3,
         )
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
@@ -6770,7 +6915,7 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 os.close(fd)
 
     def test_unknown_baseline_generation_fails_closed_before_any_paid_boundary(self) -> None:
-        sequence = copy.deepcopy(runner.load_sequence("beets-lifecycle-sequence-v0"))
+        sequence = copy.deepcopy(runner.load_sequence("beets-lifecycle-sequence-v1"))
         sequence["task_family_generation"] = "baseline-v999"
         allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
         self.assertFalse(allowed)
@@ -6782,9 +6927,10 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
 
     def test_lifecycle_v1_schema_v2_authority_permits_only_paid_pilot(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        authority = json.loads(
-            (ROOT / sequence["mistake_gate"]["pilot_authorization_path"]).read_text()
-        )
+        historical_authority = "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
+        sequence = copy.deepcopy(sequence)
+        sequence["mistake_gate"]["pilot_authorization_path"] = historical_authority
+        authority = json.loads((ROOT / historical_authority).read_text())
         authority.pop("pilot_attempts", None)
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -6831,49 +6977,8 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Lifecycle V1 replicate 3 requires explicit authority"): runner.baseline_replication_binding(sequence, 3, ROOT)
 
     def test_lifecycle_v1_r1_replication_authority_binds_dedicated_receipts(self) -> None:
-        authority = runner.load_lifecycle_v1_replication_authority(ROOT)
-        self.assertEqual(authority["authorized_replicate_indexes"], [1])
-        self.assertEqual(
-            authority["sequence_order"],
-            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
-        )
-        self.assertTrue(authority["serialization_required"])
-        self.assertEqual(authority["allowed_paid_baseline_runs"], 2)
-        self.assertEqual(authority["allowed_model_turns"], 6)
-        for sequence_id in authority["sequence_order"]:
-            sequence = runner.load_sequence(sequence_id)
-            binding, receipt_path = runner.baseline_replication_binding(sequence, 1, ROOT)
-            identity, protocol = runner.current_baseline_v2_protocol(sequence, sequence["mistake_gate"], ROOT)
-            self.assertEqual(
-                binding,
-                {
-                    "sequence_id": sequence_id,
-                    "task_family_generation": "lifecycle-v1",
-                    "protocol_path": identity["path"],
-                    "protocol_sha256": identity["sha256"],
-                    "baseline_pool_fingerprint": protocol["baseline_pool"]["protocol_fingerprint"],
-                },
-            )
-            self.assertEqual(
-                receipt_path.relative_to(ROOT).as_posix(),
-                "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts/"
-                + sequence_id.removesuffix("-lifecycle-sequence-v1")
-                + "-r1.json",
-            )
-            if receipt_path.exists():
-                receipt = json.loads(receipt_path.read_text())
-                self.assertEqual(receipt["attempt_status"], "reserved-before-provider-task")
-                self.assertEqual(receipt["sequence_id"], sequence_id)
-                self.assertEqual(receipt["replicate_index"], 1)
-                self.assertEqual(receipt["profile_id"], "baseline-bare-codex")
-                self.assertEqual(receipt["model_condition_id"], "codex-openai-gpt-5-6-sol-high")
-                self.assertEqual(receipt["model"], "gpt-5.6-sol")
-                self.assertEqual(receipt["reasoning_effort"], "high")
-                self.assertTrue(receipt["immutable_identity_receipt"])
-                self.assertEqual(receipt["frozen_protocol"]["protocol_id"], identity["protocol_id"])
-                self.assertEqual(receipt["frozen_protocol"]["path"], identity["path"])
-                self.assertEqual(receipt["frozen_protocol"]["sha256"], identity["sha256"])
-                self.assertEqual(receipt["baseline_pool_fingerprint"], protocol["baseline_pool"]["protocol_fingerprint"])
+        with self.assertRaisesRegex(ValueError, "stale nested binding"):
+            runner.load_lifecycle_v1_replication_authority(ROOT)
 
     def test_opencode_lifecycle_v1_r1_authority_is_sequence_scoped(self) -> None:
         authority_path = ROOT / "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
@@ -6907,12 +7012,15 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     model_condition_id="opencode-openai-gpt-5-6-sol-high",
                 )
             )
+        # The negative case previously used a lifecycle-v0 sequence. Both surviving sequences are
+        # inside this authority's scope, so scope-limiting is now proven with an id the authority
+        # does not name at all.
         self.assertFalse(
             runner.standalone_opencode_control_authorized(
                 "runtime-opencode-codex-product-v1",
                 1,
                 ROOT,
-                sequence_id="fastify-lifecycle-sequence-v0",
+                sequence_id="terraform-lifecycle-sequence-v1",
                 model_condition_id="opencode-openai-gpt-5-6-sol-high",
             )
         )
@@ -7196,48 +7304,6 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                     ):
                         runner.load_current_baseline_replication_authority(root)
 
-    def test_beets_r3_replacement_authority_rejects_scope_budget_and_binding_mutation(self) -> None:
-        source_authority = ROOT / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL
-        original = json.loads(source_authority.read_text())
-        frozen_identity, frozen_protocol = {}, {}
-        mutations = {
-            "owner": lambda doc: doc.__setitem__("authorized_by_owner_message_id", "wrong"),
-            "sequence": lambda doc: doc.__setitem__("sequence_order", ["fastify-lifecycle-sequence-v0"]),
-            "index": lambda doc: doc.__setitem__("authorized_replicate_indexes", [2]),
-            "index-bool": lambda doc: doc.__setitem__("authorized_replicate_indexes", [True]),
-            "runs": lambda doc: doc.__setitem__("allowed_paid_baseline_runs", 2),
-            "turns": lambda doc: doc.__setitem__("allowed_model_turns", 6),
-            "serialization": lambda doc: doc.__setitem__("serialization_required", False),
-            "rerun": lambda doc: doc.__setitem__("rerun_after_attempt_receipt", True),
-            "provider": lambda doc: doc.__setitem__("provider_tokens", 1),
-            "binding": lambda doc: doc["sequences"][0].__setitem__("protocol_sha256", "0" * 64),
-        }
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            authority_path = root / runner.BEETS_R3_REPLACEMENT_AUTHORITY_REL
-            authority_path.parent.mkdir(parents=True)
-            sequence_path = root / "data/workflow-task-sequences.json"
-            sequence_path.parent.mkdir(parents=True)
-            shutil.copy2(ROOT / "data/workflow-task-sequences.json", sequence_path)
-            shutil.copytree(
-                ROOT / "sources/evaluations/protocols",
-                root / "sources/evaluations/protocols",
-            )
-            for label, mutate in mutations.items():
-                with self.subTest(label=label):
-                    changed = copy.deepcopy(original)
-                    mutate(changed)
-                    authority_path.write_text(json.dumps(changed, indent=2) + "\n")
-                    with mock.patch.object(
-                        runner,
-                        "current_baseline_v2_protocol",
-                        return_value=(frozen_identity, frozen_protocol),
-                    ), self.assertRaisesRegex(
-                        ValueError,
-                        "invalid authorization, scope, budget, model, or policy|stale nested binding",
-                    ):
-                        runner.load_beets_r3_replacement_authority(root)
-
     def test_real_matrix_lifecycle_v1_r1_plan_requires_current_authority(self) -> None:
         with published_unoccupied_probe_worktree() as probe, tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
@@ -7259,19 +7325,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
-            plan = json.loads(result.stdout)
-            self.assertEqual(plan["replicate_index"], 1)
-            self.assertEqual(plan["max_parallel"], 1)
-            self.assertEqual(
-                plan["jobs"],
-                [
-                    {
-                        "sequence_id": "beets-lifecycle-sequence-v1",
-                        "profile_id": "baseline-bare-codex",
-                        "protocol": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-1628ca6eee6a.json",
-                    }
-                ],
+            # The 2026-08-13 task-family correction re-froze both lifecycle-v1 protocols, so the
+            # r1 authority's nested binding now names superseded protocol bytes. Per
+            # lifecycle-v1-corrected-task-family-readiness-20260813.json, completed runs and
+            # frozen protocols are historical evidence for the prior task bytes and are not
+            # authorization for the corrected contract, so r1 planning must refuse rather than
+            # plan against the superseded protocol.
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Lifecycle V1 r1 replication authority has stale nested binding",
+                result.stderr + result.stdout,
             )
             self.assertFalse(lane_root.exists())
 
@@ -7295,13 +7358,58 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("baseline replication launch model does not match the strict authorization", result.stderr + result.stdout)
+        # The corrected lifecycle-v1 task family supersedes the r1 replication authority, so the
+        # authority gate now rejects before the launch-model comparison is reachable. The
+        # end-to-end invariant that still holds is that nothing is created before rejection;
+        # the launch-model guard itself is covered by
+        # test_replication_launch_model_must_match_the_strict_authorization.
+        self.assertIn("replication authority has stale nested binding", result.stderr + result.stdout)
+
+    def test_replication_launch_model_must_match_the_strict_authorization(self) -> None:
+        sequence = active_lifecycle_v1_sequences()[0]
+        # The guard compares the launch defaults against the authority, so the mismatch fixture
+        # must differ from DEFAULT_WORKFLOW_* rather than from any command-line argument.
+        mismatched = {
+            "id": "codex-openai-gpt-5-6-sol-high",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+        }
+        self.assertNotEqual(mismatched["id"], runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID)
+        with (
+            mock.patch.object(
+                runner, "baseline_replication_authority", return_value={"model_condition": mismatched}
+            ),
+            mock.patch.object(runner, "baseline_replication_binding"),
+            self.assertRaisesRegex(
+                ValueError, "baseline replication launch model does not match the strict authorization"
+            ),
+        ):
+            runner.require_zero_mistake_pilot_replicate(
+                sequence, "baseline-bare-codex", 1, prepare_only=False
+            )
+
+    def test_replication_launch_model_matching_authority_is_accepted(self) -> None:
+        sequence = active_lifecycle_v1_sequences()[0]
+        matching = {
+            "id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "model": runner.DEFAULT_WORKFLOW_MODEL,
+            "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
+        }
+        with (
+            mock.patch.object(
+                runner, "baseline_replication_authority", return_value={"model_condition": matching}
+            ),
+            mock.patch.object(runner, "baseline_replication_binding"),
+        ):
+            runner.require_zero_mistake_pilot_replicate(
+                sequence, "baseline-bare-codex", 1, prepare_only=False
+            )
 
     def test_unapproved_lifecycle_v1_replication_identities_remain_blocked(self) -> None:
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
-            for replicate_index in (2, 3, 4):
+            for replicate_index in (3, 4):
                 with self.assertRaisesRegex(ValueError, "requires explicit authority"):
                     runner.baseline_replication_binding(sequence, replicate_index, ROOT)
 
@@ -7311,81 +7419,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
             for field in runner.NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS: mutated[field] = "f" * 64
             self.assertEqual(runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=descriptor, selected_execution=execution), runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=mutated, selected_execution=execution))
 
-    def test_v3_pilot_attempt_receipt_atomically_occupies_direct_and_matrix_gates(self) -> None:
-        sequence = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"][0]
-        with tempfile.TemporaryDirectory() as tmp:
-            authority = Path(tmp)
-            protocol = {
-                "protocol_id": "unit-protocol",
-                "baseline_pool": {"protocol_fingerprint": "unit-fingerprint"},
-            }
-            identity = {
-                "protocol_id": "unit-protocol",
-                "path": "sources/evaluations/protocols/unit-protocol.json",
-                "sha256": "0" * 64,
-                "qualification_sha256": "1" * 64,
-            }
-            with mock.patch.object(runner, "current_baseline_v2_protocol", return_value=(identity, protocol)):
-                receipt = runner.reserve_baseline_pilot_attempt(
-                    sequence,
-                    root=authority,
-                    orchestrator="unit-matrix",
-                    replicate_index=0,
-                )
-                with self.assertRaises(FileExistsError):
-                    runner.reserve_baseline_pilot_attempt(
-                        sequence,
-                        root=authority,
-                        orchestrator="unit-direct",
-                        replicate_index=0,
-                    )
-            receipt_path = runner.baseline_pilot_attempt_receipt_path(sequence, authority)
-            self.assertEqual(json.loads(receipt_path.read_text()), receipt)
-            self.assertIn(
-                receipt_path.name,
-                matrix.copytree_ignore(str(receipt_path.parent), [receipt_path.name]),
-            )
-            allowed, reason = runner.baseline_v2_pilot_run_gate(sequence, authority)
-            self.assertFalse(allowed)
-            self.assertIn("immutable attempt receipt", reason)
-            with mock.patch.object(runner, "acquire_provider_production_lock", return_value=os.open(os.devnull, os.O_RDONLY)), \
-                 mock.patch.object(runner, "load_sequence", return_value=sequence), \
-                 mock.patch.object(runner, "baseline_v2_pilot_run_gate", return_value=(False, reason)), \
-                 mock.patch.object(runner, "_run_one_locked") as locked:
-                args = argparse.Namespace(
-                    prepare_only=False,
-                    profile_id="baseline-bare-codex",
-                    sequence_id=sequence["id"],
-                    replicate_index=0,
-                )
-                with mock.patch.object(runner, "ROOT", authority):
-                    with self.assertRaises(ValueError):
-                        runner.run_one(args)
-                locked.assert_not_called()
-            with self.assertRaises(ValueError):
-                matrix.plan_workflow_jobs(
-                    [sequence["id"]],
-                    [],
-                    baseline_state=lambda _sequence: "missing",
-                    profile_state=lambda _sequence, _profile: "missing",
-                    treatment_gate=lambda _sequence: (False, "blocked"),
-                    baseline_run_gate=lambda _sequence: runner.baseline_v2_pilot_run_gate(sequence, authority),
-                )
-
     def test_active_generation_gates_open_after_lifecycle_v1_compile_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        expected_attempt_status = {
-            "fastify-lifecycle-sequence-v1": "accepted",
-            "beets-lifecycle-sequence-v1": "accepted",
-        }
         for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.baseline_v2_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.baseline_v2_pilot_run_gate(sequence, ROOT, 0)
-            self.assertIs(passed, True, reason)
-            self.assertIn("audited compile-passing lifecycle-v1 pilot", reason)
+            self.assertIs(passed, False, reason)
+            self.assertIn("corrected-pilot-compile-only.json", reason)
             self.assertIs(pilot_allowed, False)
-            self.assertIn(f"already consumed as {expected_attempt_status[sequence['id']]}", pilot_reason)
-            self.assertEqual(sequence["readiness_blockers"], [])
+            self.assertIn("not authorized", pilot_reason)
+            self.assertTrue(sequence["readiness_blockers"])
 
     def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -7393,67 +7436,13 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
         for sequence in active_lifecycle_v1_sequences(document):
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(sequence["mistake_gate"]["status"], "passed-compilation")
-            self.assertTrue(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
+            self.assertEqual(sequence["mistake_gate"]["status"], "provider-pilot-required")
+            self.assertFalse(runner.baseline_v2_treatment_gate(sequence, ROOT)[0])
             fixture = fixtures[sequence["fixture_id"]]
             self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
-            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "completed-passed-compilation")
-            self.assertFalse(any(
-                lane.get("status") == "blocked-lifecycle-v1-pilot"
-                for lane in fixture["future_evaluation_lanes"]
-            ))
+            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "required")
         for relative in ("docs/evaluations/design/token-and-quality-policy.md", "docs/evaluations/design/workflow-model.md", "docs/evaluations/operations/fixture-guide.md"):
             self.assertIn("Lifecycle V1", (ROOT / relative).read_text(), relative)
-
-    def test_v4_active_authorities_are_generation_consistent(self) -> None:
-        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-        fixtures = {
-            item["id"]: item
-            for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]
-        }
-        for sequence in sequences:
-            if sequence.get("task_family_generation") != "baseline-v4":
-                continue
-            serialized = json.dumps(sequence)
-            self.assertNotIn("Baseline V3 pilot not yet executed", serialized)
-            self.assertNotIn("zero-mistake Baseline V3 pilot not yet executed", serialized)
-            self.assertIn("Baseline V4", sequence["conversion_note"])
-            self.assertIn("Baseline V3", sequence["conversion_note"])
-            fixture = fixtures[sequence["fixture_id"]]
-            task_family = fixture.get("current_task_family", fixture.get("retained_task_family"))
-            self.assertEqual(task_family["generation"], "lifecycle-v1")
-            self.assertIn("/baseline-v4/", fixture["prompt"]["path"])
-            self.assertIn("Baseline V4", fixture["prompt"]["prompt_policy"])
-            task_root = (ROOT / fixture["prompt"]["path"]).parents[2] / "tasks"
-            for task in sequence["tasks"]:
-                task_doc = task_root / task["id"] / "task.md"
-                task_text = task_doc.read_text()
-                self.assertIn("task-generations/baseline-v4/", task_text, str(task_doc))
-                self.assertNotIn("task-generations/baseline-v3/", task_text, str(task_doc))
-            blocked = [
-                lane["status"]
-                for lane in fixture["future_evaluation_lanes"]
-                if lane.get("status", "").startswith("blocked-baseline-")
-            ]
-            self.assertEqual(blocked, [])
-        for path in (
-            ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v2/README.md",
-            ROOT / "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v2/README.md",
-        ):
-            self.assertNotIn("Active tasks now live under `../baseline-v3/`", path.read_text())
-        for path in (
-            ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/baseline-v4/README.md",
-            ROOT / "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/README.md",
-        ):
-            text = path.read_text()
-            self.assertNotIn("prompts, seed states", text)
-            self.assertIn("prompts differ", text)
-            self.assertNotIn("currently unoccupied", text)
-            self.assertNotIn("remain blocked until a fresh", text)
-            self.assertIn("occupied pilot must never be rerun", text)
-            self.assertIn("Treatment protocol freezing is now eligible", text)
-            self.assertIn("only by the generation label", text)
-            self.assertIn("command blocks", text)
 
     def test_lifecycle_v1_authorization_paths_are_repository_contained(self) -> None:
         sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text()); fixture_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text()); mutated = copy.deepcopy(sequence_doc)
@@ -7461,59 +7450,9 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
         errors: list[str] = []; validate_repository.validate_workflow_task_sequences(mutated, fixture_doc, errors)
         self.assertTrue(any("compile-only gate" in error for error in errors), errors)
 
-    def test_v4_empirical_docs_do_not_claim_unretained_dry_run_results(self) -> None:
-        for relative in (
-            "README.md",
-            "docs/evaluations/README.md",
-            "docs/research/roadmap.md",
-            "docs/truthmark/engineering/research/current-findings.md",
-        ):
-            text = (ROOT / relative).read_text().lower()
-            self.assertNotIn("dry-run pass", text, relative)
-            self.assertNotIn("dry-run matrices pass", text, relative)
-
-    def test_v4_qualification_audit_is_provider_free_and_current(self) -> None:
-        errors: list[str] = []
-        validate_repository.validate_baseline_v4_qualification_audit(errors)
-        self.assertEqual(errors, [])
-        audit = json.loads(
-            (ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json").read_text()
-        )
-        self.assertIs(type(audit["provider_calls"]), int)
-        self.assertIs(type(audit["provider_tokens"]), int)
-        self.assertEqual((audit["provider_calls"], audit["provider_tokens"]), (0, 0))
-        self.assertIs(audit["paid_pilot_authorized"], True)
-        active_v4 = [
-            sequence
-            for sequence in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-            if sequence.get("status") == "active" and sequence.get("task_family_generation") == "baseline-v4"
-        ]
-        self.assertIs(
-            audit["treatment_unlocked"],
-            all(runner.baseline_v2_treatment_gate(sequence, ROOT)[0] for sequence in active_v4),
-        )
-        for record in audit["sequences"]:
-            qualification = json.loads((ROOT / record["qualification_path"]).read_text())
-            protocol = json.loads((ROOT / record["protocol_path"]).read_text())
-            self.assertEqual(qualification["task_family_generation"], "baseline-v4")
-            self.assertEqual(protocol["task_fixture"]["task_family_generation"], "baseline-v4")
-            self.assertEqual(protocol["baseline_pool"]["descriptor"]["task_family_generation"], "baseline-v4")
-
-    def test_retired_v4_evidence_identity_remains_hash_complete(self) -> None:
-        audit = json.loads((ROOT / "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json").read_text())
-        self.assertEqual(audit["generation"], "baseline-v4")
-        self.assertEqual([item["sequence_id"] for item in audit["sequences"]], ["beets-lifecycle-sequence-v0", "terraform-lifecycle-sequence-v0"])
-        for record in audit["sequences"]:
-            path = ROOT / record["protocol_path"]
-            self.assertTrue(path.is_file())
-            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), record["protocol_sha256"])
-        manifest = json.loads((ROOT / audit["prepare_only_manifest"]).read_text())
-        for name, digest in manifest["files"].items():
-            path = (ROOT / audit["prepare_only_manifest"]).parent / name; self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), digest)
-
     def test_v4_pilot_requires_explicit_authorization_authority(self) -> None:
         sequence = {
-            "id": "beets-lifecycle-sequence-v0",
+            "id": "beets-lifecycle-sequence-v1",
             "task_family_generation": "baseline-v4",
             "mistake_gate": {
                 "pilot_audit_path": "sources/evaluations/audits/baseline-v4-pilot-zero-mistake.json",

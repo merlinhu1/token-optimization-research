@@ -1,9 +1,9 @@
 # Restore the shared bounded Content-Type cache
 
-Restore the behavior-preserving Content-Type parsing refactor. Repeated parsing of the same raw header value should reuse one shared bounded cache instead of creating a new parsed object each time.
+Restore the behavior-preserving Content-Type parsing refactor. Repeated parsing of the same raw header value should reuse the existing bounded-cache dependency instead of creating a new parsed object each time.
 
-Keep parsing, normalization, serialization, and invalid-input behavior unchanged. The cache must remain shared by `ContentType.from` and bounded to avoid unbounded growth.
+Keep parsing, normalization, serialization, and invalid-input behavior unchanged. The cache must be shared by `ContentType.from` and limited to 100 entries.
 
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run relevant existing tests and checks when practical, and preserve earlier task work in the persistent checkout.
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run relevant existing tests and checks when practical, prioritizing the focused Content-Type checks, and preserve earlier task work in the persistent checkout. Do not run the full project test suite.
 
 Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

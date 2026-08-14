@@ -96,6 +96,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-codegraph": "codegraph",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
+    "retrieval-repowise-codex-product-v2": "repowise-codex-product-v2",
     "lower-intervention-codegraph": "codegraph",
     "retrieval-cartog": "cartog",
     "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
@@ -119,6 +120,21 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-rtk": "rtk",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
+    "retrieval-cartog-claude-code-product-v1": "cartog",
+    "behavior-caveman-claude-code-skill-v1": "caveman",
+    "retrieval-codegraph-claude-code-mcp-v1": "codegraph",
+    "codescope-claude-code-mcp-v1": "codescope",
+    "retrieval-graphify-claude-code-skill-v1": "graphify",
+    "integrated-leanctx-claude-code-hybrid-v1": "lean-ctx",
+    "terminal-lowfat-claude-code-hook-v1": "lowfat",
+    "artifact-ponytail-claude-code-plugin-v1": "ponytail",
+    "retrieval-serena-claude-code-mcp-v1": "serena",
+    "retrieval-sigmap-claude-code-mcp-v1": "sigmap",
+    "terminal-snip-claude-code-hook-v1": "snip",
+    "integrated-token-savior-claude-code-product-v1": "token-savior",
+    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-mcp",
+    "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip": "snip",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "terminal-lowfat": "lowfat",
@@ -145,6 +161,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
+    "retrieval-repowise-opencode-product-v2": "repowise-opencode-product-v2",
     "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
     "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
     "integrated-leanctx-opencode-hybrid-v2": "leanctx-opencode-hybrid-v1",
@@ -163,6 +180,25 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
 LEGACY_TOOL_MANIFEST_SHA256 = "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c"
 FIXED_CURRENT_TOOL_MANIFEST_SHA256 = {
     "integrated-headroom-opencode-product-v1": "5077500216db998b089ec9bdf8f38c82023db56314cfded233105ab625c585fe",
+    # Existing Claude Code V1 protocols were frozen against the prior shared
+    # fixture runner. Keep their immutable manifest identities stable while
+    # the new RepoWise V2 adapter uses the current file hash.
+    "artifact-ponytail-claude-code-plugin-v1": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "behavior-caveman-claude-code-skill-v1": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "codescope-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "integrated-leanctx-claude-code-hybrid-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "integrated-token-savior-claude-code-product-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-cartog-claude-code-product-v1": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "retrieval-codegraph-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-graphify-claude-code-skill-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-sdl-mcp-claude-code-product-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-serena-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "retrieval-sigmap-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "terminal-lowfat-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "terminal-rtk-claude-code-hook-v1": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+    "terminal-snip-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "terminal-tokenjuice-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
 }
 
 
@@ -882,10 +918,38 @@ def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) 
 
 
 BASELINE_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-authorization-20260728.json"
-LIFECYCLE_V1_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-authorization-20260802.json"
-LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts"
+LIFECYCLE_V1_R1_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-authorization-20260802.json"
+LIFECYCLE_V1_R2_REPLICATION_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r2-authorization-20260811.json"
+LIFECYCLE_V1_REPLICATION_AUTHORITY_RELS = {
+    1: LIFECYCLE_V1_R1_REPLICATION_AUTHORITY_REL,
+    2: LIFECYCLE_V1_R2_REPLICATION_AUTHORITY_REL,
+}
+LIFECYCLE_V1_REPLICATION_AUTHORITY_REL = LIFECYCLE_V1_R1_REPLICATION_AUTHORITY_REL
+LIFECYCLE_V1_R1_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts"
+LIFECYCLE_V1_R2_REPLICATION_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r2-attempts"
+LIFECYCLE_V1_REPLICATION_ATTEMPT_DIRS = {
+    1: LIFECYCLE_V1_R1_REPLICATION_ATTEMPT_DIR,
+    2: LIFECYCLE_V1_R2_REPLICATION_ATTEMPT_DIR,
+}
+LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR = LIFECYCLE_V1_R1_REPLICATION_ATTEMPT_DIR
 OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json"
 OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
+DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
+DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL = "sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json"
+DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID = "baseline-claude-code-no-mcp"
+DIRECT_CLAUDE_LIFECYCLE_V1_MODEL = {
+    "id": "claude-code-anthropic-sonnet-5-high",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "reasoning_effort": "high",
+}
+DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
+    "fastify-lifecycle-sequence-v1",
+    "beets-lifecycle-sequence-v1",
+)
 BEETS_R3_REPLACEMENT_AUTHORITY_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-authorization-20260728.json"
 BEETS_R3_REPLACEMENT_ATTEMPT_REL = "sources/evaluations/audits/current-low-complexity-beets-r3-replacement-attempt-20260728.json"
 BASELINE_REPLICATION_MODEL_CONDITION = {
@@ -1000,12 +1064,18 @@ def load_current_baseline_replication_authority(root: Path = ROOT) -> dict[str, 
     return authority
 
 
-def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]:
-    """Strictly validate the owner-authorized two-lane Lifecycle V1 r1 baseline."""
+def load_lifecycle_v1_replication_authority(
+    root: Path = ROOT,
+    replicate_index: int = 1,
+) -> dict[str, Any]:
+    """Strictly validate one owner-authorized two-lane Lifecycle V1 Codex baseline replication."""
+    authority_rel = LIFECYCLE_V1_REPLICATION_AUTHORITY_RELS.get(replicate_index)
+    if authority_rel is None:
+        raise ValueError(f"Lifecycle V1 replicate {replicate_index} requires explicit authority")
     path = repository_authority_path(
         root,
-        LIFECYCLE_V1_REPLICATION_AUTHORITY_REL,
-        "Lifecycle V1 r1 baseline replication authorization",
+        authority_rel,
+        f"Lifecycle V1 r{replicate_index} baseline replication authorization",
     )
     try:
         authority = json.loads(path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
@@ -1014,7 +1084,7 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
             object_pairs_hook=_json_without_duplicate_keys,
         )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        raise ValueError(f"Lifecycle V1 r1 replication authority is unreadable: {exc}") from exc
+        raise ValueError(f"Lifecycle V1 r{replicate_index} replication authority is unreadable: {exc}") from exc
     active_sequences = [
         item
         for item in sequence_doc.get("sequences", [])
@@ -1022,15 +1092,27 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
     ]
     expected_order = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
     records = authority.get("sequences")
+    expected_authorization = {
+        1: {
+            "campaign_id": "lifecycle-v1-codex-sol-high-r1-20260802",
+            "authorized_by_owner_message_id": "1533297158743265280",
+            "authorized_on": "2026-08-02",
+        },
+        2: {
+            "campaign_id": "lifecycle-v1-codex-sol-high-r2-20260811",
+            "authorized_by_owner_message_id": "1536770036717330594",
+            "authorized_on": "2026-08-11",
+        },
+    }[replicate_index]
     strict_header = (
         set(authority) == BASELINE_REPLICATION_TOP_LEVEL_KEYS
         and type(authority.get("schema_version")) is int
         and authority.get("schema_version") == 1
-        and authority.get("campaign_id") == "lifecycle-v1-codex-sol-high-r1-20260802"
-        and authority.get("authorized_by_owner_message_id") == "1533297158743265280"
-        and authority.get("authorized_on") == "2026-08-02"
+        and authority.get("campaign_id") == expected_authorization["campaign_id"]
+        and authority.get("authorized_by_owner_message_id") == expected_authorization["authorized_by_owner_message_id"]
+        and authority.get("authorized_on") == expected_authorization["authorized_on"]
         and authority.get("paid_baseline_replication_authorized") is True
-        and authority.get("authorized_replicate_indexes") == [1]
+        and authority.get("authorized_replicate_indexes") == [replicate_index]
         and all(type(item) is int for item in authority.get("authorized_replicate_indexes", []))
         and authority.get("sequence_order") == expected_order
         and [item.get("id") for item in active_sequences] == expected_order
@@ -1056,7 +1138,7 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
         and [item.get("sequence_id") for item in records] == expected_order
     )
     if not strict_header or not strict_records:
-        raise ValueError("Lifecycle V1 r1 replication authority has invalid authorization, scope, budget, model, or policy")
+        raise ValueError(f"Lifecycle V1 r{replicate_index} replication authority has invalid authorization, scope, budget, model, or policy")
     assert isinstance(records, list)
     for sequence, binding in zip(active_sequences, records, strict=True):
         identity, protocol = current_baseline_v2_protocol(sequence, sequence["mistake_gate"], root)
@@ -1073,7 +1155,7 @@ def load_lifecycle_v1_replication_authority(root: Path = ROOT) -> dict[str, Any]
             "reasoning_effort": sequence.get("mistake_gate", {}).get("reasoning_effort"),
         }
         if binding != expected_binding or gate_model != authority["model_condition"]:
-            raise ValueError(f"Lifecycle V1 r1 replication authority has stale nested binding for {sequence.get('id')}")
+            raise ValueError(f"Lifecycle V1 r{replicate_index} replication authority has stale nested binding for {sequence.get('id')}")
     return authority
 
 
@@ -1297,9 +1379,7 @@ def baseline_replication_authority(
     root: Path = ROOT,
 ) -> dict[str, Any]:
     if seq.get("task_family_generation") == "lifecycle-v1":
-        if replicate_index != 1:
-            raise ValueError(f"Lifecycle V1 replicate {replicate_index} requires explicit authority")
-        return load_lifecycle_v1_replication_authority(root)
+        return load_lifecycle_v1_replication_authority(root, replicate_index)
     if replicate_index == 3:
         if seq.get("id") != "beets-lifecycle-sequence-v0":
             raise ValueError("r3 replacement authority covers only beets-lifecycle-sequence-v0")
@@ -1341,7 +1421,10 @@ def baseline_replication_binding(
         raise ValueError(f"baseline replication model binding is stale for {seq.get('id')}")
     if seq.get("task_family_generation") == "lifecycle-v1":
         slug = str(seq.get("id", "")).removesuffix("-lifecycle-sequence-v1")
-        receipt_rel = f"{LIFECYCLE_V1_REPLICATION_ATTEMPT_DIR}/{slug}-r{replicate_index}.json"
+        attempt_dir = LIFECYCLE_V1_REPLICATION_ATTEMPT_DIRS.get(replicate_index)
+        if attempt_dir is None:
+            raise ValueError(f"no Lifecycle V1 Codex attempt directory for r{replicate_index}")
+        receipt_rel = f"{attempt_dir}/{slug}-r{replicate_index}.json"
     elif replicate_index == 3:
         receipt_rel = BEETS_R3_REPLACEMENT_ATTEMPT_REL
     else:
@@ -1896,6 +1979,11 @@ def executable_identity(command: list[str], cfg: dict[str, Any], root: Path = RO
 
 def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     meta = PROFILE_META[profile_id]
+    try:
+        profile_entry = profile_registry_entry(profile_id, root)
+    except KeyError:
+        # Unit-only profile overlays may intentionally omit a catalog row.
+        profile_entry = {}
     tool_id = meta.get("tool_id")
     if not tool_id:
         return {"tool_id": None, "tool_manifest": "baseline-native-codex-tools", "tool_config": None, "binary_identity": None, "source_identity": []}
@@ -1915,6 +2003,11 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     if profile_id in FIXED_CURRENT_TOOL_MANIFEST_SHA256:
         manifest_sha256 = FIXED_CURRENT_TOOL_MANIFEST_SHA256[profile_id]
     elif manifest_identity == "current-file-v1":
+        manifest_sha256 = _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
+    elif meta.get("substrate") == "claude-code" and profile_entry.get("status") == "protocol-prepared":
+        # Provider-free Claude preparations bind the runner that will perform
+        # native qualification; historical Claude profiles retain their frozen
+        # legacy manifest identity.
         manifest_sha256 = _protocol_file_hash(root / "scripts/run_codex_fixture_evaluation.py")
     elif manifest_identity.startswith("fixed-sha256:"):
         manifest_sha256 = manifest_identity.removeprefix("fixed-sha256:")
@@ -2320,6 +2413,16 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
 
 def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
     assert_profile_runnable(profile_id)
+    fixture.require_repowise_provider_contract(profile_id)
+    if not args.prepare_only and profile_runtime_id(profile_id) == "claude-code":
+        profile = profile_registry_entry(profile_id)
+        if (
+            profile.get("status") == "protocol-prepared"
+            and not claude_anthropic_sonnet_treatment_authorized(seq, profile_id)
+        ):
+            raise ValueError(
+                f"Claude Code profile {profile_id} is protocol-prepared only; complete native-surface qualification and separate treatment authorization before provider execution"
+            )
     if not args.prepare_only:
         readiness_errors = repository_validation.current_candidate_profile_launch_readiness_errors()
         if readiness_errors:
@@ -2455,6 +2558,85 @@ def frozen_runtime_image_ref(protocol: dict[str, Any]) -> str:
 
 def qualification_is_current(seq: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
     return repository_validation.qualification_is_current(seq)
+
+
+def claude_anthropic_sonnet_treatment_authorized(
+    seq: dict[str, Any],
+    profile_id: str,
+    root: Path = ROOT,
+) -> bool:
+    """Require the bounded owner authorization and exact no-provider qualification receipt."""
+    if (
+        seq.get("task_family_generation") != "lifecycle-v1"
+        or seq.get("id") not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+        or profile_id == DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
+        or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
+    ):
+        return False
+    try:
+        authority = json.loads(
+            (root / DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL).read_text()
+        )
+        qualification_path = root / DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL
+        qualification = json.loads(qualification_path.read_text())
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    if (
+        authority.get("schema_version") != 1
+        or authority.get("status") != "owner-authorized-provider-capable"
+        or authority.get("campaign_id") != "claude-code-anthropic-sonnet-5-high-lifecycle-v1"
+        or authority.get("task_family_generation") != "lifecycle-v1"
+        or authority.get("replicate_index") != 0
+        or authority.get("sequence_order") != list(DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        or authority.get("max_parallel") != 1
+        or authority.get("serialization_required") is not True
+        or authority.get("model_condition") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL
+        or authority.get("first_valid_sample_policy") is not True
+        or authority.get("rerun_after_attempt_receipt") is not False
+        or authority.get("provider_calls") != 0
+        or authority.get("provider_tokens") != 0
+        or not isinstance(authority.get("profiles"), list)
+        or profile_id not in authority["profiles"]
+        or len(authority["profiles"]) != 15
+        or authority.get("qualification_receipt_path") != DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL
+        or hashlib.sha256(qualification_path.read_bytes()).hexdigest()
+        != authority.get("qualification_receipt_sha256")
+    ):
+        return False
+    expected_turns = sum(
+        len(load_sequence(sequence_id).get("tasks", []))
+        for sequence_id in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
+    ) * len(authority["profiles"])
+    if (
+        authority.get("allowed_paid_treatment_runs") != len(authority["profiles"]) * len(DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
+        or authority.get("allowed_model_turns") != expected_turns
+        or qualification.get("execution_mode") != "prepare-only-no-provider"
+        or qualification.get("provider_calls") != 0
+        or qualification.get("summary", {}).get("provider_backed_sessions_created") != 0
+        or qualification.get("summary", {}).get("failed") != 0
+    ):
+        return False
+    lanes = [
+        lane
+        for lane in qualification.get("lanes", [])
+        if isinstance(lane, dict)
+        and lane.get("sequence_id") == seq.get("id")
+        and lane.get("profile_id") == profile_id
+    ]
+    if len(lanes) != 1:
+        return False
+    lane = lanes[0]
+    checks = lane.get("qualification_checks")
+    return (
+        isinstance(checks, dict)
+        and checks
+        and all(value is True for value in checks.values())
+        and lane.get("protocol_path")
+        and lane.get("protocol_sha256")
+        and (root / str(lane["protocol_path"])).is_file()
+        and hashlib.sha256((root / str(lane["protocol_path"])).read_bytes()).hexdigest()
+        == lane["protocol_sha256"]
+    )
 
 
 def artifact_lane_label(project_id: str) -> str:
@@ -2889,7 +3071,7 @@ def clear_ambient_git_object_environment() -> None:
 
 
 def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
-    """Require an exact clean checkout of its published upstream before spend."""
+    """Require an exact clean checkout of its current published upstream before spend."""
     errors: list[str] = []
     for relative in PAID_LAUNCH_PROTECTED_FILES:
         if not (root / relative).is_file():
@@ -2925,13 +3107,19 @@ def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
         capture_output=True,
         check=False,
     )
+    upstream_value = upstream_name.stdout.strip()
     if origin.returncode != 0 or origin.stdout.strip() != TRUSTED_REPOSITORY_ORIGIN:
         errors.append("repository origin is not the trusted publication remote")
-    if upstream_name.returncode != 0 or upstream_name.stdout.strip() != TRUSTED_REPOSITORY_UPSTREAM:
-        errors.append("repository upstream is not the trusted publication branch")
+    if upstream_name.returncode != 0 or not upstream_value.startswith("origin/"):
+        errors.append("repository upstream is not a published origin branch")
+    published_ref = (
+        f"refs/heads/{upstream_value.removeprefix('origin/')}"
+        if upstream_value.startswith("origin/")
+        else TRUSTED_REPOSITORY_REF
+    )
     if head.returncode == 0 and origin.returncode == 0 and origin.stdout.strip() == TRUSTED_REPOSITORY_ORIGIN:
         remote = subprocess.run(
-            ["git", "ls-remote", "origin", TRUSTED_REPOSITORY_REF],
+            ["git", "ls-remote", "origin", published_ref],
             cwd=root,
             text=True,
             capture_output=True,
@@ -2940,7 +3128,7 @@ def paid_launch_checkout_errors(root: Path = ROOT) -> list[str]:
         remote_lines = [line.split() for line in remote.stdout.splitlines() if line.strip()]
         if (
             remote.returncode != 0
-            or remote_lines != [[head.stdout.strip(), TRUSTED_REPOSITORY_REF]]
+            or remote_lines != [[head.stdout.strip(), published_ref]]
         ):
             errors.append("repository HEAD is not independently confirmed on the trusted publication remote")
     return errors
@@ -4016,6 +4204,43 @@ def audit(record_path: Path, run_dir: Path) -> int:
     ], stdout_path=run_dir / "tool-isolation-audit.txt", timeout=120).returncode
 
 
+def audit_repowise_provider_path(profile_id: str, run_dir: Path) -> dict[str, Any]:
+    """Reject RepoWise runs whose answer path fell back to no provider."""
+    expected = {
+        "retrieval-repowise-codex-product-v2": "codex_cli",
+        "retrieval-repowise-opencode-product-v2": "opencode",
+    }.get(profile_id)
+    if expected is None:
+        return {"required": False, "passed": True, "provider": None, "hits": []}
+    hits: list[dict[str, str]] = []
+    for path in sorted(run_dir.glob("*events.jsonl")):
+        lower = path.read_text(errors="replace").lower()
+        for marker in ("no-llm-provider", "no provider configured"):
+            if marker in lower:
+                hits.append({"path": str(path.relative_to(run_dir)), "marker": marker})
+    result = {
+        "required": True,
+        "provider": expected,
+        "passed": not hits,
+        "hits": hits,
+        "policy": "a provider-backed RepoWise lane must never publish a no-llm-provider fallback",
+    }
+    (run_dir / "repowise-provider-audit.json").write_text(json.dumps(result, indent=2) + "\n")
+    return result
+
+
+def discard_unpublishable_run(run_dir: Path, reason: str) -> None:
+    """Delete a rejected run root before it can become repository evidence."""
+    root = (ROOT / "sources/evaluations/workflow-sessions").resolve()
+    target = run_dir.resolve()
+    target.relative_to(root)
+    if target == root or run_dir.is_symlink():
+        raise ValueError(f"refusing unsafe invalid-run cleanup target: {run_dir}")
+    chmod_tree(run_dir)
+    shutil.rmtree(run_dir)
+    raise RuntimeError(reason)
+
+
 def compact_artifacts(run_dir: Path) -> dict[str, str]:
     return {
         "artifact_contract": "compact-v1-four-files",
@@ -4106,8 +4331,10 @@ def redact_json_file(path: Path, keys: set[str]) -> None:
 
 
 def redact_auth_sync(run_dir: Path) -> None:
-    path = run_dir / "codex-auth-sync.jsonl"
-    if path.exists():
+    for name in ("codex-auth-sync.jsonl", "claude-auth-sync.jsonl"):
+        path = run_dir / name
+        if not path.exists():
+            continue
         lines = []
         for line in path.read_text().splitlines():
             try:
@@ -4149,6 +4376,42 @@ def sync_copied_codex_auth_back(codex_home: Path, source_home: Path, run_dir: Pa
         out.write(json.dumps(event) + "\n")
 
 
+def sync_copied_claude_auth_back(claude_home: Path, run_dir: Path, stage: str) -> None:
+    """Persist OAuth refreshed by a successful isolated Claude provider task."""
+    if os.environ.get("WORKFLOW_LANE_DISABLE_AUTH_SYNC") == "1":
+        return
+    source_value = os.environ.get(fixture.CLAUDE_ACCOUNT_HOME_ENV)
+    source_auth = (
+        fixture._claude_account_credential(Path(source_value).expanduser())
+        if source_value
+        else None
+    )
+    copied_auth = claude_home / "claude-config" / ".credentials.json"
+    if source_auth is None or not copied_auth.is_file():
+        return
+    copied_bytes = copied_auth.read_bytes()
+    changed = copied_bytes != source_auth.read_bytes()
+    if changed:
+        temporary: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(dir=source_auth.parent, delete=False) as out:
+                out.write(copied_bytes)
+                temporary = Path(out.name)
+            os.chmod(temporary, 0o600)
+            os.replace(temporary, source_auth)
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
+    with (run_dir / "claude-auth-sync.jsonl").open("a") as out:
+        out.write(json.dumps({
+            "stage": stage,
+            "source_home": str(source_auth.parent),
+            "auth_link_name": source_auth.name,
+            "synced": True,
+            "changed": changed,
+        }) + "\n")
+
+
 def remove_ephemeral_homes(run_dir: Path) -> None:
     for name in ["codex-homes"]:
         path = run_dir / name
@@ -4178,7 +4441,12 @@ def execution_integrity_record(
 
 
 def summary_tool_adapter_identity(profile_id: str, selected_descriptor: dict[str, Any]) -> dict[str, Any] | None:
-    """Retain the frozen adapter identity for every declared tool treatment."""
+    """Retain adapter identity only for tool treatments; controls are native."""
+    if profile_id in {
+        "baseline-bare-codex",
+        "baseline-claude-code-no-mcp",
+    }:
+        return None
     adapter = selected_descriptor.get("tool_adapter")
     return adapter if isinstance(adapter, dict) else None
 
@@ -4634,6 +4902,162 @@ def recover_openrouter_lifecycle_v1_strict_ingress(session_id: str, root: Path =
     return session_record
 
 
+def recover_direct_claude_lifecycle_v1_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
+    """Publish one retained direct-Anthropic Claude V1 lane without provider work."""
+    if not isinstance(session_id, str) or not session_id:
+        raise ValueError("direct Claude strict-ingress recovery requires a session ID")
+    registry = json.loads((root / "data/workflow-sessions.json").read_text())
+    if any(item.get("session_id") == session_id for item in registry.get("sessions", [])):
+        raise ValueError("direct Claude strict-ingress recovery refuses an already-published session")
+    run_dir = root / "sources/evaluations/workflow-sessions" / session_id
+    run_path = run_dir / "run.json"
+    if run_dir.is_symlink() or not run_dir.is_dir() or run_path.is_symlink() or not run_path.is_file():
+        raise ValueError("direct Claude strict-ingress recovery run root is absent or unsafe")
+    summary = json.loads(run_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    sequence_id = summary.get("workflow_sequence_id")
+    if sequence_id not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
+        raise ValueError("direct Claude strict-ingress recovery sequence is outside the authorized campaign")
+    if (
+        summary.get("profile_id") != DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
+        or summary.get("replicate_index") != 0
+        or summary.get("accepted") is not True
+        or summary.get("agent_condition") != {
+            "runtime_id": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["runtime_id"],
+            "provider": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["provider"],
+            "model": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["model"],
+            "model_condition_id": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"],
+            "reasoning_effort": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["reasoning_effort"],
+            "runtime_version_condition": "captured-at-run-and-bound-to-record",
+        }
+        or not isinstance(summary.get("frozen_protocol"), dict)
+        or not isinstance(summary.get("baseline_pool"), dict)
+        or not isinstance(summary.get("selected_execution"), dict)
+        or not (
+            summary.get("tool_adapter_identity") is None
+            or isinstance(summary.get("tool_adapter_identity"), dict)
+        )
+    ):
+        raise ValueError("direct Claude strict-ingress recovery does not match the retained baseline identity")
+    authority = json.loads(
+        (root / DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL).read_text(),
+        object_pairs_hook=_json_without_duplicate_keys,
+    )
+    binding = next(
+        (item for item in authority.get("protocols", []) if item.get("sequence_id") == sequence_id),
+        None,
+    )
+    if not isinstance(binding, dict):
+        raise ValueError("direct Claude strict-ingress recovery has no authorized protocol binding")
+    protocol_path = repository_authority_path(root, binding["protocol_path"], "direct Claude frozen protocol")
+    protocol_raw = protocol_path.read_bytes()
+    expected_frozen = {
+        "protocol_id": protocol_path.stem,
+        "path": binding["protocol_path"],
+        "sha256": binding["protocol_sha256"],
+    }
+    if (
+        hashlib.sha256(protocol_raw).hexdigest() != binding["protocol_sha256"]
+        or summary["frozen_protocol"] != expected_frozen
+        or summary["baseline_pool"].get("protocol_fingerprint") != binding["baseline_pool_fingerprint"]
+    ):
+        raise ValueError("direct Claude strict-ingress recovery does not match the frozen authorized protocol")
+    receipt_path = root / DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / (
+        f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r0.json"
+    )
+    receipt = json.loads(receipt_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
+    expected_binding = {
+        "sequence_id": sequence_id,
+        "profile_id": DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID,
+        "replicate_index": 0,
+        "frozen_protocol": summary["frozen_protocol"],
+        "baseline_pool_fingerprint": summary["baseline_pool"]["protocol_fingerprint"],
+        "selected_execution": summary["selected_execution"],
+    }
+    if (
+        receipt.get("attempt_status") != "reserved-before-provider-task"
+        or receipt.get("expected_session_binding") != expected_binding
+        or receipt.get("provider_result") is not None
+        or receipt.get("immutable_identity_receipt") is not True
+        or receipt.get("model_condition_id") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
+        or receipt.get("model") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["model"]
+        or receipt.get("reasoning_effort") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["reasoning_effort"]
+    ):
+        raise ValueError("direct Claude strict-ingress recovery requires the original immutable attempt receipt")
+    repaired = json.loads(json.dumps(summary))
+    repaired["tool_adapter_identity"] = None
+    original_run_sha256 = hashlib.sha256(run_path.read_bytes()).hexdigest()
+    restore_compact_evidence_sources(run_dir)
+    try:
+        usage = dict(repaired["token_usage"])
+        usage["warnings"] = repaired.get("usage_warnings", [])
+        seq = load_sequence(sequence_id)
+        session_record = workflow_session_record(
+            seq,
+            repaired,
+            run_dir,
+            DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID,
+            repaired["codex_exit_codes"],
+            repaired["final_verifier_exit_code"],
+            repaired["tool_isolation_audit_exit_code"],
+            usage,
+            repaired["per_task_results"],
+            prompt_delivery=repaired["prompt_delivery"],
+            leakage_controls=repaired["leakage_controls"],
+        )
+    finally:
+        remove_noncompact_artifacts(run_dir)
+    run_path.write_text(json.dumps(repaired, indent=2) + "\n")
+    write_manifest(run_dir)
+    if not pilot_session_artifacts_valid(session_record, root):
+        raise RuntimeError("direct Claude strict-ingress metadata repair did not satisfy compact ingress")
+    recovery_receipt = root / DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / (
+        f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r0.strict-ingress-recovery.json"
+    )
+    atomic_create_json(
+        recovery_receipt,
+        {
+            "schema_version": 1,
+            "status": "repaired-and-ready-for-registry-publication",
+            "session_id": session_id,
+            "attempt_receipt_path": str(receipt_path.relative_to(root)),
+            "repair_scope": "cleared the native control adapter summary field; provider task output and usage were not changed",
+            "original_run_sha256": original_run_sha256,
+            "repaired_run_sha256": hashlib.sha256(run_path.read_bytes()).hexdigest(),
+            "provider_calls_added_by_recovery": 0,
+            "provider_tokens_added_by_recovery": 0,
+        },
+    )
+    publish_session_after_strict_ingress(session_record, run_dir)
+    return session_record
+
+
+def recover_direct_claude_lifecycle_v1_retained_run(
+    source_run_dir: Path, session_id: str, root: Path = ROOT
+) -> dict[str, Any]:
+    """Stage an externally retained compact lane, then apply direct-Claude recovery."""
+    source = source_run_dir.resolve()
+    if source.is_symlink() or not source.is_dir():
+        raise ValueError("retained direct Claude run root is absent or unsafe")
+    if not (source / "run.json").is_file():
+        raise ValueError("retained direct Claude run is missing its compact run record")
+    source_summary = json.loads(source.joinpath("run.json").read_text())
+    if source_summary.get("session_id") != session_id:
+        raise ValueError("retained direct Claude run session ID does not match the requested recovery")
+    if not evidence_bundle_valid(source / "evidence.jsonl.gz"):
+        raise ValueError("retained direct Claude evidence bundle is invalid")
+    expected_names = COMPACT_ARTIFACT_NAMES
+    if {item.name for item in source.iterdir()} != expected_names:
+        raise ValueError("retained direct Claude run must contain exactly the compact artifact contract")
+    destination = root / "sources/evaluations/workflow-sessions" / session_id
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError(f"direct Claude recovery destination already exists: {destination}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.mkdir()
+    for name in sorted(expected_names):
+        shutil.copy2(source / name, destination / name)
+    return recover_direct_claude_lifecycle_v1_strict_ingress(session_id, root)
+
+
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
     """Publish only a compact session that passes the same strict ingress used by matrix merge."""
     if not pilot_session_artifacts_valid(record, ROOT):
@@ -4965,15 +5389,32 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
 
     codex_home_root = run_dir / "codex-homes"
     runtime_id = profile_runtime_id(profile_id)
+    agent_provider = str((record.get("agent") or {}).get("provider") or "openrouter")
     codex_home = (
-        fixture.prepare_claude_home(profile_id, run_dir, codex_home_root)
+        fixture.prepare_claude_home(
+            profile_id,
+            run_dir,
+            codex_home_root,
+            provider=agent_provider,
+        )
         if runtime_id == "claude-code"
         else fixture.prepare_codex_home(record, profile_id, run_dir, args.source_codex_home, codex_home_root, copy_auth=True)
     )
     cfg = fixture.active_tool_config(record, profile_id)
 
     if not args.skip_container_preflight:
-        container_preflight = fixture.check_container_runtime("docker", runtime_docker_image, run_dir, False, build_image=False, dockerfile=fixture.DEFAULT_DOCKERFILE, codex_home=codex_home, cfg=cfg, agent_runtime=runtime_id)
+        container_preflight = fixture.check_container_runtime(
+            "docker",
+            runtime_docker_image,
+            run_dir,
+            False,
+            build_image=False,
+            dockerfile=fixture.DEFAULT_DOCKERFILE,
+            codex_home=codex_home,
+            cfg=cfg,
+            agent_runtime=runtime_id,
+            provider=agent_provider,
+        )
         if not container_preflight.get("passed"):
             return finalize_failed_attempt({"session_id": session_id, "profile_id": profile_id, "accepted": False, "stage": "container-preflight", "run_dir": rel(run_dir), "container_preflight": container_preflight}, record, run_dir)
     integration = fixture.prepare_profile_integration(
@@ -5102,6 +5543,12 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             operational_retries=operational_retries,
         )
         codex_exit_codes.append(code)
+        if runtime_id == "claude-code" and code == 0:
+            sync_copied_claude_auth_back(
+                codex_home,
+                run_dir,
+                f"after-task-{order:02d}",
+            )
         redact_auth_sync(run_dir)
         cfg = fixture.active_tool_config(record, profile_id)
         excluded_paths = treatment_diff_exclude_paths(cfg, profile_id)
@@ -5150,6 +5597,12 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     (run_dir / "verifier-integrity.json").write_text(json.dumps({"checks": verifier_integrity_checks}, indent=2) + "\n")
     verifier_integrity_passed = all(check["passed"] for check in verifier_integrity_checks)
     events_artifact = concatenate_events(run_dir, len(ordered_tasks), runtime_id=runtime_id)
+    repowise_provider_audit = audit_repowise_provider_path(profile_id, run_dir)
+    if not repowise_provider_audit.get("passed"):
+        discard_unpublishable_run(
+            run_dir,
+            f"{profile_id} produced a no-llm-provider fallback; refusing to publish an invalid run",
+        )
     usage = build_provider_usage(profile_id, events_artifact)
     (run_dir / "provider-usage.json").write_text(json.dumps(usage, indent=2) + "\n")
     task_checkpoints = complete_task_checkpoints(ordered_tasks, task_checkpoints)
@@ -5183,6 +5636,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         and len(task_checkpoints) == len(ordered_tasks)
         and audit_code == 0
         and verifier_integrity_passed
+        and repowise_provider_audit.get("passed") is True
         and not usage.get("warnings")
     )
     agent_runtime_version = runtime_version_from_preflight(profile_id, run_dir)
@@ -5269,6 +5723,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             "provider_usage_details": usage.get("provider_usage_details"),
         },
         "usage_warnings": usage.get("warnings"),
+        "repowise_provider_audit": repowise_provider_audit,
         "per_task_results": task_checkpoints,
         "prompt_delivery": prompt_delivery,
         "leakage_controls": leakage_controls,

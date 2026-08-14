@@ -1,13 +1,13 @@
 diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
-index a3541ab3..67b2bfb7 100644
+index a3541ab3..4d52f8c1 100644
 --- a/beets/util/functemplate.py
 +++ b/beets/util/functemplate.py
-@@ -319,7 +319,7 @@ class Parser:
- 
-             next_char = self.string[self.pos + 1]
-             if char == ESCAPE_CHAR and next_char in (
--                self.escapable_chars + extra_special_chars
-+                self.escapable_chars
-             ):
-                 # An escaped special character ($$, $}, etc.). Note that
-                 # ${ is not an escape sequence: this is ambiguous with
+@@ -286,7 +286,7 @@ class Parser:
+         """
+         # Append comma (ARG_SEP) to the list of special characters only when
+         # parsing function arguments.
+-        extra_special_chars = (ARG_SEP,) if self.in_argument else ()
++        extra_special_chars = ()
+         special_chars = (*self.special_chars, *extra_special_chars)
+         special_char_re = re.compile(
+             rf"[{''.join(map(re.escape, special_chars))}]|\Z"

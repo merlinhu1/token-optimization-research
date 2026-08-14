@@ -33,18 +33,28 @@ def stream_continuity(events_path: Path, requested_session_id: str | None) -> tu
     return unique[0], None
 
 
-def command(*, model: str, prompt: str, session_id: str | None = None) -> list[str]:
+def command(
+    *,
+    model: str,
+    effort: str,
+    prompt: str,
+    mcp_config: Path | None = None,
+    session_id: str | None = None,
+) -> list[str]:
     args = [
         "claude",
         "--print",
         "--verbose",
         "--output-format", "stream-json",
         "--model", model,
+        "--effort", effort,
         "--tools", "Bash,Edit,Read,Grep,Glob",
         "--permission-mode", "bypassPermissions",
         "--allow-dangerously-skip-permissions",
         "--no-chrome",
     ]
+    if mcp_config is not None:
+        args.extend(["--mcp-config", str(mcp_config), "--strict-mcp-config"])
     if session_id:
         args.extend(["--resume", session_id])
     args.append(prompt)
@@ -66,15 +76,50 @@ def run_task(
     repo = fixture.rel_or_abs(record["target"]["repository_path"])
     profile_id = str((record.get("profile") or {}).get("profile_id") or "")
     cfg = fixture.active_tool_config(record, profile_id)
-    env = fixture.claude_env(claude_home, containerized=True, cfg=cfg)
+    env = fixture.claude_env(
+        claude_home,
+        containerized=True,
+        cfg=cfg,
+        provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+    )
     fixture.apply_model_network_isolation(env, prepend_denied_shell_to_path=False)
-    mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
-    cmd = command(model=str(record.get("agent", {}).get("model", "claude-sonnet-5")), prompt=prompt_path.read_text(), session_id=session_id)
+    # Keep treatment/session identifiers out of model-visible HOME, config, and cwd.
+    # Controller evidence continues to use the real lane paths on the host.
+    neutral_home = Path("/agent-home")
+    neutral_repo = Path("/workspace")
+    for key, suffix in {
+        "CODEX_HOME": "",
+        "HOME": "/home",
+        "PYTHONUSERBASE": "/python-userbase",
+        "XDG_CACHE_HOME": "/xdg-cache",
+        "XDG_CONFIG_HOME": "/xdg-config",
+        "XDG_DATA_HOME": "/xdg-data",
+        "TMPDIR": "/tmp",
+        "GOPATH": "/go",
+        "GOCACHE": "/go-build-cache",
+        "GOMODCACHE": "/go/pkg/mod",
+        "CLAUDE_CONFIG_DIR": "/claude-config",
+    }.items():
+        env[key] = str(neutral_home) + suffix
+    mounts = fixture.container_mounts_for_record(record, claude_home, include_repo=False, cfg=cfg)
+    fixture.add_mount(mounts, claude_home, target=neutral_home, mode="rw")
+    fixture.add_mount(mounts, repo, target=neutral_repo, mode="rw")
+    agent = record.get("agent") or {}
+    mcp_config = neutral_home / "claude-config" / "mcp.json"
+    if not (claude_home / "claude-config" / "mcp.json").is_file():
+        mcp_config = None
+    cmd = command(
+        model=str(agent.get("model", "claude-sonnet-5")),
+        effort=str(agent.get("reasoning_effort", "high")),
+        prompt=prompt_path.read_text(),
+        mcp_config=mcp_config,
+        session_id=session_id,
+    )
     proc = fixture.run_backend(
         cmd,
         backend="docker",
         docker_image=docker_image,
-        cwd=repo,
+        cwd=neutral_repo,
         env=env,
         stdout_path=events_path,
         timeout=timeout,

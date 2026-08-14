@@ -3642,6 +3642,821 @@
       },
       "selection_rationale": "Prepared as the second runtime lane after Codex, preserving runtime/provider separation.",
       "notes": "The adapter keeps OpenCode project-config loading disabled to prevent the generated npx/latest binding from bypassing the pinned source; it injects an equivalent source-pinned MCP block and loads the product-generated enforce-sdl plugin explicitly. This is a recorded compatibility deviation, not a claim of byte-identical installer behavior."
+    },
+    {
+    "id": "retrieval-cartog-claude-code-product-v1",
+      "artifact_slug": "retrieval-cartog-claude-code-product",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+product-guidance"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-cartog-claude-code-product-v1",
+          "surface": "retrieval/context+mcp+product-guidance",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Cartog source snapshot from retrieval-cartog-codex-product-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-cartog-codex-product-v2"
+      ],
+      "notes": "Claude Code preparation profile for Cartog; source profile retrieval-cartog-codex-product-v2. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "behavior-caveman-claude-code-skill-v1",
+      "artifact_slug": "behavior-caveman-claude-code-skill",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-behavioral-output-compression+native-skill"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "behavior-caveman-claude-code-skill-v1",
+          "surface": "behavioral-output-compression+native-skill",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Caveman source snapshot from behavior-caveman-codex-skill-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "behavior-caveman-codex-skill-v1"
+      ],
+      "notes": "Claude Code preparation profile for Caveman; source profile behavior-caveman-codex-skill-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "retrieval-codegraph-claude-code-mcp-v1",
+      "artifact_slug": "retrieval-codegraph-claude-code-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+live-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-codegraph-claude-code-mcp-v1",
+          "surface": "retrieval/context+mcp+live-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned CodeGraph source snapshot from retrieval-codegraph-codex-mcp-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-codegraph-codex-mcp-v1"
+      ],
+      "notes": "Claude Code preparation profile for CodeGraph; source profile retrieval-codegraph-codex-mcp-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "codescope-claude-code-mcp-v1",
+      "artifact_slug": "codescope-claude-code-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-broad-context-owner+mcp+warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "codescope-claude-code-mcp-v1",
+          "surface": "broad-context-owner+mcp+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned CodeScope source snapshot from codescope-codex-product-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "codescope-codex-product-v1"
+      ],
+      "notes": "Claude Code preparation profile for CodeScope; source profile codescope-codex-product-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "retrieval-graphify-claude-code-skill-v1",
+      "artifact_slug": "retrieval-graphify-claude-code-skill",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+native-skill+warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-graphify-claude-code-skill-v1",
+          "surface": "retrieval/context+native-skill+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Graphify source snapshot from retrieval-graphify-codex-skill-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-graphify-codex-skill-v1"
+      ],
+      "notes": "Claude Code preparation profile for Graphify; source profile retrieval-graphify-codex-skill-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "integrated-leanctx-claude-code-hybrid-v1",
+      "artifact_slug": "integrated-leanctx-claude-code-hybrid",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+shell-output-compression+guidance"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-leanctx-claude-code-hybrid-v1",
+          "surface": "retrieval/context+mcp+shell-output-compression+guidance",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned LeanCTX source snapshot from integrated-leanctx-codex-hybrid-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "integrated-leanctx-codex-hybrid-v1"
+      ],
+      "notes": "Claude Code preparation profile for LeanCTX; source profile integrated-leanctx-codex-hybrid-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "terminal-lowfat-claude-code-hook-v1",
+      "artifact_slug": "terminal-lowfat-claude-code-hook",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-terminal-output+native-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-lowfat-claude-code-hook-v1",
+          "surface": "terminal-output+native-hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned LowFat source snapshot from terminal-lowfat-opencode-plugin-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "terminal-lowfat-opencode-plugin-v1"
+      ],
+      "notes": "Claude Code preparation profile for LowFat; source profile terminal-lowfat-opencode-plugin-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "artifact-ponytail-claude-code-plugin-v1",
+      "artifact_slug": "artifact-ponytail-claude-code-plugin",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-native-plugin+skills+hooks"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "artifact-ponytail-claude-code-plugin-v1",
+          "surface": "native-plugin+skills+hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Ponytail source snapshot from artifact-ponytail-codex-plugin-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "artifact-ponytail-codex-plugin-v1"
+      ],
+      "notes": "Claude Code preparation profile for Ponytail; source profile artifact-ponytail-codex-plugin-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "retrieval-serena-claude-code-mcp-v1",
+      "artifact_slug": "retrieval-serena-claude-code-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+product-guidance"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-serena-claude-code-mcp-v1",
+          "surface": "retrieval/context+mcp+product-guidance",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Serena source snapshot from retrieval-serena-codex-mcp-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-serena-codex-mcp-v1"
+      ],
+      "notes": "Claude Code preparation profile for Serena; source profile retrieval-serena-codex-mcp-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "retrieval-sigmap-claude-code-mcp-v1",
+      "artifact_slug": "retrieval-sigmap-claude-code-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sigmap-claude-code-mcp-v1",
+          "surface": "retrieval/context+mcp+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned SigMap source snapshot from retrieval-sigmap-codex-live-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-sigmap-codex-live-v1"
+      ],
+      "notes": "Claude Code preparation profile for SigMap; source profile retrieval-sigmap-codex-live-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "terminal-snip-claude-code-hook-v1",
+      "artifact_slug": "terminal-snip-claude-code-hook",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-terminal-output+native-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-snip-claude-code-hook-v1",
+          "surface": "terminal-output+native-hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Snip source snapshot from terminal-snip-codex-hook-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "terminal-snip-codex-hook-v1"
+      ],
+      "notes": "Claude Code preparation profile for Snip; source profile terminal-snip-codex-hook-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "integrated-token-savior-claude-code-product-v1",
+      "artifact_slug": "integrated-token-savior-claude-code-product",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+guidance+hooks"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "integrated-token-savior-claude-code-product-v1",
+          "surface": "retrieval/context+mcp+guidance+hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned Token Savior source snapshot from integrated-token-savior-codex-product-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "integrated-token-savior-codex-product-v2"
+      ],
+      "notes": "Claude Code preparation profile for Token Savior; source profile integrated-token-savior-codex-product-v2. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "terminal-tokenjuice-claude-code-hook-v1",
+      "artifact_slug": "terminal-tokenjuice-claude-code-hook",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-terminal-output+native-hook"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "terminal-tokenjuice-claude-code-hook-v1",
+          "surface": "terminal-output+native-hook",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned TokenJuice source snapshot from terminal-tokenjuice-codex-hook-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "terminal-tokenjuice-codex-hook-v1"
+      ],
+      "notes": "Claude Code preparation profile for TokenJuice; source profile terminal-tokenjuice-codex-hook-v1. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "retrieval-jcodemunch-claude-code-mcp-v1",
+      "artifact_slug": "retrieval-jcodemunch-claude-code-mcp",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "integration-qualified-provider-free",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+product-guidance"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-jcodemunch-claude-code-mcp-v1",
+          "surface": "retrieval/context+mcp+product-guidance",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned jCodeMunch source snapshot from retrieval-jcodemunch-codex-mcp-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualified-provider-free",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-jcodemunch-codex-mcp-v2"
+      ],
+      "notes": "Claude Code preparation profile for jCodeMunch; source profile retrieval-jcodemunch-codex-mcp-v2. Provider-free native qualification passed for both active Lifecycle V1 sequences; provider execution is governed by the owner authorization and first-valid-sample policy."
+    },
+    {
+    "id": "retrieval-sdl-mcp-claude-code-product-v1",
+      "artifact_slug": "retrieval-sdl-mcp-claude-code-product",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "substrate": "claude-code",
+      "status": "blocked-profile",
+      "blocked_reason": "SDL-MCP repository README does not provide a Claude Code installation or integration instruction; exclude from Claude Code evaluation.",
+      "enabled_surfaces": [
+        "claude-code-retrieval/context+mcp+guidance+hooks"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces",
+        "other token-saving tools",
+        "OpenRouter transport"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-sdl-mcp-claude-code-product-v1",
+          "surface": "retrieval/context+mcp+guidance+hooks",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Use the pinned SDL-MCP source snapshot from retrieval-sdl-mcp-codex-product-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+      },
+      "reset": {
+        "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "qualification-pending",
+        "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+        "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+        "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+      },
+      "source_profiles": [
+        "retrieval-sdl-mcp-codex-product-v1"
+      ],
+      "notes": "Claude Code preparation profile for SDL-MCP; source profile retrieval-sdl-mcp-codex-product-v1. Provider execution remains blocked until the native Claude surface is qualified in isolation."
+    },
+    {
+      "id": "retrieval-repowise-codex-product-v1",
+      "artifact_slug": "repowise-codex-v1",
+      "name": "RepoWise Codex product V1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "historical-profile",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-hooks",
+        "product-authored-guidance",
+        "warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-repowise-codex-product-v1",
+          "surface": "retrieval-context+mcp+codex-hooks+product-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Historical invalid setup; the provider-free RepoWise init did not configure RepoWise's own LLM provider."
+      },
+      "reset": {
+        "policy": "Delete the lane-private venv, RepoWise index, project MCP/Codex files, generated guidance, and isolated agent home after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+official-codex-hooks+product-guidance",
+        "integration_state": "official-codex-project-setup+host-agnostic-mcp",
+        "instruction_policy": "product-authored generated guidance",
+        "assignment_proof": "deleted invalid provider-free treatment; never rerun"
+      },
+      "source_snapshot": {
+        "repository": "repowise-dev/repowise",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "version": "0.39.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
+      },
+      "notes": "Invalid historical setup: `init --codex --no-prose` omitted `--provider codex_cli` and the runtime provider environment, so RepoWise's LLM-backed path degraded to no-llm-provider. All result sessions and protocols were deleted under the owner-authorized receipt.",
+      "blocked_reason": "RepoWise provider was not configured; provider-free results cannot support product-effect claims.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-repowise-provider-free-result-deletions-20260809.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-repowise-codex-product-v2"
+    },
+    {
+      "id": "retrieval-repowise-opencode-product-v1",
+      "artifact_slug": "repowise-opencode-v1",
+      "name": "RepoWise OpenCode product V1",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "historical-profile",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-guidance",
+        "warm-index"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-repowise-opencode-product-v1",
+          "surface": "retrieval-context+opencode-mcp+product-guidance+warm-index",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Historical invalid setup; the provider-free RepoWise init did not configure RepoWise's own LLM provider."
+      },
+      "reset": {
+        "policy": "Delete the lane-private OpenCode XDG directories, venv, RepoWise index, generated project integration and guidance, auth translation, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+product-guidance",
+        "integration_state": "host-agnostic-opencode-mcp+generated-guidance",
+        "instruction_policy": "product-authored generated guidance",
+        "assignment_proof": "deleted invalid provider-free treatment; never rerun"
+      },
+      "source_snapshot": {
+        "repository": "repowise-dev/repowise",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "version": "0.39.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
+      },
+      "notes": "Invalid historical setup: provider-free structural init omitted `--provider opencode` and `REPOWISE_PROVIDER=opencode`, so RepoWise's LLM-backed path degraded to no-llm-provider. All result sessions and protocols were deleted under the owner-authorized receipt.",
+      "blocked_reason": "RepoWise provider was not configured; provider-free results cannot support product-effect claims.",
+      "historical_results_deleted": true,
+      "deletion_receipt": "sources/evaluations/audits/invalid-repowise-provider-free-result-deletions-20260809.json",
+      "historical_result_disposition": "deleted-invalid-treatment",
+      "active_corpus_action": "deleted-under-owner-authorized-receipt",
+      "superseded_by": "retrieval-repowise-opencode-product-v2"
+    },
+    {
+      "id": "retrieval-repowise-codex-product-v2",
+      "artifact_slug": "repowise-codex-v2",
+      "name": "RepoWise Codex provider-backed product V2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-shortlist",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "mcp",
+        "codex-project-hooks",
+        "product-authored-guidance",
+        "provider-backed-retrieval"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-repowise-codex-product-v2",
+          "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-retrieval",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv and run `init --provider codex_cli --codex --no-prose` with REPOWISE_PROVIDER=codex_cli, retaining the project-local MCP configuration, lifecycle hooks, generated AGENTS.md guidance, and provider-backed MCP answer path."
+      },
+      "reset": {
+        "policy": "Delete the lane-private venv, RepoWise index, project MCP/Codex files, generated guidance, provider state, and isolated agent home after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+official-codex-hooks+product-guidance+provider-configured",
+        "integration_state": "official-codex-project-setup+provider-backed-mcp",
+        "instruction_policy": "product-authored generated guidance",
+        "assignment_proof": "provider-configured pinned wheel, exact source identity, generated project integration, model-runtime PATH, provider environment, initialize plus tools/list, and provider-backed answer-path evidence required"
+      },
+      "source_snapshot": {
+        "repository": "repowise-dev/repowise",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "version": "0.39.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
+      },
+      "notes": "Successor to the deleted provider-free setup. `--no-prose` keeps setup deterministic; REPOWISE_PROVIDER=codex_cli enables RepoWise's LLM-backed MCP path during natural use."
+    },
+    {
+      "id": "retrieval-repowise-opencode-product-v2",
+      "artifact_slug": "repowise-opencode-v2",
+      "name": "RepoWise OpenCode provider-backed product V2",
+      "profile_type": "individual_tool",
+      "objective_scope": "individual_tool_effectiveness",
+      "status": "screening-ablation",
+      "substrate": "opencode-cli",
+      "enabled_surfaces": [
+        "retrieval-context",
+        "opencode-mcp",
+        "product-authored-guidance",
+        "provider-backed-retrieval"
+      ],
+      "disabled_overlaps": [
+        "all unlisted surfaces"
+      ],
+      "native_agent_tools_allowed": [
+        "opencode-native-shell-edit",
+        "opencode-native-file-read-search",
+        "git",
+        "verifier-commands"
+      ],
+      "forbidden_surfaces": [
+        "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+      ],
+      "components": [
+        {
+          "component_id": "retrieval-repowise-opencode-product-v2",
+          "surface": "retrieval-context+opencode-mcp+product-guidance+provider-backed-retrieval",
+          "role": "individual_tool"
+        }
+      ],
+      "install": {
+        "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv and run `init --provider opencode --no-prose` with REPOWISE_PROVIDER=opencode, retaining generated AGENTS.md guidance and the documented host-agnostic stdio MCP surface."
+      },
+      "reset": {
+        "policy": "Delete the lane-private OpenCode XDG directories, venv, RepoWise index, generated project integration and guidance, provider state, auth translation, and background processes after evidence capture."
+      },
+      "evaluation_protocol": {
+        "tool_use_policy": "natural",
+        "tool_state": "warm-index+product-guidance+provider-configured",
+        "integration_state": "host-agnostic-opencode-mcp+provider-backed-retrieval",
+        "instruction_policy": "product-authored generated guidance",
+        "assignment_proof": "provider-configured pinned wheel, source and adapter identities, effective OpenCode configuration, provider environment, deterministic index, model-runtime PATH, initialize plus tools/list, and provider-backed answer-path evidence required"
+      },
+      "source_snapshot": {
+        "repository": "repowise-dev/repowise",
+        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+        "version": "0.39.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+        "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
+        "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
+      },
+      "notes": "Successor to the deleted provider-free setup. RepoWise has no OpenCode-specific editor installer, so this keeps the documented stdio MCP registration while explicitly configuring its OpenCode provider."
     }
   ]
 }

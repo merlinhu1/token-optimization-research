@@ -73,6 +73,7 @@
         "terminal-snip-codex-hook-v1",
         "retrieval-graphify-codex-skill-v1",
         "retrieval-codegraph-codex-mcp-v1",
+        "retrieval-repowise-codex-product-v2",
         "retrieval-jcodemunch-codex-mcp-v2",
         "integrated-leanctx-codex-hybrid-v1",
         "retrieval-cartog-codex-product-v2",
@@ -84,7 +85,9 @@
         "artifact-ponytail-codex-plugin-v1",
         "behavior-caveman-codex-skill-v1"
       ],
-      "blockers": [],
+      "blockers": [
+        "Lifecycle V1 compile-only provider pilot must complete every task with all affected-component compile verifiers exiting zero before treatment launch."
+      ],
       "caveats": [
         "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic.",
         "Executed assisted-v1 sessions and protocols remain immutable historical evidence and are not comparison controls for Baseline V3."
@@ -96,7 +99,7 @@
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "fastify-lifecycle-sequence-v1",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1.json",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1-20260813.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
@@ -105,6 +108,15 @@
           "id": "baseline-bare-codex",
           "status": "completed-passed-compilation",
           "purpose": "first-valid Codex CLI GPT-5.6 Sol/high Lifecycle V1 compile-only pilot; all affected-component and project-wide compilation passed",
+          "replicate_indexes": [
+            0
+          ]
+        },
+        {
+          "id": "retrieval-repowise-codex-product-v2",
+          "role": "individual-tool-treatment",
+          "status": "ready-for-paid-launch",
+          "purpose": "provider-configured RepoWise 0.39.0 Codex product integration; first owner-authorized Lifecycle V1 run",
           "replicate_indexes": [
             0
           ]
@@ -257,7 +269,7 @@
       "current_task_family": {
         "generation": "lifecycle-v1",
         "provider_free_qualified": true,
-        "provider_pilot_status": "completed-passed-compilation",
+        "provider_pilot_status": "required",
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
         "acceptance_gate": "affected-component-compilation",
         "quality_diagnostics_gate": false
@@ -314,6 +326,7 @@
         "terminal-snip-codex-hook-v1",
         "retrieval-graphify-codex-skill-v1",
         "retrieval-codegraph-codex-mcp-v1",
+        "retrieval-repowise-codex-product-v2",
         "retrieval-jcodemunch-codex-mcp-v2",
         "integrated-leanctx-codex-hybrid-v1",
         "retrieval-cartog-codex-product-v2",
@@ -325,7 +338,9 @@
         "artifact-ponytail-codex-plugin-v1",
         "behavior-caveman-codex-skill-v1"
       ],
-      "blockers": [],
+      "blockers": [
+        "Lifecycle V1 compile-only provider pilot must complete every task with all affected-component compile verifiers exiting zero before treatment launch."
+      ],
       "caveats": [
         "The retained baseline is eligible from operational integrity and complete provider usage; verifier and optional source-review outcomes are diagnostic.",
         "Executed assisted-v1 sessions and protocols remain immutable historical evidence and are not comparison controls for Baseline V4."
@@ -337,7 +352,7 @@
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "beets-lifecycle-sequence-v1",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1.json",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260813.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
@@ -346,6 +361,15 @@
           "id": "baseline-bare-codex",
           "status": "completed-passed-compilation",
           "purpose": "first-valid Codex CLI GPT-5.6 Sol/high Lifecycle V1 compile-only pilot; all affected-component and project-wide compilation passed",
+          "replicate_indexes": [
+            0
+          ]
+        },
+        {
+          "id": "retrieval-repowise-codex-product-v2",
+          "role": "individual-tool-treatment",
+          "status": "ready-for-paid-launch",
+          "purpose": "provider-configured RepoWise 0.39.0 Codex product integration; first owner-authorized Lifecycle V1 run",
           "replicate_indexes": [
             0
           ]
@@ -498,75 +522,7 @@
       "current_task_family": {
         "generation": "lifecycle-v1",
         "provider_free_qualified": true,
-        "provider_pilot_status": "completed-passed-compilation",
-        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
-        "acceptance_gate": "affected-component-compilation",
-        "quality_diagnostics_gate": false
-      }
-    },
-    {
-      "id": "large-hashicorp-terraform",
-      "status": "retired-fixture",
-      "fixture_scale": "large-project",
-      "evaluation_use": "historical-evidence",
-      "repository": {
-        "url": "https://github.com/hashicorp/terraform",
-        "id": "large__hashicorp-terraform",
-        "github": "hashicorp/terraform",
-        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/repo"
-      },
-      "snapshot": {
-        "commit": "e02391ad384c9c38f1d7f40b853c0d2297348094",
-        "branch": "detached",
-        "snapshot_policy": "Pinned v0 lifecycle fixed snapshot; all three start conditions are controller-injected before sequential prompt disclosure."
-      },
-      "task_classes": [
-        "feature-implementation",
-        "behavior-preserving-refactor",
-        "code-review-correction"
-      ],
-      "primary_token_waste_surface": "retrieval-context",
-      "setup": {
-        "command": "sources/evaluations/fixtures/large/hashicorp-terraform/setup.sh"
-      },
-      "reset": {
-        "command": "sources/evaluations/fixtures/large/hashicorp-terraform/reset.sh"
-      },
-      "verifier": {
-        "command": "sources/evaluations/fixtures/large/hashicorp-terraform/verify-smoke.sh"
-      },
-      "prompt": {
-        "path": "sources/evaluations/fixtures/large/hashicorp-terraform/task-generations/baseline-v4/README.md",
-        "prompt_policy": "Baseline V4 preserves the Baseline V3 exact routine recipes and focused model-visible validation while each generation-local verifier safely derives the copied project root; task 3 alone receives the proposed review patch."
-      },
-      "artifact_paths": {
-        "root": "sources/evaluations/workflow-sessions/",
-        "baseline_session_ids": [
-          "baseline-terraform-20260716-p-ded8609b4172-r0",
-          "baseline-terraform-20260716-p-ded8609b4172-r1",
-          "baseline-terraform-20260728-p-5811b463c1e9-r0"
-        ]
-      },
-      "candidate_profiles": [],
-      "blockers": [
-        "Retired from the active Lifecycle V1 portfolio; the owner-declared-invalid r0 result was removed under its invalidation receipt."
-      ],
-      "caveats": [
-        "Terraform's invalid V1 r0 protocol and raw evidence were removed; retained task and qualification sources cannot authorize a rerun or treatment."
-      ],
-      "tasks": [
-        "terraform-lifecycle-feature-v1",
-        "terraform-lifecycle-refactor-v1",
-        "terraform-lifecycle-review-v1"
-      ],
-      "qualification_status": "historical-evidence",
-      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
-      "active_profiles": [],
-      "future_evaluation_lanes": [],
-      "retained_task_family": {
-        "generation": "lifecycle-v1",
-        "provider_free_qualified": true,
-        "provider_pilot_status": "invalidated-and-removed",
+        "provider_pilot_status": "required",
         "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
         "acceptance_gate": "affected-component-compilation",
         "quality_diagnostics_gate": false
