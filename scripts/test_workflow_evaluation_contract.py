@@ -2946,6 +2946,50 @@ class PublishedSchemaGateTest(unittest.TestCase):
             errors,
         )
 
+    def test_registry_pass_still_gates_shape_when_identity_skips_revalidation(self) -> None:
+        """validate_production_v3_identity skips a repeat schema check; the loop must still catch."""
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        profiles = {
+            profile["id"]: profile
+            for profile in json.loads((ROOT / "data/evaluation-profiles.json").read_text()).get("profiles", [])
+        }
+        for field, value in (
+            ("session_role", "not-a-real-role"),
+            ("evidence_type", "not-an-evidence-type"),
+            ("record_type", None),
+        ):
+            with self.subTest(field=field):
+                document = copy.deepcopy(registry)
+                if value is None:
+                    document["sessions"][0].pop(field, None)
+                else:
+                    document["sessions"][0][field] = value
+                errors: list[str] = []
+                validate_repository.validate_workflow_sessions(
+                    document, set(), {"fixtures": []}, profiles, set(), set(), errors
+                )
+                self.assertTrue(
+                    any("violates schemas/" in error and field in error for error in errors),
+                    (field, [error for error in errors if "violates schemas/" in error]),
+                )
+
+    def test_schema_conformance_runs_once_per_registry_session(self) -> None:
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        profiles = {
+            profile["id"]: profile
+            for profile in json.loads((ROOT / "data/evaluation-profiles.json").read_text()).get("profiles", [])
+        }
+        errors: list[str] = []
+        with mock.patch.object(
+            validate_repository,
+            "validate_session_schema_conformance",
+            wraps=validate_repository.validate_session_schema_conformance,
+        ) as spy:
+            validate_repository.validate_workflow_sessions(
+                copy.deepcopy(registry), set(), {"fixtures": []}, profiles, set(), set(), errors
+            )
+        self.assertEqual(spy.call_count, len(registry["sessions"]))
+
     def test_compact_diff_size_cap_bounds_future_captures(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -7508,19 +7552,16 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 capture_output=True,
                 check=False,
             )
-            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
-            plan = json.loads(result.stdout)
-            self.assertEqual(plan["replicate_index"], 1)
-            self.assertEqual(plan["max_parallel"], 1)
-            self.assertEqual(
-                plan["jobs"],
-                [
-                    {
-                        "sequence_id": "beets-lifecycle-sequence-v1",
-                        "profile_id": "baseline-bare-codex",
-                        "protocol": "sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-1628ca6eee6a.json",
-                    }
-                ],
+            # The 2026-08-13 task-family correction re-froze both lifecycle-v1 protocols, so the
+            # r1 authority's nested binding now names superseded protocol bytes. Per
+            # lifecycle-v1-corrected-task-family-readiness-20260813.json, completed runs and
+            # frozen protocols are historical evidence for the prior task bytes and are not
+            # authorization for the corrected contract, so r1 planning must refuse rather than
+            # plan against the superseded protocol.
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "Lifecycle V1 r1 replication authority has stale nested binding",
+                result.stderr + result.stdout,
             )
             self.assertFalse(lane_root.exists())
 
@@ -7544,7 +7585,52 @@ class BaselineV3LowComplexityContractTest(unittest.TestCase):
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("baseline replication launch model does not match the strict authorization", result.stderr + result.stdout)
+        # The corrected lifecycle-v1 task family supersedes the r1 replication authority, so the
+        # authority gate now rejects before the launch-model comparison is reachable. The
+        # end-to-end invariant that still holds is that nothing is created before rejection;
+        # the launch-model guard itself is covered by
+        # test_replication_launch_model_must_match_the_strict_authorization.
+        self.assertIn("replication authority has stale nested binding", result.stderr + result.stdout)
+
+    def test_replication_launch_model_must_match_the_strict_authorization(self) -> None:
+        sequence = active_lifecycle_v1_sequences()[0]
+        # The guard compares the launch defaults against the authority, so the mismatch fixture
+        # must differ from DEFAULT_WORKFLOW_* rather than from any command-line argument.
+        mismatched = {
+            "id": "codex-openai-gpt-5-6-sol-high",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "high",
+        }
+        self.assertNotEqual(mismatched["id"], runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID)
+        with (
+            mock.patch.object(
+                runner, "baseline_replication_authority", return_value={"model_condition": mismatched}
+            ),
+            mock.patch.object(runner, "baseline_replication_binding"),
+            self.assertRaisesRegex(
+                ValueError, "baseline replication launch model does not match the strict authorization"
+            ),
+        ):
+            runner.require_zero_mistake_pilot_replicate(
+                sequence, "baseline-bare-codex", 1, prepare_only=False
+            )
+
+    def test_replication_launch_model_matching_authority_is_accepted(self) -> None:
+        sequence = active_lifecycle_v1_sequences()[0]
+        matching = {
+            "id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+            "model": runner.DEFAULT_WORKFLOW_MODEL,
+            "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
+        }
+        with (
+            mock.patch.object(
+                runner, "baseline_replication_authority", return_value={"model_condition": matching}
+            ),
+            mock.patch.object(runner, "baseline_replication_binding"),
+        ):
+            runner.require_zero_mistake_pilot_replicate(
+                sequence, "baseline-bare-codex", 1, prepare_only=False
+            )
 
     def test_unapproved_lifecycle_v1_replication_identities_remain_blocked(self) -> None:
         self.assertTrue((ROOT / runner.BASELINE_REPLICATION_AUTHORITY_REL).is_file())
