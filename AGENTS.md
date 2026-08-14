@@ -46,8 +46,9 @@ Do not finish an evaluation run with stale `ready-not-run`, `no production resul
 
 ## Required checks
 
-Run `make check`. It is the executable definition of this gate and is what the `validate`
-GitHub Actions workflow runs, so the checklist cannot drift from what CI enforces:
+Run `make check`. It is the executable definition of this gate, so the list below documents one
+target rather than a second checklist that can drift from it. Nothing runs it automatically:
+this repository has no CI, and an unrun gate is the same as no gate.
 
 ```bash
 make check
@@ -58,6 +59,7 @@ That target runs, in order:
 ```bash
 python3 scripts/update_workflow_runbook.py --check
 python3 scripts/test_workflow_evaluation_contract.py
+python3 scripts/test_claude_code_usage_contract.py
 python3 scripts/validate_repository.py
 truthmark check --json
 truthmark index --json
