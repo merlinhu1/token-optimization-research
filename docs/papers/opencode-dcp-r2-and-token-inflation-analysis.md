@@ -1,5 +1,11 @@
 # OpenCode DCP r2 screen and Serena/jCodemunch token-inflation analysis
 
+> **Retired evidence.** This report describes Lifecycle V0 results. V0 was retired on
+> 2026-08-14 under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json);
+> its sessions, artifacts, and protocols were deleted from the active corpus, so the
+> numbers below are no longer reproducible from this repository. The report is retained
+> because negative findings and exclusions are part of the research record.
+
 **Evaluation date:** 2026-07-30 to 2026-07-31
 **Runtime:** OpenCode 1.18.9
 **Model condition:** `opencode-openai-gpt-5-6-sol-high` (`gpt-5.6-sol`, reasoning effort `high`)

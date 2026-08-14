@@ -1,5 +1,11 @@
 # Successive OpenCode r1 screen: jCodemunch, LeanCTX, SigMap, Caveman, and LowFat
 
+> **Retired evidence.** This report describes Lifecycle V0 results. V0 was retired on
+> 2026-08-14 under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json);
+> its sessions, artifacts, and protocols were deleted from the active corpus, so the
+> numbers below are no longer reproducible from this repository. The report is retained
+> because negative findings and exclusions are part of the research record.
+
 ## Abstract
 
 This single-replicate screen evaluated five additional token-optimization products in OpenCode 1.18.9 with GPT-5.6 Sol at `high` reasoning effort. Each treatment ran the same persistent Fastify, Beets, and Terraform lifecycle-v0 workflows against one accepted fresh bare-OpenCode control per workflow. Provider-reported tokens were the primary outcome; task and final verifiers were degradation diagnostics.
