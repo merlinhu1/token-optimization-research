@@ -1007,8 +1007,10 @@ def validate_large_project_candidates(candidate_doc: dict, fixture_doc: dict, er
     if candidate_doc.get("schema_version") != 1:
         errors.append("data/large-project-candidates.json must use schema_version 1")
     candidates = candidate_doc.get("candidates")
-    if not isinstance(candidates, list) or not candidates:
-        errors.append("data/large-project-candidates.json must contain a non-empty candidates list")
+    # The list may be empty: no large-project lane is active since the Lifecycle V0 retirement
+    # removed Terraform. The file still carries the selection policy for a future large lane.
+    if not isinstance(candidates, list):
+        errors.append("data/large-project-candidates.json must contain a candidates list")
         return
     fixture_ids = {fixture.get("id") for fixture in fixture_doc.get("fixtures", [])}
     for candidate in candidates:
