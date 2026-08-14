@@ -2203,9 +2203,16 @@ def validate_invalid_treatment_disposition(
         errors.append(f"workflow session {sid} {label} must record invalidity reasons")
 
 
-def validate_production_v3_schema_shape(session: dict, sid: str, errors: list[str]) -> None:
-    """Gate record shape on the published schema, then add the constraints it cannot express."""
-    validate_session_schema_conformance(session, sid, errors)
+def validate_production_v3_schema_shape(
+    session: dict, sid: str, errors: list[str], *, schema_checked: bool = False
+) -> None:
+    """Gate record shape on the published schema, then add the constraints it cannot express.
+
+    `schema_checked` lets the registry pass skip a re-validation it already performed; the
+    default keeps direct callers fully gated.
+    """
+    if not schema_checked:
+        validate_session_schema_conformance(session, sid, errors)
     # The published schema requires these only under its schema_version 2 branch, and never
     # requires baseline_pool. Production-v3 identity records require all of them outright.
     for key in (
@@ -2284,8 +2291,10 @@ def validate_tool_adapter_identity(identity: object, expected: object, profile_i
         errors.append(f"workflow session {sid} treatment tool identity does not match selected_execution descriptor")
 
 
-def validate_production_v3_identity(session: dict, run_record: dict | None, sid: str, errors: list[str]) -> None:
-    validate_production_v3_schema_shape(session, sid, errors)
+def validate_production_v3_identity(
+    session: dict, run_record: dict | None, sid: str, errors: list[str], *, schema_checked: bool = False
+) -> None:
+    validate_production_v3_schema_shape(session, sid, errors, schema_checked=schema_checked)
     frozen_protocol = validate_required_object(session, "frozen_protocol", sid, errors)
     baseline_pool = validate_required_object(session, "baseline_pool", sid, errors)
     selected = validate_required_object(session, "selected_execution", sid, errors)
@@ -2482,7 +2491,9 @@ def validate_structured_task_outcomes(session: dict, sid: str, errors: list[str]
         errors.append(f"workflow session {sid} software_quality.functional_verifier_passed does not match structured outcomes")
 
 
-def validate_workflow_session_contract(session: dict, canonical_profile: dict | None, errors: list[str]) -> None:
+def validate_workflow_session_contract(
+    session: dict, canonical_profile: dict | None, errors: list[str], *, schema_checked: bool = False
+) -> None:
     sid = session.get("session_id") or session.get("id") or "<unknown>"
     sequence = session.get("task_sequence", {})
     frozen_protocol = session.get("frozen_protocol")
@@ -2491,7 +2502,7 @@ def validate_workflow_session_contract(session: dict, canonical_profile: dict | 
         and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
     )
     if production_v3:
-        validate_production_v3_identity(session, None, sid, errors)
+        validate_production_v3_identity(session, None, sid, errors, schema_checked=schema_checked)
     if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
         prompt_delivery = sequence.get("prompt_delivery") if isinstance(sequence, dict) else None
         if not isinstance(prompt_delivery, dict):
@@ -2795,7 +2806,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 or selected_descriptor.get("selected_profile", {}).get("profile_id") != profile_id
             ):
                 errors.append(f"workflow session {sid} selected execution does not match top-level role/profile")
-        validate_workflow_session_contract(session, canonical_profile, errors)
+        validate_workflow_session_contract(session, canonical_profile, errors, schema_checked=True)
         interpretation = session.get("interpretation", {}) if isinstance(session.get("interpretation"), dict) else {}
         comparison_id = interpretation.get("comparison_baseline_session_id")
         accepted_for_objective = interpretation.get("accepted_for_objective") is True
@@ -2943,7 +2954,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                     except Exception as exc:
                         errors.append(f"workflow session {sid} run.json cannot be parsed: {exc}")
                     else:
-                        validate_production_v3_identity(session, run_record, sid, errors)
+                        validate_production_v3_identity(session, run_record, sid, errors, schema_checked=True)
             elif len(roots) > 1:
                 errors.append(f"workflow session {sid} compact artifacts must share one directory")
 

@@ -875,6 +875,48 @@ def claude_baseline_run_gate(
     return True, "owner-authorized Claude Code Sol/high baseline is unoccupied"
 
 
+SERIALIZED_REPLICATION_PROFILE_IDS = {
+    "baseline-bare-codex",
+    "baseline-claude-code-no-mcp",
+    "runtime-opencode-codex-product-v1",
+}
+SERIALIZED_REPLICATION_GENERATIONS = {"baseline-v3", "baseline-v4", "lifecycle-v1"}
+
+
+def serialized_replication_lanes(
+    jobs: list[tuple[str, str]], *, replicate_index: int
+) -> list[tuple[str, str]]:
+    """Lanes an owner-authorized replication must run one at a time."""
+    selected: list[tuple[str, str]] = []
+    for sequence_id, profile_id in jobs:
+        if profile_id not in SERIALIZED_REPLICATION_PROFILE_IDS:
+            continue
+        generation = workflow.load_sequence(sequence_id).get("task_family_generation")
+        if generation not in SERIALIZED_REPLICATION_GENERATIONS:
+            continue
+        if replicate_index > 0 or (
+            profile_id == "runtime-opencode-codex-product-v1" and generation == "lifecycle-v1"
+        ):
+            selected.append((sequence_id, profile_id))
+    return selected
+
+
+def requires_serialized_replication(
+    sequences: list[str],
+    treatment_profiles: list[str] | None,
+    *,
+    baseline_profile_id: str,
+    replicate_index: int,
+) -> bool:
+    """Whether the requested lanes -- before planning -- must be serialized."""
+    requested = [
+        (sequence_id, profile)
+        for sequence_id in sequences
+        for profile in (treatment_profiles or [baseline_profile_id])
+    ]
+    return bool(serialized_replication_lanes(requested, replicate_index=replicate_index))
+
+
 def plan_workflow_jobs(
     sequence_ids: list[str],
     treatment_profiles: list[str],
@@ -3291,6 +3333,17 @@ def main(argv: list[str] | None = None) -> int:
             passed, reason = treatment_gate(sequence_id)
             if not passed:
                 raise ValueError(f"treatments are blocked for {sequence_id}: {reason}")
+    # Serialization is a property of the requested lanes, not of the planned ones, so reject a
+    # parallel replication plan before any authority resolution. Otherwise an unrelated gate --
+    # a superseded replication authority, say -- masks the argument error and the operator never
+    # learns the plan was also non-serial. The post-plan check below still guards the real set.
+    if requires_serialized_replication(
+        sequences,
+        treatment_profiles,
+        baseline_profile_id=baseline_profile_id,
+        replicate_index=args.replicate_index,
+    ) and args.max_parallel != 1:
+        raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     jobs = (
         [(sequence_id, profile) for sequence_id in sequences for profile in (treatment_profiles or [baseline_profile_id])]
         if args.prepare_only
@@ -3311,20 +3364,8 @@ def main(argv: list[str] | None = None) -> int:
             args.replicate_index,
             prepare_only=args.prepare_only,
         )
-    serialized_replication_jobs = [
-        (sequence_id, profile_id)
-        for sequence_id, profile_id in jobs
-        if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}
-        and (
-            args.replicate_index > 0
-            or (
-                profile_id == "runtime-opencode-codex-product-v1"
-                and workflow.load_sequence(sequence_id).get("task_family_generation") == "lifecycle-v1"
-            )
-        )
-        and workflow.load_sequence(sequence_id).get("task_family_generation") in {"baseline-v3", "baseline-v4", "lifecycle-v1"}
-    ]
-    if serialized_replication_jobs and args.max_parallel != 1:
+    planned_serialized_lanes = serialized_replication_lanes(jobs, replicate_index=args.replicate_index)
+    if planned_serialized_lanes and args.max_parallel != 1:
         raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     published_launch_commit = None
     if not args.prepare_only and not args.dry_run:
