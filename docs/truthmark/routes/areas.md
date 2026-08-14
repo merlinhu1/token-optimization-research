@@ -220,14 +220,13 @@ Code surface:
 - scripts/update_workflow_runbook.py
 - scripts/validate_repository.py
 - Makefile
-- .github/workflows/**
 - requirements-dev.txt
 - README.md
 
 Update truth when:
 - an evaluation run, protocol refresh, fixture transition, session merge/deletion, or comparison changes repository evidence state
 - repo-local agent instructions, installed local skills, Truthmark routing, or validation workflow changes
-- the required-checks gate, its executable definition, its CI enforcement, or its declared dependencies change
+- the required-checks gate, its executable definition, how it is invoked, or its declared dependencies change
 - future agents need a different change sequence for research-truth work
 
 ## Research Route Support
