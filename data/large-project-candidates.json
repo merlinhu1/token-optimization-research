@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Large-project candidate retained as historical Lifecycle V1 evidence; no active large workflow is selected.",
+  "description": "No large-project lane is active. Terraform was a Lifecycle V0-only fixture and was removed on 2026-08-14 with the V0 retirement; a future large lane requires a new candidate and its own qualification.",
   "selection_policy": {
     "include": "Large, active, public repositories with substantial software-engineering task surfaces and feasible subsystem-scoped verification.",
     "exclude": "User-owned/local personal projects, toy fixtures, archived repositories, and projects where no bounded verifier can be frozen.",
@@ -8,26 +8,5 @@
     "active_fixture_count": 0,
     "target_matrix": "Historical Terraform evidence only."
   },
-  "candidates": [
-    {
-      "id": "large-hashicorp-terraform",
-      "status": "historical-evidence",
-      "qualification_status": "historical-evidence",
-      "qualification_evidence": "sources/evaluations/fixtures/large/hashicorp-terraform/qualification-lifecycle-v1.json",
-      "tasks": [
-        "terraform-lifecycle-feature-v1",
-        "terraform-lifecycle-refactor-v1",
-        "terraform-lifecycle-review-v1"
-      ],
-      "active_profiles": [],
-      "github": "hashicorp/terraform",
-      "url": "https://github.com/hashicorp/terraform",
-      "language": "Go",
-      "size_kb": 59640,
-      "default_branch": "main",
-      "setup_policy": "Use the pinned Go toolchain and run go mod download before bounded verification.",
-      "verifier_policy": "Use bounded Go test selectors for the controller-held regression closure plus the task verifier; do not run the full repository test suite for every replicate.",
-      "selection_status": "historical-evidence"
-    }
-  ]
+  "candidates": []
 }

@@ -554,9 +554,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         active = [item for item in fixtures if item.get("evaluation_use") == "primary-objective"]
         self.assertEqual([item["id"] for item in active], ["medium-fastify-fastify", "medium-beetbox-beets"])
         self.assertTrue(all(item["status"] == "treatment-ready" for item in active), active)
-        retired = next(item for item in fixtures if item["id"] == "large-hashicorp-terraform")
-        self.assertEqual(retired["status"], "retired-fixture")
-        self.assertEqual(retired["evaluation_use"], "historical-evidence")
+        self.assertNotIn("large-hashicorp-terraform", [item["id"] for item in fixtures])
 
     def test_repaired_opencode_screen_is_registry_derived_and_activation_audited(self) -> None:
         path = ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -742,12 +740,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         )
         for fixture in active:
             self.assertEqual(fixture["candidate_profiles"], ["baseline-bare-codex", *corrected])
-        terraform = next(fixture for fixture in fixtures if fixture["id"] == "large-hashicorp-terraform")
-        self.assertEqual(terraform["status"], "retired-fixture")
-        self.assertEqual(terraform["evaluation_use"], "historical-evidence")
-        self.assertNotIn("workflow_sequence_id", terraform)
-        self.assertEqual(terraform["active_profiles"], [])
-        self.assertEqual(terraform["future_evaluation_lanes"], [])
+        # Terraform was the only large-project fixture and was removed with the Lifecycle V0
+        # retirement on 2026-08-14; no large lane is registered.
+        self.assertNotIn("large-hashicorp-terraform", [fixture["id"] for fixture in fixtures])
 
         medium = json.loads((ROOT / "data/medium-project-candidates.json").read_text())
         medium_active = [
@@ -761,11 +756,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             [candidate["id"] for candidate in large["candidates"] if candidate.get("selection_status") == "production-fixture"],
             [],
         )
-        historical_large = large["candidates"][0]
-        self.assertEqual(historical_large["id"], "large-hashicorp-terraform")
-        self.assertEqual(historical_large["selection_status"], "historical-evidence")
-        self.assertEqual(historical_large["qualification_status"], "historical-evidence")
-        self.assertNotIn("workflow_sequence_id", historical_large)
+        # No large-project candidate remains after the Lifecycle V0 retirement removed Terraform.
+        # The file keeps its selection policy so a future large lane can be qualified.
+        self.assertEqual(large["candidates"], [])
         self.assertEqual(large["selection_policy"]["active_fixture_count"], 0)
 
     def test_new_treatment_adapters_preserve_declared_boundaries(self) -> None:
