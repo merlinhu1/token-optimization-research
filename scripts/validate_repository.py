@@ -1734,7 +1734,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         required_markers = (
                             "Implement the task completely and correctly.",
                             "Search and inspect the repository as needed",
-                            "run the existing tests and checks you judge relevant",
+                            "run the project test suite once as your final verification step",
                         )
                         forbidden_markers = (
                             # Revoked 2026-08-15: banning the suite suppressed the terminal
