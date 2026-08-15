@@ -320,11 +320,7 @@ LOCAL_SKILL_ARTIFACTS = [
     ".agents/skills/index.md",
     ".agents/skills/benchmark-protocol-writer.md",
     ".agents/skills/claim-evidence-auditor.md",
-    ".agents/skills/stack-ablation-planner.md",
     ".agents/skills/practical-software-quality-reviewer.md",
-    ".agents/skills/scientific-report-reviewer.md",
-    ".agents/skills/citation-light-prior-art-mapper.md",
-    ".agents/skills/figure-table-planner.md",
 ]
 
 DECISION_RECORDS = [

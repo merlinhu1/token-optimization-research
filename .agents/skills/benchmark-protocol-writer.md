@@ -37,7 +37,7 @@ Use `scripts/run_sequential_workflow_matrix.py`. Never route Lifecycle V1 result
 
 ## After a run
 
-Follow the `AGENTS.md` documentation lifecycle. Update authoritative registries, regenerate the runbook, reconcile active findings/status docs and prompts, delete superseded surfaces, validate, and inspect Git status for missing tests or untracked evidence.
+Follow the `AGENTS.md` documentation lifecycle. Update authoritative registries, regenerate the runbook and registry summaries, reconcile active findings/status docs and prompts, delete superseded surfaces, validate, and inspect Git status for missing tests or untracked evidence.
 
 ## Pitfalls
 

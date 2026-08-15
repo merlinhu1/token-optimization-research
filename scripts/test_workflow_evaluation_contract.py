@@ -17,7 +17,6 @@ import sys
 import tempfile
 import threading
 import unittest
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -111,61 +110,6 @@ def active_lifecycle_v1_sequences(document: dict | None = None) -> list[dict]:
         if sequence.get("status") == "active"
         and sequence.get("task_family_generation") == "lifecycle-v1"
     ]
-
-
-@contextmanager
-def published_unoccupied_probe_worktree():
-    """Yield published bytes without mutable paid-attempt receipts, then remove them safely."""
-    temp = tempfile.TemporaryDirectory(prefix="workflow-paid-gate-probe-")
-    probe = Path(temp.name) / "repo"
-    subprocess.run(
-        ["git", "worktree", "add", "--quiet", "--detach", str(probe), "HEAD"],
-        cwd=ROOT,
-        check=True,
-    )
-    registry_path = probe / "data/workflow-sessions.json"
-    registry = json.loads(registry_path.read_text())
-    current_sequences = {
-        "fastify-lifecycle-sequence-v1",
-        "beets-lifecycle-sequence-v1",
-    }
-    removed = [
-        session
-        for session in registry.get("sessions", [])
-        if session.get("task_sequence", {}).get("sequence_id") in current_sequences
-        and session.get("profile", {}).get("profile_id") == "baseline-bare-codex"
-        and session.get("replicate_index") in {1, 2}
-        and str(session.get("session_id", "")).startswith("baseline-")
-    ]
-    removed_ids = {session["session_id"] for session in removed}
-    registry["sessions"] = [
-        session for session in registry.get("sessions", [])
-        if session.get("session_id") not in removed_ids
-    ]
-    registry_path.write_text(json.dumps(registry, indent=2) + "\n")
-    for session in removed:
-        artifact_root = session.get("artifacts", {}).get("root")
-        if isinstance(artifact_root, str):
-            shutil.rmtree(probe / artifact_root, ignore_errors=True)
-    shutil.rmtree(
-        probe / "sources/evaluations/audits/current-low-complexity-baseline-r1-r2-attempts",
-        ignore_errors=True,
-    )
-    shutil.rmtree(
-        probe / "sources/evaluations/audits/lifecycle-v1-codex-sol-high-r1-attempts",
-        ignore_errors=True,
-    )
-    try:
-        yield probe
-    finally:
-        subprocess.run(
-            ["git", "worktree", "remove", "--force", str(probe)],
-            cwd=ROOT,
-            check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        temp.cleanup()
 
 
 def current_protocol_path(sequence_id: str, profile_id: str = "baseline-bare-codex") -> Path:
@@ -669,6 +613,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("regenerate the workflow runbook", evaluator_prompt)
         self.assertIn("## After a run", protocol_skill)
         self.assertIn("regenerate the runbook", protocol_skill)
+
+    def test_optional_quality_review_cannot_become_an_acceptance_gate(self) -> None:
+        reviewer = (ROOT / ".agents/skills/practical-software-quality-reviewer.md").read_text()
+        self.assertNotIn("## Scoring", reviewer)
+        self.assertIn("Do not produce a numeric score", reviewer)
+        self.assertIn("Compilation remains the controller's task/workflow acceptance gate", reviewer)
 
     def test_retired_progressive_evaluation_scaffold_is_absent(self) -> None:
         retired = (
@@ -4657,8 +4607,9 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
             self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
 
-    def test_lifecycle_v1_replication_requires_serial_plan_before_lane_root(self) -> None:
-        with published_unoccupied_probe_worktree() as probe:
+    def test_lifecycle_v1_rejects_nonzero_baseline_replicate_before_lane_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            lane_root = Path(tmp) / "lanes"
             result = subprocess.run(
                 [
                     sys.executable,
@@ -4669,15 +4620,17 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                     "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
                     "--workflow-model", "gpt-5.6-sol",
                     "--workflow-reasoning-effort", "high",
+                    "--lane-root", str(lane_root),
                     "--dry-run",
                 ],
-                cwd=probe,
+                cwd=ROOT,
                 text=True,
                 capture_output=True,
                 check=False,
             )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("owner-authorized current baseline replication requires --max-parallel 1", result.stderr + result.stdout)
+        self.assertIn("corrected Lifecycle V1 baseline authorizes only replicate 0", result.stderr + result.stdout)
+        self.assertFalse(lane_root.exists())
 
     def test_paid_launch_checkout_gate_requires_clean_published_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -5079,7 +5032,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 mock.patch.object(matrix, "merge_registry", side_effect=OSError("directory fsync failed after replace")),
             ):
                 with self.assertRaisesRegex(OSError, "fsync failed"):
-                    matrix.merge_lanes([lane], 0, transaction)
+                    matrix.merge_lanes([lane], transaction)
             self.assertTrue(transaction["registry_replacement_attempted"])
             self.assertEqual(transaction["merged_session_ids"], ["unit"])
             self.assertNotIn("skipped", transaction)
@@ -5109,7 +5062,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                 mock.patch.object(matrix, "preserve_rejected_lane_artifacts", return_value=[]),
             ):
                 with self.assertRaises(KeyboardInterrupt):
-                    matrix.merge_lanes([lane], 0, transaction)
+                    matrix.merge_lanes([lane], transaction)
                 self.assertTrue(artifact_path.exists())
                 matrix.rollback_matrix_publication(
                     registry_path,
@@ -5154,7 +5107,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             mock.patch.object(matrix, "preserve_rejected_lane_artifacts", return_value=[]),
             mock.patch.object(matrix, "merge_registry", side_effect=lambda sessions: merged.extend(sessions)),
         ):
-            summary = matrix.merge_lanes(lane_results, 0)
+            summary = matrix.merge_lanes(lane_results)
         self.assertEqual(copied_sessions, [valid["session_id"]])
         self.assertEqual(merged, [valid])
         self.assertEqual(summary["merged_session_ids"], [valid["session_id"]])
@@ -5216,7 +5169,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             mock.patch.object(matrix, "copy_artifacts_for_sessions", return_value=[]),
             mock.patch.object(matrix, "merge_registry", side_effect=lambda sessions: merged.extend(sessions)),
         ):
-            summary = matrix.merge_lanes(lane_results, 0)
+            summary = matrix.merge_lanes(lane_results)
         self.assertEqual(merged, [valid])
         self.assertEqual(summary["merged_session_ids"], [valid["session_id"]])
         self.assertTrue(summary["rejected_lane_errors"])
@@ -5252,7 +5205,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             mock.patch.object(matrix.shutil, "rmtree", side_effect=OSError("cleanup failed")) as rmtree,
         ):
             with self.assertRaisesRegex(RuntimeError, "publication failed"):
-                matrix.merge_lanes([lane], 0, transaction)
+                matrix.merge_lanes([lane], transaction)
         rmtree.assert_not_called()
         self.assertEqual(
             transaction["copied_artifacts"],
@@ -5964,7 +5917,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             }
             with mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": session_id}]), \
                  mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", return_value=False):
-                summary = matrix.merge_lanes([result], replicate_index=0)
+                summary = matrix.merge_lanes([result])
             destination = lane_dir / "rejected-evidence" / session_id
             self.assertEqual(summary["rejected_session_ids"], [session_id])
             self.assertIn(str(destination), result["failure_evidence"])
@@ -6059,7 +6012,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             with mock.patch.object(matrix, "lane_session_records", return_value=[{"session_id": session_id}]), \
                  mock.patch.object(matrix.workflow, "pilot_session_artifacts_valid", side_effect=KeyboardInterrupt("unit interrupt")):
                 with self.assertRaises(KeyboardInterrupt):
-                    matrix.merge_lanes([result], replicate_index=0)
+                    matrix.merge_lanes([result])
             self.assertTrue((lane_dir / "rejected-evidence" / session_id / "rejection.json").is_file())
 
     def test_direct_runner_applies_strict_ingress_before_registry_publication(self) -> None:
@@ -6667,7 +6620,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             env = matrix.workflow_lane_environment(Path("/tmp/unit-lane"), allow_auth_sync=True)
         self.assertNotIn("WORKFLOW_LANE_DISABLE_AUTH_SYNC", env)
 
-    def test_direct_current_replication_rejects_unapproved_identity_before_lock(self) -> None:
+    def test_direct_current_baseline_rejects_nonzero_replicate_before_lock(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         args = argparse.Namespace(
             prepare_only=False,
@@ -6678,56 +6631,18 @@ class LifecycleV1ContractTest(unittest.TestCase):
         with mock.patch.object(runner, "load_sequence", return_value=sequence), \
              mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
              mock.patch.object(runner, "_run_one_locked") as locked:
-            with self.assertRaisesRegex(ValueError, "requires explicit authority"):
+            with self.assertRaisesRegex(ValueError, "authorizes only replicate 0"):
                 runner.run_one(args)
         acquire_lock.assert_not_called()
         locked.assert_not_called()
 
-    def test_direct_current_replication_rejects_unpublished_checkout_before_lock(self) -> None:
+    def test_current_baseline_receipt_and_gate_reject_nonzero_replicates(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        args = argparse.Namespace(
-            prepare_only=False,
-            profile_id="baseline-bare-codex",
-            sequence_id=sequence["id"],
-            replicate_index=1,
-        )
-        with mock.patch.object(runner, "load_sequence", return_value=sequence), \
-             mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
-             mock.patch.object(runner, "lifecycle_v1_pilot_run_gate", return_value=(True, "unit unoccupied")), \
-             mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None), \
-             mock.patch.object(runner, "paid_launch_checkout_errors", return_value=["repository checkout is not clean"]), \
-             mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
-             mock.patch.object(runner, "_run_one_locked") as locked:
-            with self.assertRaisesRegex(ValueError, "paid launch checkout gate failed"):
-                runner.run_one(args)
-        acquire_lock.assert_not_called()
-        locked.assert_not_called()
-
-    def test_prelocked_standalone_cannot_bypass_published_checkout_gate(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        args = argparse.Namespace(
-            prepare_only=False,
-            profile_id="baseline-bare-codex",
-            sequence_id=sequence["id"],
-            replicate_index=1,
-        )
-        with tempfile.TemporaryDirectory() as tmp, \
-             mock.patch.object(runner, "PRODUCTION_LOCK_PATH", Path(tmp) / ".production.lock"), \
-             mock.patch.dict(os.environ, {}, clear=False):
-            fd = runner.acquire_provider_production_lock()
-            os.environ[runner.PRODUCTION_LOCK_FD_ENV] = str(fd)
-            try:
-                with mock.patch.object(runner, "load_sequence", return_value=sequence), \
-                     mock.patch.object(runner, "require_zero_mistake_pilot_replicate"), \
-                     mock.patch.object(runner, "lifecycle_v1_pilot_run_gate", return_value=(True, "unit unoccupied")), \
-                     mock.patch.object(runner, "paid_launch_checkout_errors", return_value=["repository checkout is not clean"]), \
-                     mock.patch.object(runner, "_run_one_locked") as locked:
-                    with self.assertRaisesRegex(ValueError, "paid launch checkout gate failed"):
-                        runner.run_one(args)
-                locked.assert_not_called()
-            finally:
-                os.environ.pop(runner.PRODUCTION_LOCK_FD_ENV, None)
-                os.close(fd)
+        with self.assertRaisesRegex(ValueError, "authorizes only replicate 0"):
+            runner.baseline_attempt_receipt_path(sequence, 1)
+        allowed, reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 1)
+        self.assertFalse(allowed)
+        self.assertIn("authorizes only replicate 0", reason)
 
     def test_unknown_baseline_generation_fails_closed_before_any_paid_boundary(self) -> None:
         sequence = copy.deepcopy(runner.load_sequence("beets-lifecycle-sequence-v1"))
@@ -6757,108 +6672,6 @@ class LifecycleV1ContractTest(unittest.TestCase):
 
 
 
-
-
-    def test_real_matrix_lifecycle_v1_r1_plan_requires_current_authority(self) -> None:
-        with published_unoccupied_probe_worktree() as probe, tempfile.TemporaryDirectory() as tmp:
-            lane_root = Path(tmp) / "lanes"
-            result = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/run_sequential_workflow_matrix.py",
-                    "beets-lifecycle-sequence-v1",
-                    "--replicate-index", "1",
-                    "--max-parallel", "1",
-                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
-                    "--workflow-model", "gpt-5.6-sol",
-                    "--workflow-reasoning-effort", "high",
-                    "--lane-root", str(lane_root),
-                    "--dry-run",
-                ],
-                cwd=probe,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
-            # The 2026-08-13 task-family correction re-froze both lifecycle-v1 protocols, so the
-            # r1 authority's nested binding now names superseded protocol bytes. Per
-            # lifecycle-v1-corrected-task-family-readiness-20260813.json, completed runs and
-            # frozen protocols are historical evidence for the prior task bytes and are not
-            # authorization for the corrected contract, so r1 planning must refuse rather than
-            # plan against the superseded protocol.
-            self.assertNotEqual(result.returncode, 0)
-            self.assertIn(
-                "Lifecycle V1 r1 replication authority has stale nested binding",
-                result.stderr + result.stdout,
-            )
-            self.assertFalse(lane_root.exists())
-
-    def test_lifecycle_v1_replication_rejects_before_unapproved_model_or_lane_root(self) -> None:
-        with published_unoccupied_probe_worktree() as probe:
-            result = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/run_sequential_workflow_matrix.py",
-                    "beets-lifecycle-sequence-v1",
-                    "--replicate-index", "1",
-                    "--max-parallel", "1",
-                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-luna-xhigh",
-                    "--workflow-model", "gpt-5.6-luna",
-                    "--workflow-reasoning-effort", "xhigh",
-                    "--dry-run",
-                ],
-                cwd=probe,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
-        self.assertNotEqual(result.returncode, 0)
-        # The corrected lifecycle-v1 task family supersedes the r1 replication authority, so the
-        # authority gate now rejects before the launch-model comparison is reachable. The
-        # end-to-end invariant that still holds is that nothing is created before rejection;
-        # the launch-model guard itself is covered by
-        # test_replication_launch_model_must_match_the_strict_authorization.
-        self.assertIn("replication authority has stale nested binding", result.stderr + result.stdout)
-
-    def test_replication_launch_model_must_match_the_strict_authorization(self) -> None:
-        sequence = active_lifecycle_v1_sequences()[0]
-        # The guard compares the launch defaults against the authority, so the mismatch fixture
-        # must differ from DEFAULT_WORKFLOW_* rather than from any command-line argument.
-        mismatched = {
-            "id": "codex-openai-gpt-5-6-sol-high",
-            "model": "gpt-5.6-sol",
-            "reasoning_effort": "high",
-        }
-        self.assertNotEqual(mismatched["id"], runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID)
-        with (
-            mock.patch.object(
-                runner, "baseline_replication_authority", return_value={"model_condition": mismatched}
-            ),
-            mock.patch.object(runner, "baseline_replication_binding"),
-            self.assertRaisesRegex(
-                ValueError, "baseline replication launch model does not match the strict authorization"
-            ),
-        ):
-            runner.require_zero_mistake_pilot_replicate(
-                sequence, "baseline-bare-codex", 1, prepare_only=False
-            )
-
-    def test_replication_launch_model_matching_authority_is_accepted(self) -> None:
-        sequence = active_lifecycle_v1_sequences()[0]
-        matching = {
-            "id": runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-            "model": runner.DEFAULT_WORKFLOW_MODEL,
-            "reasoning_effort": runner.DEFAULT_WORKFLOW_REASONING_EFFORT,
-        }
-        with (
-            mock.patch.object(
-                runner, "baseline_replication_authority", return_value={"model_condition": matching}
-            ),
-            mock.patch.object(runner, "baseline_replication_binding"),
-        ):
-            runner.require_zero_mistake_pilot_replicate(
-                sequence, "baseline-bare-codex", 1, prepare_only=False
-            )
 
 
     def test_lifecycle_v1_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:

@@ -147,20 +147,11 @@ For Lifecycle V1 research:
 5. Update `data/workflow-sessions.json`, fixture state, generated runbook, current findings, and any active prompt or method surface affected by the run.
 6. Delete superseded workflow guidance instead of maintaining two architectures.
 
-The Phase 2 report should be concise and evidence-forward: fewer citations, more protocol, compact raw artifacts, provider-reported token usage, verifier diagnostics, optional review context, ablations, and negative findings.
-## Installed repo-local skills
+Research reports should be concise and evidence-forward: fewer citations, more protocol, compact raw artifacts, provider-reported token usage, verifier diagnostics, optional review context, ablations, and negative findings.
 
-The recommended internal skills are installed as repo-local prompt files under `.agents/skills/` and surfaced through `AGENTS.md`:
+## Repo-local skills
 
-- `.agents/skills/benchmark-protocol-writer.md`
-- `.agents/skills/claim-evidence-auditor.md`
-- `.agents/skills/stack-ablation-planner.md`
-- `.agents/skills/practical-software-quality-reviewer.md`
-- `.agents/skills/scientific-report-reviewer.md`
-- `.agents/skills/citation-light-prior-art-mapper.md`
-- `.agents/skills/figure-table-planner.md`
-
-These files are intentionally repo-local rather than global Hermes skills so the research workflow travels with the repository and does not depend on the active user profile.
+Three narrow skills remain under `.agents/skills/`: protocol preparation, claim-evidence auditing, and optional diagnostic review of model-produced changes. General report structure, citations, figures, and experimental design stay in this maintained methodology and `prompts/` instead of being duplicated as skills.
 
 ## Truthmark research-truth layer
 

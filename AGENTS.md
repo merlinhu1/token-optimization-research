@@ -76,14 +76,10 @@ all retained sessions, not just new ones.
 
 When task contracts change, regenerate the affected `qualification-lifecycle-v1-*.json`, regenerate the runbook and registry summaries, and refresh only current V1 execution contracts. A model-facing prompt change mints new qualification and protocol identities and archives the prior corpus.
 
-## Local review skills
+## Local skills
 
-Use the repository-local skill matching the work:
+Load only the skill that matches the current work:
 
-- `.agents/skills/benchmark-protocol-writer.md`
-- `.agents/skills/claim-evidence-auditor.md`
-- `.agents/skills/stack-ablation-planner.md`
-- `.agents/skills/practical-software-quality-reviewer.md`
-- `.agents/skills/scientific-report-reviewer.md`
-- `.agents/skills/citation-light-prior-art-mapper.md`
-- `.agents/skills/figure-table-planner.md`
+- `.agents/skills/benchmark-protocol-writer.md` before preparing or running an evaluation;
+- `.agents/skills/claim-evidence-auditor.md` before publishing research claims;
+- `.agents/skills/practical-software-quality-reviewer.md` only when an optional diagnostic review of model-produced changes is requested or useful.
