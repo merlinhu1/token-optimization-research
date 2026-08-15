@@ -2842,6 +2842,43 @@ class PublishedSchemaGateTest(unittest.TestCase):
             "median-weighted-token-cost",
         )
 
+    def test_review_prompts_withhold_the_review_finding(self) -> None:
+        """A review task must require diagnosis, not restate it.
+
+        The point of the review stage is blast-radius work: read the change, follow it to its
+        definitions and call sites, and decide whether it ships. A prompt that names the correct
+        value or rule converts that into applying a described patch, which is why these prompts
+        were rewritten on 2026-08-15.
+        """
+        # Naming the module or the behavior area is fair -- a pull request has a title. The leak
+        # is stating the rule or the correct value, so match those as whole tokens.
+        giveaways = {
+            "beets-lifecycle-review-v1": (
+                r"\bft\b", r"\bfeat\b", r"&", r"for_artist", r"explicit featuring markers",
+            ),
+            "fastify-lifecycle-review-v1": (
+                r"\b414\b", r"\b413\b", r"URI Too Long", r"Payload Too Large",
+            ),
+        }
+        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
+        checked = 0
+        for sequence in document["sequences"]:
+            for task in sequence["tasks"]:
+                tokens = giveaways.get(task["id"])
+                if not tokens:
+                    continue
+                checked += 1
+                prompt = (ROOT / task["prompt_path"]).read_text()
+                body = prompt.split("\n", 1)[1] if "\n" in prompt else prompt
+                for token in tokens:
+                    self.assertIsNone(
+                        re.search(token, body),
+                        f"{task['id']} prompt discloses the review finding: {token!r}",
+                    )
+                # It must still demand a code correction rather than a written review.
+                self.assertIn("correct it in code", body)
+        self.assertEqual(checked, len(giveaways))
+
     def test_registry_summaries_are_generated_and_current(self) -> None:
         """Registry-derived prose is generated, not hand-reconciled, and drift fails the gate."""
         from scripts import update_registry_summaries as summaries

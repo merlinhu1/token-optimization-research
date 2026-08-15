@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-baseline-bare-codex-4b041a36e0d4",
+  "protocol_id": "beets-lifecycle-sequence-v1-baseline-bare-codex-a03b7311f20d",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-15",
@@ -13,7 +13,7 @@
     "repository": "https://github.com/beetbox/beets.git",
     "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
     "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260815.json",
-    "qualification_sha256": "b29ab295f2397a07bbca95a3539cf415cec4a4eff1fd3303536edada458811e7",
+    "qualification_sha256": "2575e7a0eae7c3d0e7a2721735b49cf2682d35f0e89feccd807382f212055f79",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-4b041a36e0d4.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-a03b7311f20d.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-4b041a36e0d4.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-a03b7311f20d.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -53,14 +53,14 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "5b420467cd36",
+    "protocol_fingerprint": "7c5fbbbdead2",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
       "runner_sha256": "d2ce5a8245c0307a4445a7d9b26e41f7be7b00b22436107a6d4bd2a518121b88",
       "qualification_generator_sha256": "e2c426b9e3068fac15e41d96ceb5b31d66991276a684ca365dc8dc3cf885cd92",
-      "validator_sha256": "97bd56106e1befbb6f2e6419eb29a503e678bd13b0430c43561c1fb7dc9d6f45",
+      "validator_sha256": "d25f7152e13945f7f6409b068c0656c418b7981211ec2261e884365b23bcd010",
       "sequence_id": "beets-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-beetbox-beets",
@@ -139,7 +139,7 @@
           "order": 3,
           "task_class": "code-review-correction",
           "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/agent-prompt.txt",
-          "prompt_sha256": "ac6d860739bacf88ef2852750548b3a0d63dad53db44e37f6420ada03932ad35",
+          "prompt_sha256": "cecf8095a10d244e096e2e532c57dad00bf9c42a5a0ffff47479b4e993d28516",
           "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
           "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/verify.sh",
           "verifier_sha256": "7ad4e01e8a7b2ecd2852e8985cef05840fa0a9d1ce9f775a87ccf35be7ff98dd",
@@ -175,13 +175,13 @@
           {
             "task_id": "beets-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "9989e7a3b0c68895141fbecfe8a863ea3729f8ce8d7ed6d534918dea7ef8d25a"
+            "rendered_prompt_sha256": "91eceef4bb5ae24ca2aaf89bb0beb06b34b832f5d45fe95fe37819cbd067ff0c"
           }
         ]
       },
       "qualification": {
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260815.json",
-        "sha256": "b29ab295f2397a07bbca95a3539cf415cec4a4eff1fd3303536edada458811e7"
+        "sha256": "2575e7a0eae7c3d0e7a2721735b49cf2682d35f0e89feccd807382f212055f79"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -273,7 +273,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "81ffc942b7c18f577e81fa1bf81cb8bc389e4942a283665233b9f4d6dc2cc55f",
+    "descriptor_sha256": "e3cd679b65c4310cd7bce1e4cbd1ed007e95ce3df1a0a036cda58dd3a329f809",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v1",
@@ -358,7 +358,7 @@
           {
             "task_id": "beets-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "9989e7a3b0c68895141fbecfe8a863ea3729f8ce8d7ed6d534918dea7ef8d25a"
+            "rendered_prompt_sha256": "91eceef4bb5ae24ca2aaf89bb0beb06b34b832f5d45fe95fe37819cbd067ff0c"
           }
         ]
       },
@@ -438,7 +438,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "5b420467cd36",
+        "protocol_fingerprint": "7c5fbbbdead2",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {

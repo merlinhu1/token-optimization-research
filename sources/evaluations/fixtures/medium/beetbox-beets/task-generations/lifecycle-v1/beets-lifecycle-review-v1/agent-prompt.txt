@@ -1,8 +1,10 @@
-# Correct featuring-token selection in ftintitle
+# Review the proposed ftintitle featuring-split change
 
-Review and correct the proposed featuring-token change already present in the working tree. The first split pass must recognize only explicit featuring markers such as `ft`, `feat`, and `featuring`; generic artist separators such as `&` belong only to the later artist fallback.
+A change to featuring-artist splitting in the `ftintitle` plugin is already applied in the working tree and is proposed for merge. Review it the way you would review a colleague's pull request.
 
-Make the correction in code, preserve custom featuring words, and keep title handling from splitting on generic artist separators.
+Work out what behavior the surrounding code and its callers depend on, decide whether the change preserves that behavior, and identify any defect that would be unacceptable to ship. Do not assume the change is correct, and do not assume it is wrong; the repository itself is the authority on intended behavior.
+
+If you find an acceptance-critical defect, correct it in code rather than only describing the finding, and keep behavior that other call sites depend on intact.
 
 Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run the existing tests and checks you judge relevant, including the project test suite, and preserve earlier task work in the persistent checkout.
 

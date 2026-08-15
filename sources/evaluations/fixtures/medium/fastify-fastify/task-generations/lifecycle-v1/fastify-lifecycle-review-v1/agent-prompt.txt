@@ -1,8 +1,10 @@
-# Correct the max-parameter-length error response
+# Review the proposed max-parameter-length error change
 
-Review and correct the proposed max-route-parameter-length error change already present in the working tree. An overlong route parameter represents a URI that is too long and must produce HTTP 414 consistently in both the generated Fastify error and the direct response path.
+A change to the max-route-parameter-length error is already applied in the working tree and is proposed for merge. Review it the way you would review a colleague's pull request.
 
-Make the correction in code rather than only describing the review finding, and keep default and custom framework-error handling consistent.
+Work out what response this error is specified to produce, decide whether the change preserves that contract, and identify any defect that would be unacceptable to ship. Do not assume the change is correct, and do not assume it is wrong; the repository itself is the authority on intended behavior. The generated framework error and the direct response path must remain consistent with each other and with the documented contract.
+
+If you find an acceptance-critical defect, correct it in code rather than only describing the finding, and keep default and custom framework-error handling consistent.
 
 Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run the existing tests and checks you judge relevant, including the project test suite, and preserve earlier task work in the persistent checkout.
 

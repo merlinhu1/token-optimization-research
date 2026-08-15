@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v1-baseline-bare-codex-a390c06a2c3c",
+  "protocol_id": "fastify-lifecycle-sequence-v1-baseline-bare-codex-e7225c05c570",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for fastify-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-15",
@@ -13,7 +13,7 @@
     "repository": "https://github.com/fastify/fastify.git",
     "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
     "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1-20260815.json",
-    "qualification_sha256": "cf3cb2218845428f17cb88aeedcfc7d56873121fd1a26d111388ce51867813cc",
+    "qualification_sha256": "8aab69ae2fc4cd7397ad42a1673ce9745de2e756163d1d9ce94cb65ac6d49c1b",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id fastify-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-a390c06a2c3c.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id fastify-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-e7225c05c570.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id fastify-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-a390c06a2c3c.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id fastify-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-e7225c05c570.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -53,14 +53,14 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "3c3aa4b37f62",
+    "protocol_fingerprint": "10b61a07ce6f",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
       "runner_contract_version": "workflow-runner-v10",
       "runner_sha256": "d2ce5a8245c0307a4445a7d9b26e41f7be7b00b22436107a6d4bd2a518121b88",
       "qualification_generator_sha256": "e2c426b9e3068fac15e41d96ceb5b31d66991276a684ca365dc8dc3cf885cd92",
-      "validator_sha256": "97bd56106e1befbb6f2e6419eb29a503e678bd13b0430c43561c1fb7dc9d6f45",
+      "validator_sha256": "d25f7152e13945f7f6409b068c0656c418b7981211ec2261e884365b23bcd010",
       "sequence_id": "fastify-lifecycle-sequence-v1",
       "sequence_contract": "feature-refactor-review",
       "fixture_id": "medium-fastify-fastify",
@@ -139,7 +139,7 @@
           "order": 3,
           "task_class": "code-review-correction",
           "prompt_path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/agent-prompt.txt",
-          "prompt_sha256": "dbd8cad23b129f7dd187e834ee1240b4b71397949144a94f087ec0583220f555",
+          "prompt_sha256": "b71b85c75322b57f07b8aecf7a4343385d047e016d693d116ce418f5b04e50e7",
           "seed_patch_sha256": "0402a5fc7785775c034fddc539539bbbd0083d11a6f555e22f95dd992476aa3c",
           "verifier_command": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/verify.sh",
           "verifier_sha256": "43583a187ed1382065ead27172cf85daccddcae21a454b9118a77bb7523555b5",
@@ -176,13 +176,13 @@
           {
             "task_id": "fastify-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "8124d175133b743308440b85e5a9069a9f547022eb51e36cc22f0465698062cc"
+            "rendered_prompt_sha256": "79dfe20470067d11b4886230091ac9cfd2d567a77ad62820600c0ebd22ad11f9"
           }
         ]
       },
       "qualification": {
         "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1-20260815.json",
-        "sha256": "cf3cb2218845428f17cb88aeedcfc7d56873121fd1a26d111388ce51867813cc"
+        "sha256": "8aab69ae2fc4cd7397ad42a1673ce9745de2e756163d1d9ce94cb65ac6d49c1b"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -274,7 +274,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "75feda19878dd0bf4815d04bb3768c7e49f506272835628feba2f2f98a5ebb10",
+    "descriptor_sha256": "8182bb4961e00982f1b8965e6c4f8b34a70d8836c6cbbfbb2fd3ef24e154e55d",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v1",
@@ -359,7 +359,7 @@
           {
             "task_id": "fastify-lifecycle-review-v1",
             "order": 3,
-            "rendered_prompt_sha256": "8124d175133b743308440b85e5a9069a9f547022eb51e36cc22f0465698062cc"
+            "rendered_prompt_sha256": "79dfe20470067d11b4886230091ac9cfd2d567a77ad62820600c0ebd22ad11f9"
           }
         ]
       },
@@ -439,7 +439,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "3c3aa4b37f62",
+        "protocol_fingerprint": "10b61a07ce6f",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
