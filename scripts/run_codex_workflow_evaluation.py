@@ -3751,6 +3751,31 @@ def repair_openrouter_ingress_summary(summary: dict[str, Any]) -> dict[str, Any]
     return repaired
 
 
+DEFAULT_PLANNED_REPLICATES = 3
+
+
+def sample_plan_for(summary: dict[str, Any]) -> dict[str, Any]:
+    """Declare the sample this replicate belongs to (ADR 0007).
+
+    The plan is derived from the frozen protocol fingerprint, so every replicate of one
+    protocol lands in one plan without an operator having to name it. Replicates accumulate
+    additively across sessions; ``planned_replicates`` states how many the sample will hold,
+    not when they run.
+    """
+    fingerprint = str(summary.get("baseline_pool", {}).get("protocol_fingerprint", "unplanned"))
+    planned = int(os.environ.get("WORKFLOW_PLANNED_REPLICATES", DEFAULT_PLANNED_REPLICATES))
+    if planned < 3 or planned % 2 == 0:
+        raise ValueError(
+            f"WORKFLOW_PLANNED_REPLICATES must be an odd integer >= 3; got {planned}"
+        )
+    return {
+        "plan_id": f"sample-{fingerprint}",
+        "planned_replicates": planned,
+        "registered_on": DATE,
+        "estimator": "median-weighted-token-cost",
+    }
+
+
 def workflow_session_record(
     seq: dict[str, Any],
     summary: dict[str, Any],
@@ -3816,6 +3841,7 @@ def workflow_session_record(
         "status": "completed" if accepted else "failed",
         "session_role": pmeta["session_role"],
         "replicate_index": summary["replicate_index"],
+        "sample_plan": sample_plan_for(summary),
         "frozen_protocol": summary["frozen_protocol"],
         "baseline_pool": summary["baseline_pool"],
         "selected_execution": summary["selected_execution"],

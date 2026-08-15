@@ -2673,11 +2673,14 @@ def verify_protected_control_plane_files(root: Path = ROOT) -> None:
 
 
 def refresh_generated_runbook(root: Path = ROOT) -> None:
-    subprocess.run(
-        [sys.executable, "scripts/update_workflow_runbook.py"],
-        cwd=root,
-        check=True,
-    )
+    """Regenerate every derived surface before post-publication validation.
+
+    validate_repository fails on drift in both the runbook and the registry-derived corpus
+    summaries, so publishing a session without regenerating them rolls the transaction back
+    for a reason that has nothing to do with the run.
+    """
+    for script in ("scripts/update_workflow_runbook.py", "scripts/update_registry_summaries.py"):
+        subprocess.run([sys.executable, script], cwd=root, check=True)
 
 
 

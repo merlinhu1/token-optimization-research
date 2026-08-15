@@ -4915,11 +4915,19 @@ class MatrixLifecycleContractTest(unittest.TestCase):
     def test_controller_refreshes_generated_runbook_before_validation(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            script = root / "scripts/update_workflow_runbook.py"
-            script.parent.mkdir(parents=True)
-            script.write_text("from pathlib import Path\nPath('refreshed').write_text('yes')\n")
+            (root / "scripts").mkdir(parents=True)
+            # Both derived surfaces must be regenerated, or post-publication validation rolls
+            # back a good session for drift that publishing itself caused.
+            for name, marker in (
+                ("update_workflow_runbook.py", "runbook"),
+                ("update_registry_summaries.py", "summaries"),
+            ):
+                (root / "scripts" / name).write_text(
+                    f"from pathlib import Path\nPath({marker!r}).write_text('yes')\n"
+                )
             matrix.refresh_generated_runbook(root)
-            self.assertEqual((root / "refreshed").read_text(), "yes")
+            self.assertEqual((root / "runbook").read_text(), "yes")
+            self.assertEqual((root / "summaries").read_text(), "yes")
 
     def test_prepare_only_summary_cannot_claim_objective_acceptance(self) -> None:
         self.assertIsNone(
