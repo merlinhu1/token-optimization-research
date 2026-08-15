@@ -3,10 +3,10 @@
 This directory contains Lifecycle V1 fixture implementations, frozen execution contracts, retained provider-run evidence, derived comparisons, and audit receipts.
 
 - `fixtures/` — corrected Fastify and Beets Lifecycle V1 fixtures; their 2026-08-13 qualification inputs remain active for the future rerun.
-- `protocols/` — frozen contracts for current and historical generations. The two corrected bare-Codex protocols are the only corrected no-result contracts eligible for the future rerun; older protocol bytes remain immutable historical contract evidence, not current controls.
+- `protocols/` — the two corrected bare-Codex no-result contracts eligible for the future rerun.
 - `workflow-sessions/` — active provider-backed compact workflow evidence. It is currently empty because the prior corpus was archived before rerun.
-- `archive/lifecycle-v1-pre-corrected-prompts-20260813/` — immutable pre-correction Fastify/Beets sessions, comparisons, and archive-only registry metadata.
-- `audits/` — qualification, accounting, archive, installation-parity, actual-use, and historical analysis receipts.
+- `archive/lifecycle-v1-pre-corrected-prompts-20260813/` — immutable pre-correction sessions, comparisons, protocols, campaign audits, and archive-only registry metadata.
+- `audits/` — current qualification, invalidation, archive, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
 The active registry holds no provider-backed sessions. A corrected task family mints new qualification and protocol identities, so the prior corpus is archived and fresh execution is required before any result claim.

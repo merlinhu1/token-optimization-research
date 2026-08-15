@@ -8,7 +8,7 @@
 
 > **Report status:** withdrawn historical product-effect screen. The narrative preserves the arithmetic reported at the time, but the three corrupted stack sessions, comparisons, compact bundles, and protocols were deleted from the active corpus under receipt. The decision is superseded by the [official-integration parity audit](official-integration-parity-audit.md).
 >
-> **Accounting supersession (2026-07-18):** persistent-session totals in this report also sum cumulative Codex `ThreadTokenUsage.total` snapshots and are inflated. Use the [cumulative usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json) for retained-session accounting. The deleted stack rows remain historical arithmetic only.
+> **Accounting supersession (2026-07-18):** persistent-session totals in this report also sum cumulative Codex `ThreadTokenUsage.total` snapshots and are inflated. Use the [cumulative usage correction audit](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/codex-cumulative-usage-accounting-20260718.json) for retained-session accounting. The deleted stack rows remain historical arithmetic only.
 >
 > **Superseding adjudication (2026-07-18):** TokenJuice's required Codex hook was absent and explicitly disabled; jcodemunch used an unverified launcher and retained no successful MCP handshake. The stack records were deleted rather than relabelled as baseline. No corrected stack protocol will be created until both versioned individual components have valid evidence.
 

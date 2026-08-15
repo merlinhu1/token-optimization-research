@@ -880,7 +880,7 @@ SERIALIZED_REPLICATION_PROFILE_IDS = {
     "baseline-claude-code-no-mcp",
     "runtime-opencode-codex-product-v1",
 }
-SERIALIZED_REPLICATION_GENERATIONS = {"baseline-v3", "baseline-v4", "lifecycle-v1"}
+SERIALIZED_REPLICATION_GENERATIONS = {"lifecycle-v1"}
 
 
 def serialized_replication_lanes(
@@ -1632,15 +1632,6 @@ def run_flow_lane(
     tmp.mkdir(parents=True, exist_ok=True)
     try:
         with log_path.open("w") as log:
-            if provider_capable and production_lock_fd is not None and treatment_profile == "baseline-bare-codex":
-                parent_sequence = workflow.load_sequence(sequence_id)
-                if parent_sequence.get("task_family_generation") in {"baseline-v3", "baseline-v4"}:
-                    workflow.reserve_baseline_pilot_attempt(
-                        parent_sequence,
-                        root=ROOT,
-                        orchestrator=f"workflow-matrix:{lane_root.name}",
-                        replicate_index=replicate_index,
-                    )
             proc = subprocess.run(
                 cmd,
                 cwd=checkout,
@@ -2766,167 +2757,6 @@ def refresh_generated_runbook(root: Path = ROOT) -> None:
     )
 
 
-def refresh_cumulative_usage_audit(root: Path = ROOT) -> None:
-    subprocess.run(
-        [sys.executable, "scripts/audit_codex_cumulative_usage.py"],
-        cwd=root,
-        check=True,
-    )
-
-
-def refresh_current_sol_panel(root: Path = ROOT) -> None:
-    subprocess.run(
-        [
-            sys.executable,
-            "scripts/generate_current_evaluation_panel.py",
-            "--model-condition-id",
-            "codex-openai-gpt-5-6-sol-high",
-            "--replicate-index",
-            "0",
-            "--date",
-            "2026-07-29",
-        ],
-        cwd=root,
-        check=True,
-    )
-
-
-def refresh_lifecycle_v1_opencode_sol_high_pair_panels(root: Path = ROOT) -> None:
-    """Refresh the canonical accepted-ordinal V1 OpenCode/Codex pair panels."""
-    pairs = (
-        (1, "lifecycle-v1-sol-high-accepted-pair-01"),
-        (2, "lifecycle-v1-sol-high-accepted-pair-02"),
-    )
-    for replicate_index, pair_id in pairs:
-        subprocess.run(
-            [
-                sys.executable,
-                "scripts/generate_current_evaluation_panel.py",
-                "--model-condition-id", "opencode-openai-gpt-5-6-sol-high",
-                "--replicate-index", str(replicate_index),
-                "--comparison-pair-id", pair_id,
-                "--date", "2026-08-02",
-                "--output", f"sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-{replicate_index:02d}-panel-results-20260802.json",
-                "--sequence-id", "fastify-lifecycle-sequence-v1",
-                "--sequence-id", "beets-lifecycle-sequence-v1",
-            ],
-            cwd=root,
-            check=True,
-        )
-
-
-def retained_claude_lifecycle_v1_recovery_lanes(
-    summary: dict[str, Any],
-    root: Path = ROOT,
-) -> list[dict[str, Any]]:
-    """Validate a retained paid Claude V1 run before controller-only recovery."""
-    plan = summary.get("plan")
-    if not isinstance(plan, dict):
-        raise ValueError("retained recovery summary is missing its plan")
-    if plan.get("sequences") != list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER):
-        raise ValueError("retained recovery plan does not have the exact authorized sequence order")
-    if plan.get("max_parallel") != 1:
-        raise ValueError("retained recovery requires the original serialized Claude Code Lifecycle V1 plan")
-    if plan.get("replicate_index") != 0 or plan.get("runner_args") != []:
-        raise ValueError("retained recovery plan does not bind the authorized r0 no-retry run")
-    condition = plan.get("model_condition")
-    if not isinstance(condition, dict) or {
-        "id": condition.get("id"),
-        "runtime_id": condition.get("runtime_id"),
-        "model": condition.get("model"),
-        "reasoning_effort": condition.get("reasoning_effort"),
-    } != {
-        "id": "claude-code-openrouter-gpt-5-6-sol-high",
-        "runtime_id": "claude-code",
-        "model": "gpt-5.6-sol",
-        "reasoning_effort": "high",
-    }:
-        raise ValueError("retained recovery plan does not bind the authorized Claude Code Sol/high condition")
-    results = summary.get("lane_results")
-    if not isinstance(results, list) or len(results) != len(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER):
-        raise ValueError("retained recovery summary has an incomplete set of lanes")
-    by_sequence = {
-        item.get("sequence_id"): item
-        for item in results
-        if isinstance(item, dict) and isinstance(item.get("sequence_id"), str)
-    }
-    if set(by_sequence) != set(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER):
-        raise ValueError("retained recovery lanes do not match the authorized sequences")
-    ordered: list[dict[str, Any]] = []
-    for sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
-        result = by_sequence[sequence_id]
-        if result.get("exit_code") != 0 or not isinstance(result.get("checkout"), str):
-            raise ValueError(f"retained recovery lane did not complete successfully: {sequence_id}")
-        checkout = Path(result["checkout"])
-        if not nonsymlink_directory_ancestry(checkout):
-            raise ValueError(f"retained recovery checkout is unsafe: {sequence_id}")
-        frozen = result.get("expected_session_binding", {}).get("frozen_protocol")
-        if not isinstance(frozen, dict):
-            raise ValueError(f"retained recovery binding has no frozen protocol: {sequence_id}")
-        protocol_rel = frozen.get("path")
-        protocol_sha256 = frozen.get("sha256")
-        if (
-            not isinstance(protocol_rel, str)
-            or Path(protocol_rel).is_absolute()
-            or not isinstance(protocol_sha256, str)
-            or len(protocol_sha256) != 64
-        ):
-            raise ValueError(f"retained recovery frozen protocol reference is unsafe: {sequence_id}")
-        protocol_path = root / protocol_rel
-        if not nonsymlink_file_within(root, protocol_path):
-            raise ValueError(f"retained recovery frozen protocol is absent or unsafe: {sequence_id}")
-        if hashlib.sha256(protocol_path.read_bytes()).hexdigest() != protocol_sha256:
-            raise ValueError(f"retained recovery frozen protocol bytes differ: {sequence_id}")
-        authority = load_json(root / CLAUDE_LIFECYCLE_V1_AUTHORITY_REL)
-        authority_row = next(
-            (
-                row for row in authority.get("sequences", [])
-                if isinstance(row, dict) and row.get("sequence_id") == sequence_id
-            ),
-            None,
-        ) if isinstance(authority, dict) else None
-        if (
-            not isinstance(authority_row, dict)
-            or authority_row.get("protocol_path") != frozen.get("path")
-            or authority_row.get("protocol_sha256") != frozen.get("sha256")
-            or authority_row.get("baseline_pool_fingerprint")
-            != result.get("expected_session_binding", {}).get("baseline_pool_fingerprint")
-        ):
-            raise ValueError(f"retained recovery frozen protocol is not the owner-authorized binding: {sequence_id}")
-        expected = expected_session_binding_for_protocol(
-            sequence_id=sequence_id,
-            profile_id="baseline-claude-code-no-mcp",
-            replicate_index=0,
-            protocol_path=Path(protocol_rel),
-            root=root,
-        )
-        if result.get("expected_session_binding") != expected:
-            raise ValueError(f"retained recovery binding does not match current frozen protocol: {sequence_id}")
-        produced = result.get("produced_session_ids")
-        if not isinstance(produced, list) or len(produced) != 1 or not isinstance(produced[0], str):
-            raise ValueError(f"retained recovery lane does not contain exactly one produced session: {sequence_id}")
-        receipt_path = claude_lifecycle_v1_attempt_path(sequence_id, 0, root)
-        if not receipt_path.is_file() or receipt_path.is_symlink():
-            raise ValueError(f"retained recovery immutable receipt is absent or unsafe: {sequence_id}")
-        receipt = load_json(receipt_path)
-        if not isinstance(receipt, dict) or (
-            receipt.get("schema_version") != 1
-            or receipt.get("attempt_status") != "reserved-before-provider-task"
-            or receipt.get("task_family_generation") != "lifecycle-v1"
-            or receipt.get("sequence_id") != sequence_id
-            or receipt.get("replicate_index") != 0
-            or receipt.get("profile_id") != "baseline-claude-code-no-mcp"
-            or receipt.get("model_condition_id") != "claude-code-openrouter-gpt-5-6-sol-high"
-            or receipt.get("model") != "gpt-5.6-sol"
-            or receipt.get("reasoning_effort") != "high"
-            or receipt.get("owner_authorization_message_id") != "1533397324384964609"
-            or receipt.get("authority_path") != CLAUDE_LIFECYCLE_V1_AUTHORITY_REL.as_posix()
-            or receipt.get("expected_session_binding") != expected
-        ):
-            raise ValueError(f"retained recovery receipt does not match the authorized identity: {sequence_id}")
-        ordered.append(result)
-    return ordered
-
 
 def controller_validation_python() -> str:
     """Return a controller Python with all validation dependencies before spend."""
@@ -2997,80 +2827,6 @@ def run_validation(summary_dir: Path, validation_python: str | None = None) -> d
                 return_code = 127
         results.append({"command": cmd, "cwd": str(command_cwd), "exit_code": return_code, "output": str(out)})
     return {"passed": all(item["exit_code"] == 0 for item in results), "results": results}
-
-
-def recover_retained_claude_lifecycle_v1_run(run_root: Path) -> int:
-    """Publish exactly one retained Claude V1 run without any provider invocation."""
-    if not nonsymlink_directory_ancestry(run_root):
-        raise ValueError("retained recovery run root is unsafe")
-    summary_path = run_root / "matrix-summary.json"
-    if not nonsymlink_file_within(run_root, summary_path):
-        raise ValueError("retained recovery matrix summary is absent or unsafe")
-    summary = load_json(summary_path)
-    if not isinstance(summary, dict):
-        raise ValueError("retained recovery matrix summary is malformed")
-    lane_results = retained_claude_lifecycle_v1_recovery_lanes(summary, ROOT)
-    source_status = subprocess.run(
-        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=True,
-    ).stdout.splitlines()
-    permitted = {
-        f"?? {CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / 'fastify-r0.json'}",
-        f"?? {CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / 'beets-r0.json'}",
-    }
-    if set(source_status) != permitted:
-        raise ValueError("retained recovery requires a clean source worktree except its two immutable attempt receipts")
-    registry_path = ROOT / "data/workflow-sessions.json"
-    registry_before = registry_path.read_bytes()
-    authority_paths = (
-        ROOT / "docs/evaluations/operations/runbook.md",
-        ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
-        ROOT / "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
-        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json",
-        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json",
-    )
-    authority_snapshots = {path: path.read_bytes() for path in authority_paths}
-    merge_summary: dict[str, Any] = {}
-    published_comparisons: list[str] = []
-
-    def rollback() -> None:
-        rollback_matrix_publication(
-            registry_path,
-            registry_before,
-            merge_summary,
-            published_comparisons,
-            authority_snapshots,
-        )
-
-    with publication_transaction_guard(rollback):
-        merge_lanes(lane_results, 0, merge_summary)
-        if merge_summary.get("rejected_session_ids") or merge_summary.get("merged_session_count") != 2:
-            raise ValueError("retained recovery strict ingress did not accept both paid lanes")
-        refresh_generated_runbook()
-        refresh_cumulative_usage_audit()
-        refresh_current_sol_panel()
-        refresh_lifecycle_v1_opencode_sol_high_pair_panels()
-        validation = run_validation(run_root)
-        if not validation["passed"]:
-            raise RuntimeError("retained recovery post-publication validation failed")
-    recovered = {
-        "schema_version": 1,
-        "recovery_mode": "controller-only-no-provider",
-        "source_matrix_summary": str(summary_path),
-        "lane_results": [
-            {"sequence_id": item["sequence_id"], "session_ids": item["produced_session_ids"]}
-            for item in lane_results
-        ],
-        "merge": merge_summary,
-        "validation": validation,
-        "accepted": True,
-    }
-    write_json(run_root / "recovery-summary.json", recovered)
-    print(json.dumps(recovered, indent=2), flush=True)
-    return 0
 
 
 def cleanup_lane_checkouts(run_root: Path) -> None:
@@ -3175,30 +2931,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="execute exactly one separately-authorized Beets r2 retry after retained evidence ingress failure",
     )
-    parser.add_argument(
-        "--recover-retained-claude-lifecycle-v1-run-root",
-        type=Path,
-        help="controller-only recovery of one retained paid Claude Code Lifecycle V1 run; never invokes a provider",
-    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     workflow.clear_ambient_git_object_environment()
     args = parse_args(argv)
-    if args.recover_retained_claude_lifecycle_v1_run_root is not None:
-        incompatible = (
-            args.sequences
-            or args.treatment_profiles
-            or args.workflow_model_condition_id
-            or args.workflow_model
-            or args.workflow_reasoning_effort
-            or args.prepare_only
-            or args.dry_run
-        )
-        if incompatible:
-            raise SystemExit("retained Claude Code Lifecycle V1 recovery accepts no execution-plan arguments")
-        return recover_retained_claude_lifecycle_v1_run(args.recover_retained_claude_lifecycle_v1_run_root)
     model_condition = selected_model_condition(args, configure=True)
     sequences = args.sequences or active_sequences()
     valid = set(active_sequences())
@@ -3292,7 +3030,7 @@ def main(argv: list[str] | None = None) -> int:
         return state
 
     def treatment_gate(sequence_id: str) -> tuple[bool, str]:
-        return workflow.baseline_v2_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
+        return workflow.lifecycle_v1_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli":
@@ -3313,7 +3051,7 @@ def main(argv: list[str] | None = None) -> int:
                 ROOT,
                 model_condition_id=str(model_condition.get("id")),
             )
-        return workflow.baseline_v2_pilot_run_gate(
+        return workflow.lifecycle_v1_pilot_run_gate(
             workflow.load_sequence(sequence_id), ROOT, args.replicate_index
         )
 
@@ -3428,13 +3166,7 @@ def main(argv: list[str] | None = None) -> int:
 
     registry_path = ROOT / "data/workflow-sessions.json"
     registry_before = registry_path.read_bytes() if not args.prepare_only else b""
-    authority_paths = (
-        ROOT / "docs/evaluations/operations/runbook.md",
-        ROOT / "sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json",
-        ROOT / "sources/evaluations/audits/codex-openai-gpt-5-6-sol-high-r0-panel-results-20260729.json",
-        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json",
-        ROOT / "sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json",
-    )
+    authority_paths = (ROOT / "docs/evaluations/operations/runbook.md",)
     authority_snapshots = (
         {path: path.read_bytes() for path in authority_paths}
         if not args.prepare_only
@@ -3482,10 +3214,6 @@ def main(argv: list[str] | None = None) -> int:
             )
         verify_protected_control_plane_files()
         refresh_generated_runbook()
-        if not args.prepare_only and merge_summary.get("merged_session_count", 0):
-            refresh_cumulative_usage_audit()
-            refresh_current_sol_panel()
-            refresh_lifecycle_v1_opencode_sol_high_pair_panels()
         validation = run_validation(run_root, validation_python)
         if not args.prepare_only and not validation["passed"]:
             rollback_matrix_publication(

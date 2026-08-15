@@ -268,7 +268,7 @@ def render() -> str:
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
         if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"} and isinstance(gate, dict):
-            current_protocol, _document = workflow.current_baseline_v2_protocol(sequence, gate, ROOT)
+            current_protocol, _document = workflow.current_lifecycle_v1_protocol(sequence, gate, ROOT)
             current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
         else:
             current_default_pool_fingerprints[sequence["id"]] = workflow.baseline_protocol_fingerprint(sequence)
@@ -353,8 +353,8 @@ def render() -> str:
         blocked_gates = []
         pilot_run_states: dict[str, tuple[bool, str]] = {}
         for sequence in sequences:
-            gate_passed, gate_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
-            pilot_run_states[sequence["id"]] = workflow.baseline_v2_pilot_run_gate(sequence, ROOT)
+            gate_passed, gate_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
+            pilot_run_states[sequence["id"]] = workflow.lifecycle_v1_pilot_run_gate(sequence, ROOT)
             if not gate_passed:
                 blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
         if blocked_gates:
@@ -404,7 +404,7 @@ def render() -> str:
                     sequence
                     for sequence in retained_baselines
                     if replicate_index not in reusable_baseline_replicates.get(sequence["id"], [])
-                    and workflow.baseline_v2_pilot_run_gate(sequence, ROOT, replicate_index)[0]
+                    and workflow.lifecycle_v1_pilot_run_gate(sequence, ROOT, replicate_index)[0]
                 ]
                 if not runnable:
                     continue
@@ -422,7 +422,7 @@ def render() -> str:
                 )
             unlocked_baselines = []
             for sequence in retained_baselines:
-                gate_passed, gate_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+                gate_passed, gate_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
                 if gate_passed:
                     unlocked_baselines.append((sequence, gate_reason))
             if unlocked_baselines:

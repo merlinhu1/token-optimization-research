@@ -131,16 +131,16 @@ Recommended visuals:
 | `docs/papers/phase-1-compatibility-safe-token-saving-stacks.md` | Add claim-evidence and falsification discipline; keep stack hypotheses evidence-stage calibrated and not deployment-grade. |
 | `docs/evaluations/plans/phase-2-benchmark-plan.md` | Use protocol-before-result, ablation planning, and benchmark configuration capture. |
 | `docs/evaluations/design/token-and-quality-policy.md` | Keep provider-reported workflow-token eligibility separate from model-behavior diagnostics. |
-| `docs/evaluations/operations/workflow-guide.md` | Convert methodology into lifecycle-v0 execution flows with compact artifacts and operational validity checks. |
+| `docs/evaluations/operations/workflow-guide.md` | Convert methodology into Lifecycle V1 execution flows with compact artifacts and operational validity checks. |
 | `data/workflow-sessions.json` | Store the compact index of operational provider runs and their separate quality diagnostics. |
 | `prompts/paper-writer.md` | Enforce narrative, reverse outline, claim-evidence map, and citation-light prior-art rules. |
 | `prompts/evaluator.md` | Enforce protocol-before-result, baseline compatibility, token-first comparison, and post-run document synchronization. |
 
 ## Current operating recommendation
 
-For lifecycle-v0 research:
+For Lifecycle V1 research:
 
-1. Reuse the retained operational baseline for each active sequence; do not rerun it for a better diagnostic outcome.
+1. Execute the explicitly authorized corrected baseline first; once retained, do not rerun it for a better diagnostic outcome.
 2. Freeze a compatible treatment protocol and verify tool identity, isolation, and fixture qualification before provider use.
 3. Run one treatment through `scripts/run_sequential_workflow_matrix.py` and retain the first operationally valid sample.
 4. Compare cumulative provider-reported tokens as the primary outcome; report verifier and optional source-review outcomes separately.

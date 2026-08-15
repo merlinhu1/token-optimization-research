@@ -2,7 +2,7 @@
 
 This section indexes the token-saving tools studied by the project. Detailed source-level analysis lives under `dossiers/`; each dossier is updated across research sessions and records more than README claims.
 
-For current treatment validity, read the [official-integration parity audit](../papers/official-integration-parity-audit.md). The [Phase 2 Lifecycle V1 report](../papers/phase-2-lifecycle-v1-natural-use-screening.md) contains the current standalone scoped reproduction evidence and is not a stable product ranking. For selection and promotion rules, read the [tool research strategy](../research/tool-research-strategy.md).
+For integration history, read the [official-integration parity audit](../papers/official-integration-parity-audit.md). The [Phase 2 Lifecycle V1 report](../papers/phase-2-lifecycle-v1-natural-use-screening.md) is archived pre-correction evidence, not a current result or product ranking. For selection and promotion rules, read the [tool research strategy](../research/tool-research-strategy.md).
 
 ## Evidence-stage key
 

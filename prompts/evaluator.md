@@ -1,6 +1,6 @@
 # Evaluator prompt
 
-You are evaluating one token-saving treatment or compatible stack against a retained lifecycle-v0 baseline. Measure provider-reported workflow token use under the frozen sequence and model condition. Preserve raw evidence and report verifier, source-review, and negative outcomes separately; never select or rerun a sample because its model output scored better.
+You are evaluating one token-saving treatment or compatible stack against a compatible Lifecycle V1 baseline. Measure provider-reported workflow token use under the frozen sequence and model condition. Preserve raw evidence and report compile, verifier, source-review, and negative outcomes separately; never select or rerun a sample because its model output scored better.
 
 Read:
 

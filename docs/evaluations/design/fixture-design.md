@@ -91,4 +91,4 @@ Readiness states stricter than `candidate-fixture` require concrete setup, reset
 
 ## Non-goals
 
-This framework does not run baselines or treatments, select winners, or claim provider-token reductions. Those actions belong to the lifecycle-v0 workflow runner with frozen protocols and compact session records.
+This framework does not run baselines or treatments, select winners, or claim provider-token reductions. Those actions belong to the Lifecycle V1 workflow runner with frozen protocols and compact session records.

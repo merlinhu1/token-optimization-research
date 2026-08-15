@@ -4,12 +4,13 @@ This directory contains completed research syntheses. These are the documents to
 
 | Paper | Status | Scope |
 |---|---|---|
-| [Successive OpenCode r1 Screen](opencode-successive-next-five-r1-screen.md) | Current single-replicate screening report | jCodemunch, LeanCTX, SigMap, Caveman, and LowFat against shared fresh bare OpenCode; provider tokens, verifier degradation, activation, and uptake |
-| [Luna/`xhigh` r3 Natural-Use Replication Screen](luna-xhigh-r3-natural-use-replication-screen.md) | Current replication screen | Seven frozen profiles against three fresh bare-Codex baselines; provider tokens, lane contrasts, r2 direction changes, and verifier diagnostics |
-| [GPT-5.6 Sol/High Persistent-Baseline Variance Screen](gpt-5-6-sol-high-baseline-variance-screen.md) | Current corrected descriptive model-condition screen | Three persistent baseline replicates per lane; source-backed cumulative-thread accounting, token volume, components, trajectories, and variance versus retained Luna/`xhigh` evidence |
+| [Successive OpenCode r1 Screen](opencode-successive-next-five-r1-screen.md) | Retired Lifecycle V0 report | Historical single-replicate observations; no active controls or claims |
+| [Luna/`xhigh` r3 Natural-Use Replication Screen](luna-xhigh-r3-natural-use-replication-screen.md) | Retired Lifecycle V0 report | Historical replication observations; no active controls or claims |
+| [GPT-5.6 Sol/High Persistent-Baseline Variance Screen](gpt-5-6-sol-high-baseline-variance-screen.md) | Retired Lifecycle V0 report | Historical corrected accounting; source sessions and compact bundles are no longer active |
 | [Official Integration Parity Audit](official-integration-parity-audit.md) | Current validity authority | Exact pinned Codex integration audit and session/comparison disposition |
 | [Phase 3: TokenJuice + jcodemunch MCP Stack Screen](phase-3-tokenjuice-jcodemunch-stack-screen.md) | Withdrawn product-effect and legacy-accounting screen | Historical arithmetic only; superseded treatment validity and cumulative-thread accounting |
-| [Phase 2: Lifecycle V1 Natural-Use Screening](phase-2-lifecycle-v1-natural-use-screening.md) | Current standalone screening report | Eighteen accepted product/runtime conditions across Codex and OpenCode, matched V1 baselines, weighted token accounting, charts, and blocked native combinations |
+| [Phase 2: Lifecycle V1 Natural-Use Screening](phase-2-lifecycle-v1-natural-use-screening.md) | Archived pre-correction screening report | Historical product/runtime observations whose sessions, protocols, and audits were archived before the corrected rerun |
+| [OpenCode Four-Tool Lifecycle V1 Screen](opencode-four-tool-lifecycle-v1-screen-20260808.md) | Archived pre-correction screening report | Historical OpenCode observations preserved with the pre-correction Lifecycle V1 corpus |
 | [Phase 1: Compatibility-Safe Token-Saving Stacks](phase-1-compatibility-safe-token-saving-stacks.md) | Historical phase report | Pre-reproduction stack hypotheses and compatibility framing |
 
 Blank paper outlines live in the repository-root [`templates/`](../../templates/README.md). Evaluation procedures and result contracts live in [`../evaluations/`](../evaluations/README.md).

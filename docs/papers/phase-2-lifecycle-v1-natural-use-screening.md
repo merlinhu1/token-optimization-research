@@ -1,5 +1,7 @@
 # Phase 2: Lifecycle V1 natural-use screening of token-saving integrations
 
+> **Archived pre-correction evidence.** This report describes the exact prompt and protocol bytes executed before the 2026-08-13 task-family correction. Its 103-session corpus, protocols, and campaign audits are preserved in the [pre-correction archive](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/), but they are not current findings or reusable controls. Fresh execution is required under the corrected Lifecycle V1 contract.
+
 ## Executive summary
 
 - **Scope:** 27 matched product/runtime conditions, 54 persistent workflow sessions, and 162 accepted task outcomes across Fastify and Beets.
@@ -196,7 +198,7 @@ Lifecycle V1 shows that token-saving integrations can reduce **weighted token co
 
 ## Data availability
 
-- Authoritative registry: [`data/workflow-sessions.json`](../../data/workflow-sessions.json)
-- Derived report dataset: [`phase-2-lifecycle-v1-report-data-20260808.json`](../../sources/evaluations/audits/phase-2-lifecycle-v1-report-data-20260808.json)
-- Cumulative Codex usage audit: [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json)
-- Compact workflow evidence: [`sources/evaluations/workflow-sessions/`](../../sources/evaluations/workflow-sessions/)
+- Archived registry snapshot: [`workflow-sessions-registry.json`](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/workflow-sessions-registry.json)
+- Derived report dataset: [`phase-2-lifecycle-v1-report-data-20260808.json`](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/phase-2-lifecycle-v1-report-data-20260808.json)
+- Cumulative Codex usage audit: [`codex-cumulative-usage-accounting-20260718.json`](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/codex-cumulative-usage-accounting-20260718.json)
+- Archived compact workflow evidence: [`workflow-sessions/`](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/workflow-sessions/)

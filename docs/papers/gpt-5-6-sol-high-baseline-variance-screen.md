@@ -190,21 +190,12 @@ It does not support:
 6. Some embedded JSONL diagnostics contain raw stderr and are not strictly line-parseable.
 7. Verifier success establishes task-contract acceptance, not equivalence of implementation quality across replicas.
 
-## Reproduction
+## Historical evidence pointers
 
-From the repository root:
+The retired registry and compact bundles are no longer active, so this report is not reproducible from the current corpus. Preserved machine-readable evidence:
 
-```bash
-python3 scripts/audit_codex_cumulative_usage.py
-python3 scripts/analyze_model_condition_baselines.py
-```
-
-Machine-readable evidence:
-
-- [Cumulative Codex usage correction audit](../../sources/evaluations/audits/codex-cumulative-usage-accounting-20260718.json)
+- [Cumulative Codex usage correction audit](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/codex-cumulative-usage-accounting-20260718.json)
 - [Corrected Sol/high variance audit](../../sources/evaluations/audits/gpt-5-6-sol-high-baseline-variance-20260718.json)
-- [Workflow session registry](../../data/workflow-sessions.json)
-- [Compact workflow evidence bundles](../../sources/evaluations/workflow-sessions/)
 
 ## Conclusion
 

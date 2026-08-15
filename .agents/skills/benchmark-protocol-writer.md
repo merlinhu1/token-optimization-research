@@ -1,6 +1,6 @@
 ---
 name: benchmark-protocol-writer
-description: Use before a lifecycle-v0 baseline or treatment run to freeze the token estimand, compatible execution condition, integrity controls, diagnostics, and compact artifacts.
+description: Use before a Lifecycle V1 baseline or treatment run to freeze the token estimand, compatible execution condition, integrity controls, diagnostics, and compact artifacts.
 ---
 # Benchmark Protocol Writer
 
@@ -17,7 +17,7 @@ Define:
 3. **Lifecycle sequence**: sequence ID, pinned fixture/snapshot, ordered prompts, state policy, and time budget.
 4. **Compatible baseline pool**: protocol fingerprint, model/provider condition, replicate index, and retained baseline session when one exists.
 5. **Treatment identity**: profile, enabled surfaces, pinned tool-author installation guide, every author-recommended host surface (including product-authored guidance/rules/skills/hooks), adapter command, binary/config hashes, isolation policy, and reset path. Evaluator-authored treatment-tool steering is forbidden, but reduced or guidance-free setups must be named as ablations rather than canonical product treatments.
-6. **Task assistance**: Active Lifecycle V1 prompts state complete software-engineering objectives, expect correct implementation, permit normal repository search/inspection and relevant validation, and do not disclose controller scoring or compile commands. Freeze identical prompt bytes across compatible baseline and treatment sessions; prompts must not require or prefer treatment-tool invocation. Historical Solution-directed task assistance remains valid only for its executed frozen V2/V3/V4 protocols.
+6. **Task assistance**: Lifecycle V1 prompts state complete software-engineering objectives, expect correct implementation, permit normal repository search/inspection and relevant validation, and do not disclose controller scoring or compile commands. Freeze identical prompt bytes across compatible baseline and treatment sessions; prompts must not require or prefer treatment-tool invocation.
 7. **Token boundary**: complete provider-reported persistent workflow usage; capture fresh input, cached input, cache-write, output, reasoning, and total when available.
 8. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
 9. **Acceptance and diagnostics**: Lifecycle V1 affected-component and final project-wide compile outcomes gate task/workflow acceptance and treatment unlock. Unit tests, behavior, style, exact source shape, changed-area review, and optional source review are diagnostics; they do not gate token accounting or trigger reruns.
@@ -33,7 +33,7 @@ Define:
 - `sources/evaluations/protocols/`
 - `sources/evaluations/workflow-sessions/`
 
-Use `scripts/run_sequential_workflow_matrix.py`. Never route lifecycle-v0 results through the older `data/evaluations.json` artifact model.
+Use `scripts/run_sequential_workflow_matrix.py`. Never route Lifecycle V1 results through the older `data/evaluations.json` artifact model.
 
 ## After a run
 

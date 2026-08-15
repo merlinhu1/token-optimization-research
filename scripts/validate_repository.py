@@ -24,21 +24,6 @@ WORKFLOW_SESSION_SCHEMA_UNAVAILABLE = (
     "install it or set WORKFLOW_VALIDATION_PYTHON to a prepared controller interpreter"
 )
 
-BASELINE_V3_ACCEPTANCE_ASSET_PATHS = {
-    "fastify-lifecycle-feature-v0": ["test/baseline-v3-request-media-type.test.js"],
-    "fastify-lifecycle-refactor-v0": ["test/baseline-v3-content-type-cache.test.js"],
-    "fastify-lifecycle-review-v0": ["test/baseline-v3-max-param.test.js"],
-    "beets-lifecycle-feature-v0": ["test/util/test_functemplate.py"],
-    "beets-lifecycle-refactor-v0": [],
-    "beets-lifecycle-review-v0": ["test/plugins/test_ftintitle.py"],
-    "terraform-lifecycle-feature-v0": ["internal/policy/callback/baseline_v3_deferred_test.go"],
-    "terraform-lifecycle-refactor-v0": [
-        "internal/configs/parser_config_dir_test.go",
-        "internal/configs/baseline_v3_requirement_type_test.go",
-    ],
-    "terraform-lifecycle-review-v0": ["internal/addrs/baseline_v3_checkable_test.go"],
-}
-
 PROVIDER_USAGE_FIELDS = (
     "fresh_input_tokens",
     "cached_input_tokens",
@@ -266,8 +251,7 @@ def current_provider_usage_contract(session: dict) -> bool:
         protocol = json.loads((ROOT / path).read_text())
     except (OSError, json.JSONDecodeError):
         return False
-    qualification_path = str(protocol.get("task_fixture", {}).get("qualification_path", ""))
-    return qualification_path.endswith(("-baseline-v3.json", "-baseline-v4.json", "-lifecycle-v1.json"))
+    return protocol.get("task_fixture", {}).get("task_family_generation") == "lifecycle-v1"
 
 
 def _json_object_without_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -758,49 +742,32 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         for task in ordered
     }
     generation = sequence.get("task_family_generation")
+    if generation != "lifecycle-v1":
+        errors.append(f"qualification {rel} references retired generation {generation!r}")
+        return
     required_true = ("fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "no_unmerged_paths", "all_expected_model_concealment_declared")
-    if generation == "lifecycle-v1":
-        required_true += ("seeded_compile_outcomes_valid", "composite_seed_compile_outcomes_valid")
-    else:
-        required_true += ("seeded_verifier_nonzero", "composite_seeded_verifiers_nonzero")
-    if generation in {"baseline-v3", "baseline-v4"}:
-        required_true += ("no_model_concealed_acceptance_assets", "all_acceptance_behavior_model_visible", "model_visible_acceptance_assets_match_verifier_copies")
-        if generation == "baseline-v4":
-            required_true += ("aggregate_verifier_environment_passed",)
-            if q.get("task_family_generation") != "baseline-v4":
-                errors.append(f"qualification {rel} must bind task_family_generation=baseline-v4")
-        if q.get("no_model_visible_acceptance_assets") is not False:
-            errors.append(f"qualification {rel} must not claim Baseline V3 acceptance assets are absent from the model")
-        if q.get("acceptance_visibility") != "model-visible-complete":
-            errors.append(f"qualification {rel} must record complete model-visible Baseline V3 acceptance")
-        expected_asset_count = sum(
-            len(BASELINE_V3_ACCEPTANCE_ASSET_PATHS[task["id"]]) for task in ordered
-        )
-        if expected_asset_count < 1 or q.get("expected_model_visible_acceptance_asset_count") != expected_asset_count:
-            errors.append(f"qualification {rel} must record the complete nonempty Baseline V3 acceptance-asset set")
-    elif generation == "lifecycle-v1":
-        required_true += (
-            "no_model_visible_acceptance_assets",
-            "no_model_concealed_acceptance_assets",
-            "controller_compile_policy_not_model_facing",
-            "model_visible_acceptance_assets_match_verifier_copies",
-            "aggregate_verifier_environment_passed",
-            "project_compile_passed",
-        )
-        if q.get("schema_version") != 5:
-            errors.append(f"qualification {rel} must use schema_version=5 for controller-only Lifecycle V1")
-        if q.get("task_family_generation") != "lifecycle-v1":
-            errors.append(f"qualification {rel} must bind task_family_generation=lifecycle-v1")
-        if q.get("acceptance_visibility") != "controller-only-compile-policy":
-            errors.append(f"qualification {rel} must record controller-only compile policy visibility")
-        if q.get("all_acceptance_behavior_model_visible") is not False:
-            errors.append(f"qualification {rel} must not claim internal acceptance behavior is model-visible")
-        if q.get("expected_model_visible_acceptance_asset_count") != 0:
-            errors.append(f"qualification {rel} compile-only acceptance must not require file-backed test assets")
-        if q.get("project_compile_command") != sequence.get("project_compile_command"):
-            errors.append(f"qualification {rel} project-wide compile command does not match the active sequence")
-    else:
-        required_true += ("no_model_visible_acceptance_assets",)
+    required_true += (
+        "seeded_compile_outcomes_valid",
+        "composite_seed_compile_outcomes_valid",
+        "no_model_visible_acceptance_assets",
+        "no_model_concealed_acceptance_assets",
+        "controller_compile_policy_not_model_facing",
+        "model_visible_acceptance_assets_match_verifier_copies",
+        "aggregate_verifier_environment_passed",
+        "project_compile_passed",
+    )
+    if q.get("schema_version") != 5:
+        errors.append(f"qualification {rel} must use schema_version=5 for controller-only Lifecycle V1")
+    if q.get("task_family_generation") != "lifecycle-v1":
+        errors.append(f"qualification {rel} must bind task_family_generation=lifecycle-v1")
+    if q.get("acceptance_visibility") != "controller-only-compile-policy":
+        errors.append(f"qualification {rel} must record controller-only compile policy visibility")
+    if q.get("all_acceptance_behavior_model_visible") is not False:
+        errors.append(f"qualification {rel} must not claim internal acceptance behavior is model-visible")
+    if q.get("expected_model_visible_acceptance_asset_count") != 0:
+        errors.append(f"qualification {rel} compile-only acceptance must not require file-backed test assets")
+    if q.get("project_compile_command") != sequence.get("project_compile_command"):
+        errors.append(f"qualification {rel} project-wide compile command does not match the active sequence")
     if sequence.get("status") == "active":
         required_true += ("fixed_snapshot_model_concealed_paths_safe",)
     if q.get("snapshot") != sequence.get("initial_snapshot", {}).get("commit") or q.get("ordered_task_ids") != [t["id"] for t in ordered] or q.get("qualified_on") != sequence.get("qualification_date"):
@@ -808,15 +775,10 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
     if any(q.get(field) is not True for field in required_true):
         errors.append(f"qualification {rel} must record every executable gate as true")
     composite_seed_exits = q.get("composite_seed_verifier_exits", {})
-    if generation == "lifecycle-v1":
-        composite_seed_exits_invalid = (
-            set(composite_seed_exits) != {task["id"] for task in ordered}
-            or any(code not in {0, 1} for code in composite_seed_exits.values())
-        )
-        expected_seeded_exit = None
-    else:
-        composite_seed_exits_invalid = set(composite_seed_exits.values()) != {1}
-        expected_seeded_exit = 1
+    composite_seed_exits_invalid = (
+        set(composite_seed_exits) != {task["id"] for task in ordered}
+        or any(code not in {0, 1} for code in composite_seed_exits.values())
+    )
     if composite_seed_exits_invalid:
         errors.append(
             f"qualification {rel} seeded verifiers must record only compiler pass/fail exits, not collection or infrastructure failures"
@@ -829,26 +791,12 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
                 boundary.get("task_id") != task["id"]
                 or boundary.get("seed_apply_check_exit") != 0
                 or boundary.get("seed_apply_exit") != 0
-                or (
-                    boundary.get("seeded_verifier_exit") not in {0, 1}
-                    if generation == "lifecycle-v1"
-                    else boundary.get("seeded_verifier_exit") != expected_seeded_exit
-                )
+                or boundary.get("seeded_verifier_exit") not in {0, 1}
                 or boundary.get("repair_apply_check_exit") != 0
                 or boundary.get("repair_apply_exit") != 0
                 or any(code != 0 for code in boundary.get("retained_verifier_exits", {}).values())
             )
-            refactor_invalid = (
-                generation != "lifecycle-v1"
-                and task.get("task_class") == "behavior-preserving-refactor"
-                and (
-                    boundary.get("seeded_behavior_exit") != 0
-                    or boundary.get("seeded_structure_exit") in (None, 0)
-                    or boundary.get("fixed_behavior_exit") != 0
-                    or boundary.get("fixed_structure_exit") != 0
-                )
-            )
-            if common_invalid or refactor_invalid:
+            if common_invalid:
                 boundary_invalid = True
                 break
     if boundary_invalid:
@@ -862,9 +810,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         files = production_by_task[task["id"]]
         hashes = {name: hashlib.sha256((task_dir / name).read_bytes()).hexdigest() for name in ("agent-prompt.txt", "seed-regression.patch", "verify.sh")}
         controller_visible = task_dir / "controller-visible"
-        expected_acceptance_paths = (
-            [] if generation == "lifecycle-v1" else BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(task["id"], [])
-        )
+        expected_acceptance_paths: list[str] = []
         controller_visible_assets = [
             {
                 "path": str(Path("controller-visible") / path_text),
@@ -1007,7 +953,7 @@ def validate_large_project_candidates(candidate_doc: dict, fixture_doc: dict, er
     if candidate_doc.get("schema_version") != 1:
         errors.append("data/large-project-candidates.json must use schema_version 1")
     candidates = candidate_doc.get("candidates")
-    # The list may be empty: no large-project lane is active since the Lifecycle V0 retirement
+    # The list may be empty: the active Lifecycle V1 portfolio currently has no large-project lane.
     # removed Terraform. The file still carries the selection policy for a future large lane.
     if not isinstance(candidates, list):
         errors.append("data/large-project-candidates.json must contain a candidates list")
@@ -1515,7 +1461,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             )
         sequence = sequence_by_fixture.get(fixture.get("id"))
         treatment_ready, _treatment_reason = (
-            workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
             if isinstance(sequence, dict)
             else (False, "missing active sequence")
         )
@@ -1554,20 +1500,19 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"duplicate workflow sequence id: {sid}")
         sequence_ids.add(sid)
         is_active = sequence.get("status") == "active"
-        is_historical = sequence.get("status") == "historical"
-        if not is_active and not is_historical:
-            errors.append(f"workflow sequence {sid} must be active or historical")
-        expected_sequence_suffix = "-lifecycle-sequence-v1" if is_active else "-lifecycle-sequence-v0"
-        if not str(sid).endswith(expected_sequence_suffix):
-            errors.append(f"workflow sequence {sid} must use the {expected_sequence_suffix.removeprefix('-')} identity")
+        if not is_active:
+            errors.append(f"workflow sequence {sid} must be active Lifecycle V1")
+            continue
+        if not str(sid).endswith("-lifecycle-sequence-v1"):
+            errors.append(f"workflow sequence {sid} must use the lifecycle-sequence-v1 identity")
         if sequence.get("sequence_contract") != "feature-refactor-review":
             errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
         if is_active:
             generation = sequence.get("task_family_generation")
-            if generation not in {"baseline-v3", "baseline-v4", "lifecycle-v1"}:
-                errors.append(f"active workflow sequence {sid} must bind task_family_generation=baseline-v3, baseline-v4, or lifecycle-v1")
+            if generation != "lifecycle-v1":
+                errors.append(f"active workflow sequence {sid} must bind task_family_generation=lifecycle-v1")
             gate = sequence.get("mistake_gate")
-            treatment_ready, _treatment_reason = workflow.baseline_v2_treatment_gate(sequence, ROOT)
+            treatment_ready, _treatment_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
             if generation == "lifecycle-v1":
                 gate_status = "passed-compilation" if treatment_ready else "provider-pilot-required"
                 launch_policy = (
@@ -1622,55 +1567,6 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 gate_values_match = isinstance(gate, dict) and gate == expected_gate
                 if not gate_values_match:
                     errors.append(f"active workflow sequence {sid} must preserve the Lifecycle V1 compile-only gate")
-            else:
-                gate_status = "passed-zero-incident" if treatment_ready else "provider-pilot-required"
-                launch_policy = (
-                    "eligible for treatment protocol freeze after the first-valid strongest-model pilot passed an independent audit with all eight required observed counts equal to integer zero"
-                    if treatment_ready
-                    else "blocked until one first-valid strongest-model pilot is independently audited with all eight required observed counts equal to integer zero"
-                )
-                expected_gate = {
-                    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
-                    "model": "gpt-5.6-sol",
-                    "reasoning_effort": "high",
-                    "allowed_unique_model_incidents": 0,
-                    "allowed_corrected_implementation_mistakes": 0,
-                    "allowed_unresolved_defects": 0,
-                    "allowed_prohibited_operations": 0,
-                    "allowed_unnecessary_exploration_incidents": 0,
-                    "allowed_model_caused_failed_commands": 0,
-                    "allowed_code_rework_events": 0,
-                    "allowed_verifier_or_environment_failures": 0,
-                    "incident_counting": "unique-auditable-not-command-count",
-                    "pilot_audit_path": f"sources/evaluations/audits/{generation}-pilot-zero-mistake.json",
-                    "attempt_receipt_path": f"sources/evaluations/audits/{generation}-pilot-attempt-{str(sid).split('-lifecycle-sequence-v0')[0]}.json",
-                    "status": gate_status,
-                    "treatment_launch_policy": launch_policy,
-                }
-                if generation == "baseline-v4":
-                    expected_gate["pilot_authorization_path"] = "sources/evaluations/audits/baseline-v4-task-family-qualification-20260722.json"
-                    receipt_path = workflow.baseline_pilot_attempt_receipt_path(sequence, ROOT)
-                    if not receipt_path.exists():
-                        authorization = json.loads(
-                            (ROOT / expected_gate["pilot_authorization_path"]).read_text()
-                        )
-                        expected_blocker = (
-                            "provider-backed strongest-model zero-mistake Baseline V4 pilot is authorized but not executed or independently audited"
-                            if authorization.get("paid_pilot_authorized") is True
-                            else "provider-backed strongest-model zero-mistake Baseline V4 pilot is not authorized or executed"
-                        )
-                        if sequence.get("readiness_blockers") != [expected_blocker]:
-                            errors.append(
-                                f"active workflow sequence {sid} readiness blocker must state: {expected_blocker}"
-                            )
-                allowed_gate_fields = [key for key in expected_gate if key.startswith("allowed_")]
-                gate_values_match = (
-                    isinstance(gate, dict)
-                    and all(gate.get(key) == value for key, value in expected_gate.items())
-                    and all(type(gate.get(key)) is int and gate.get(key) == 0 for key in allowed_gate_fields)
-                )
-                if not gate_values_match:
-                    errors.append(f"active workflow sequence {sid} must preserve the {generation} zero-mistake gate with strict integer-zero allowances")
             if isinstance(gate, dict):
                 for field in ("pilot_audit_path", "attempt_receipt_path", "pilot_authorization_path"):
                     if field not in gate:
@@ -1721,31 +1617,19 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         }
                         if any(receipt.get(key) != value for key, value in expected_receipt_identity.items()):
                             errors.append(f"active workflow sequence {sid} pilot attempt receipt identity is invalid")
-            if generation == "lifecycle-v1":
-                reset_policy = str(sequence.get("reset_policy", ""))
-                seed_policy = str(sequence.get("seed_patch_policy", ""))
-                if "controller-only affected-component compile command" not in reset_policy or "not disclosed" not in reset_policy:
-                    errors.append(f"active workflow sequence {sid} reset policy must bind undisclosed controller-only compilation assessment")
-                if "Model-facing prompts describe the software objective" not in seed_policy or "not disclosed" not in seed_policy:
-                    errors.append(f"active workflow sequence {sid} seed policy must keep controller scoring out of the agent task")
-            else:
-                if "declared focused acceptance tests" not in str(sequence.get("reset_policy", "")):
-                    errors.append(f"active workflow sequence {sid} reset policy must retain declared model-visible acceptance tests")
-                if "complete acceptance behavior stays model-visible" not in str(sequence.get("seed_patch_policy", "")):
-                    errors.append(f"active workflow sequence {sid} seed policy must not describe acceptance as controller-only")
+            reset_policy = str(sequence.get("reset_policy", ""))
+            seed_policy = str(sequence.get("seed_patch_policy", ""))
+            if "controller-only affected-component compile command" not in reset_policy or "not disclosed" not in reset_policy:
+                errors.append(f"active workflow sequence {sid} reset policy must bind undisclosed controller-only compilation assessment")
+            if "Model-facing prompts describe the software objective" not in seed_policy or "not disclosed" not in seed_policy:
+                errors.append(f"active workflow sequence {sid} seed policy must keep controller scoring out of the agent task")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        expected_qualification_name = (
-            "qualification-lifecycle-v1-20260813.json"
-            if is_active and sequence.get("task_family_generation") == "lifecycle-v1"
-            else f"qualification-lifecycle-v0-{sequence.get('task_family_generation')}.json"
-        )
-        if is_active and qualification_name != expected_qualification_name:
+        expected_qualification_name = "qualification-lifecycle-v1-20260813.json"
+        if qualification_name != expected_qualification_name:
             errors.append(f"active workflow sequence {sid} must bind {expected_qualification_name}")
-        elif is_historical and re.fullmatch(r"qualification-lifecycle-v0(?:-[a-z0-9-]+)?\.json", qualification_name) is None:
-            errors.append(f"historical workflow sequence {sid} must retain a versioned qualification-lifecycle-v0 JSON artifact")
         if sequence.get("status") == "active":
-            expected_design = "compile-only" if sequence.get("task_family_generation") == "lifecycle-v1" else "behavioral"
+            expected_design = "compile-only"
             if sequence.get("acceptance_design") != expected_design:
                 errors.append(f"active workflow sequence {sid} must declare acceptance_design={expected_design}")
             if expected_design == "compile-only" and sequence.get("acceptance_policy") != {
@@ -1826,7 +1710,6 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         errors.append(f"active workflow sequence {sid} task {tid} seed patch has no production/type files")
                     prompt_text = (ROOT / prompt_path).read_text() if prompt_path else ""
                     generation = str(sequence.get("task_family_generation", ""))
-                    generation_label = generation.replace("baseline-v", "Baseline V")
                     generation_path = f"/{generation}/"
                     target_production = [
                         path
@@ -1876,44 +1759,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             errors.append(f"active workflow sequence {sid} task {tid} must declare controller-only compile policy visibility")
                         if acceptance_asset_paths != []:
                             errors.append(f"active workflow sequence {sid} task {tid} compile-only controller assessment must not inject test assets")
-                    else:
-                        required_markers = (
-                            f"{generation_label} mechanical",
-                            "Do not discover or redesign anything.",
-                            "Copy and run this command exactly:",
-                            "Do not inspect, search, modify tests, run anything else, or evaluate aggregate Git state.",
-                            "stop immediately when it exits 0",
-                        )
-                        if generation_path not in str(prompt_path) or any(marker not in prompt_text for marker in required_markers):
-                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete {generation_label} routine prompt contract")
-                        if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 3:
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-three exact Baseline V3 production targets")
-                        if task.get("acceptance_visibility") != "model-visible-complete":
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare complete model-visible acceptance")
-                        expected_acceptance_assets = BASELINE_V3_ACCEPTANCE_ASSET_PATHS.get(str(tid))
-                        if (
-                            expected_acceptance_assets is None
-                            or not isinstance(acceptance_asset_paths, list)
-                            or acceptance_asset_paths != expected_acceptance_assets
-                        ):
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare the exact file-backed Baseline V3 acceptance assets")
-                        elif not isinstance(anchors, list) or any(
-                            asset not in anchors
-                            or asset not in prompt_text
-                            or asset not in verifier_text
-                            or not (task_dir / "controller-visible" / asset).is_file()
-                            for asset in expected_acceptance_assets
-                        ):
-                            errors.append(f"active workflow sequence {sid} task {tid} has missing or unbound canonical acceptance assets")
                     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
                     if any(marker in verifier_text and marker not in prompt_text for marker in undisclosed_inline_markers):
                         errors.append(f"active workflow sequence {sid} task {tid} contains undisclosed inline verifier assertions")
-                    if generation != "lifecycle-v1" and (
-                        not isinstance(anchors, list)
-                        or not anchors
-                        or any(anchor not in prompt_text or anchor not in verifier_text for anchor in anchors)
-                    ):
-                        errors.append(f"active workflow sequence {sid} task {tid} must bind complete model-visible validation anchors")
                     if task.get("model_concealed_paths"):
                         errors.append(f"active workflow sequence {sid} task {tid} must not hide active validation behavior")
                     if verifier_uses_source_identity(task_dir):
@@ -2057,7 +1905,7 @@ def canonical_json_hash(value: object) -> str:
 def validate_required_object(parent: dict, key: str, sid: str, errors: list[str]) -> dict | None:
     value = parent.get(key)
     if not isinstance(value, dict):
-        errors.append(f"workflow session {sid} production-v3 record must include object {key}")
+        errors.append(f"workflow session {sid} structured record must include object {key}")
         return None
     return value
 
@@ -2146,7 +1994,7 @@ def validate_invalid_treatment_disposition(
         errors.append(f"workflow session {sid} {label} must record invalidity reasons")
 
 
-def validate_production_v3_schema_shape(
+def validate_structured_session_schema(
     session: dict, sid: str, errors: list[str], *, schema_checked: bool = False
 ) -> None:
     """Gate record shape on the published schema, then add the constraints it cannot express.
@@ -2157,7 +2005,7 @@ def validate_production_v3_schema_shape(
     if not schema_checked:
         validate_session_schema_conformance(session, sid, errors)
     # The published schema requires these only under its schema_version 2 branch, and never
-    # requires baseline_pool. Production-v3 identity records require all of them outright.
+    # requires baseline_pool. Structured production records require all of them outright.
     for key in (
         "frozen_protocol",
         "baseline_pool",
@@ -2166,7 +2014,7 @@ def validate_production_v3_schema_shape(
         "tool_adapter_identity",
     ):
         if key not in session:
-            errors.append(f"workflow session {sid} production-v3 record missing schema field {key}")
+            errors.append(f"workflow session {sid} structured record missing schema field {key}")
     # JSON Schema numeric equality accepts 1.0 for `enum: [1, 2]` and for `type: integer`.
     # Provider accounting keys off exact integers, so these two stay hand-checked.
     if type(session.get("schema_version")) is not int or session.get("schema_version") not in {1, 2}:
@@ -2182,7 +2030,7 @@ def validate_production_v3_schema_shape(
 
 def validate_docker_identity(identity: object, expected: object, sid: str, errors: list[str]) -> None:
     if not isinstance(identity, dict):
-        errors.append(f"workflow session {sid} production-v3 record must include Docker image immutable identity")
+        errors.append(f"workflow session {sid} structured record must include Docker image immutable identity")
         return
     if not isinstance(identity.get("image_ref"), str) or not identity.get("image_ref"):
         errors.append(f"workflow session {sid} Docker image identity must include image_ref")
@@ -2200,14 +2048,14 @@ def validate_docker_identity(identity: object, expected: object, sid: str, error
 def validate_tool_adapter_identity(identity: object, expected: object, profile_id: str | None, sid: str, errors: list[str]) -> None:
     if profile_id in {"baseline-bare-codex", "baseline-claude-code-no-mcp"}:
         if identity is not None:
-            errors.append(f"workflow session {sid} baseline production-v3 record must not publish a treatment tool identity")
+            errors.append(f"workflow session {sid} baseline structured record must not publish a treatment tool identity")
         return
     if not isinstance(identity, dict):
-        errors.append(f"workflow session {sid} treatment production-v3 record must include tool adapter identity")
+        errors.append(f"workflow session {sid} treatment structured record must include tool adapter identity")
         return
     binary = identity.get("binary_identity")
     if not isinstance(binary, dict):
-        errors.append(f"workflow session {sid} treatment production-v3 record must include tool adapter binary identity")
+        errors.append(f"workflow session {sid} treatment structured record must include tool adapter binary identity")
     elif binary.get("kind") == "generated-by-host-integration":
         if not isinstance(binary.get("command_template"), str) or not binary["command_template"]:
             errors.append(f"workflow session {sid} generated treatment identity missing command_template")
@@ -2234,10 +2082,10 @@ def validate_tool_adapter_identity(identity: object, expected: object, profile_i
         errors.append(f"workflow session {sid} treatment tool identity does not match selected_execution descriptor")
 
 
-def validate_production_v3_identity(
+def validate_structured_session_identity(
     session: dict, run_record: dict | None, sid: str, errors: list[str], *, schema_checked: bool = False
 ) -> None:
-    validate_production_v3_schema_shape(session, sid, errors, schema_checked=schema_checked)
+    validate_structured_session_schema(session, sid, errors, schema_checked=schema_checked)
     frozen_protocol = validate_required_object(session, "frozen_protocol", sid, errors)
     baseline_pool = validate_required_object(session, "baseline_pool", sid, errors)
     selected = validate_required_object(session, "selected_execution", sid, errors)
@@ -2275,7 +2123,7 @@ def validate_production_v3_identity(
     descriptor = selected.get("descriptor")
     descriptor_hash = selected.get("descriptor_sha256")
     if not isinstance(descriptor, dict):
-        errors.append(f"workflow session {sid} production-v3 record must include selected_execution descriptor")
+        errors.append(f"workflow session {sid} structured record must include selected_execution descriptor")
         descriptor = {}
     if not isinstance(descriptor_hash, str) or not SHA256_RE.fullmatch(descriptor_hash):
         errors.append(f"workflow session {sid} selected_execution descriptor_sha256 must be 64 lowercase hex")
@@ -2440,12 +2288,12 @@ def validate_workflow_session_contract(
     sid = session.get("session_id") or session.get("id") or "<unknown>"
     sequence = session.get("task_sequence", {})
     frozen_protocol = session.get("frozen_protocol")
-    production_v3 = requires_structured_task_contract(session) or (
+    structured_session = requires_structured_task_contract(session) or (
         isinstance(frozen_protocol, dict)
         and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
     )
-    if production_v3:
-        validate_production_v3_identity(session, None, sid, errors, schema_checked=schema_checked)
+    if structured_session:
+        validate_structured_session_identity(session, None, sid, errors, schema_checked=schema_checked)
     if session.get("status") == "completed" and session.get("evidence_type") == "workflow-simulation" and session.get("evidence_stage") == "reproduction":
         prompt_delivery = sequence.get("prompt_delivery") if isinstance(sequence, dict) else None
         if not isinstance(prompt_delivery, dict):
@@ -2463,7 +2311,7 @@ def validate_workflow_session_contract(
                 and prompt_delivery.get("controller_verification") == "final-only"
             )
             if not composite_seed_delivery:
-                errors.append(f"workflow session {sid} must use the lifecycle v0 composite seed-delivery contract")
+                errors.append(f"workflow session {sid} must use the Lifecycle V1 composite seed-delivery contract")
         leakage_controls = sequence.get("leakage_controls") if isinstance(sequence, dict) else None
         precise_visibility = (
             isinstance(leakage_controls, dict)
@@ -2887,17 +2735,17 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                         f"workflow session {sid} evidence.jsonl.gz must be a bounded nonempty canonical gzip JSONL bundle"
                     )
                 frozen_protocol = session.get("frozen_protocol")
-                production_v3 = requires_structured_task_contract(session) or (
+                structured_session = requires_structured_task_contract(session) or (
                     isinstance(frozen_protocol, dict)
                     and str(frozen_protocol.get("protocol_id", "")).endswith("-v3")
                 )
-                if production_v3:
+                if structured_session:
                     try:
                         run_record = json.loads((root / "run.json").read_text())
                     except Exception as exc:
                         errors.append(f"workflow session {sid} run.json cannot be parsed: {exc}")
                     else:
-                        validate_production_v3_identity(session, run_record, sid, errors, schema_checked=True)
+                        validate_structured_session_identity(session, run_record, sid, errors, schema_checked=True)
             elif len(roots) > 1:
                 errors.append(f"workflow session {sid} compact artifacts must share one directory")
 
@@ -3034,439 +2882,82 @@ def validate_tool_dossier_snapshots(errors: list[str]) -> None:
 
 
 def validate_frozen_protocol_bindings(errors: list[str]) -> None:
-    session_doc = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-    executed_protocols: dict[str, set[str]] = {}
-    historical_qualification_cache: dict[tuple[str, str], bool] = {}
-
-    def historical_qualification_exists(relative_path: str, expected_sha256: str) -> bool:
-        """Verify a superseded mutable qualification through retained Git history."""
-        key = (relative_path, expected_sha256)
-        if key in historical_qualification_cache:
-            return historical_qualification_cache[key]
-        history = subprocess.run(
-            ["git", "log", "--all", "--format=%H", "--", relative_path],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        matched = False
-        if history.returncode == 0:
-            for revision in history.stdout.splitlines():
-                blob = subprocess.run(
-                    ["git", "show", f"{revision}:{relative_path}"],
-                    cwd=ROOT,
-                    capture_output=True,
-                    check=False,
-                )
-                if blob.returncode == 0 and hashlib.sha256(blob.stdout).hexdigest() == expected_sha256:
-                    matched = True
-                    break
-        historical_qualification_cache[key] = matched
-        return matched
-
-    for session in session_doc.get("sessions", []):
-        frozen = session.get("frozen_protocol", {})
-        protocol_path = frozen.get("path")
-        protocol_sha = frozen.get("sha256")
-        if isinstance(protocol_path, str) and isinstance(protocol_sha, str):
-            executed_protocols.setdefault(protocol_path, set()).add(protocol_sha)
-
-    # Provider-free preparation and rejected-attempt audits also freeze protocol
-    # bytes. Treat those receipts as immutable historical bindings instead of
-    # demanding that they match the current mutable runner descriptor.
-    def retain_audit_protocols(value: object) -> None:
-        if isinstance(value, dict):
-            protocol_path = value.get("protocol_path")
-            protocol_sha = value.get("protocol_sha256")
-            if isinstance(protocol_path, str) and isinstance(protocol_sha, str):
-                executed_protocols.setdefault(protocol_path, set()).add(protocol_sha)
-            for child in value.values():
-                retain_audit_protocols(child)
-        elif isinstance(value, list):
-            for child in value:
-                retain_audit_protocols(child)
-
-    for audit_path in (ROOT / "sources/evaluations/audits").glob("*.json"):
-        try:
-            retain_audit_protocols(json.loads(audit_path.read_text()))
-        except (OSError, json.JSONDecodeError):
-            continue
+    """Validate the two live contracts and the archived protocol bytes."""
     try:
         from scripts import run_codex_workflow_evaluation as runner
-        from scripts import run_codex_workflow_model_condition as model_condition_runner
-        from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition_runner
-        from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
-        from scripts import run_claude_code_workflow_model_condition as claude_condition_runner
-        from scripts import workflow_model_condition_runtime as condition_runtime
     except Exception as exc:
-        errors.append(f"cannot import workflow runner for protocol binding validation: {exc}")
-        runner = None
-        model_condition_runner = None
-        opencode_openrouter_condition_runner = None
-        opencode_condition_runner = None
-        claude_condition_runner = None
-        condition_runtime = None
-    current_sequence_bindings: set[str] = set()
-    for path in (ROOT / "sources/evaluations/protocols").glob("*.json"):
-        protocol = json.loads(path.read_text())
-        sequence_id = protocol.get("task_fixture", {}).get("sequence_id")
-        if not isinstance(sequence_id, str) or not sequence_id.endswith(("-lifecycle-sequence-v0", "-lifecycle-sequence-v1")):
-            errors.append(f"execution contract {path.name} has an unsupported lifecycle sequence identity")
+        errors.append(f"cannot import workflow runner for protocol validation: {exc}")
+        return
+
+    active_paths = set((ROOT / "sources/evaluations/protocols").glob("*.json"))
+    expected_paths: set[Path] = set()
+    for sequence_id in runner.active_sequence_ids():
+        sequence = runner.load_sequence(sequence_id)
+        try:
+            binding, protocol = runner.current_lifecycle_v1_protocol(
+                sequence, sequence.get("mistake_gate", {}), ROOT
+            )
+        except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as exc:
+            errors.append(f"active sequence {sequence_id} has no unique current baseline protocol: {exc}")
             continue
-        if protocol.get("status") == "frozen-ready-not-run" and "gpt-5.5" in json.dumps(protocol):
-            errors.append(f"execution contract {path.name} uses unsupported gpt-5.5")
-        if protocol.get("status") != "frozen-ready-not-run":
-            errors.append(f"execution contract {path.name} must be frozen-ready-not-run")
-            continue
+        path = ROOT / binding["path"]
+        expected_paths.add(path)
         fixture = protocol.get("task_fixture", {})
-        qualification_rel = fixture.get("qualification_path")
-        qualification_path = ROOT / str(qualification_rel or "")
-        if not qualification_rel or not qualification_path.is_file():
-            errors.append(f"frozen protocol {path.name} is missing qualification evidence")
-            continue
-        actual = hashlib.sha256(qualification_path.read_bytes()).hexdigest()
-        qualification_hash_matches_current_file = fixture.get("qualification_sha256") == actual
-        if runner is not None:
-            expected_descriptor = None
-            expected_override = None
-            try:
-                seq = runner.load_sequence(str(fixture.get("sequence_id")))
-                sequence_status = seq.get("status")
-                if sequence_status not in {"active", "historical"}:
-                    errors.append(f"execution contract {path.name} references an unknown sequence status")
-                    continue
-                if sequence_status == "historical":
-                    expected_qualification_sha = str(fixture.get("qualification_sha256", ""))
-                    if not qualification_hash_matches_current_file and not historical_qualification_exists(
-                        str(qualification_rel), expected_qualification_sha
-                    ):
-                        errors.append(f"historical execution contract {path.name} has an unrecoverable qualification hash")
-                        continue
-                    protocol_rel = path.relative_to(ROOT).as_posix()
-                    frozen_hashes = executed_protocols.get(protocol_rel)
-                    if frozen_hashes and frozen_hashes != {hashlib.sha256(path.read_bytes()).hexdigest()}:
-                        errors.append(f"executed historical protocol {path.name} bytes do not match retained session references")
-                    continue
-                expected_qualification_sha = str(fixture.get("qualification_sha256", ""))
-                if not qualification_hash_matches_current_file:
-                    historical_match = (
-                        qualification_rel != seq.get("qualification_path")
-                        and historical_qualification_exists(str(qualification_rel), expected_qualification_sha)
-                    )
-                    if not historical_match:
-                        errors.append(f"frozen protocol {path.name} has a stale qualification hash")
-                        continue
-                frozen_descriptor = protocol.get("baseline_pool", {}).get("descriptor", {})
-                actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-                try:
-                    frozen_fingerprint = runner.baseline_protocol_fingerprint_from_descriptor(frozen_descriptor)
-                except Exception as exc:
-                    errors.append(f"execution contract {path.name} has an invalid frozen baseline descriptor: {exc}")
-                    continue
-                if actual_fingerprint != frozen_fingerprint:
-                    errors.append(f"execution contract {path.name} has an internally inconsistent baseline fingerprint")
-                    continue
-                protocol_rel = path.relative_to(ROOT).as_posix()
-                frozen_hashes = executed_protocols.get(protocol_rel)
-                if frozen_hashes:
-                    actual_protocol_sha = hashlib.sha256(path.read_bytes()).hexdigest()
-                    if frozen_hashes != {actual_protocol_sha}:
-                        errors.append(
-                            f"executed protocol {path.name} bytes do not match retained session references"
-                        )
-                        continue
-                if qualification_rel != seq.get("qualification_path"):
-                    selected = protocol.get("selected_execution", {})
-                    selected_descriptor = selected.get("descriptor", {})
-                    if selected.get("descriptor_sha256") != runner._json_hash(selected_descriptor):
-                        errors.append(f"historical execution contract {path.name} has an invalid selected-execution hash")
-                        continue
-                    selected_pool = selected_descriptor.get("baseline_pool_reference", {}).get("protocol_fingerprint")
-                    if selected_pool != actual_fingerprint:
-                        errors.append(f"historical execution contract {path.name} has an inconsistent baseline-pool reference")
-                    continue
-                importlib.reload(runner)
-                expected_descriptor = runner.baseline_protocol_descriptor(seq)
-                condition = None
-                override = frozen_descriptor.get("model_condition_override") if isinstance(frozen_descriptor, dict) else None
-                if override is not None:
-                    if not isinstance(override, dict) or model_condition_runner is None:
-                        raise ValueError("invalid model-condition override")
-                    condition = None
-                    override_runtime = str(override.get("runtime_id", "")) if isinstance(override, dict) else ""
-                    if override_runtime == "claude-code":
-                        if condition_runtime is None or claude_condition_runner is None:
-                            raise ValueError("Claude Code condition validator is unavailable")
-                        condition, _ = condition_runtime.resolve_condition_pair(
-                            ROOT, str(override.get("model_condition_id", ""))
-                        )
-                        if (
-                            condition.get("model") != override.get("model")
-                            or condition.get("reasoning_effort") != override.get("reasoning_effort")
-                        ):
-                            raise ValueError("Claude Code model-condition override does not match registry")
-                        expected_override = condition_runtime.condition_override(
-                            condition, claude_condition_runner.launcher_identity()
-                        )
-                    elif override_runtime == "opencode-cli":
-                        condition_id = str(override.get("model_condition_id", ""))
-                        if condition_id == "opencode-openrouter-gpt-5-6-sol-high":
-                            if opencode_openrouter_condition_runner is None:
-                                raise ValueError("OpenCode/OpenRouter condition validator is unavailable")
-                            condition = opencode_openrouter_condition_runner.registered_condition(ROOT)
-                            opencode_openrouter_condition_runner.configure_runner(runner)
-                            expected_override = opencode_openrouter_condition_runner.condition_override(condition)
-                            expected_descriptor = runner.baseline_protocol_descriptor(seq)
-                            expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
-                        else:
-                            if condition_runtime is None or opencode_condition_runner is None:
-                                raise ValueError("OpenCode condition validator is unavailable")
-                            condition, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
-                            expected_override = condition_runtime.condition_override(
-                                condition, opencode_condition_runner.launcher_identity()
-                            )
-                    else:
-                        if model_condition_runner is None:
-                            raise ValueError("Codex condition validator is unavailable")
-                        condition = model_condition_runner.registered_condition(
-                            str(override.get("model_condition_id", "")),
-                            str(override.get("model", "")),
-                            str(override.get("reasoning_effort", "")),
-                        )
-                        if seq.get("task_family_generation") == "lifecycle-v1":
-                            if condition_runtime is None:
-                                raise ValueError("model-condition runtime validator is unavailable")
-                            expected_override = condition_runtime.condition_override(
-                                condition, model_condition_runner.launcher_identity()
-                            )
-                        else:
-                            expected_override = {
-                                "model_condition_id": condition["id"],
-                                "model": condition["model"],
-                                "reasoning_effort": condition["reasoning_effort"],
-                                "registry_status": condition.get("status"),
-                                "launcher": model_condition_runner.launcher_identity(),
-                            }
-                    if not model_condition_override_matches(override, expected_override):
-                        raise ValueError("model-condition override does not match its registry entry and launcher")
-                    if seq.get("task_family_generation") == "lifecycle-v1" and condition["runtime_id"] == "codex-cli":
-                        expected_descriptor, _expected_selected = runner.condition_bound_protocol_descriptors(
-                            seq,
-                            "baseline-bare-codex",
-                            str(condition["id"]),
-                            str(condition["model"]),
-                            str(condition["reasoning_effort"]),
-                            ROOT,
-                        )
-                        expected_fingerprint = runner.baseline_protocol_fingerprint_from_descriptor(expected_descriptor)
-                    else:
-                        if condition["id"] == "opencode-openrouter-gpt-5-6-sol-high":
-                            # Dedicated launcher already bound the independent provider control.
-                            pass
-                        elif condition["runtime_id"] == "claude-code":
-                            if condition_runtime is None or claude_condition_runner is None:
-                                raise ValueError("Claude Code condition validator is unavailable")
-                            importlib.reload(condition_runtime)
-                            importlib.reload(claude_condition_runner)
-                            claude_condition_runner.configure_model_condition(
-                                str(condition["id"]), str(condition["model"]), str(condition["reasoning_effort"])
-                            )
-                            expected_descriptor = copy.deepcopy(frozen_descriptor)
-                        else:
-                            expected_descriptor["agent"].update({
-                                "model": condition["model"],
-                                "model_condition_id": condition["id"],
-                                "reasoning_effort": condition["reasoning_effort"],
-                            })
-                            expected_descriptor["runtime_inputs"]["codex_runtime_condition"] = condition["id"]
-                        expected_descriptor["model_condition_override"] = expected_override
-                        if condition["id"] == "opencode-openrouter-gpt-5-6-sol-high":
-                            pass
-                        elif condition["runtime_id"] == "claude-code":
-                            expected_fingerprint = str(protocol.get("baseline_pool", {}).get("protocol_fingerprint", ""))
-                        else:
-                            comparison_descriptor = runner.baseline_comparison_descriptor(seq)
-                            comparison_descriptor["agent"] = expected_descriptor["agent"]
-                            comparison_descriptor["runtime_inputs"] = expected_descriptor["runtime_inputs"]
-                            encoded = json.dumps(comparison_descriptor, sort_keys=True, separators=(",", ":")).encode()
-                            full_hash = hashlib.sha256(encoded).hexdigest()
-                            expected_fingerprint = runner.COMPARISON_IDENTITY_ALIASES.get(
-                                full_hash, full_hash[:runner.BASELINE_POOL_FINGERPRINT_LENGTH]
-                            )
-                else:
-                    expected_fingerprint = runner.baseline_protocol_fingerprint(seq)
-            except Exception as exc:
-                errors.append(f"frozen protocol {path.name} cannot compute current runner fingerprint: {exc}")
-            else:
-                actual_fingerprint = protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-                if actual_fingerprint != expected_fingerprint:
-                    errors.append(f"execution contract {path.name} has a stale baseline fingerprint")
-                    continue
-                selected = protocol.get("selected_execution", {})
-                selected_descriptor = selected.get("descriptor", {})
-                selected_profile = selected_descriptor.get("selected_profile", {}).get("profile_id")
-                protocol_rel = path.relative_to(ROOT).as_posix()
-                frozen_hashes = executed_protocols.get(protocol_rel)
-                if frozen_hashes:
-                    actual_protocol_sha = hashlib.sha256(path.read_bytes()).hexdigest()
-                    if frozen_hashes != {actual_protocol_sha}:
-                        errors.append(
-                            f"executed protocol {path.name} bytes do not match retained session references"
-                        )
-                        continue
-                profile_status = None
-                if selected_profile and selected_profile != "baseline-bare-codex":
-                    try:
-                        profile_status = runner.profile_registry_entry(str(selected_profile)).get("status")
-                    except KeyError:
-                        profile_status = None
-                historical_executed = bool(frozen_hashes)
-                if profile_status == "blocked-profile" and not historical_executed:
-                    # Retain immutable never-run contracts for profiles that the
-                    # current registry explicitly excludes (for example, a tool
-                    # whose README has no Claude Code installation path). They
-                    # remain historical evidence, never runnable work.
-                    continue
-                if not historical_executed:
-                    try:
-                        runner.assert_profile_runnable(str(selected_profile or "baseline-bare-codex"))
-                    except ValueError as exc:
-                        errors.append(f"execution contract {path.name} selects a non-runnable profile: {exc}")
-                        continue
-                descriptor = protocol.get("baseline_pool", {}).get("descriptor")
-                if not historical_executed and not runner.baseline_protocol_descriptor_compatible(
-                    descriptor, expected_descriptor
-                ):
-                    errors.append(f"execution contract {path.name} has a stale causal baseline descriptor")
-                    continue
-                docker_image = selected_descriptor.get("runtime", {}).get("docker_image")
-                timeout_for_execution = int(fixture.get("timeout_seconds_per_task", 3600))
-                expected_execution = runner.execution_condition_descriptor(
-                    seq,
-                    str(selected_profile or "baseline-bare-codex"),
-                    timeout_seconds_per_task=timeout_for_execution,
-                    docker_image=str(docker_image or runner.DEFAULT_DOCKER_IMAGE),
-                )
-                if expected_override is not None:
-                    selected_override = selected_descriptor.get("model_condition_override")
-                    selected_expected_override = expected_override
-                    selected_condition = None
-                    launcher_path = "scripts/run_codex_workflow_model_condition.py"
-                    if isinstance(selected_override, dict) and selected_override.get("runtime_id") == "opencode-cli":
-                        selected_condition_id = str(selected_override.get("model_condition_id", ""))
-                        if selected_condition_id == "opencode-openrouter-gpt-5-6-sol-high":
-                            if opencode_openrouter_condition_runner is None:
-                                raise ValueError("OpenCode/OpenRouter condition validator is unavailable")
-                            selected_condition = opencode_openrouter_condition_runner.registered_condition(ROOT)
-                            selected_expected_override = opencode_openrouter_condition_runner.condition_override(selected_condition)
-                            launcher_path = "scripts/run_opencode_openrouter_workflow_model_condition.py"
-                        else:
-                            if condition_runtime is None or opencode_condition_runner is None:
-                                raise ValueError("OpenCode condition validator is unavailable")
-                            selected_condition, _ = condition_runtime.resolve_condition_pair(
-                                ROOT, selected_condition_id
-                            )
-                            selected_expected_override = condition_runtime.condition_override(
-                                selected_condition,
-                                opencode_condition_runner.launcher_identity(),
-                            )
-                            expected_descriptor = descriptor
-                            launcher_path = "scripts/run_opencode_workflow_model_condition.py"
-                    elif isinstance(selected_override, dict) and selected_override.get("runtime_id") == "claude-code":
-                        if condition_runtime is None or claude_condition_runner is None:
-                            raise ValueError("Claude Code condition validator is unavailable")
-                        selected_condition, _ = condition_runtime.resolve_condition_pair(
-                            ROOT, str(selected_override.get("model_condition_id", "")),
-                        )
-                        selected_expected_override = condition_runtime.condition_override(
-                            selected_condition,
-                            claude_condition_runner.launcher_identity(),
-                        )
-                        launcher_path = "scripts/run_claude_code_workflow_model_condition.py"
-                    condition_for_execution = selected_condition or condition
-                    if not isinstance(condition_for_execution, dict):
-                        raise ValueError("selected execution has no registered model condition")
-                    expected_execution["agent_condition"].update({
-                        "runtime_id": condition_for_execution["runtime_id"],
-                        "provider": condition_for_execution["provider"],
-                        "model": condition_for_execution["model"],
-                        "model_condition_id": condition_for_execution["id"],
-                        "reasoning_effort": condition_for_execution["reasoning_effort"],
-                    })
-                    expected_execution["baseline_pool_reference"]["protocol_fingerprint"] = expected_fingerprint
-                    expected_execution["model_condition_override"] = selected_expected_override
-                    expected_execution["runtime"]["agent_runtime_id"] = condition_for_execution["runtime_id"]
-                    expected_execution["runtime"]["model_condition"] = {
-                        "id": condition_for_execution["id"],
-                        "provider": condition_for_execution["provider"],
-                        "model": condition_for_execution["model"],
-                        "reasoning_effort": condition_for_execution["reasoning_effort"],
-                        "launcher": launcher_path,
-                    }
-                    agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "baseline-opencode-openrouter-no-mcp"} else protocol.get("treatment", {})
-                    required_model_args = (
-                        launcher_path,
-                        f"--workflow-model-condition-id {condition_for_execution['id']}",
-                        f"--workflow-model {condition_for_execution['model']}",
-                        f"--workflow-reasoning-effort {condition_for_execution['reasoning_effort']}",
-                    )
-                    if not model_condition_override_matches(selected_override, selected_expected_override):
-                        errors.append(f"execution contract {path.name} has inconsistent model-condition overrides")
-                        continue
-                    if any(required not in str(agent_block.get("command", "")) for required in required_model_args):
-                        errors.append(f"execution contract {path.name} command does not bind its model-condition override")
-                        continue
-                    agent_bindings = [
-                        ("model", "model"),
-                        ("model_condition_id", "id"),
-                        ("reasoning_effort", "reasoning_effort"),
-                    ]
-                    if condition_for_execution["runtime_id"] != "codex-cli":
-                        agent_bindings.append(("runtime_id", "runtime_id"))
-                    if any(agent_block.get(key) != condition_for_execution[override_key] for key, override_key in agent_bindings):
-                        errors.append(f"execution contract {path.name} agent block does not bind its model-condition override")
-                        continue
-                protocol_rel = path.relative_to(ROOT).as_posix()
-                frozen_hashes = executed_protocols.get(protocol_rel)
-                if frozen_hashes:
-                    actual_protocol_sha = hashlib.sha256(path.read_bytes()).hexdigest()
-                    if frozen_hashes != {actual_protocol_sha}:
-                        errors.append(
-                            f"executed protocol {path.name} bytes do not match retained session references"
-                        )
-                        continue
-                elif selected.get("descriptor") != expected_execution or selected.get("descriptor_sha256") != runner._json_hash(expected_execution):
-                    errors.append(f"execution contract {path.name} has a stale selected-execution descriptor")
-                    continue
-                if not frozen_hashes:
-                    expected_protocol_id = runner.canonical_protocol_id(
-                        seq,
-                        str(selected_profile or "baseline-bare-codex"),
-                        baseline_descriptor=expected_descriptor,
-                        selected_execution=expected_execution,
-                    )
-                    if protocol.get("protocol_id") != expected_protocol_id or path.stem != expected_protocol_id:
-                        errors.append(f"execution contract {path.name} does not use its canonical protocol ID and path")
-                        continue
-                current_sequence_bindings.add(str(seq["id"]))
-        timeout = fixture.get("timeout_seconds_per_task")
         selected = protocol.get("selected_execution", {})
-        selected_profile = selected.get("descriptor", {}).get("selected_profile", {}).get("profile_id", "baseline-bare-codex")
-        agent_block = protocol.get("baseline", {}) if selected_profile in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "baseline-opencode-openrouter-no-mcp"} else protocol.get("treatment", {})
-        command = agent_block.get("command", "")
-        if timeout and f"--timeout-per-task {timeout}" not in command:
-            errors.append(f"frozen protocol {path.name} command does not bind timeout {timeout}")
-        docker_image = selected.get("descriptor", {}).get("runtime", {}).get("docker_image")
-        if docker_image and f"--docker-image {docker_image}" not in command:
-            errors.append(f"frozen protocol {path.name} command does not bind docker image {docker_image}")
-        fields = protocol.get("token_accounting_boundary", {}).get("fields", [])
-        if "total_provider_tokens" not in fields:
-            errors.append(f"frozen protocol {path.name} must bind total_provider_tokens")
-    if runner is not None:
-        missing = sorted(set(runner.active_sequence_ids()) - current_sequence_bindings)
-        if missing:
-            errors.append(f"active workflow sequences missing current v0 execution contracts: {', '.join(missing)}")
+        baseline_pool = protocol.get("baseline_pool", {})
+        if (
+            protocol.get("protocol_schema_version") != 3
+            or protocol.get("status") != "frozen-ready-not-run"
+            or protocol.get("protocol_id") != path.stem
+            or fixture.get("sequence_id") != sequence_id
+            or fixture.get("task_family_generation") != "lifecycle-v1"
+            or fixture.get("qualification_path") != sequence.get("qualification_path")
+            or selected.get("descriptor_sha256") != runner._json_hash(selected.get("descriptor"))
+            or baseline_pool.get("protocol_fingerprint")
+            != runner.baseline_protocol_fingerprint_from_descriptor(baseline_pool.get("descriptor", {}))
+            or hashlib.sha256(path.read_bytes()).hexdigest() != binding["sha256"]
+            or "total_provider_tokens" not in protocol.get("token_accounting_boundary", {}).get("fields", [])
+        ):
+            errors.append(f"active protocol {path.name} does not match its Lifecycle V1 contract")
+    if active_paths != expected_paths:
+        unexpected = sorted(str(path.relative_to(ROOT)) for path in active_paths ^ expected_paths)
+        errors.append(f"active protocol directory must contain only the two current baselines: {unexpected}")
+
+    archive_root = ROOT / "sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813"
+    archived_protocols = list((archive_root / "protocols").glob("*.json"))
+    if len(archived_protocols) != 140:
+        errors.append(f"archived pre-correction corpus must retain 140 protocols; found {len(archived_protocols)}")
+    archived_audits = [path for path in (archive_root / "audits").rglob("*") if path.is_file()]
+    if len(archived_audits) != 152:
+        errors.append(f"archived pre-correction corpus must retain 152 audit files; found {len(archived_audits)}")
+    by_name: dict[str, Path] = {}
+    for path in archived_protocols:
+        try:
+            protocol = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"archived protocol {path.name} is unreadable: {exc}")
+            continue
+        if path.name in by_name:
+            errors.append(f"duplicate archived protocol filename: {path.name}")
+        by_name[path.name] = path
+        if protocol.get("protocol_id") != path.stem or protocol.get("status") != "frozen-ready-not-run":
+            errors.append(f"archived protocol {path.name} has invalid frozen identity")
+    try:
+        archived_registry = json.loads((archive_root / "workflow-sessions-registry.json").read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"archived session registry is unreadable: {exc}")
+        return
+    for session in archived_registry.get("sessions", []):
+        frozen = session.get("frozen_protocol", {})
+        original_path = frozen.get("path")
+        expected_sha = frozen.get("sha256")
+        archived_path = by_name.get(Path(str(original_path or "")).name)
+        if (
+            not isinstance(expected_sha, str)
+            or archived_path is None
+            or hashlib.sha256(archived_path.read_bytes()).hexdigest() != expected_sha
+        ):
+            errors.append(f"archived session {session.get('session_id')} has no matching frozen protocol bytes")
 
 
 def validate_document_lifecycle(
@@ -3541,94 +3032,40 @@ def validate_document_lifecycle(
 
 
 def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
+    """Validate the sole current paid-pilot authority without reopening archived campaigns."""
     from scripts import run_codex_workflow_evaluation as workflow
 
-    path = ROOT / "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
+    path = ROOT / "sources/evaluations/audits/lifecycle-v1-corrected-task-family-readiness-20260813.json"
     try:
-        audit = json.loads(path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+        authority = json.loads(path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
+        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
     except (OSError, ValueError, json.JSONDecodeError) as exc:
-        errors.append(f"Lifecycle V1 authorization audit cannot be read: {exc}")
-        return
-    expected_scope = {
-        "fastify-lifecycle-sequence-v1",
-        "beets-lifecycle-sequence-v1",
-        "terraform-lifecycle-sequence-v1",
-    }
-    expected_invalidated_attempt = {
-        "status": "invalidated-and-removed",
-        "invalidation_receipt_path": "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json",
-        "removed_rejected_evidence_manifest_sha256": "dd5b467577294994ca56271123030f2e52273233dad9a87d1f17d7d540df6e8f",
-    }
-    if (
-        type(audit.get("schema_version")) is not int
-        or audit.get("schema_version") != 2
-        or audit.get("generation") != "lifecycle-v1"
-        or set(audit.get("scope", [])) != expected_scope
-        or audit.get("agent_prompt_contract") != "normal-software-objective-complete-correct-implementation"
-        or audit.get("acceptance_gate") != "affected-component-compilation"
-        or audit.get("acceptance_visibility") != "controller-only"
-        or audit.get("quality_diagnostics_gate") is not False
-        or "exit 0 or 1" not in str(audit.get("seeded_compile_qualification", ""))
-        or audit.get("provider_free_qualification_required") is not True
-        or audit.get("paid_pilot_authorized") is not True
-        or audit.get("pilot_authorization") != workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION
-        or audit.get("pilot_attempts", {}).get("terraform-lifecycle-sequence-v1") != expected_invalidated_attempt
-    ):
-        errors.append("Lifecycle V1 authorization audit must bind normal agent objectives, controller-only compile assessment, and the explicit bounded pilot authority")
-
-    # Replication authorities bind completed protocol bytes. Current-contract
-    # compatibility is checked only when a new replication is requested.
-    try:
-        workflow.load_openrouter_lifecycle_v1_authority(ROOT)
-    except ValueError as exc:
-        errors.append(f"OpenRouter Lifecycle V1 r0 authorization is invalid: {exc}")
-
-    invalidation_path = ROOT / "sources/evaluations/audits/lifecycle-v1-terraform-invalidated-20260802.json"
-    try:
-        invalidation = json.loads(invalidation_path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
-        sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
-        errors.append(f"Lifecycle V1 Terraform invalidation receipt cannot be read: {exc}")
+        errors.append(f"corrected Lifecycle V1 readiness authority cannot be read: {exc}")
         return
     active_ids = [
-        sequence.get("id")
-        for sequence in sequence_doc.get("sequences", [])
-        if sequence.get("status") == "active" and sequence.get("task_family_generation") == "lifecycle-v1"
+        item.get("id")
+        for item in sequences.get("sequences", [])
+        if item.get("status") == "active" and item.get("task_family_generation") == "lifecycle-v1"
     ]
-    removed_artifacts = [
-        {
-            "path": "sources/evaluations/audits/lifecycle-v1-terraform-retirement-20260802.json",
-            "sha256": "1ce68dbbfbe88d2935a907258fcf1b89942ffaa8636bbcea576ecc8d777c2913",
-        },
-        {
-            "path": "sources/evaluations/protocols/terraform-lifecycle-sequence-v1-baseline-bare-codex-b5883b8cb1a0.json",
-            "sha256": "8753d0ed7c3b87616d4ed2201553d357d553e7b93e4e9b7da7b4c3c8ad045c5a",
-        },
-        {
-            "path": "sources/evaluations/audits/terraform-lifecycle-r0-rejected-evidence-20260802",
-            "manifest_sha256": "dd5b467577294994ca56271123030f2e52273233dad9a87d1f17d7d540df6e8f",
-        },
-    ]
+    paid = authority.get("paid_pilot_authorized")
+    authorization = authority.get("pilot_authorization")
     if (
-        set(invalidation) != {
-            "schema_version", "invalidated_by_owner_message_id", "invalidated_on", "invalidated_sequence_id", "disposition",
-            "active_lifecycle_v1_sequence_ids", "result_was_accepted_for_objective", "initial_authorization_path",
-            "removed_artifacts", "note",
-        }
-        or type(invalidation.get("schema_version")) is not int
-        or invalidation.get("schema_version") != 1
-        or invalidation.get("invalidated_by_owner_message_id") != "1533293091967074385"
-        or invalidation.get("invalidated_on") != "2026-08-02"
-        or invalidation.get("invalidated_sequence_id") != "terraform-lifecycle-sequence-v1"
-        or invalidation.get("disposition") != "owner-declared-invalid-result-removed"
-        or invalidation.get("active_lifecycle_v1_sequence_ids") != ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
-        or active_ids != invalidation.get("active_lifecycle_v1_sequence_ids")
-        or invalidation.get("result_was_accepted_for_objective") is not False
-        or invalidation.get("initial_authorization_path") != "sources/evaluations/audits/lifecycle-v1-task-family-qualification-20260801.json"
-        or invalidation.get("removed_artifacts") != removed_artifacts
-        or any((ROOT / artifact["path"]).exists() for artifact in removed_artifacts)
+        authority.get("schema_version") != 2
+        or type(authority.get("schema_version")) is not int
+        or authority.get("generation") != "lifecycle-v1"
+        or authority.get("active_sequence_ids") != active_ids
+        or type(paid) is not bool
+        or not isinstance(authority.get("pilot_attempts"), dict)
+        or (paid is False and authorization is not None)
+        or (
+            paid is True
+            and (
+                workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION is None
+                or authorization != workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION
+            )
+        )
     ):
-        errors.append("Lifecycle V1 Terraform invalidation receipt must remove the invalid result and bind exactly the two active lanes")
+        errors.append("corrected Lifecycle V1 readiness authority has invalid scope or paid-pilot state")
 
 
 def main() -> int:

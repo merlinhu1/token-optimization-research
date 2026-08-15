@@ -10,8 +10,8 @@ The canonical comparisons therefore use **accepted-replicate ordinal**, not matc
 
 | Canonical pair | Accepted ordinal | bare Codex control | bare OpenCode treatment | Canonical panel |
 |---|---:|---|---|---|
-| `lifecycle-v1-sol-high-accepted-pair-01` | 1 | Codex r0 | OpenCode r1 | [`opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json`](../../../sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json) |
-| `lifecycle-v1-sol-high-accepted-pair-02` | 2 | Codex r1 | OpenCode r2 | [`opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json`](../../../sources/evaluations/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json) |
+| `lifecycle-v1-sol-high-accepted-pair-01` | 1 | Codex r0 | OpenCode r1 | [`opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json`](../../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-01-panel-results-20260802.json) |
+| `lifecycle-v1-sol-high-accepted-pair-02` | 2 | Codex r1 | OpenCode r2 | [`opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json`](../../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/opencode-openai-gpt-5-6-sol-high-accepted-pair-02-panel-results-20260802.json) |
 
 Each row covers the two persistent V1 workflows, Fastify and Beets. The registry binds every accepted OpenCode lane directly to its baseline through `interpretation.comparison_baseline_session_id` and records the visible pair name in `interpretation.comparison_pair`.
 
