@@ -31,7 +31,7 @@
   "tasks": [
     {
       "task_id": "beets-lifecycle-feature-v1",
-      "seed_patch_sha256": "a895b51d95f1c3adf2375468e523c264287a12a0cbea32c9fc2310f02074379d",
+      "seed_patch_sha256": "4cfe69f153a6bfd16698261da15e3e3a2d0f14c108e173a575631b6ebfc656f9",
       "verifier_sha256": "4092c538add4da12d1987966519d396bca7947a68804e68c839e998f3ceaccc1",
       "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
       "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_functemplate.py::ParseTest::test_call_two_args test/util/test_functemplate.py::ParseTest::test_call_with_escaped_sep test/util/test_functemplate.py::ParseTest::test_call_with_nested_call_argument",
@@ -51,7 +51,7 @@
       "fixed_snapshot_model_concealed_safe": true,
       "fixed_snapshot_concealed_path_collision_audit": [],
       "agent_prompt_sha256": "1335e61743e14ff1f49b6d8009854086b5ac1d222642e76f62d379f9807c4bac",
-      "task_directory_sha256": "781e2aa96ce31c3a866f3f360f8f35437ea610bab5cf2eb2c854878fda6af021"
+      "task_directory_sha256": "1de865a02f9c917c6120959757192058396cb906d7427bf68afdc478cf84cc3e"
     },
     {
       "task_id": "beets-lifecycle-refactor-v1",
@@ -149,7 +149,7 @@
     "beets-lifecycle-refactor-v1": 1,
     "beets-lifecycle-review-v1": 0
   },
-  "composite_seed_diff_sha256": "8903071aba12edc1ba64fc690c250819882fc7790c42297abc5b876dff160415",
+  "composite_seed_diff_sha256": "002f5ffa7f5dee46c23cb9866d00314a5c9fe5921df1fb4524028813855f7448",
   "composite_seed_error": "",
   "seeded_verifier_nonzero": false,
   "seeded_verifiers_zero": false,
@@ -179,7 +179,7 @@
   "task_binding": {
     "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
     "task_directories": {
-      "beets-lifecycle-feature-v1": "781e2aa96ce31c3a866f3f360f8f35437ea610bab5cf2eb2c854878fda6af021",
+      "beets-lifecycle-feature-v1": "1de865a02f9c917c6120959757192058396cb906d7427bf68afdc478cf84cc3e",
       "beets-lifecycle-refactor-v1": "1231442d416e318067d207e8edbe440fb7bb8519ba92bd0747ac21c249bb8318",
       "beets-lifecycle-review-v1": "37beef92933defe097988e095d31a97ca7aa5fa043c1b326ff2de39b6e0a75ce"
     }

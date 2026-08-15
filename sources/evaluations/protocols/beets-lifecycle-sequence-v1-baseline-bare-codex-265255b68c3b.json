@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v1-baseline-bare-codex-a03b7311f20d",
+  "protocol_id": "beets-lifecycle-sequence-v1-baseline-bare-codex-265255b68c3b",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen baseline-bare-codex protocol for beets-lifecycle-sequence-v1; no provider/model run has occurred.",
   "frozen_at": "2026-08-15",
@@ -13,7 +13,7 @@
     "repository": "https://github.com/beetbox/beets.git",
     "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
     "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260815.json",
-    "qualification_sha256": "2575e7a0eae7c3d0e7a2721735b49cf2682d35f0e89feccd807382f212055f79",
+    "qualification_sha256": "da35c788585d1f32ac83bfc0bb08d55b20dc5f7e741ef098ebeb6c51431ed74f",
     "timeout_seconds_per_task": 3600
   },
   "baseline": {
@@ -23,7 +23,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-a03b7311f20d.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-265255b68c3b.json --docker-image token-eval-codex:latest"
   },
   "comparison_baseline": {
     "profile_id": "baseline-bare-codex",
@@ -32,7 +32,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-a03b7311f20d.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v1 --profile-id baseline-bare-codex --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v1-baseline-bare-codex-265255b68c3b.json --docker-image token-eval-codex:latest"
   },
   "treatment": {},
   "token_accounting_boundary": {
@@ -53,7 +53,7 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "7c5fbbbdead2",
+    "protocol_fingerprint": "e7cf1a07448b",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v1",
@@ -98,7 +98,7 @@
           "task_class": "feature-implementation",
           "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/agent-prompt.txt",
           "prompt_sha256": "1335e61743e14ff1f49b6d8009854086b5ac1d222642e76f62d379f9807c4bac",
-          "seed_patch_sha256": "a895b51d95f1c3adf2375468e523c264287a12a0cbea32c9fc2310f02074379d",
+          "seed_patch_sha256": "4cfe69f153a6bfd16698261da15e3e3a2d0f14c108e173a575631b6ebfc656f9",
           "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/verify.sh",
           "verifier_sha256": "4092c538add4da12d1987966519d396bca7947a68804e68c839e998f3ceaccc1",
           "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
@@ -181,7 +181,7 @@
       },
       "qualification": {
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260815.json",
-        "sha256": "2575e7a0eae7c3d0e7a2721735b49cf2682d35f0e89feccd807382f212055f79"
+        "sha256": "da35c788585d1f32ac83bfc0bb08d55b20dc5f7e741ef098ebeb6c51431ed74f"
       },
       "baseline_profile": {
         "profile_id": "baseline-bare-codex",
@@ -273,7 +273,7 @@
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "e3cd679b65c4310cd7bce1e4cbd1ed007e95ce3df1a0a036cda58dd3a329f809",
+    "descriptor_sha256": "e9ded55de13a95192e1e0da0a944765a469d513e0c594e228037d1e1e3332c4b",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v1",
@@ -438,7 +438,7 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "7c5fbbbdead2",
+        "protocol_fingerprint": "e7cf1a07448b",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
       },
       "model_condition_override": {
