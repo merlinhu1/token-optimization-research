@@ -2737,6 +2737,62 @@ class PublishedSchemaGateTest(unittest.TestCase):
             )
         self.assertEqual(spy.call_count, len(registry["sessions"]))
 
+    def _planned(self, plan_id="unit-plan", n=3, index=0, **over):
+        record = reference_session_record()
+        record["replicate_index"] = index
+        record["sample_plan"] = {
+            "plan_id": plan_id,
+            "planned_replicates": n,
+            "registered_on": "2026-08-15",
+            "estimator": "median-total-provider-tokens",
+            **over,
+        }
+        return record
+
+    def test_sample_plan_requires_odd_n_of_at_least_three(self) -> None:
+        for bad in (2, 4, 1, 0):
+            errors: list[str] = []
+            validate_repository.validate_sample_plans([self._planned(n=bad)], errors)
+            self.assertTrue(
+                any("odd integer >= 3" in e for e in errors), (bad, errors)
+            )
+        for good in (3, 5, 7):
+            errors = []
+            validate_repository.validate_sample_plans([self._planned(n=good)], errors)
+            self.assertEqual(errors, [], good)
+
+    def test_sample_plan_rejects_retaining_more_replicates_than_registered(self) -> None:
+        """Running past N after seeing results is cherry-picking with extra steps."""
+        members = [self._planned(n=3, index=i) for i in range(4)]
+        errors: list[str] = []
+        validate_repository.validate_sample_plans(members, errors)
+        self.assertTrue(
+            any("registered 3" in e and "retains 4" in e for e in errors), errors
+        )
+
+    def test_sample_plan_rejects_inconsistent_or_duplicated_members(self) -> None:
+        conflicting = [self._planned(n=3, index=0), self._planned(n=5, index=1)]
+        errors: list[str] = []
+        validate_repository.validate_sample_plans(conflicting, errors)
+        self.assertTrue(any("conflicting planned_replicates" in e for e in errors), errors)
+
+        duplicated = [self._planned(n=3, index=0), self._planned(n=3, index=0)]
+        errors = []
+        validate_repository.validate_sample_plans(duplicated, errors)
+        self.assertTrue(any("reuses a replicate_index" in e for e in errors), errors)
+
+    def test_schema_requires_a_registered_sample_plan_for_v2_records(self) -> None:
+        schema = json.loads((ROOT / validate_repository.WORKFLOW_SESSION_SCHEMA_REL).read_text())
+        v2 = next(
+            branch for branch in schema["allOf"]
+            if branch.get("if", {}).get("properties", {}).get("schema_version", {}).get("const") == 2
+        )
+        self.assertIn("sample_plan", v2["then"]["required"])
+        self.assertEqual(
+            schema["properties"]["sample_plan"]["properties"]["estimator"]["const"],
+            "median-total-provider-tokens",
+        )
+
     def test_registry_summaries_are_generated_and_current(self) -> None:
         """Registry-derived prose is generated, not hand-reconciled, and drift fails the gate."""
         from scripts import update_registry_summaries as summaries
@@ -3655,6 +3711,12 @@ raise SystemExit(1)
             "status": "failed",
             "session_role": "individual_tool_treatment",
             "replicate_index": 0,
+            "sample_plan": {
+                "plan_id": "unit-sample-plan",
+                "planned_replicates": 3,
+                "registered_on": "2026-08-15",
+                "estimator": "median-total-provider-tokens",
+            },
             "frozen_protocol": frozen_protocol,
             "baseline_pool": {
                 "protocol_version": "baseline-pool-v1",
@@ -3826,6 +3888,11 @@ raise SystemExit(1)
                 "enabled_surfaces": ["codex-native-shell-edit"],
                 "disabled_overlaps": [],
                 "component_ids": [],
+            }
+            # A baseline is a different protocol, so it belongs to its own registered sample.
+            baseline["sample_plan"] = {
+                **baseline.get("sample_plan", {}),
+                "plan_id": "unit-sample-plan-baseline",
             }
             baseline_descriptor = baseline["selected_execution"]["descriptor"]
             baseline_descriptor["execution_role"] = "baseline"

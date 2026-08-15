@@ -47,7 +47,7 @@ Baseline and treatment sessions start from the same frozen inputs. State resets 
 | `benchmark-audit` | Existing harness, scoring, accounting, raw output, and exclusions inspected. | Protocol design and background evidence. |
 | `reproduction` | Frozen workflow execution with provider token accounting, structured task-verifier diagnostics, isolation, and recoverable artifacts; independent review is optional context. | Scoped token evidence. |
 
-A single reproduction is screening evidence. Confidence grows through additional compatible replicates; the record does not pretend that one run is a population estimate.
+A single reproduction is screening evidence. A scoped estimate requires a pre-registered sample of N odd replicates reported as a median with its spread; see [ADR 0007](../../architecture/decision-records/0007-ranked-reporting-and-median-sampling.md). The record still does not pretend a sample of two workloads is a population estimate, but it does publish the ordering those samples support.
 
 ## Lean decision metrics
 

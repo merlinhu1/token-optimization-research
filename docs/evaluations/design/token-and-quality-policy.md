@@ -93,8 +93,21 @@ Do not ask the agent for extra reporting to collect these metrics. When a specif
 ## Replication and reporting
 
 - One replicate is one complete multi-task workflow execution.
-- A single replicate is retained and labeled screening evidence; it is not confused with a single task.
-- Retain the first operationally valid provider sample for each protocol/replicate; additional compatible replicates add evidence rather than replace earlier runs.
+- The **pilot gate** is unchanged and distinct from sampling: one first-valid qualifying run unlocks a campaign. Median-of-N governs the result sample, not the gate.
+- **Register the sample before spending.** A sample plan names the protocol, the model condition, and `planned_replicates` N, where N is odd and at least 3. Registration happens before the first provider call.
+- **The point estimate is the median** of total provider-reported tokens across the N retained replicates. Report the median with its observed spread, not the median alone.
+- Retain and publish all N replicates, including verifier failures and low-quality outputs. A replicate is never dropped because its number is inconvenient.
+- A replicate that fails **before** the provider boundary produced no measurement: replace it and retain its zero-spend receipt. A replicate whose agent performed badly produced a real token count and counts toward the median.
+- Extending a sample after seeing results requires a new registration; report the original and extended estimates together.
 - Pair baseline and treatment by comparison identity and explicit baseline binding. Raw `replicate_index` values are runtime-local; use a validated accepted-replicate ordinal when accepted labels differ across runtimes.
-- Report every valid observed pair, including verifier failures and low-quality outputs, with those outcomes clearly labeled.
-- Never rank treatments from incomparable or fixture-invalid protocols. Do not discard a compatible pair because model quality differs.
+- Never compare across incomparable or fixture-invalid protocols. Do not discard a compatible pair because model quality differs.
+
+## Ranking
+
+Rankings are published. Withholding an ordering does not transfer uncertainty to the reader, it
+transfers the judgement while pretending not to have one (see [ADR 0007](../../architecture/decision-records/0007-ranked-reporting-and-median-sampling.md)).
+
+- A published ranking states its workload set, model conditions, N, and observed dispersion.
+- Order tools by median delta against their matched baseline sample, within one workload and model condition.
+- Where two tools' observed ranges overlap at the reported N, report them as **indistinguishable at that N** rather than ordering them.
+- Aggregate across workloads only where the direction is consistent; where directions disagree, say so and rank per workload.

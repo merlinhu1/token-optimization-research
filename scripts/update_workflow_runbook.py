@@ -478,7 +478,7 @@ def render() -> str:
                 f"{pair_names}. See `docs/evaluations/design/lifecycle-v1-accepted-replicate-pairing.md`."
             )
         chunks.append(
-            "Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic."
+            "Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median of total provider tokens with its observed spread. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample."
         )
         execution_text = "\n\n".join(chunks)
     else:

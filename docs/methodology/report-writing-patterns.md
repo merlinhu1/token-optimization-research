@@ -140,10 +140,10 @@ Recommended visuals:
 
 For Lifecycle V1 research:
 
-1. Execute the explicitly authorized corrected baseline first; once retained, do not rerun it for a better diagnostic outcome.
+1. Execute the explicitly authorized corrected baseline sample first; once retained, do not rerun a replicate for a better diagnostic outcome.
 2. Freeze a compatible treatment protocol and verify tool identity, isolation, and fixture qualification before provider use.
-3. Run one treatment through `scripts/run_sequential_workflow_matrix.py` and retain the first operationally valid sample.
-4. Compare cumulative provider-reported tokens as the primary outcome; report verifier and optional source-review outcomes separately.
+3. Register the sample plan (N odd, at least 3), then run the full plan through `scripts/run_sequential_workflow_matrix.py` and retain every replicate.
+4. Compare the median of cumulative provider-reported tokens against the matched baseline sample, reporting the observed spread; verifier and optional source-review outcomes are reported separately.
 5. Update `data/workflow-sessions.json`, fixture state, generated runbook, current findings, and any active prompt or method surface affected by the run.
 6. Delete superseded workflow guidance instead of maintaining two architectures.
 

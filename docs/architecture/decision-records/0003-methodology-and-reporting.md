@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted, except that the no-ranking position is superseded by
+[`0007-ranked-reporting-and-median-sampling.md`](0007-ranked-reporting-and-median-sampling.md).
+Negative findings and exclusions remain part of the record.
 
 ## Context
 

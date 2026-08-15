@@ -2528,6 +2528,55 @@ def comparison_baseline_matches_treatment(
     )
 
 
+def validate_sample_plans(sessions: list[dict], errors: list[str]) -> None:
+    """Enforce the pre-registered median sample (ADR 0007).
+
+    A median only resists cherry-picking when N is fixed before execution and every replicate is
+    retained. So each plan must declare an odd N of at least 3, hold consistent metadata across
+    its members, and never retain more replicates than it registered.
+    """
+    plans: dict[str, list[dict]] = {}
+    for session in sessions:
+        if not isinstance(session, dict):
+            continue
+        plan = session.get("sample_plan")
+        sid = session.get("session_id") or "<unknown>"
+        if not isinstance(plan, dict):
+            continue
+        plan_id = plan.get("plan_id")
+        planned = plan.get("planned_replicates")
+        if not isinstance(plan_id, str) or not plan_id:
+            errors.append(f"workflow session {sid} sample_plan requires a plan_id")
+            continue
+        if type(planned) is not int or planned < 3 or planned % 2 == 0:
+            errors.append(
+                f"workflow session {sid} sample_plan.planned_replicates must be an odd integer >= 3"
+            )
+            continue
+        plans.setdefault(plan_id, []).append(session)
+
+    for plan_id, members in sorted(plans.items()):
+        declared = {member["sample_plan"]["planned_replicates"] for member in members}
+        if len(declared) != 1:
+            errors.append(
+                f"sample plan {plan_id} declares conflicting planned_replicates {sorted(declared)}"
+            )
+            continue
+        planned = declared.pop()
+        if len(members) > planned:
+            errors.append(
+                f"sample plan {plan_id} retains {len(members)} replicates but registered {planned}; "
+                "extending a sample after seeing results requires a new plan_id with supersedes_plan_id"
+            )
+        for field in ("registered_on", "estimator"):
+            values = {member["sample_plan"].get(field) for member in members}
+            if len(values) != 1:
+                errors.append(f"sample plan {plan_id} has inconsistent sample_plan.{field}")
+        indexes = [member.get("replicate_index") for member in members]
+        if len(set(indexes)) != len(indexes):
+            errors.append(f"sample plan {plan_id} reuses a replicate_index across its members")
+
+
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if type(session_doc.get("schema_version")) is not int or session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
@@ -2549,6 +2598,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         for session in sessions
         if isinstance(session, dict) and (session.get("session_id") or session.get("id"))
     }
+    validate_sample_plans([s for s in sessions if isinstance(s, dict)], errors)
     seen: set[str] = set()
     for index, session in enumerate(sessions):
         if not isinstance(session, dict):

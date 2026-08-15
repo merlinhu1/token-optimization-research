@@ -927,12 +927,61 @@
             "baseline_runtime_replicate_index"
           ],
           "properties": {
-            "id": {"type": "string"},
-            "basis": {"const": "accepted-replicate-ordinal"},
-            "accepted_replicate_ordinal": {"type": "integer", "minimum": 1},
-            "treatment_runtime_replicate_index": {"type": "integer", "minimum": 0},
-            "baseline_runtime_replicate_index": {"type": "integer", "minimum": 0}
+            "id": {
+              "type": "string"
+            },
+            "basis": {
+              "const": "accepted-replicate-ordinal"
+            },
+            "accepted_replicate_ordinal": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "treatment_runtime_replicate_index": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "baseline_runtime_replicate_index": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
+        }
+      }
+    },
+    "sample_plan": {
+      "type": "object",
+      "description": "Pre-registered sample this replicate belongs to. Registered before the first provider call so a median cannot be assembled by rerunning until the number is favourable (ADR 0007).",
+      "required": [
+        "plan_id",
+        "planned_replicates",
+        "registered_on",
+        "estimator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "plan_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "planned_replicates": {
+          "type": "integer",
+          "minimum": 3,
+          "description": "N, odd and at least 3. Enforced odd by validate_repository."
+        },
+        "registered_on": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "estimator": {
+          "const": "median-total-provider-tokens"
+        },
+        "supersedes_plan_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Set when a sample was extended after results were seen; both estimates are reported."
         }
       }
     }
@@ -955,7 +1004,8 @@
           "frozen_protocol",
           "selected_execution",
           "docker_image_identity",
-          "tool_adapter_identity"
+          "tool_adapter_identity",
+          "sample_plan"
         ],
         "properties": {
           "task_sequence": {
@@ -1010,16 +1060,33 @@
     {
       "if": {
         "properties": {
-          "schema_version": {"const": 2},
-          "session_role": {"not": {"enum": ["baseline", "replacement_runtime"]}},
+          "schema_version": {
+            "const": 2
+          },
+          "session_role": {
+            "not": {
+              "enum": [
+                "baseline",
+                "replacement_runtime"
+              ]
+            }
+          },
           "interpretation": {
             "properties": {
-              "accepted_for_objective": {"const": true}
+              "accepted_for_objective": {
+                "const": true
+              }
             },
-            "required": ["accepted_for_objective"]
+            "required": [
+              "accepted_for_objective"
+            ]
           }
         },
-        "required": ["schema_version", "session_role", "interpretation"]
+        "required": [
+          "schema_version",
+          "session_role",
+          "interpretation"
+        ]
       },
       "then": {
         "properties": {
@@ -1030,7 +1097,9 @@
                 "minLength": 1
               }
             },
-            "required": ["comparison_baseline_session_id"]
+            "required": [
+              "comparison_baseline_session_id"
+            ]
           }
         }
       }
@@ -1038,17 +1107,26 @@
     {
       "if": {
         "properties": {
-          "schema_version": {"const": 2},
-          "session_role": {"const": "baseline"}
+          "schema_version": {
+            "const": 2
+          },
+          "session_role": {
+            "const": "baseline"
+          }
         },
-        "required": ["schema_version", "session_role"]
+        "required": [
+          "schema_version",
+          "session_role"
+        ]
       },
       "then": {
         "properties": {
           "interpretation": {
             "properties": {
               "comparison_baseline_session_id": {
-                "enum": [""]
+                "enum": [
+                  ""
+                ]
               }
             }
           }

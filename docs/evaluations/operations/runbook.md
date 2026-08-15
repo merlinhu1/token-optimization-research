@@ -69,7 +69,7 @@ python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 ```
 
-Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
+Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median of total provider tokens with its observed spread. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample.
 
 ## Active sequence details
 

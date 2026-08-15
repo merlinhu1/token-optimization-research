@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted
+Accepted. The first-valid-sample rule this document assumed is superseded by
+[`0007-ranked-reporting-and-median-sampling.md`](0007-ranked-reporting-and-median-sampling.md);
+protocol-identity minting is unchanged.
 
 ## Context
 
@@ -11,8 +13,9 @@ accounting integrity from a causal efficiency claim. Without them, a token delta
 a changed task rather than a changed tool.
 
 Token comparisons therefore use one final monotonic cumulative provider snapshot per distinct
-thread, compare only compatible baseline pools, and report weighted units as
-`fresh input + 0.1 x cached input + 6 x output`.
+thread and compare only compatible baseline pools. The weighted-unit view
+(`fresh + 0.1 x cached + 6 x output`) was removed from the active design in the 2026-08-14
+simplification; total provider-reported tokens is the reported metric.
 
 ## Decision
 
