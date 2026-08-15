@@ -3817,6 +3817,18 @@ def main() -> int:
     if runbook_check.returncode != 0:
         errors.append((runbook_check.stderr or runbook_check.stdout or "workflow runbook is stale").strip())
 
+    summary_check = subprocess.run(
+        ["python3", "scripts/update_registry_summaries.py", "--check"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if summary_check.returncode != 0:
+        errors.append(
+            (summary_check.stderr or summary_check.stdout or "registry summaries are stale").strip()
+        )
+
 
     if errors:
         print("Validation failed:")

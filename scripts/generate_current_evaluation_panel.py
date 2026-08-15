@@ -63,8 +63,9 @@ def build_panel(
     date: str,
     sequence_ids: tuple[str, ...] = DEFAULT_SEQUENCES,
     comparison_pair_id: str | None = None,
+    registry_path: Path | None = None,
 ) -> dict[str, Any]:
-    registry_path = root / "data/workflow-sessions.json"
+    registry_path = registry_path or root / "data/workflow-sessions.json"
     profile_path = root / "data/evaluation-profiles.json"
     sessions = json.loads(registry_path.read_text())["sessions"]
     profiles = {

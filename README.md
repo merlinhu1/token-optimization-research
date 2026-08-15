@@ -19,7 +19,11 @@ The 2026-08-08 OpenCode Lifecycle V1 screen completed eight accepted lanes for G
 
 Direct-Anthropic Claude Code completed bounded baseline campaigns for `claude-code-anthropic-sonnet-5-high` (`claude-sonnet-5`, `high` effort; 6,207,153 provider tokens / 897,108.2 weighted units) and `claude-code-anthropic-opus-5-high` (`claude-opus-5`, `high` effort; 7,343,190 provider tokens / 1,167,276.7 weighted units), each across Fastify and Beets with six task turns. Opus used 30.12% more weighted token cost than Sonnet; Sonnet was already 73.85% above matched Codex and 22.71% above matched OpenCode weighted baselines, so subsequent Claude Code treatment experiments continue with Sonnet 5/high. Opus remains a baseline-only reference. Provider-free qualification passed all 30 native Claude lanes for the 15 Claude-native profiles; the serialized Sonnet treatment matrix is now owner-authorized, while SDL-MCP remains excluded for its Codex-only installer surface. See the [Sonnet preparation authority](sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json), [qualification receipt](sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json), and [treatment authorization](sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json).
 
-The active registry contains 103 accepted provider-backed Lifecycle V1 sessions: 18 baselines, 4 replacement-runtime controls, and 81 individual-tool treatments, split 54 Fastify / 49 Beets across three runtimes (Codex CLI 37, OpenCode CLI 32, Claude Code 34).
+<!-- generated:corpus-summary -->
+The active registry holds no provider-backed sessions. A corrected task family mints new qualification and protocol identities, so the prior corpus is archived and fresh execution is required before any result claim.
+
+Archived generations: `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions).
+<!-- /generated:corpus-summary -->
 
 ## Retired evidence
 

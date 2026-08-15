@@ -19,17 +19,7 @@ Internally, every active task uses compilation-only acceptance. Unit tests, beha
 
 ## Claude Code direct-Anthropic preparation
 
-Authority: `sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`repaired-provider-free-protocols-account-pending`).
-Condition: `claude-code-anthropic-sonnet-5-high` — `anthropic/claude-sonnet-5` with `high` effort.
-Prepared treatment profiles: 16 (19 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
-Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 6,207,153 provider tokens; native qualification passed 30/30 lanes and the serialized Sonnet treatment authorization is active (23/30 treatment lanes are retained; SDL-MCP excluded).
-
-Authority: `sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json` (`frozen-provider-free-protocols-account-pending`).
-Condition: `claude-code-anthropic-opus-5-high` — `anthropic/claude-opus-5` with `high` effort.
-Prepared treatment profiles: 0 (0 treatment plus 2 baseline frozen provider-free protocol files across the active Fastify and Beets sequences).
-Baseline-only execution completed for `fastify-lifecycle-sequence-v1, beets-lifecycle-sequence-v1` with 7,343,190 provider tokens; treatment execution remains blocked.
-
-Account setup uses `TOKEN_EVAL_CLAUDE_ACCOUNT_HOME`; credentials are copied only into an ephemeral lane and never retained in evidence.
+No provider-backed Fastify/Beets sessions are active. The pre-correction corpus is archived under `sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/`; fresh provider execution under the corrected prompt/configuration generation is required before any treatment readiness claim.
 
 ## Active sequences
 
@@ -78,10 +68,6 @@ Provider-free preparation remains available for lanes without a reusable operati
 python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 ```
-
-Non-default model-comparison baselines are tracked separately: `beets-lifecycle-sequence-v1` under `claude-code-anthropic-opus-5-high` pool `73f4146eb5f6` (r0), `beets-lifecycle-sequence-v1` under `claude-code-anthropic-sonnet-5-high` pool `ab14b9edcf57` (r0, r1, r2), `beets-lifecycle-sequence-v1` under `claude-code-openrouter-gpt-5-6-sol-high` pool `9a5946763429` (r0), `beets-lifecycle-sequence-v1` under `codex-openai-gpt-5-6-sol-high` pool `d8cfc5066f76` (r0, r1, r2), `beets-lifecycle-sequence-v1` under `opencode-openrouter-gpt-5-6-sol-high` pool `b56ac15f5520` (r0), `fastify-lifecycle-sequence-v1` under `claude-code-anthropic-opus-5-high` pool `5e155b3359d4` (r0), `fastify-lifecycle-sequence-v1` under `claude-code-anthropic-sonnet-5-high` pool `70516277e342` (r0, r1, r2), `fastify-lifecycle-sequence-v1` under `claude-code-openrouter-gpt-5-6-sol-high` pool `9596a3c4032d` (r0), `fastify-lifecycle-sequence-v1` under `codex-openai-gpt-5-6-sol-high` pool `72ac148f730b` (r0, r1, r2), `fastify-lifecycle-sequence-v1` under `opencode-openrouter-gpt-5-6-sol-high` pool `f85684d4777d` (r0). They do not satisfy active-default baseline requirements or define active-default treatment-pair reuse. OpenCode pools may define substrate-matched treatment reuse under their own frozen protocols.
-
-Cross-runtime comparison names use accepted-replicate ordinal, not matching raw runtime-local `rN` labels. Current explicit pairs are `lifecycle-v1-sol-high-accepted-pair-01`, `lifecycle-v1-sol-high-accepted-pair-02`. See `docs/evaluations/design/lifecycle-v1-accepted-replicate-pairing.md`.
 
 Retain the first operationally valid provider sample for each protocol and replicate. Stop only when a sample is fixture-invalid or operationally incomplete; verifier and review outcomes are diagnostic.
 

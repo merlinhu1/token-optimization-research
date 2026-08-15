@@ -45,6 +45,12 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def claude_direct_preparation_text() -> str:
+    if not load_json(SESSIONS).get("sessions"):
+        return (
+            "No provider-backed Fastify/Beets sessions are active. The pre-correction corpus is archived "
+            "under `sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/`; fresh provider "
+            "execution under the corrected prompt/configuration generation is required before any treatment readiness claim."
+        )
     sections = []
     for preparation_path, authorization_path in CLAUDE_DIRECT_CAMPAIGNS:
         if not preparation_path.is_file():
