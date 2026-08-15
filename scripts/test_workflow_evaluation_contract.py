@@ -6907,10 +6907,12 @@ class LifecycleV1ContractTest(unittest.TestCase):
         for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.lifecycle_v1_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 0)
+            # Treatments stay blocked until a pilot has actually executed and been audited.
             self.assertIs(passed, False, reason)
             self.assertIn("lifecycle-v1-essential-smoke-pilot.json", reason)
-            self.assertIs(pilot_allowed, False)
-            self.assertIn("not authorized", pilot_reason)
+            # The owner authorized the pilot on 2026-08-15, so the pilot gate is open while the
+            # identity is unoccupied. Occupation is enforced by the attempt receipt, not by this.
+            self.assertIs(pilot_allowed, True, pilot_reason)
             self.assertTrue(sequence["readiness_blockers"])
 
     def test_workflow_authority_describes_lifecycle_v1_acceptance_pilot_gate(self) -> None:

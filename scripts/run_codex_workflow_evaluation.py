@@ -928,7 +928,23 @@ DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
 )
 # The corrected corpus has no paid-pilot authority. An owner-authorized campaign
 # must bind a new scope here and in the readiness receipt before provider work.
-LIFECYCLE_V1_PILOT_AUTHORIZATION: dict[str, Any] | None = None
+LIFECYCLE_V1_PILOT_AUTHORIZATION: dict[str, Any] | None = {
+    "authorized_on": "2026-08-15",
+    "authorized_by": "experiment owner, direct session instruction",
+    "instruction": "authorized. run for only 2 times for now",
+    "scope": "Lifecycle V1 corrected-contract bare-Codex baseline pilot",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium",
+    "sequence_scope": [
+        "beets-lifecycle-sequence-v1"
+    ],
+    "authorized_replicate_indexes": [
+        0,
+        1
+    ],
+    "purpose": "variance probe under the corrected task family before sizing N for the treatment matrix"
+}
 
 
 def _json_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
