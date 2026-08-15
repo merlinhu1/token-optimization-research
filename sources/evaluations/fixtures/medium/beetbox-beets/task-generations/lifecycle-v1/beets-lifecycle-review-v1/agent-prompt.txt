@@ -6,6 +6,6 @@ Work out what behavior the surrounding code and its callers depend on, decide wh
 
 If you find an acceptance-critical defect, correct it in code rather than only describing the finding, and keep behavior that other call sites depend on intact.
 
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run the project test suite once as your final verification step, and preserve earlier task work in the persistent checkout.
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
 
 Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.
