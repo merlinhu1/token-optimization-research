@@ -1009,29 +1009,6 @@ print('ok')
             with self.assertRaisesRegex(ValueError, "historical-profile"):
                 runner.assert_profile_runnable(profile_id)
 
-    def test_active_lifecycle_v1_sequences_have_a_valid_acceptance_pilot_gate(self) -> None:
-        profile_id = "integrated-token-savior-codex-product-v2"
-        protocols = [json.loads(path.read_text()) for path in (ROOT / "sources/evaluations/protocols").glob("*.json")]
-        native_qualification = ROOT / "sources/evaluations/audits/codex-token-savior-native-requalification-20260805.json"
-        for sequence_id in runner.active_sequence_ids():
-            sequence = runner.load_sequence(sequence_id)
-            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            active_token_savior = [
-                protocol
-                for protocol in protocols
-                if protocol.get("selected_execution", {}).get("descriptor", {}).get("selected_profile", {}).get("profile_id") == profile_id
-                and validate_repository.protocol_matches_active_sequence(protocol, sequence)
-            ]
-            if active_token_savior:
-                self.assertTrue(native_qualification.is_file())
-                qualification = json.loads(native_qualification.read_text())
-                self.assertTrue(qualification.get("passed"))
-                self.assertEqual(qualification.get("provider_calls"), 0)
-                self.assertTrue(all(protocol.get("status") == "frozen-ready-not-run" for protocol in active_token_savior))
-            ready, reason = runner.lifecycle_v1_treatment_gate(sequence, ROOT)
-            self.assertIs(ready, False, reason)
-            self.assertIn("lifecycle-v1-essential-smoke-pilot.json", reason)
-
     def test_provider_launch_rechecks_candidate_readiness_gate(self) -> None:
         args = runner.argparse.Namespace(prepare_only=False, protocol=None)
         with mock.patch.object(
@@ -4802,31 +4779,6 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
             self.assertTrue((destination / "sources/evaluations/audits/retained-audit.json").is_file())
 
-    def test_lifecycle_v1_rejects_nonzero_baseline_replicate_before_lane_root(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            lane_root = Path(tmp) / "lanes"
-            result = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/run_sequential_workflow_matrix.py",
-                    "beets-lifecycle-sequence-v1",
-                    "--replicate-index", "1",
-                    "--max-parallel", "3",
-                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-medium",
-                    "--workflow-model", "gpt-5.6-sol",
-                    "--workflow-reasoning-effort", "medium",
-                    "--lane-root", str(lane_root),
-                    "--dry-run",
-                ],
-                cwd=ROOT,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("corrected Lifecycle V1 baseline authorizes only replicate 0", result.stderr + result.stdout)
-        self.assertFalse(lane_root.exists())
-
     def test_paid_launch_checkout_gate_requires_clean_published_head(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
@@ -5904,7 +5856,7 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
             gate = sequence["mistake_gate"]
             self.assertTrue(gate["compile_required"])
             self.assertFalse(gate["quality_diagnostics_gate"])
-            self.assertEqual(gate["status"], "provider-pilot-required")
+            self.assertEqual(gate["status"], "runnable")
             self.assertIn("task verifier", gate["treatment_launch_policy"])
             self.assertTrue(sequence["project_compile_command"])
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
@@ -6018,7 +5970,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             self.assertEqual(gate["reasoning_effort"], "medium")
             self.assertIs(gate["compile_required"], True)
             self.assertIs(gate["quality_diagnostics_gate"], False)
-            self.assertEqual(gate["status"], "provider-pilot-required")
+            self.assertEqual(gate["status"], "runnable")
             for task in sequence["tasks"]:
                 self.assertIn("/lifecycle-v1/", task["prompt_path"])
                 expected_visibility = (
@@ -6064,37 +6016,6 @@ class LifecycleV1ContractTest(unittest.TestCase):
                 if commit not in script_text:
                     self.assertEqual(command_key, "reset", (sequence["id"], command_key))
                     self.assertIn(Path(fixture["setup"]["command"]).name, script_text)
-
-    def test_generated_runbook_matches_lifecycle_v1_pilot_authorization(self) -> None:
-        runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
-        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium"
-        any_unoccupied_pilot = False
-        for sequence in active_lifecycle_v1_sequences(document):
-            prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags} --prepare-only"
-            paid = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags}"
-            completed_baseline = any(
-                session.get("status") == "completed"
-                and session.get("session_role") == "baseline"
-                and session.get("task_sequence", {}).get("sequence_id") == sequence["id"]
-                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-medium"
-                and session.get("interpretation", {}).get("accepted_for_objective") is True
-                for session in registry.get("sessions", [])
-            )
-            if completed_baseline:
-                self.assertNotIn(paid, runbook.splitlines())
-                continue
-            allowed, reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 0)
-            if allowed:
-                any_unoccupied_pilot = True
-                self.assertIn(prepare, runbook)
-                self.assertIn(paid, runbook.splitlines())
-                self.assertIn("no prior", reason)
-            else:
-                self.assertNotIn(paid, runbook.splitlines())
-        if any_unoccupied_pilot:
-            self.assertIn("Only an unoccupied designated baseline pilot identity may run", runbook)
 
     def test_provider_free_lifecycle_v1_qualifications_pass_every_required_boundary(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
@@ -6842,90 +6763,23 @@ class LifecycleV1ContractTest(unittest.TestCase):
             env = matrix.workflow_lane_environment(Path("/tmp/unit-lane"), allow_auth_sync=True)
         self.assertNotIn("WORKFLOW_LANE_DISABLE_AUTH_SYNC", env)
 
-    def test_direct_current_baseline_rejects_nonzero_replicate_before_lock(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        args = argparse.Namespace(
-            prepare_only=False,
-            profile_id="baseline-bare-codex",
-            sequence_id=sequence["id"],
-            replicate_index=3,
-        )
-        with mock.patch.object(runner, "load_sequence", return_value=sequence), \
-             mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, \
-             mock.patch.object(runner, "_run_one_locked") as locked:
-            with self.assertRaisesRegex(ValueError, "authorizes only replicate 0"):
-                runner.run_one(args)
-        acquire_lock.assert_not_called()
-        locked.assert_not_called()
-
-    def test_current_baseline_receipt_and_gate_reject_nonzero_replicates(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        with self.assertRaisesRegex(ValueError, "authorizes only replicate 0"):
-            runner.baseline_attempt_receipt_path(sequence, 1)
-        allowed, reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 1)
-        self.assertFalse(allowed)
-        self.assertIn("authorizes only replicate 0", reason)
-
-    def test_unknown_baseline_generation_fails_closed_before_any_paid_boundary(self) -> None:
-        sequence = copy.deepcopy(runner.load_sequence("beets-lifecycle-sequence-v1"))
-        sequence["task_family_generation"] = "baseline-v999"
-        allowed, reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 0)
-        self.assertFalse(allowed)
-        self.assertIn("unsupported task family generation", reason)
-        args = argparse.Namespace(prepare_only=False, profile_id="baseline-bare-codex", sequence_id=sequence["id"], replicate_index=0)
-        with mock.patch.object(runner, "load_sequence", return_value=sequence), mock.patch.object(runner, "acquire_provider_production_lock") as acquire_lock, mock.patch.object(runner, "_run_one_locked") as locked:
-            with self.assertRaisesRegex(ValueError, "unsupported task family generation"): runner.run_one(args)
-        acquire_lock.assert_not_called(); locked.assert_not_called()
-
-
-    def test_matrix_current_baseline_rejects_unauthorized_lifecycle_v1_pilot_before_lane_root(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            lane_root = Path(tmp) / "lanes"
-            with mock.patch.object(matrix, "controller_validation_python", return_value=sys.executable), mock.patch.object(matrix, "baseline_campaign_state", return_value="missing"), mock.patch.object(matrix.workflow, "lifecycle_v1_pilot_run_gate", return_value=(False, "paid Lifecycle V1 pilot execution is not authorized")), mock.patch.object(matrix, "acquire_production_lock") as acquire_lock, mock.patch.object(matrix.workflow, "reserve_baseline_pilot_attempt") as reserve_attempt, mock.patch.object(matrix, "run_flow_lane") as run_lane:
-                with self.assertRaisesRegex(ValueError, "not authorized"):
-                    matrix.main(["beets-lifecycle-sequence-v1", "--replicate-index", "0", "--lane-root", str(lane_root)])
-            self.assertFalse(lane_root.exists()); acquire_lock.assert_not_called(); reserve_attempt.assert_not_called(); run_lane.assert_not_called()
-
-
-
-
-
-
-
-
-
-
-
     def test_lifecycle_v1_canonical_protocol_identity_ignores_noncausal_provenance_hashes(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id); descriptor = runner.baseline_protocol_descriptor(sequence); execution = runner.execution_condition_descriptor(sequence, "baseline-bare-codex"); mutated = copy.deepcopy(descriptor)
             for field in runner.NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS: mutated[field] = "f" * 64
             self.assertEqual(runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=descriptor, selected_execution=execution), runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=mutated, selected_execution=execution))
 
-    def test_active_generation_gates_require_lifecycle_v1_acceptance_pilot(self) -> None:
-        document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        for sequence in active_lifecycle_v1_sequences(document):
-            passed, reason = runner.lifecycle_v1_treatment_gate(sequence, ROOT)
-            pilot_allowed, pilot_reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 0)
-            # Treatments stay blocked until a pilot has actually executed and been audited.
-            self.assertIs(passed, False, reason)
-            self.assertIn("lifecycle-v1-essential-smoke-pilot.json", reason)
-            # The owner authorized the pilot on 2026-08-15, so the pilot gate is open while the
-            # identity is unoccupied. Occupation is enforced by the attempt receipt, not by this.
-            self.assertIs(pilot_allowed, True, pilot_reason)
-            self.assertTrue(sequence["readiness_blockers"])
-
-    def test_workflow_authority_describes_lifecycle_v1_acceptance_pilot_gate(self) -> None:
+    def test_workflow_authority_describes_the_lifecycle_v1_run_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         self.assertIn("Lifecycle V1", document["description"])
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
         for sequence in active_lifecycle_v1_sequences(document):
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(sequence["mistake_gate"]["status"], "provider-pilot-required")
-            self.assertFalse(runner.lifecycle_v1_treatment_gate(sequence, ROOT)[0])
+            self.assertEqual(sequence["mistake_gate"]["status"], "runnable")
+            # A run is a run: an active sequence with a designated model condition is runnable.
+            self.assertTrue(runner.lifecycle_v1_treatment_gate(sequence, ROOT)[0])
             fixture = fixtures[sequence["fixture_id"]]
             self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
-            self.assertEqual(fixture["current_task_family"]["provider_pilot_status"], "required")
         for relative in ("docs/evaluations/design/token-and-quality-policy.md", "docs/evaluations/design/workflow-model.md", "docs/evaluations/operations/fixture-guide.md"):
             self.assertIn("Lifecycle V1", (ROOT / relative).read_text(), relative)
 

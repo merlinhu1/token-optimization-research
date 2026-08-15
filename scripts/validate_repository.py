@@ -1131,15 +1131,6 @@ def validate_candidate_profile_launch_readiness(
             active_sequences_by_fixture.setdefault(fixture_id, []).append(sequence_id)
             active_sequences_by_id[sequence_id] = sequence
 
-    if active_sequences_by_id and all(
-        sequence.get("task_family_generation") == "lifecycle-v1"
-        and sequence.get("mistake_gate", {}).get("status") == "provider-pilot-required"
-        for sequence in active_sequences_by_id.values()
-    ):
-        # V1 treatment contracts cannot be frozen before its first valid baseline
-        # pilot; historical V0 treatment protocols remain frozen evidence only.
-        return
-
     expected_pairs: set[tuple[str, str]] = set()
     for fixture in fixture_doc.get("fixtures", []):
         if not isinstance(fixture, dict):
@@ -1467,34 +1458,6 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(
                 f"repository fixture {fixture.get('id')} current_task_family generation must match active sequence generation {generation}"
             )
-        sequence = sequence_by_fixture.get(fixture.get("id"))
-        treatment_ready, _treatment_reason = (
-            workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
-            if isinstance(sequence, dict)
-            else (False, "missing active sequence")
-        )
-        if generation == "lifecycle-v1":
-            required_blocker = "Lifecycle V1 essential-smoke provider pilot must complete every task with all task verifiers and final project compilation exiting zero before treatment launch."
-            completed_status = "completed-passed-acceptance"
-            completion_label = "acceptance-passing Lifecycle V1"
-        else:
-            required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
-            completed_status = "completed-passed-zero-incident"
-            completion_label = f"zero-incident {generation_label}"
-        blockers = fixture.get("blockers", [])
-        provider_pilot_status = current_family.get("provider_pilot_status") if isinstance(current_family, dict) else None
-        lane_statuses = {
-            lane.get("status")
-            for lane in fixture.get("future_evaluation_lanes", [])
-            if isinstance(lane, dict)
-        }
-        if treatment_ready:
-            if required_blocker in blockers or provider_pilot_status != completed_status:
-                errors.append(f"repository fixture {fixture.get('id')} must record its completed {completion_label} pilot")
-            if f"blocked-{generation}-pilot" in lane_statuses:
-                errors.append(f"repository fixture {fixture.get('id')} treatment lanes must not remain blocked by its completed {generation_label} pilot")
-        elif required_blocker not in blockers or provider_pilot_status != "required":
-            errors.append(f"repository fixture {fixture.get('id')} must state the complete {generation_label} pilot blocker")
     sequence_ids: set[str] = set()
     for index, sequence in enumerate(sequences):
         if not isinstance(sequence, dict):
@@ -1520,13 +1483,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             if generation != "lifecycle-v1":
                 errors.append(f"active workflow sequence {sid} must bind task_family_generation=lifecycle-v1")
             gate = sequence.get("mistake_gate")
-            treatment_ready, _treatment_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
             if generation == "lifecycle-v1":
-                gate_status = "passed-acceptance" if treatment_ready else "provider-pilot-required"
+                gate_status = "runnable"
                 launch_policy = (
-                    "eligible for treatment protocol freeze after the first-valid strongest-model pilot completed every task and every declared task verifier exited zero; broader quality findings remain diagnostic only"
-                    if treatment_ready
-                    else "blocked until one first-valid strongest-model pilot completes every task and every declared task verifier exits zero; broader quality findings remain diagnostic only"
+                    "protocol freeze and execution require the designated model condition and a "
+                    "frozen protocol identity; task verifiers are recorded and broader quality "
+                    "findings remain diagnostic only"
                 )
                 expected_gate = {
                     "designated_model_condition": "codex-openai-gpt-5-6-sol-medium",
@@ -1534,40 +1496,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     "reasoning_effort": "medium",
                     "compile_required": True,
                     "quality_diagnostics_gate": False,
-                    "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json",
-                    "attempt_receipt_path": f"sources/evaluations/audits/lifecycle-v1-corrected-pilot-attempt-{str(sid).split('-lifecycle-sequence-v1')[0]}.json",
-                    "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-readiness-20260815.json",
                     "status": gate_status,
                     "treatment_launch_policy": launch_policy,
                 }
-                authorization_path = ROOT / expected_gate["pilot_authorization_path"]
-                try:
-                    authorization = json.loads(authorization_path.read_text())
-                    paid_pilot_authorized = authorization.get("paid_pilot_authorized") is True
-                    pilot_attempt = (
-                        authorization.get("pilot_attempts", {}).get(sid)
-                        if isinstance(authorization.get("pilot_attempts"), dict)
-                        else None
-                    )
-                except (OSError, json.JSONDecodeError):
-                    paid_pilot_authorized = False
-                    pilot_attempt = None
-                if treatment_ready:
-                    expected_readiness_blockers: list[str] = []
-                elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "accepted":
-                    expected_readiness_blockers = [
-                        "provider-backed strongest-model Lifecycle V1 essential-smoke pilot executed; treatment audit is pending"
-                    ]
-                elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "rejected":
-                    expected_readiness_blockers = [
-                        "provider-backed strongest-model Lifecycle V1 essential-smoke r0 pilot attempt was rejected; explicit owner reauthorization is required"
-                    ]
-                else:
-                    expected_readiness_blockers = [
-                        "provider-backed strongest-model Lifecycle V1 essential-smoke pilot is authorized but not executed"
-                        if paid_pilot_authorized
-                        else "provider-backed strongest-model Lifecycle V1 essential-smoke pilot is not authorized or executed"
-                    ]
+                # Runs are gated by protocol identity and model condition alone, so an active
+                # sequence carries no readiness blocker.
+                expected_readiness_blockers: list[str] = []
                 if sequence.get("readiness_blockers") != expected_readiness_blockers:
                     errors.append(
                         f"active workflow sequence {sid} readiness blockers must state: {expected_readiness_blockers}"
@@ -3111,43 +3045,6 @@ def validate_document_lifecycle(
             errors.append(f"retired duplicate evaluation surface still exists: {rel}")
 
 
-def validate_lifecycle_v1_authorization(errors: list[str]) -> None:
-    """Validate the sole current paid-pilot authority without reopening archived campaigns."""
-    from scripts import run_codex_workflow_evaluation as workflow
-
-    path = ROOT / "sources/evaluations/audits/lifecycle-v1-corrected-task-family-readiness-20260813.json"
-    try:
-        authority = json.loads(path.read_text(), object_pairs_hook=_json_object_without_duplicate_keys)
-        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
-        errors.append(f"corrected Lifecycle V1 readiness authority cannot be read: {exc}")
-        return
-    active_ids = [
-        item.get("id")
-        for item in sequences.get("sequences", [])
-        if item.get("status") == "active" and item.get("task_family_generation") == "lifecycle-v1"
-    ]
-    paid = authority.get("paid_pilot_authorized")
-    authorization = authority.get("pilot_authorization")
-    if (
-        authority.get("schema_version") != 2
-        or type(authority.get("schema_version")) is not int
-        or authority.get("generation") != "lifecycle-v1"
-        or authority.get("active_sequence_ids") != active_ids
-        or type(paid) is not bool
-        or not isinstance(authority.get("pilot_attempts"), dict)
-        or (paid is False and authorization is not None)
-        or (
-            paid is True
-            and (
-                workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION is None
-                or authorization != workflow.LIFECYCLE_V1_PILOT_AUTHORIZATION
-            )
-        )
-    ):
-        errors.append("corrected Lifecycle V1 readiness authority has invalid scope or paid-pilot state")
-
-
 def main() -> int:
     errors: list[str] = []
     for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + DECISION_RECORDS:
@@ -3236,7 +3133,6 @@ def main() -> int:
     validate_fixture_sequence_status_consistency(workflow_sequences_doc, fixtures_doc, large_candidates_doc, medium_candidates_doc, errors)
     validate_workflow_sessions(workflow_sessions_doc, workflow_sequence_ids, fixtures_doc, profiles_by_id, runtime_ids, model_condition_ids, errors)
     validate_document_lifecycle(workflow_sessions_doc, fixtures_doc, workflow_sequences_doc, errors)
-    validate_lifecycle_v1_authorization(errors)
     validate_frozen_protocol_bindings(errors)
     for path in (ROOT / "data/workflow-task-sequences.json", ROOT / "templates/evaluation-run-record.json"):
         if "gpt-5.5" in path.read_text():

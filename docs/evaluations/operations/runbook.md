@@ -60,8 +60,6 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-repowise-codex-product-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-claude-code-hook-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json), `beets-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json). Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes.
-
 Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash

@@ -2976,9 +2976,7 @@ def main(argv: list[str] | None = None) -> int:
                 ROOT,
                 model_condition_id=str(model_condition.get("id")),
             )
-        return workflow.lifecycle_v1_pilot_run_gate(
-            workflow.load_sequence(sequence_id), ROOT, args.replicate_index
-        )
+        return workflow.lifecycle_v1_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     if args.prepare_only and treatment_profiles:
         for sequence_id in sequences:

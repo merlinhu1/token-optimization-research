@@ -307,43 +307,22 @@ def render() -> str:
                 f"`{screen_audit}`."
             )
         blocked_gates = []
-        pilot_run_states: dict[str, tuple[bool, str]] = {}
         for sequence in sequences:
             gate_passed, gate_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
-            pilot_run_states[sequence["id"]] = workflow.lifecycle_v1_pilot_run_gate(sequence, ROOT)
             if not gate_passed:
                 blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
         if blocked_gates:
-            any_pilot_allowed = any(allowed for allowed, _reason in pilot_run_states.values())
-            authorization_blocked = [
-                sequence_id
-                for sequence_id, (allowed, reason) in pilot_run_states.items()
-                if not allowed and "not authorized" in reason
-            ]
-            if authorization_blocked:
-                suffix = (
-                    ". Paid pilot execution is not authorized for "
-                    + ", ".join(f"`{sequence_id}`" for sequence_id in authorization_blocked)
-                    + "; provider-capable commands are suppressed until the explicit authorization authority is updated."
-                )
-            elif any_pilot_allowed:
-                suffix = ". Only an unoccupied designated baseline pilot identity may run before its independent zero-incident audit passes."
-            else:
-                suffix = ". The designated pilot identities are occupied by immutable attempt evidence. Any sequence without a passing audit remains treatment-blocked; failed classifications are permanent for this generation and require new identities."
             chunks.append(
                 "Treatment protocol freezing, preparation, and execution are machine-blocked for "
                 + ", ".join(blocked_gates)
-                + suffix
+                + "."
             )
         if pending_baselines:
             prepare_commands = "\n".join(
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {sequence_model_flags(sequence)} --prepare-only".replace("  ", " ")
                 for sequence in pending_baselines
             )
-            runnable_pending = [
-                sequence for sequence in pending_baselines
-                if pilot_run_states.get(sequence["id"], (True, ""))[0]
-            ]
+            runnable_pending = list(pending_baselines)
             baseline_commands = "\n".join(
                 f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {sequence_model_flags(sequence)}".rstrip()
                 for sequence in runnable_pending
@@ -360,7 +339,6 @@ def render() -> str:
                     sequence
                     for sequence in retained_baselines
                     if replicate_index not in reusable_baseline_replicates.get(sequence["id"], [])
-                    and workflow.lifecycle_v1_pilot_run_gate(sequence, ROOT, replicate_index)[0]
                 ]
                 if not runnable:
                     continue

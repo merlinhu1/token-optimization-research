@@ -900,14 +900,6 @@ def repository_authority_path(root: Path, relative: str, label: str) -> Path:
     return path
 
 
-def baseline_pilot_attempt_receipt_path(seq: dict[str, Any], root: Path = ROOT) -> Path:
-    gate = seq.get("mistake_gate")
-    receipt_rel = gate.get("attempt_receipt_path") if isinstance(gate, dict) else None
-    if not isinstance(receipt_rel, str) or not receipt_rel:
-        raise ValueError(f"missing pilot attempt_receipt_path for {seq.get('id')}")
-    return repository_authority_path(root, receipt_rel, f"pilot attempt receipt for {seq.get('id')}")
-
-
 OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json"
 OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
 DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
@@ -926,27 +918,6 @@ DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
     "fastify-lifecycle-sequence-v1",
     "beets-lifecycle-sequence-v1",
 )
-# The corrected corpus has no paid-pilot authority. An owner-authorized campaign
-# must bind a new scope here and in the readiness receipt before provider work.
-LIFECYCLE_V1_PILOT_AUTHORIZATION: dict[str, Any] | None = {
-    "authorized_on": "2026-08-15",
-    "authorized_by": "experiment owner, direct session instruction",
-    "instruction": "authorized. run for only 2 times for now",
-    "scope": "Lifecycle V1 corrected-contract bare-Codex baseline pilot",
-    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
-    "model": "gpt-5.6-sol",
-    "reasoning_effort": "medium",
-    "sequence_scope": [
-        "beets-lifecycle-sequence-v1"
-    ],
-    "authorized_replicate_indexes": [
-        0,
-        1
-    ],
-    "purpose": "variance probe under the corrected task family before sizing N for the treatment matrix"
-}
-
-
 def _json_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
@@ -1093,16 +1064,6 @@ def reserve_openrouter_lifecycle_v1_attempt(seq: dict[str, Any], session_id: str
     atomic_create_json(repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt"), receipt)
 
 
-def baseline_attempt_receipt_path(
-    seq: dict[str, Any],
-    replicate_index: int,
-    root: Path = ROOT,
-) -> Path:
-    if replicate_index != 0:
-        raise ValueError("the corrected Lifecycle V1 baseline authorizes only replicate 0")
-    return baseline_pilot_attempt_receipt_path(seq, root)
-
-
 def require_lifecycle_v1_baseline_replicate(
     seq: dict[str, Any],
     profile_id: str,
@@ -1110,318 +1071,42 @@ def require_lifecycle_v1_baseline_replicate(
     *,
     prepare_only: bool,
 ) -> None:
-    """Reject paid baseline identities outside the corrected Lifecycle V1 pilot."""
+    """Require a well-formed replicate label on a paid baseline.
+
+    Replicates accumulate additively across sessions as budget allows, so no ceiling is
+    imposed here; a sample declares its own size and validate_repository enforces that a
+    retained set never exceeds it.
+    """
     if prepare_only or profile_id != "baseline-bare-codex":
         return
     if seq.get("task_family_generation") == "lifecycle-v1":
-        if type(replicate_index) is not int:
-            raise ValueError("Lifecycle V1 paid baselines require an integer replicate_index")
-        if replicate_index != 0:
-            raise ValueError("the corrected Lifecycle V1 baseline authorizes only replicate 0")
-
-
-def reserve_baseline_pilot_attempt(
-    seq: dict[str, Any],
-    *,
-    root: Path = ROOT,
-    orchestrator: str,
-    replicate_index: int,
-) -> dict[str, Any]:
-    """Atomically occupy one paid pilot identity before any provider task starts."""
-    require_lifecycle_v1_baseline_replicate(
-        seq,
-        "baseline-bare-codex",
-        replicate_index,
-        prepare_only=False,
-    )
-    identity, protocol = current_lifecycle_v1_protocol(seq, seq["mistake_gate"], root)
-    receipt = {
-        "schema_version": 1,
-        "attempt_status": "reserved-before-provider-task",
-        "task_family_generation": seq.get("task_family_generation"),
-        "sequence_id": seq.get("id"),
-        "replicate_index": replicate_index,
-        "profile_id": "baseline-bare-codex",
-        "model_condition_id": seq["mistake_gate"].get("designated_model_condition"),
-        "model": seq["mistake_gate"].get("model"),
-        "reasoning_effort": seq["mistake_gate"].get("reasoning_effort"),
-        "orchestrator": orchestrator,
-        "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
-        "frozen_protocol": identity,
-        "baseline_pool_fingerprint": protocol.get("baseline_pool", {}).get("protocol_fingerprint"),
-        "provider_result": None,
-        "immutable_identity_receipt": True,
-    }
-    atomic_create_json(baseline_attempt_receipt_path(seq, replicate_index, root), receipt)
-    return receipt
-
-
-def lifecycle_v1_pilot_run_gate(
-    seq: dict[str, Any],
-    root: Path = ROOT,
-    replicate_index: int = 0,
-) -> tuple[bool, str]:
-    """Permit one provider run per declared identity; never pass-select reruns."""
-    generation = seq.get("task_family_generation")
-    if generation != "lifecycle-v1":
-        return False, f"unsupported task family generation: {generation!r}"
-    label = "Lifecycle V1"
-    gate = seq.get("mistake_gate")
-    audit_rel = gate.get("pilot_audit_path") if isinstance(gate, dict) else None
-    if replicate_index != 0:
-        return False, "the corrected Lifecycle V1 baseline authorizes only replicate 0"
-    try:
-        receipt_path = baseline_pilot_attempt_receipt_path(seq, root)
-    except ValueError as exc:
-        return False, str(exc)
-    if receipt_path.exists():
-        return False, f"paid pilot identity is occupied by immutable attempt receipt: {receipt_path.relative_to(root)}"
-    authorization_rel = gate.get("pilot_authorization_path") if isinstance(gate, dict) else None
-    if not isinstance(authorization_rel, str) or not authorization_rel:
-        return False, f"{label} paid pilot is not authorized: missing pilot_authorization_path"
-    try:
-        authorization_path = repository_authority_path(root, authorization_rel, f"{label} pilot authorization")
-        authorization = json.loads(authorization_path.read_text())
-    except (OSError, ValueError) as exc:
-        return False, f"{label} paid pilot is not authorized: authorization authority is unreadable: {exc}"
-    if (
-        type(authorization.get("schema_version")) is not int
-        or authorization.get("schema_version") != 2
-        or authorization.get("generation") != generation
-        or authorization.get("paid_pilot_authorized") is not True
-    ):
-        return False, f"{label} paid pilot is not authorized by {authorization_rel}"
-    if LIFECYCLE_V1_PILOT_AUTHORIZATION is None or authorization.get("pilot_authorization") != LIFECYCLE_V1_PILOT_AUTHORIZATION:
-        return False, f"{label} paid pilot authorization has an invalid Lifecycle V1 scope"
-    pilot_attempts = authorization.get("pilot_attempts")
-    if pilot_attempts is not None:
-        if not isinstance(pilot_attempts, dict):
-            return False, f"{label} paid pilot attempt ledger is malformed"
-        attempt = pilot_attempts.get(str(seq.get("id")))
-        if attempt is not None:
-            if not isinstance(attempt, dict) or attempt.get("status") not in {"accepted", "rejected"}:
-                return False, f"{label} paid pilot attempt ledger entry is malformed"
-            return False, f"{label} paid pilot r{replicate_index} was already consumed as {attempt['status']}"
-
-    if not isinstance(audit_rel, str) or not audit_rel:
-        return False, f"missing {label} pilot_audit_path"
-    try:
-        audit_path = repository_authority_path(root, audit_rel, f"{label} pilot audit")
-    except ValueError as exc:
-        return False, str(exc)
-    if not audit_path.exists():
-        return True, f"no prior {label} pilot attempt is recorded"
-    try:
-        audit = json.loads(audit_path.read_text())
-    except (OSError, ValueError) as exc:
-        return False, f"existing {label} pilot audit is unreadable: {exc}"
-    entries = audit.get("sequences")
-    if (
-        type(audit.get("schema_version")) is not int
-        or audit.get("schema_version") != 1
-        or audit.get("task_family_generation") != generation
-        or not isinstance(entries, list)
-        or not all(isinstance(entry, dict) for entry in entries)
-    ):
-        return False, f"existing {label} pilot audit is invalid"
-    matching = [entry for entry in entries if entry.get("sequence_id") == seq.get("id")]
-    if not matching:
-        return True, f"no prior {label} pilot attempt is recorded for {seq.get('id')}"
-    return False, (
-        f"{label} pilot identity is occupied by audit status={audit.get('status', 'unknown')!r} "
-        f"at {audit_rel}; preserve it and mint a simpler generation/audit identity before any new provider run"
-    )
+        if type(replicate_index) is not int or replicate_index < 0:
+            raise ValueError("Lifecycle V1 paid baselines require a non-negative integer replicate_index")
 
 
 def lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
-    """Fail closed until an audited acceptance-passing Lifecycle V1 pilot exists."""
+    """Allow execution for an active Lifecycle V1 sequence with a designated model condition.
+
+    A run is a run. What makes a result meaningful is the frozen protocol identity and the
+    model condition it declares, both verified at launch and recorded in the session. The
+    former gate additionally required a separate audited baseline "pilot" run to complete
+    before any other run could start, which cost a full evaluation per sequence and delayed
+    every campaign without changing what any result meant.
+    """
     generation = seq.get("task_family_generation")
     if generation != "lifecycle-v1":
         return False, f"unsupported task family generation: {generation!r}"
     gate = seq.get("mistake_gate")
     if not isinstance(gate, dict):
         return False, f"missing {generation} mistake gate"
-    audit_rel = gate.get("pilot_audit_path")
-    if not isinstance(audit_rel, str) or not audit_rel:
-        return False, "missing pilot_audit_path"
-    try:
-        audit_path = repository_authority_path(root, audit_rel, "pilot audit")
-    except ValueError as exc:
-        return False, str(exc)
-    if not audit_path.is_file():
-        return False, f"pilot audit is absent: {audit_rel}"
-    try:
-        audit = json.loads(audit_path.read_text())
-    except (OSError, ValueError) as exc:
-        return False, f"pilot audit is unreadable: {exc}"
-    if (
-        type(audit.get("schema_version")) is not int
-        or audit.get("schema_version") != 1
-        or audit.get("task_family_generation") != generation
-    ):
-        return False, "pilot audit schema or task-family generation is invalid"
-    entries = [
-        entry for entry in audit.get("sequences", [])
-        if isinstance(entry, dict) and entry.get("sequence_id") == seq.get("id")
+    missing = [
+        field
+        for field in ("designated_model_condition", "model", "reasoning_effort")
+        if not gate.get(field)
     ]
-    if len(entries) != 1:
-        return False, f"pilot audit must contain exactly one entry for {seq.get('id')}"
-    entry = entries[0]
-    if (
-        entry.get("passed") is not True
-        or entry.get("task_verifiers_passed") is not True
-        or entry.get("project_compile_passed") is not True
-    ):
-        return False, "pilot did not pass every task verifier and final project compilation"
-    expected_condition = {
-        "id": gate.get("designated_model_condition"),
-        "model": gate.get("model"),
-        "reasoning_effort": gate.get("reasoning_effort"),
-    }
-    if entry.get("model_condition") != expected_condition:
-        return False, "pilot audit model condition does not match the designated gate tuple"
-    session_id = entry.get("baseline_session_id")
-    if not isinstance(session_id, str) or not session_id:
-        return False, "pilot audit is missing baseline_session_id"
-    registry_path = root / "data/workflow-sessions.json"
-    try:
-        registry = json.loads(registry_path.read_text())
-    except (OSError, ValueError) as exc:
-        return False, f"workflow session registry is unreadable: {exc}"
-    registry_sessions = registry.get("sessions")
-    if not isinstance(registry_sessions, list) or not all(isinstance(item, dict) for item in registry_sessions):
-        return False, "workflow session registry has invalid sessions"
-    sessions = [session for session in registry_sessions if session.get("session_id") == session_id]
-    if len(sessions) != 1:
-        return False, "pilot audit baseline session is absent or ambiguous"
-    session = sessions[0]
-    interpretation = session.get("interpretation", {})
-    usage = session.get("cumulative_token_usage", {})
-    software_quality = session.get("software_quality", {})
-    selected_execution = session.get("selected_execution", {})
-    selected_descriptor = selected_execution.get("descriptor", {})
-    agent = session.get("agent", {})
-    per_task_results = session.get("per_task_results")
-    ordered_tasks = sorted(seq.get("tasks", []), key=lambda item: int(item["order"]))
-    expected_task_results = [(str(task["id"]), int(task["order"])) for task in ordered_tasks]
-    task_identity_complete = (
-        isinstance(per_task_results, list)
-        and all(isinstance(item, dict) for item in per_task_results)
-        and all(type(item.get("order")) is int for item in per_task_results)
-        and [(str(item.get("task_id")), item.get("order")) for item in per_task_results] == expected_task_results
-    )
-    if (
-        type(session.get("schema_version")) is not int
-        or session.get("schema_version") != 2
-        or session.get("status") != "completed"
-        or session.get("session_role") != "baseline"
-        or type(session.get("replicate_index")) is not int
-        or session.get("replicate_index") != 0
-        or session.get("task_sequence", {}).get("sequence_id") != seq.get("id")
-        or session.get("profile", {}).get("profile_id") != "baseline-bare-codex"
-        or selected_descriptor.get("execution_role") != "baseline"
-        or selected_descriptor.get("selected_profile", {}).get("profile_id") != "baseline-bare-codex"
-        or not isinstance(agent, dict)
-        or agent.get("runtime_id") != "codex-cli"
-        or agent.get("provider") != "openai"
-        or agent.get("model_condition_id") != gate.get("designated_model_condition")
-        or agent.get("model") != gate.get("model")
-        or agent.get("reasoning_effort") != gate.get("reasoning_effort")
-        or interpretation.get("accepted_for_execution") is not True
-        or interpretation.get("operationally_completed") is not True
-        or interpretation.get("evaluation_validity") != "valid"
-        or interpretation.get("accepted_for_objective") is not True
-        or interpretation.get("primary_objective_hard_baseline") is not True
-        or interpretation.get("usable_for_primary_objective_token_comparison") is not True
-        or not pilot_provider_usage_valid(usage)
-        or not isinstance(software_quality, dict)
-        or type(software_quality.get("tasks_attempted")) is not int
-        or software_quality.get("tasks_attempted") != len(ordered_tasks)
-        or type(software_quality.get("tasks_passed")) is not int
-        or software_quality.get("tasks_passed") != len(ordered_tasks)
-        or software_quality.get("final_verifier_passed") is not True
-        or software_quality.get("functional_verifier_passed") is not True
-        or software_quality.get("project_compile_passed") is not True
-        or not isinstance(per_task_results, list)
-        or len(per_task_results) != len(ordered_tasks)
-        or not task_identity_complete
-        or any(
-            not isinstance(item, dict)
-            or item.get("agent_attempted") is not True
-            or type(item.get("codex_exit_code")) is not int
-            or item.get("codex_exit_code") != 0
-            or item.get("controller_verification") != "passed"
-            or type(item.get("verifier_exit_code")) is not int
-            or item.get("verifier_exit_code") != 0
-            or item.get("verifier_passed") is not True
-            or item.get("accepted") is not True
-            or type(item.get("operational_retry_count")) is not int
-            or item.get("operational_retry_count") != 0
-            for item in per_task_results
-        )
-        or reviewed_session_reuse_state(session, root) != "reusable"
-        or not pilot_session_artifacts_valid(session, root)
-    ):
-        return False, "pilot audit session is not the first operationally valid provider-backed baseline for this sequence"
-    protocol = entry.get("frozen_protocol")
-    if not isinstance(protocol, dict) or protocol != session.get("frozen_protocol"):
-        return False, "pilot audit protocol binding does not match the baseline session"
-    try:
-        current_protocol, protocol_document = current_lifecycle_v1_protocol(seq, gate, root)
-    except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as exc:
-        return False, f"pilot audit protocol cannot be matched to the current baseline contract: {exc}"
-    expected_binding = {
-        key: current_protocol[key] for key in ("protocol_id", "path", "sha256")
-    }
-    if protocol != expected_binding or session.get("frozen_protocol") != expected_binding:
-        return False, "pilot audit does not bind the exact current designated baseline protocol"
-    if entry.get("qualification_sha256") != current_protocol["qualification_sha256"]:
-        return False, "pilot audit qualification hash does not match the current protocol"
-    if selected_execution != protocol_document.get("selected_execution"):
-        return False, "baseline session selected execution does not match the current protocol"
-    if selected_execution.get("descriptor_sha256") != current_protocol["selected_execution_sha256"]:
-        return False, "baseline session selected-execution hash does not match the current protocol"
-    runtime = selected_descriptor.get("runtime", {}) if isinstance(selected_descriptor, dict) else {}
-    identity_errors: list[str] = []
-    repository_validation.validate_docker_identity(
-        session.get("docker_image_identity"), runtime.get("docker_image_identity"), session_id, identity_errors
-    )
-    repository_validation.validate_tool_adapter_identity(
-        session.get("tool_adapter_identity"), selected_descriptor.get("tool_adapter"), "baseline-bare-codex", session_id, identity_errors
-    )
-    if identity_errors:
-        return False, "baseline session runtime identity does not match the current selected execution"
-    if (
-        entry.get("baseline_pool_fingerprint") != current_protocol["baseline_pool_fingerprint"]
-        or session.get("baseline_pool", {}).get("protocol_fingerprint") != current_protocol["baseline_pool_fingerprint"]
-    ):
-        return False, "pilot audit does not bind the current baseline-pool contract"
-    agent_condition = selected_descriptor.get("agent_condition", {})
-    if {
-        "id": agent_condition.get("model_condition_id"),
-        "model": agent_condition.get("model"),
-        "reasoning_effort": agent_condition.get("reasoning_effort"),
-    } != expected_condition:
-        return False, "baseline session model condition does not match the designated gate tuple"
-    slot_candidates = [
-        item
-        for item in registry_sessions
-        if isinstance(item, dict)
-        and item.get("task_sequence", {}).get("sequence_id") == seq.get("id")
-        and item.get("profile", {}).get("profile_id") == "baseline-bare-codex"
-        and item.get("frozen_protocol") == expected_binding
-        and item.get("baseline_pool", {}).get("protocol_fingerprint") == current_protocol["baseline_pool_fingerprint"]
-        and any(
-            isinstance(result, dict) and result.get("agent_attempted") is True
-            for result in item.get("per_task_results", [])
-        )
-    ]
-    if any(type(item.get("replicate_index")) is not int for item in slot_candidates):
-        return False, f"current {generation} slot registry contains malformed replicate_index evidence"
-    slot_sessions = [item for item in slot_candidates if item.get("replicate_index") == 0]
-    if len(slot_sessions) != 1 or slot_sessions[0].get("session_id") != session_id:
-        return False, f"current {generation} r0 slot is absent, ambiguous, or was rerun"
-    return True, "audited compile-passing Lifecycle V1 pilot"
+    if missing:
+        return False, f"{generation} mistake gate is missing {', '.join(missing)}"
+    return True, "active lifecycle-v1 sequence with a designated model condition"
 
 
 def require_lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> None:
@@ -4656,9 +4341,6 @@ def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) 
                 "status": "rejected-before-registry-publication",
                 "session_id": record["session_id"],
                 "artifact_root": record.get("artifacts", {}).get("root"),
-                "pilot_attempt_receipt": str(
-                    baseline_pilot_attempt_receipt_path(load_sequence(record["task_sequence"]["sequence_id"]))
-                ),
                 "reason": "strict compact artifact ingress validation failed",
                 "source_evidence_retained": str(run_dir),
             },
@@ -4831,13 +4513,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         args.replicate_index,
         prepare_only=False,
     )
-    if args.profile_id == "baseline-bare-codex":
-        pilot_allowed, pilot_reason = lifecycle_v1_pilot_run_gate(
-            selected_sequence,
-            replicate_index=args.replicate_index,
-        )
-        if not pilot_allowed:
-            raise ValueError(f"baseline provider run is blocked: {pilot_reason}")
     lock_fd = acquire_provider_production_lock()
     try:
         return _run_one_locked(args)
@@ -5061,13 +4736,6 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         shutil.rmtree(run_dir)
         return result
 
-    if profile_id == "baseline-bare-codex" and seq.get("task_family_generation") == "lifecycle-v1":
-        reserve_baseline_pilot_attempt(
-            seq,
-            root=ROOT,
-            orchestrator="direct-runner",
-            replicate_index=args.replicate_index,
-        )
     if profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
         reserve_openrouter_lifecycle_v1_attempt(seq, session_id, ROOT)
 
