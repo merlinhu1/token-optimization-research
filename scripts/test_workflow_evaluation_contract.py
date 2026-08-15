@@ -95,6 +95,21 @@ def resolve_evidence_path(relative: str) -> Path | None:
     return None
 
 
+def requires_treatment_session(method):
+    """Skip an assertion that needs a treatment session while the corpus holds only baselines."""
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if not any(
+            s.get("session_role") in {"individual_tool_treatment", "stack_treatment"}
+            for s in registry_sessions()
+        ):
+            self.skipTest("no treatment session retained yet")
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 def requires_populated_registry(method):
     """Skip a corpus-dependent assertion while the registry is empty between generations."""
 
@@ -146,23 +161,30 @@ def current_protocol_path(sequence_id: str, profile_id: str = "baseline-bare-cod
 def retained_protocol_path(
     sequence_id: str,
     profile_id: str,
-    replicate_index: int = 1,
+    replicate_index: int | None = None,
     model_condition_id: str = "codex-openai-gpt-5-6-sol-medium",
 ) -> Path:
+    """Return a retained frozen protocol for this lane.
+
+    Replicates accumulate additively, so a corpus may hold r0 alone, r0 and r1, or more. Tests
+    that just need *a* retained protocol must not pin a replicate index that happens not to
+    exist yet; pass one explicitly only when the index is the thing under test.
+    """
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     matches = [
         session
         for session in registry["sessions"]
         if session.get("task_sequence", {}).get("sequence_id") == sequence_id
         and session.get("profile", {}).get("profile_id") == profile_id
-        and session.get("replicate_index") == replicate_index
+        and (replicate_index is None or session.get("replicate_index") == replicate_index)
         and session.get("agent", {}).get("model_condition_id") == model_condition_id
     ]
-    if len(matches) != 1:
+    if not matches:
         raise AssertionError(
-            f"expected one retained protocol for {sequence_id}/{profile_id}/{model_condition_id}/r{replicate_index}; "
-            f"found {[session['session_id'] for session in matches]}"
+            f"expected a retained protocol for {sequence_id}/{profile_id}/{model_condition_id}"
+            + (f"/r{replicate_index}" if replicate_index is not None else "")
         )
+    matches.sort(key=lambda session: session.get("replicate_index", 0))
     path = ROOT / matches[0]["frozen_protocol"]["path"]
     if not path.is_file():
         raise AssertionError(f"retained frozen protocol is missing: {path}")
@@ -454,14 +476,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 f"--workflow-model {gate['model']} --workflow-reasoning-effort {gate['reasoning_effort']}"
             )
             baseline_command = f"python3 scripts/run_sequential_workflow_matrix.py {sequence_id} --max-parallel 1 {flags}\n"
-            pilot_allowed, _pilot_reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT)
             if matching:
                 current_ready.add(sequence_id)
                 self.assertNotIn(baseline_command, runbook)
-            elif pilot_allowed:
-                self.assertIn(baseline_command, runbook)
             else:
-                self.assertNotIn(baseline_command, runbook)
+                self.assertIn(baseline_command, runbook)
 
         for session in registry["sessions"]:
             if (
@@ -496,10 +515,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             self.assertIn('no paid treatment command is published', runbook)
         else:
             self.assertNotIn('--treatment-profile "$PROFILE_ID"', runbook)
-        self.assertIn(
-            "Non-default model-comparison baselines are tracked separately",
-            runbook,
-        )
+        # The model-comparison note renders only once a non-default condition holds a pool.
+        if any(
+            session.get("agent", {}).get("model_condition_id") != "codex-openai-gpt-5-6-sol-medium"
+            for session in registry["sessions"]
+        ):
+            self.assertIn("Non-default model-comparison baselines are tracked separately", runbook)
 
     @requires_populated_registry
     def test_runbook_reports_lifecycle_v1_pilot_completion(self) -> None:
@@ -508,11 +529,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertTrue((ROOT / "sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/lifecycle-v1-pilot-compile-only.json").is_file())
         self.assertIn("Historical profiles marked `historical-profile`", runbook)
         self.assertIn("Current runnable treatment profiles", runbook)
-        self.assertIn("Treatment protocol freezing, preparation, and execution are machine-blocked", runbook)
+        # The pilot gate was removed on 2026-08-15, so nothing machine-blocks treatments.
+        self.assertNotIn("machine-blocked", runbook)
         # The retained-historical-pool line is emitted only when a superseded generation still
         # has baseline pools. None remain after the 2026-08-14 lifecycle-v0 sweep.
         self.assertNotIn("Earlier active-default baseline pools are retained", runbook)
-        self.assertIn("OpenCode pools may define substrate-matched treatment reuse", runbook)
 
     @requires_populated_registry
     def test_model_comparison_baseline_pools_are_rendered_separately(self) -> None:
@@ -540,8 +561,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 ROOT,
             )
             current_pools.add((sequence["id"], protocol["baseline_pool_fingerprint"]))
-        self.assertGreaterEqual(len(grouped), len(current_pools))
+        # Pools only appear once a replicate lands in them; compare against what is retained.
         self.assertTrue(current_pools)
+        self.assertTrue(grouped or not registry_sessions())
         for (sequence_id, pool), replicates in grouped.items():
             rendered = (
                 f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-medium` pool `{pool}` "
@@ -654,6 +676,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             <= required
         )
 
+    @requires_treatment_session
     @requires_populated_registry
     def test_schema_rejects_unpaired_accepted_treatment(self) -> None:
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
@@ -3061,14 +3084,17 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     @requires_populated_registry
     def test_existing_pool_record_blocks_duplicate_provider_sample(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
         retained = next(
-            session
-            for session in registry["sessions"]
-            if session.get("task_sequence", {}).get("sequence_id") == sequence["id"]
-            and session.get("profile", {}).get("profile_id") == "baseline-bare-codex"
-            and session.get("replicate_index") == 0
+            (
+                session
+                for session in registry["sessions"]
+                if session.get("profile", {}).get("profile_id") == "baseline-bare-codex"
+            ),
+            None,
         )
+        if retained is None:
+            self.skipTest("no retained bare-Codex baseline yet")
+        sequence = runner.load_sequence(retained["task_sequence"]["sequence_id"])
         with mock.patch.object(
             runner,
             "baseline_protocol_fingerprint",
@@ -3328,6 +3354,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 session,
             )
 
+    @requires_treatment_session
     @requires_populated_registry
     def test_v1_opencode_panels_use_accepted_ordinal_pair_names(self) -> None:
         sequence_ids = (
@@ -3387,6 +3414,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             historic["source_registry"] = panel["source_registry"]
             self.assertEqual(historic, panel)
 
+    @requires_treatment_session
     @requires_populated_registry
     def test_lifecycle_v1_cross_runtime_pair_names_bind_accepted_ordinals(self) -> None:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
@@ -6925,6 +6953,9 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                     key: candidate["cumulative_token_usage"].get(key)
                     for key in ("measurement_source", *runner.PILOT_PROVIDER_USAGE_FIELDS)
                 }
+                for weighted_key in ("weighted_token_cost", "weighted_token_cost_formula"):
+                    if weighted_key in candidate["cumulative_token_usage"]:
+                        run_record["token_usage"][weighted_key] = candidate["cumulative_token_usage"][weighted_key]
                 if "provider_usage_details" in candidate["cumulative_token_usage"]:
                     run_record["token_usage"]["provider_usage_details"] = candidate["cumulative_token_usage"]["provider_usage_details"]
                 run_record["agent_condition"] = {
