@@ -45,6 +45,8 @@ BASELINE_MODEL_CONDITION: dict[str, Any] | None = None
 
 def registered_model_condition(condition_id: str, model: str, reasoning_effort: str) -> dict[str, Any]:
     selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
+    if selected.get("status") == "historical-inactive":
+        raise ValueError(f"historical model condition cannot mint a new protocol: {condition_id}")
     if selected.get("model") != model or selected.get("reasoning_effort") != reasoning_effort:
         raise ValueError(f"registered model condition does not match {condition_id}/{model}/{reasoning_effort}")
     return selected
@@ -180,7 +182,7 @@ def frozen_protocol(
         "status": "frozen-ready-not-run",
         "outcome": f"Frozen {profile_id} protocol for {seq['id']}; no provider/model run has occurred.",
         "frozen_at": seq["protocol_freeze_date"],
-        "hypothesis": f"{profile_id} produces reproducible weighted-token and software-quality evidence for {seq['id']}",
+        "hypothesis": f"{profile_id} produces reproducible weighted token cost and software-quality evidence for {seq['id']}",
         "evidence_stage_target": "reproduction",
         "task_fixture": {
             "fixture_id": seq["fixture_id"],
@@ -246,10 +248,10 @@ def main(argv: list[str] | None = None) -> int:
             "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
         )
     if args.profile_id == "baseline-opencode-openrouter-no-mcp" and model_values != (
-        "opencode-openrouter-gpt-5-6-sol-high", "gpt-5.6-sol", "high"
+        "opencode-openrouter-gpt-5-6-sol-medium", "gpt-5.6-sol", "medium"
     ):
         raise SystemExit(
-            "baseline-opencode-openrouter-no-mcp requires the exact OpenRouter GPT-5.6 Sol/high model condition"
+            "baseline-opencode-openrouter-no-mcp requires the exact OpenRouter GPT-5.6 Sol/medium model condition"
         )
     runner.assert_profile_runnable(args.profile_id)
     runner.fixture.require_repowise_provider_contract(args.profile_id)

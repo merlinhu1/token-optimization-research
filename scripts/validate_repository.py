@@ -755,25 +755,25 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         return
     required_true = ("fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "no_unmerged_paths", "all_expected_model_concealment_declared")
     required_true += (
-        "seeded_compile_outcomes_valid",
-        "composite_seed_compile_outcomes_valid",
+        "seeded_verifier_outcomes_valid",
+        "composite_seed_verifier_outcomes_valid",
         "no_model_visible_acceptance_assets",
         "no_model_concealed_acceptance_assets",
-        "controller_compile_policy_not_model_facing",
+        "controller_acceptance_policy_not_model_facing",
         "model_visible_acceptance_assets_match_verifier_copies",
         "aggregate_verifier_environment_passed",
         "project_compile_passed",
     )
-    if q.get("schema_version") != 5:
-        errors.append(f"qualification {rel} must use schema_version=5 for controller-only Lifecycle V1")
+    if q.get("schema_version") != 6:
+        errors.append(f"qualification {rel} must use schema_version=6 for controller-only Lifecycle V1")
     if q.get("task_family_generation") != "lifecycle-v1":
         errors.append(f"qualification {rel} must bind task_family_generation=lifecycle-v1")
-    if q.get("acceptance_visibility") != "controller-only-compile-policy":
-        errors.append(f"qualification {rel} must record controller-only compile policy visibility")
+    if q.get("acceptance_visibility") != "controller-only-compile-plus-essential-smoke":
+        errors.append(f"qualification {rel} must record controller-only compile-plus-essential-smoke visibility")
     if q.get("all_acceptance_behavior_model_visible") is not False:
         errors.append(f"qualification {rel} must not claim internal acceptance behavior is model-visible")
     if q.get("expected_model_visible_acceptance_asset_count") != 0:
-        errors.append(f"qualification {rel} compile-only acceptance must not require file-backed test assets")
+        errors.append(f"qualification {rel} must not inject file-backed acceptance assets")
     if q.get("project_compile_command") != sequence.get("project_compile_command"):
         errors.append(f"qualification {rel} project-wide compile command does not match the active sequence")
     if sequence.get("status") == "active":
@@ -789,7 +789,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
     )
     if composite_seed_exits_invalid:
         errors.append(
-            f"qualification {rel} seeded verifiers must record only compiler pass/fail exits, not collection or infrastructure failures"
+            f"qualification {rel} seeded verifiers must record only pass/fail exits, not collection or infrastructure failures"
         )
     boundaries = q.get("cumulative_boundaries", [])
     boundary_invalid = len(boundaries) != len(ordered)
@@ -835,7 +835,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
             or production_file_count < 1
         ):
             errors.append(f"qualification {rel} task {task['id']} records no production/type files")
-        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("controller_visible_acceptance_assets") != controller_visible_assets or record.get("model_visible_acceptance_asset_paths") != expected_acceptance_paths or len(controller_visible_assets) != len(expected_acceptance_paths) or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
+        if record.get("task_id") != task["id"] or record.get("production_files") != files or record.get("production_file_count") != len(files) or record.get("agent_prompt_sha256") != hashes["agent-prompt.txt"] or record.get("seed_patch_sha256") != hashes["seed-regression.patch"] or record.get("verifier_sha256") != hashes["verify.sh"] or record.get("compile_command") != task.get("compile_command") or record.get("essential_smoke_command") != task.get("essential_smoke_command") or record.get("acceptance_visibility") != task.get("acceptance_visibility") or record.get("controller_visible_acceptance_assets") != controller_visible_assets or record.get("model_visible_acceptance_asset_paths") != expected_acceptance_paths or len(controller_visible_assets) != len(expected_acceptance_paths) or record.get("task_directory_sha256") != task_directory_sha256(task_dir):
             errors.append(f"qualification {rel} task {task['id']} has stale hashes, files, or count")
         expected = expected_task_concealed_paths(task)
         declared = sorted(str(path) for path in task.get("model_concealed_paths", []))
@@ -1362,8 +1362,8 @@ def validate_agent_runtimes(runtime_doc: dict, errors: list[str]) -> tuple[set[s
             if not condition.get(key):
                 errors.append(f"model condition {cid} missing {key}")
     active_defaults = [condition for condition in conditions if condition.get("status") == "active-default"]
-    if len(active_defaults) != 1 or active_defaults[0].get("id") != "codex-openai-gpt-5-6-luna-xhigh" or active_defaults[0].get("model") != "gpt-5.6-luna" or active_defaults[0].get("reasoning_effort") != "xhigh":
-        errors.append("the only active default model condition must be codex-openai-gpt-5-6-luna-xhigh")
+    if len(active_defaults) != 1 or active_defaults[0].get("id") != "codex-openai-gpt-5-6-sol-medium" or active_defaults[0].get("model") != "gpt-5.6-sol" or active_defaults[0].get("reasoning_effort") != "medium":
+        errors.append("the only active default model condition must be codex-openai-gpt-5-6-sol-medium")
     return runtime_ids, condition_ids
 
 
@@ -1474,9 +1474,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             else (False, "missing active sequence")
         )
         if generation == "lifecycle-v1":
-            required_blocker = "Lifecycle V1 compile-only provider pilot must complete every task with all affected-component compile verifiers exiting zero before treatment launch."
-            completed_status = "completed-passed-compilation"
-            completion_label = "compile-passing Lifecycle V1"
+            required_blocker = "Lifecycle V1 essential-smoke provider pilot must complete every task with all task verifiers and final project compilation exiting zero before treatment launch."
+            completed_status = "completed-passed-acceptance"
+            completion_label = "acceptance-passing Lifecycle V1"
         else:
             required_blocker = f"{generation_label} strongest-model provider pilot must complete with all eight required observed categories recorded as strict integer zero before treatment launch."
             completed_status = "completed-passed-zero-incident"
@@ -1522,21 +1522,21 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             gate = sequence.get("mistake_gate")
             treatment_ready, _treatment_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
             if generation == "lifecycle-v1":
-                gate_status = "passed-compilation" if treatment_ready else "provider-pilot-required"
+                gate_status = "passed-acceptance" if treatment_ready else "provider-pilot-required"
                 launch_policy = (
-                    "eligible for treatment protocol freeze after the first-valid strongest-model pilot completed every task and every affected-component compile verifier exited zero; all other quality findings are diagnostic only"
+                    "eligible for treatment protocol freeze after the first-valid strongest-model pilot completed every task and every declared task verifier exited zero; broader quality findings remain diagnostic only"
                     if treatment_ready
-                    else "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+                    else "blocked until one first-valid strongest-model pilot completes every task and every declared task verifier exits zero; broader quality findings remain diagnostic only"
                 )
                 expected_gate = {
-                    "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+                    "designated_model_condition": "codex-openai-gpt-5-6-sol-medium",
                     "model": "gpt-5.6-sol",
-                    "reasoning_effort": "high",
+                    "reasoning_effort": "medium",
                     "compile_required": True,
                     "quality_diagnostics_gate": False,
-                    "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json",
+                    "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json",
                     "attempt_receipt_path": f"sources/evaluations/audits/lifecycle-v1-corrected-pilot-attempt-{str(sid).split('-lifecycle-sequence-v1')[0]}.json",
-                    "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-corrected-task-family-readiness-20260813.json",
+                    "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-readiness-20260815.json",
                     "status": gate_status,
                     "treatment_launch_policy": launch_policy,
                 }
@@ -1556,17 +1556,17 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     expected_readiness_blockers: list[str] = []
                 elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "accepted":
                     expected_readiness_blockers = [
-                        "provider-backed strongest-model compile-only Lifecycle V1 pilot executed; treatment audit is pending"
+                        "provider-backed strongest-model Lifecycle V1 essential-smoke pilot executed; treatment audit is pending"
                     ]
                 elif isinstance(pilot_attempt, dict) and pilot_attempt.get("status") == "rejected":
                     expected_readiness_blockers = [
-                        "provider-backed strongest-model compile-only Lifecycle V1 r0 pilot attempt was rejected; explicit owner reauthorization is required"
+                        "provider-backed strongest-model Lifecycle V1 essential-smoke r0 pilot attempt was rejected; explicit owner reauthorization is required"
                     ]
                 else:
                     expected_readiness_blockers = [
-                        "provider-backed strongest-model compile-only Lifecycle V1 pilot is authorized but not executed"
+                        "provider-backed strongest-model Lifecycle V1 essential-smoke pilot is authorized but not executed"
                         if paid_pilot_authorized
-                        else "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+                        else "provider-backed strongest-model Lifecycle V1 essential-smoke pilot is not authorized or executed"
                     ]
                 if sequence.get("readiness_blockers") != expected_readiness_blockers:
                     errors.append(
@@ -1574,7 +1574,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     )
                 gate_values_match = isinstance(gate, dict) and gate == expected_gate
                 if not gate_values_match:
-                    errors.append(f"active workflow sequence {sid} must preserve the Lifecycle V1 compile-only gate")
+                    errors.append(f"active workflow sequence {sid} must preserve the Lifecycle V1 essential-smoke gate")
             if isinstance(gate, dict):
                 for field in ("pilot_audit_path", "attempt_receipt_path", "pilot_authorization_path"):
                     if field not in gate:
@@ -1627,28 +1627,30 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             errors.append(f"active workflow sequence {sid} pilot attempt receipt identity is invalid")
             reset_policy = str(sequence.get("reset_policy", ""))
             seed_policy = str(sequence.get("seed_patch_policy", ""))
-            if "controller-only affected-component compile command" not in reset_policy or "not disclosed" not in reset_policy:
-                errors.append(f"active workflow sequence {sid} reset policy must bind undisclosed controller-only compilation assessment")
+            if "Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke" not in reset_policy or "review tasks remain compile-only" not in reset_policy or "not disclosed" not in reset_policy:
+                errors.append(f"active workflow sequence {sid} reset policy must bind the undisclosed lenient acceptance split")
             if "Model-facing prompts describe the software objective" not in seed_policy or "not disclosed" not in seed_policy:
                 errors.append(f"active workflow sequence {sid} seed policy must keep controller scoring out of the agent task")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        expected_qualification_name = "qualification-lifecycle-v1-20260813.json"
+        expected_qualification_name = "qualification-lifecycle-v1-20260815.json"
         if qualification_name != expected_qualification_name:
             errors.append(f"active workflow sequence {sid} must bind {expected_qualification_name}")
         if sequence.get("status") == "active":
-            expected_design = "compile-only"
+            expected_design = "compile-plus-essential-smoke"
             if sequence.get("acceptance_design") != expected_design:
                 errors.append(f"active workflow sequence {sid} must declare acceptance_design={expected_design}")
-            if expected_design == "compile-only" and sequence.get("acceptance_policy") != {
-                "gate": "affected-component-compilation",
+            if sequence.get("acceptance_policy") != {
+                "gate": "compile-plus-essential-smoke-for-coding-tasks",
                 "visibility": "controller-only",
+                "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
+                "review_task_gate": "compile-only",
                 "quality_diagnostics_gate": False,
-                "tests_required": False,
+                "broader_tests_required": False,
                 "source_review_required": False,
             }:
-                errors.append(f"active workflow sequence {sid} must declare the exact compile-only acceptance policy")
-            if expected_design == "compile-only" and (
+                errors.append(f"active workflow sequence {sid} must declare the exact lenient essential-smoke acceptance policy")
+            if (
                 not isinstance(sequence.get("project_compile_command"), str)
                 or not sequence.get("project_compile_command")
             ):
@@ -1732,9 +1734,12 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         required_markers = (
                             "Implement the task completely and correctly.",
                             "Search and inspect the repository as needed",
-                            "run relevant existing tests and checks when practical",
+                            "run the existing tests and checks you judge relevant",
                         )
                         forbidden_markers = (
+                            # Revoked 2026-08-15: banning the suite suppressed the terminal
+                            # output that compaction tools act on, biasing the workload.
+                            "Do not run the full project test suite",
                             "compile-only",
                             "only acceptance gate",
                             "sole pass/fail gate",
@@ -1747,11 +1752,13 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             "p.write_text(",
                         )
                         compile_command = task.get("compile_command")
+                        essential_smoke_command = task.get("essential_smoke_command")
                         if (
                             generation_path not in str(prompt_path)
                             or any(marker not in prompt_text for marker in required_markers)
                             or any(marker.lower() in prompt_text.lower() for marker in forbidden_markers)
                             or (isinstance(compile_command, str) and compile_command in prompt_text)
+                            or (isinstance(essential_smoke_command, str) and essential_smoke_command in prompt_text)
                         ):
                             errors.append(f"active workflow sequence {sid} task {tid} must use the complete Lifecycle V1 software-objective prompt contract without controller scoring policy")
                         if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 2:
@@ -1763,10 +1770,24 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             or anchors != []
                         ):
                             errors.append(f"active workflow sequence {sid} task {tid} must bind one controller-only affected-component compile command")
-                        if task.get("acceptance_visibility") != "controller-only-compile-policy":
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare controller-only compile policy visibility")
+                        coding_task = task.get("task_class") in {"feature-implementation", "behavior-preserving-refactor"}
+                        expected_visibility = (
+                            "controller-only-compile-plus-essential-smoke"
+                            if coding_task
+                            else "controller-only-compile-policy"
+                        )
+                        if task.get("acceptance_visibility") != expected_visibility:
+                            errors.append(f"active workflow sequence {sid} task {tid} has the wrong controller-only acceptance visibility")
+                        if coding_task and (
+                            not isinstance(essential_smoke_command, str)
+                            or not essential_smoke_command
+                            or essential_smoke_command not in verifier_text
+                        ):
+                            errors.append(f"active workflow sequence {sid} task {tid} must bind one narrow essential-behavior smoke")
+                        if not coding_task and essential_smoke_command is not None:
+                            errors.append(f"active workflow sequence {sid} review task {tid} must remain compile-only")
                         if acceptance_asset_paths != []:
-                            errors.append(f"active workflow sequence {sid} task {tid} compile-only controller assessment must not inject test assets")
+                            errors.append(f"active workflow sequence {sid} task {tid} controller assessment must not inject test assets")
                     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
                     if any(marker in verifier_text and marker not in prompt_text for marker in undisclosed_inline_markers):
                         errors.append(f"active workflow sequence {sid} task {tid} contains undisclosed inline verifier assertions")

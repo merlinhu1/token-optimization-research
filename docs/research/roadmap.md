@@ -2,11 +2,11 @@
 
 ## Current state
 
-The corrected execution contract is Lifecycle V1 across Fastify and Beets: authentic semantic regressions, normal software-engineering prompts, focused-check guidance, and controller-only compile scoring. The corrected fixture qualifications completed on 2026-08-13, but no provider-backed result has been executed under that generation.
+The corrected execution contract is Lifecycle V1 across Fastify and Beets: authentic semantic regressions, normal software-engineering prompts, and lenient controller-only acceptance. Every task compiles; feature and refactor tasks also run one narrow essential-behavior smoke, while review tasks remain compile-only. The current fixture qualifications completed on 2026-08-15, but no provider-backed result has been executed under that contract.
 
 The previous provider-backed Lifecycle V1 corpus was archived before rerun because model-facing prompts and shared prompt/configuration identity changed. The archive contains 103 historical sessions, their comparisons, and superseded protocols. They remain immutable evidence for the prior bytes and are not current controls.
 
-The active registry therefore contains zero provider-backed sessions. The corrected bare-Codex protocols remain `frozen-ready-not-run`; future provider work must be fresh, explicitly authorized, and bound to the corrected qualification/protocol hashes.
+The active registry therefore contains zero provider-backed sessions. The current bare-Codex protocols remain `frozen-ready-not-run`; future provider work must be fresh, explicitly authorized, and bound to the 2026-08-15 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
 
 ## Archived evidence
 

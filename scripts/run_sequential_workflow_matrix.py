@@ -111,6 +111,16 @@ CLAUDE_ANTHROPIC_OPUS_AUTHORIZATION_REL = Path(
 CLAUDE_ANTHROPIC_OPUS_ATTEMPT_DIR = Path(
     "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-attempts"
 )
+CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID = "claude-code-anthropic-opus-5-medium"
+CLAUDE_ANTHROPIC_OPUS_MEDIUM_PREPARATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-opus-5-medium-lifecycle-v1-protocol-preparation.json"
+)
+CLAUDE_ANTHROPIC_OPUS_MEDIUM_AUTHORIZATION_REL = Path(
+    "sources/evaluations/audits/claude-code-anthropic-opus-5-medium-lifecycle-v1-baseline-authorization.json"
+)
+CLAUDE_ANTHROPIC_OPUS_MEDIUM_ATTEMPT_DIR = Path(
+    "sources/evaluations/audits/claude-code-anthropic-opus-5-medium-lifecycle-v1-attempts"
+)
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -155,6 +165,19 @@ def direct_anthropic_campaign(
                 "provider": "anthropic",
                 "model": "claude-opus-5",
                 "reasoning_effort": "high",
+            },
+        },
+        CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID: {
+            "preparation": CLAUDE_ANTHROPIC_OPUS_MEDIUM_PREPARATION_REL,
+            "authorization": CLAUDE_ANTHROPIC_OPUS_MEDIUM_AUTHORIZATION_REL,
+            "attempt_dir": CLAUDE_ANTHROPIC_OPUS_MEDIUM_ATTEMPT_DIR,
+            "campaign_id": "claude-code-anthropic-opus-5-medium-lifecycle-v1",
+            "model_condition": {
+                "id": CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID,
+                "runtime_id": "claude-code",
+                "provider": "anthropic",
+                "model": "claude-opus-5",
+                "reasoning_effort": "medium",
             },
         },
     }
@@ -795,7 +818,7 @@ def claude_baseline_run_gate(
         )
         if occupied is not None:
             return False, f"direct-Anthropic Claude Code identity is already occupied by session {occupied.get('session_id')}"
-        return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/high baseline is unoccupied{recovery_reason}"
+        return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/{expected_model['reasoning_effort']} baseline is unoccupied{recovery_reason}"
     if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
         return claude_lifecycle_v1_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
@@ -2788,6 +2811,8 @@ def selected_model_condition(args: argparse.Namespace, *, configure: bool = Fals
             "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
         )
     condition, _ = condition_runtime.resolve_condition_pair(ROOT, str(values[0]))
+    if condition.get("status") == "historical-inactive":
+        raise ValueError(f"historical model condition cannot launch a new evaluation: {values[0]}")
     if condition.get("model") != values[1] or condition.get("reasoning_effort") != values[2]:
         raise ValueError("registered model condition does not match the requested model/reasoning effort")
     if configure:

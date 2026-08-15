@@ -109,8 +109,8 @@ def run_task(
     if not (claude_home / "claude-config" / "mcp.json").is_file():
         mcp_config = None
     cmd = command(
-        model=str(agent.get("model", "claude-sonnet-5")),
-        effort=str(agent.get("reasoning_effort", "high")),
+        model=str(agent.get("model", "claude-opus-5")),
+        effort=str(agent.get("reasoning_effort", "medium")),
         prompt=prompt_path.read_text(),
         mcp_config=mcp_config,
         session_id=session_id,

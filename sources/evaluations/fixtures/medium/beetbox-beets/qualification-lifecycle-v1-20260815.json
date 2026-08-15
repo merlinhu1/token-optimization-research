@@ -1,0 +1,187 @@
+{
+  "schema_version": 6,
+  "task_family_generation": "lifecycle-v1",
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-08-15",
+  "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+  "observed_source": {
+    "head": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "tree": "47a0d93d5ea4afc6d1e11c11add615322ddc3c87",
+    "remotes": [
+      "origin\tgit@github.com:beetbox/beets.git (fetch) [blob:none]",
+      "origin\tgit@github.com:beetbox/beets.git (push)"
+    ],
+    "expected_upstream": "https://github.com/beetbox/beets.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "uv sync --group test --frozen"
+  },
+  "ordered_task_ids": [
+    "beets-lifecycle-feature-v1",
+    "beets-lifecycle-refactor-v1",
+    "beets-lifecycle-review-v1"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "beets-lifecycle-feature-v1",
+      "seed_patch_sha256": "a895b51d95f1c3adf2375468e523c264287a12a0cbea32c9fc2310f02074379d",
+      "verifier_sha256": "4092c538add4da12d1987966519d396bca7947a68804e68c839e998f3ceaccc1",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_functemplate.py::ParseTest::test_call_two_args test/util/test_functemplate.py::ParseTest::test_call_with_escaped_sep test/util/test_functemplate.py::ParseTest::test_call_with_nested_call_argument",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/util/functemplate.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "1335e61743e14ff1f49b6d8009854086b5ac1d222642e76f62d379f9807c4bac",
+      "task_directory_sha256": "781e2aa96ce31c3a866f3f360f8f35437ea610bab5cf2eb2c854878fda6af021"
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v1",
+      "seed_patch_sha256": "9bcf590139fc91987524e643bc1e6281efbe5a09cd9b2218ca31f670c391c722",
+      "verifier_sha256": "88ab48935cf5b377136540894602e0fa00d4338daab58f37085c80ae1b6d29f7",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py",
+      "essential_smoke_command": "uv run --offline --frozen python -c \"import inspect; from beets.dbcore.db import LazyDict; value = LazyDict({'a': 1}, lambda key, item: item); iterator = iter(value); assert not inspect.isgenerator(iterator); assert set(iterator) == {'a'}\"",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/dbcore/db.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "42d873f267d963235366035b19a415bccd1ba4faae341ee3e53e52357e7377ea",
+      "task_directory_sha256": "1231442d416e318067d207e8edbe440fb7bb8519ba92bd0747ac21c249bb8318"
+    },
+    {
+      "task_id": "beets-lifecycle-review-v1",
+      "seed_patch_sha256": "14d8dd83706706805b8159f85871036cfb39148dd7912e66e2c8044d505cabad",
+      "verifier_sha256": "7ad4e01e8a7b2ecd2852e8985cef05840fa0a9d1ce9f775a87ccf35be7ff98dd",
+      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/ftintitle.py",
+      "essential_smoke_command": null,
+      "acceptance_visibility": "controller-only-compile-policy",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beetsplug/ftintitle.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "ac6d860739bacf88ef2852750548b3a0d63dad53db44e37f6420ada03932ad35",
+      "task_directory_sha256": "4ce609e8ba41a74aec8a07e634abdb17cad97ada2cf40e8bf495919a14ece5cc"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "beets-lifecycle-feature-v1",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v1": 0
+      }
+    },
+    {
+      "task_id": "beets-lifecycle-refactor-v1",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v1": 0,
+        "beets-lifecycle-refactor-v1": 0
+      }
+    },
+    {
+      "task_id": "beets-lifecycle-review-v1",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 0,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-lifecycle-feature-v1": 0,
+        "beets-lifecycle-refactor-v1": 0,
+        "beets-lifecycle-review-v1": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": false,
+  "composite_seeded_verifiers_zero": false,
+  "composite_seed_verifier_outcomes_valid": true,
+  "composite_seed_verifier_exits": {
+    "beets-lifecycle-feature-v1": 1,
+    "beets-lifecycle-refactor-v1": 1,
+    "beets-lifecycle-review-v1": 0
+  },
+  "composite_seed_diff_sha256": "8903071aba12edc1ba64fc690c250819882fc7790c42297abc5b876dff160415",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": false,
+  "seeded_verifiers_zero": false,
+  "seeded_verifier_outcomes_valid": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "aggregate_verifier_exit": 0,
+  "aggregate_verifier_task_exits": [
+    0,
+    0,
+    0
+  ],
+  "aggregate_verifier_environment_passed": true,
+  "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+  "project_compile_passed": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": true,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+  "controller_acceptance_policy_not_model_facing": true,
+  "all_acceptance_behavior_model_visible": false,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 0,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-beetbox-beets",
+  "sequence_id": "beets-lifecycle-sequence-v1",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "beets-lifecycle-feature-v1": "781e2aa96ce31c3a866f3f360f8f35437ea610bab5cf2eb2c854878fda6af021",
+      "beets-lifecycle-refactor-v1": "1231442d416e318067d207e8edbe440fb7bb8519ba92bd0747ac21c249bb8318",
+      "beets-lifecycle-review-v1": "4ce609e8ba41a74aec8a07e634abdb17cad97ada2cf40e8bf495919a14ece5cc"
+    }
+  }
+}

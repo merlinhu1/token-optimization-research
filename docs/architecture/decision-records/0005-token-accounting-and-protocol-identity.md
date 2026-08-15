@@ -28,6 +28,14 @@ never a primary, secondary, comparison, ranking, or presentation metric.
   historical, and treatment gates close until the revised contract receives its own pilot.
 - Decision (2026-08-15): Weighted token cost is the repository's only token evaluation metric.
   Provider counters remain auditable telemetry solely to calculate and verify that value.
+- Decision (2026-08-15): Lifecycle V1 task acceptance adds one narrow essential-behavior smoke
+  to feature and refactor tasks while review tasks remain compile-only. This verifier-contract
+  change mints new qualification and protocol identities without changing prompt bytes or
+  weighted-token sample-retention eligibility.
+- Decision (2026-08-15): New Codex CLI and OpenCode protocols use GPT-5.6 Sol at medium effort;
+  new Claude Code protocols use direct-Anthropic Claude Opus 5 at medium effort. High-effort
+  conditions remain historical only because excess deliberation can increase trajectory
+  divergence. A model or effort change mints a new protocol identity.
 
 ## Consequences
 

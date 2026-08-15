@@ -20,16 +20,10 @@ PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
 CLAUDE_DIRECT_CAMPAIGNS = (
     (
-        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json",
-        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json",
-    ),
-    (
-        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json",
-        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json",
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-medium-lifecycle-v1-protocol-preparation.json",
+        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-medium-lifecycle-v1-baseline-authorization.json",
     ),
 )
-CLAUDE_SONNET_TREATMENT_AUTHORITY = ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json"
-CLAUDE_SONNET_TREATMENT_QUALIFICATION = ROOT / "sources" / "evaluations" / "audits" / "corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json"
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -64,52 +58,14 @@ def claude_direct_preparation_text() -> str:
         if not baseline_count:
             baseline_count = len((preparation.get("source_scope") or {}).get("protocols", []))
         authorization = load_json(authorization_path) if authorization_path.is_file() else {}
-        treatment_authorization = (
-            load_json(CLAUDE_SONNET_TREATMENT_AUTHORITY)
-            if CLAUDE_SONNET_TREATMENT_AUTHORITY.is_file()
-            else {}
-        )
-        treatment_qualification = (
-            load_json(CLAUDE_SONNET_TREATMENT_QUALIFICATION)
-            if CLAUDE_SONNET_TREATMENT_QUALIFICATION.is_file()
-            else {}
-        )
         if (
             authorization.get("status") == "owner-authorized-provider-run"
             and authorization.get("execution_status") == "completed"
         ):
             completed = ", ".join(str(item) for item in authorization.get("completed_sequences", []))
-            if condition.get("id") == "claude-code-anthropic-sonnet-5-high" and treatment_authorization.get("status") == "owner-authorized-provider-capable":
-                qualification_summary = treatment_qualification.get("summary", {})
-                treatment_profiles = treatment_authorization.get("profiles", [])
-                treatment_sequences = set(treatment_authorization.get("sequence_order", []))
-                session_records = load_json(SESSIONS).get("sessions", [])
-                completed_lanes = sum(
-                    session.get("status") == "completed"
-                    and session.get("session_role") == "individual_tool_treatment"
-                    and session.get("replicate_index") == treatment_authorization.get("replicate_index")
-                    and session.get("profile", {}).get("profile_id") in treatment_profiles
-                    and session.get("task_sequence", {}).get("sequence_id") in treatment_sequences
-                    and session.get("agent", {}).get("model_condition_id") == condition.get("id")
-                    for session in session_records
-                )
-                expected_lanes = len(treatment_profiles) * len(treatment_sequences)
-                treatment_state = (
-                    f"{completed_lanes}/{expected_lanes} treatment lanes are retained"
-                    if completed_lanes
-                    else "the treatment matrix is ready to launch"
-                )
-                execution_line = (
-                    f"Baseline-only execution completed for `{completed}` with "
-                    f"{authorization.get('provider_tokens', 0):,} provider tokens; native qualification passed "
-                    f"{qualification_summary.get('passed', 0)}/{qualification_summary.get('expected', 0)} lanes and "
-                    f"the serialized Sonnet treatment authorization is active ({treatment_state}; SDL-MCP excluded)."
-                )
-            else:
-                execution_line = (
-                    f"Baseline-only execution completed for `{completed}` with "
-                    f"{authorization.get('provider_tokens', 0):,} provider tokens; treatment execution remains blocked."
-                )
+            execution_line = (
+                f"Baseline-only execution completed for `{completed}`; treatment execution remains blocked."
+            )
         elif authorization.get("status") == "owner-authorized-provider-run":
             execution_line = (
                 f"Baseline-only execution is owner-authorized under `{authorization_path.relative_to(ROOT)}`; "
@@ -506,9 +462,9 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressions from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the requested outcome, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Fastify and Beets use their frozen qualified environments; Terraform V1's owner-declared-invalid r0 was removed and has no current runbook entry. Seed patch files, controller scripts, fixed parents, affected-component compile commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
+A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressions from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the requested outcome, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Fastify and Beets use their frozen qualified environments; Terraform V1's owner-declared-invalid r0 was removed and has no current runbook entry. Seed patch files, controller scripts, fixed parents, task acceptance commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
 
-Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
+Internally, every active task requires affected-component compilation. Feature and refactor tasks add one narrow essential-behavior smoke; review tasks remain compile-only. Broader tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
 ## Claude Code direct-Anthropic preparation
 
@@ -527,15 +483,15 @@ Internally, every active task uses compilation-only acceptance. Unit tests, beha
 Before changing a sequence to `active`, require:
 
 - one or two semantic production targets per task, restored to completed upstream behavior;
-- standalone seed application and repair round-trips, with seeded compiler outcomes limited to 0 or 1 and repaired compilation succeeding;
-- a conflict-free composite semantic seed whose controller compile outcomes are all 0 or 1 at lane start;
+- standalone seed application and repair round-trips, with seeded verifier outcomes limited to 0 or 1 and repaired task verification succeeding;
+- a conflict-free composite semantic seed whose controller verifier outcomes are all 0 or 1 at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
 - prompts that state complete software objectives, permit repository discovery, and withhold controller scoring;
-- no model-visible compile commands or injected acceptance-test assets;
-- controller-only affected-component compile commands plus one frozen project-wide compile command;
+- no model-visible acceptance commands or injected acceptance-test assets;
+- controller-only component compilation for every task, one essential smoke for feature/refactor tasks, compile-only review tasks, and one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
-- cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
-- a machine-validated compile-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
+- cumulative provider usage capture, verifier integrity, isolation, structured task outcomes, and optional quality diagnostics;
+- a machine-validated acceptance-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
 
 A no-model prepare for a frozen candidate is allowed:
 
@@ -544,7 +500,7 @@ SEQUENCE_ID={prepare_sequence_id}
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 1 {prepare_model_flags} --prepare-only
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including recorded seeded compiler outcomes and passing repaired/project-wide compilation boundaries, no controller seed/verifier files in the model root, no injected acceptance-test assets, and no controller compile command or scoring-policy disclosure in the current task prompt.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including recorded seeded verifier outcomes and passing repaired/project-wide boundaries, no controller seed/verifier files in the model root, no injected acceptance-test assets, and no controller acceptance command or scoring-policy disclosure in the current task prompt.
 
 ## Paid execution
 

@@ -36,7 +36,7 @@
 
 ## Model-behavior diagnostics
 
-- Per-task deterministic verifiers:
+- Per-task acceptance verifiers (compile all tasks; one essential smoke for feature/refactor tasks; review tasks compile-only):
 - Final repository verifier:
 - Static checks:
 - Diagnostic facts that must survive:

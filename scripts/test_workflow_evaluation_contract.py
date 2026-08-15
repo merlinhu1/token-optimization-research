@@ -147,7 +147,7 @@ def retained_protocol_path(
     sequence_id: str,
     profile_id: str,
     replicate_index: int = 1,
-    model_condition_id: str = "codex-openai-gpt-5-6-sol-high",
+    model_condition_id: str = "codex-openai-gpt-5-6-sol-medium",
 ) -> Path:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     matches = [
@@ -396,15 +396,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("## Proposed change under review", review)
         self.assertIn("diff --git", review)
 
-    def test_refactor_qualification_uses_controller_compile_boundaries(self) -> None:
+    def test_refactor_qualification_uses_controller_acceptance_boundaries(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
         boundary = next(item for item in qualification["cumulative_boundaries"] if item["task_id"] == "beets-lifecycle-refactor-v1")
         self.assertNotIn("seeded_behavior_exit", boundary)
         self.assertNotIn("seeded_structure_exit", boundary)
-        self.assertEqual(boundary["seeded_verifier_exit"], 0)
+        self.assertEqual(boundary["seeded_verifier_exit"], 1)
         self.assertEqual(boundary["retained_verifier_exits"]["beets-lifecycle-refactor-v1"], 0)
-        self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-policy")
+        self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-plus-essential-smoke")
 
     def test_runbook_matches_active_lifecycle_contract(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
@@ -491,7 +491,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         if treatment_ready:
             self.assertIn('scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID"', runbook)
             self.assertIn('--treatment-profile "$PROFILE_ID"', runbook)
-            self.assertIn('--workflow-model-condition-id codex-openai-gpt-5-6-sol-high', runbook)
+            self.assertIn('--workflow-model-condition-id codex-openai-gpt-5-6-sol-medium', runbook)
             self.assertIn('--dry-run', runbook)
             self.assertIn('no paid treatment command is published', runbook)
         else:
@@ -523,7 +523,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             if (
                 session.get("status") == "completed"
                 and session.get("session_role") == "baseline"
-                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
+                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-medium"
                 and session.get("interpretation", {}).get("accepted_for_objective") is True
             ):
                 key = (
@@ -544,7 +544,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertTrue(current_pools)
         for (sequence_id, pool), replicates in grouped.items():
             rendered = (
-                f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-high` pool `{pool}` "
+                f"`{sequence_id}` under `codex-openai-gpt-5-6-sol-medium` pool `{pool}` "
                 f"({', '.join(f'r{index}' for index in sorted(replicates))})"
             )
             if (sequence_id, pool) in current_pools:
@@ -701,7 +701,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         for task_record in qualification_record["tasks"]:
             self.assertTrue(task_record["fixed_snapshot_model_concealed_absent"], task_record)
 
-    def test_feature_verifier_keeps_compilation_controller_only(self) -> None:
+    def test_feature_verifier_keeps_acceptance_commands_out_of_prompt(self) -> None:
         sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
         feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
         prompt = (ROOT / feature["prompt_path"]).read_text()
@@ -710,9 +710,10 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(feature["model_visible_acceptance_asset_paths"], [])
         self.assertNotIn(feature["compile_command"], prompt)
         self.assertIn(feature["compile_command"], verifier)
+        self.assertNotIn(feature["essential_smoke_command"], prompt)
+        self.assertIn(feature["essential_smoke_command"], verifier)
         self.assertNotIn("acceptance gate", prompt)
         self.assertNotIn("pass/fail", prompt)
-        self.assertNotIn("test/util/test_functemplate.py", verifier)
         self.assertNotIn("read_text", verifier)
 
     def test_refactor_verifier_does_not_require_undisclosed_parameter_names(self) -> None:
@@ -888,16 +889,16 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_opencode_openrouter_lifecycle_v1_is_a_separate_provider_free_control(self) -> None:
         condition = next(
             item for item in json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())["model_conditions"]
-            if item["id"] == "opencode-openrouter-gpt-5-6-sol-high"
+            if item["id"] == "opencode-openrouter-gpt-5-6-sol-medium"
         )
         self.assertEqual(
             {key: condition[key] for key in ("id", "runtime_id", "provider", "model", "reasoning_effort", "status")},
             {
-                "id": "opencode-openrouter-gpt-5-6-sol-high",
+                "id": "opencode-openrouter-gpt-5-6-sol-medium",
                 "runtime_id": "opencode-cli",
                 "provider": "openrouter",
                 "model": "gpt-5.6-sol",
-                "reasoning_effort": "high",
+                "reasoning_effort": "medium",
                 "status": "configured-provider-free",
             },
         )
@@ -921,7 +922,7 @@ baseline = runner.baseline_protocol_descriptor(seq)
 execution = runner.execution_condition_descriptor(seq, 'baseline-opencode-openrouter-no-mcp')
 assert baseline['baseline_profile']['profile_id'] == 'baseline-opencode-openrouter-no-mcp'
 assert baseline['agent']['provider'] == 'openrouter'
-assert baseline['agent']['model_condition_id'] == 'opencode-openrouter-gpt-5-6-sol-high'
+assert baseline['agent']['model_condition_id'] == 'opencode-openrouter-gpt-5-6-sol-medium'
 assert execution['agent_condition']['provider'] == 'openrouter'
 assert execution['model_condition_override']['launcher']['path'] == 'scripts/run_opencode_openrouter_workflow_model_condition.py'
 print('ok')
@@ -1008,7 +1009,7 @@ print('ok')
             with self.assertRaisesRegex(ValueError, "historical-profile"):
                 runner.assert_profile_runnable(profile_id)
 
-    def test_active_lifecycle_v1_sequences_have_a_valid_compile_pilot_gate(self) -> None:
+    def test_active_lifecycle_v1_sequences_have_a_valid_acceptance_pilot_gate(self) -> None:
         profile_id = "integrated-token-savior-codex-product-v2"
         protocols = [json.loads(path.read_text()) for path in (ROOT / "sources/evaluations/protocols").glob("*.json")]
         native_qualification = ROOT / "sources/evaluations/audits/codex-token-savior-native-requalification-20260805.json"
@@ -1029,7 +1030,7 @@ print('ok')
                 self.assertTrue(all(protocol.get("status") == "frozen-ready-not-run" for protocol in active_token_savior))
             ready, reason = runner.lifecycle_v1_treatment_gate(sequence, ROOT)
             self.assertIs(ready, False, reason)
-            self.assertIn("corrected-pilot-compile-only.json", reason)
+            self.assertIn("lifecycle-v1-essential-smoke-pilot.json", reason)
 
     def test_provider_launch_rechecks_candidate_readiness_gate(self) -> None:
         args = runner.argparse.Namespace(prepare_only=False, protocol=None)
@@ -1995,14 +1996,14 @@ class SeedDeliveryContractTest(unittest.TestCase):
                 continue
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             self.assertTrue(qualification["composite_seed_merge_zero"])
-            self.assertTrue(qualification["composite_seed_compile_outcomes_valid"])
+            self.assertTrue(qualification["composite_seed_verifier_outcomes_valid"])
             self.assertEqual(
                 set(qualification["composite_seed_verifier_exits"]),
                 {task["id"] for task in sequence["tasks"]},
             )
             self.assertTrue(
                 all(code in {0, 1} for code in qualification["composite_seed_verifier_exits"].values()),
-                "seeded tasks must record compiler pass/fail, not collection or infrastructure failures",
+                "seeded tasks must record verifier pass/fail, not collection or infrastructure failures",
             )
             self.assertTrue(qualification["full_fixed_cumulative_verifier_zero"])
             self.assertTrue(qualification["fixed_snapshot_model_concealed_paths_safe"])
@@ -2683,12 +2684,12 @@ class ActiveAcceptanceContractTest(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
-    def test_active_qualification_records_match_compile_only_task_assets(self) -> None:
+    def test_active_qualification_records_match_task_acceptance_assets(self) -> None:
         for sequence_id in runner.active_sequence_ids():
             sequence = runner.load_sequence(sequence_id)
-            self.assertEqual(sequence["acceptance_design"], "compile-only")
+            self.assertEqual(sequence["acceptance_design"], "compile-plus-essential-smoke")
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
-            self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-policy")
+            self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-plus-essential-smoke")
             records = {item["task_id"]: item for item in qualification["tasks"]}
             for task in sequence["tasks"]:
                 patch_path = ROOT / Path(task["prompt_path"]).parent / "seed-regression.patch"
@@ -2963,13 +2964,35 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             validate_repository.validate_compact_manifest(root, "test", errors)
         self.assertTrue(any("manifest" in error for error in errors))
 
-    def test_active_default_is_gpt_5_6_luna_xhigh(self) -> None:
-        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID, "codex-openai-gpt-5-6-luna-xhigh")
-        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL, "gpt-5.6-luna")
-        self.assertEqual(runner.DEFAULT_WORKFLOW_REASONING_EFFORT, "xhigh")
+    def test_active_default_is_gpt_5_6_sol_medium(self) -> None:
+        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL_CONDITION_ID, "codex-openai-gpt-5-6-sol-medium")
+        self.assertEqual(runner.DEFAULT_WORKFLOW_MODEL, "gpt-5.6-sol")
+        self.assertEqual(runner.DEFAULT_WORKFLOW_REASONING_EFFORT, "medium")
         registry = json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())
         active = [item for item in registry["model_conditions"] if item["status"] == "active-default"]
-        self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-luna-xhigh"])
+        self.assertEqual([item["id"] for item in active], ["codex-openai-gpt-5-6-sol-medium"])
+        forward = {
+            item["id"]: item
+            for item in registry["model_conditions"]
+            if item["status"] in {"active-default", "active-model-comparison", "configured-provider-free"}
+        }
+        self.assertEqual(
+            set(forward),
+            {
+                "codex-openai-gpt-5-6-sol-medium",
+                "opencode-openai-gpt-5-6-sol-medium",
+                "opencode-openrouter-gpt-5-6-sol-medium",
+                "claude-code-anthropic-opus-5-medium",
+            },
+        )
+        self.assertTrue(all(item["reasoning_effort"] == "medium" for item in forward.values()))
+        self.assertTrue(
+            all(
+                item["status"] == "historical-inactive"
+                for item in registry["model_conditions"]
+                if item.get("reasoning_effort") in {"high", "xhigh"}
+            )
+        )
 
     def test_active_sequences_are_the_two_current_production_lanes(self) -> None:
         self.assertEqual(
@@ -4414,11 +4437,24 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
         identity = model_condition_runner.launcher_identity()
         self.assertRegex(identity["sha256"], r"^[a-f0-9]{64}$")
 
-    def test_registered_gpt56_sol_high_condition_is_selectable(self) -> None:
+    def test_registered_gpt56_sol_medium_condition_is_selectable(self) -> None:
         condition = model_condition_runner.registered_condition(
-            "codex-openai-gpt-5-6-sol-high", "gpt-5.6-sol", "high"
+            "codex-openai-gpt-5-6-sol-medium", "gpt-5.6-sol", "medium"
         )
-        self.assertEqual(condition["status"], "active-model-comparison")
+        self.assertEqual(condition["status"], "active-default")
+
+    def test_historical_high_effort_condition_cannot_mint_or_launch(self) -> None:
+        with self.assertRaisesRegex(ValueError, "historical model condition"):
+            contract_refresh.registered_model_condition(
+                "codex-openai-gpt-5-6-sol-high", "gpt-5.6-sol", "high"
+            )
+        args = matrix.parse_args([
+            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+            "--workflow-model", "gpt-5.6-sol",
+            "--workflow-reasoning-effort", "high",
+        ])
+        with self.assertRaisesRegex(ValueError, "historical model condition"):
+            matrix.selected_model_condition(args)
 
     def test_registered_model_condition_protocols_validate(self) -> None:
         errors: list[str] = []
@@ -4440,16 +4476,16 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
             ROOT / "sources/evaluations/protocols/sol-assisted.json",
             {
                 "model_condition_override": {
-                    "model_condition_id": "codex-openai-gpt-5-6-sol-high",
+                    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
                     "model": "gpt-5.6-sol",
-                    "reasoning_effort": "high",
+                    "reasoning_effort": "medium",
                 }
             },
         )
         self.assertIn("scripts/run_codex_workflow_model_condition.py", command)
-        self.assertIn("--workflow-model-condition-id codex-openai-gpt-5-6-sol-high", command)
+        self.assertIn("--workflow-model-condition-id codex-openai-gpt-5-6-sol-medium", command)
         self.assertIn("--workflow-model gpt-5.6-sol", command)
-        self.assertIn("--workflow-reasoning-effort high", command)
+        self.assertIn("--workflow-reasoning-effort medium", command)
         self.assertIn("--protocol sources/evaluations/protocols/sol-assisted.json", command)
 
     def test_unregistered_override_is_rejected(self) -> None:
@@ -4481,9 +4517,9 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                     "scripts/run_sequential_workflow_matrix.py",
                     "fastify-lifecycle-sequence-v1",
                     "--max-parallel", "2",
-                    "--workflow-model-condition-id", "claude-code-openrouter-gpt-5-6-sol-high",
-                    "--workflow-model", "gpt-5.6-sol",
-                    "--workflow-reasoning-effort", "high",
+                    "--workflow-model-condition-id", "claude-code-anthropic-opus-5-medium",
+                    "--workflow-model", "claude-opus-5",
+                    "--workflow-reasoning-effort", "medium",
                     "--prepare-only",
                     "--dry-run",
                     "--lane-root", str(lane_root),
@@ -4739,9 +4775,9 @@ class MatrixLifecycleContractTest(unittest.TestCase):
                     "beets-lifecycle-sequence-v1",
                     "--replicate-index", "1",
                     "--max-parallel", "3",
-                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                    "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-medium",
                     "--workflow-model", "gpt-5.6-sol",
-                    "--workflow-reasoning-effort", "high",
+                    "--workflow-reasoning-effort", "medium",
                     "--lane-root", str(lane_root),
                     "--dry-run",
                 ],
@@ -4853,19 +4889,19 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             replicate_index=2,
             runner_args=[],
             model_condition={
-                "id": "codex-openai-gpt-5-6-sol-high",
+                "id": "codex-openai-gpt-5-6-sol-medium",
                 "model": "gpt-5.6-sol",
-                "reasoning_effort": "high",
+                "reasoning_effort": "medium",
             },
         )
         self.assertEqual(cmd[1], "scripts/run_codex_workflow_model_condition.py")
-        self.assertEqual(cmd[cmd.index("--workflow-model-condition-id") + 1], "codex-openai-gpt-5-6-sol-high")
+        self.assertEqual(cmd[cmd.index("--workflow-model-condition-id") + 1], "codex-openai-gpt-5-6-sol-medium")
         self.assertEqual(cmd[cmd.index("--workflow-model") + 1], "gpt-5.6-sol")
-        self.assertEqual(cmd[cmd.index("--workflow-reasoning-effort") + 1], "high")
+        self.assertEqual(cmd[cmd.index("--workflow-reasoning-effort") + 1], "medium")
 
     def test_matrix_model_condition_arguments_must_be_complete(self) -> None:
         args = matrix.parse_args([
-            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-medium",
         ])
         with self.assertRaises(SystemExit):
             matrix.selected_model_condition(args)
@@ -5741,8 +5777,8 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
-class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
-    def test_internal_compile_policy_is_not_model_facing(self) -> None:
+class LifecycleV1AcceptanceContractTest(unittest.TestCase):
+    def test_internal_acceptance_policy_is_not_model_facing(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
         forbidden = (
@@ -5767,7 +5803,15 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
                     self.assertNotIn(marker, prompt.lower(), (task["id"], marker))
                     self.assertNotIn(marker, rendered.lower(), (task["id"], marker))
                 self.assertNotIn(task["compile_command"], prompt, task["id"])
-                self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
+                smoke = task.get("essential_smoke_command")
+                if smoke:
+                    self.assertNotIn(smoke, prompt, task["id"])
+                expected_visibility = (
+                    "controller-only-compile-plus-essential-smoke"
+                    if task["task_class"] != "code-review-correction"
+                    else "controller-only-compile-policy"
+                )
+                self.assertEqual(task["acceptance_visibility"], expected_visibility)
                 self.assertEqual(task["model_visible_validation_anchors"], [])
 
     def test_lifecycle_v1_prompts_do_not_disclose_evaluator_profile_or_lane(self) -> None:
@@ -5798,7 +5842,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
         # generation may put profile or lane identity in front of the model.
         self.assertEqual(runner.model_facing_profile_guidance(sequence, "baseline-bare-codex"), "")
 
-    def test_active_sequences_use_searchable_compile_only_tasks(self) -> None:
+    def test_active_sequences_use_searchable_lenient_acceptance_tasks(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
         self.assertEqual(
@@ -5807,14 +5851,16 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
         )
         for sequence in sequences:
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(sequence["acceptance_design"], "compile-only")
+            self.assertEqual(sequence["acceptance_design"], "compile-plus-essential-smoke")
             self.assertEqual(
                 sequence["acceptance_policy"],
                 {
-                    "gate": "affected-component-compilation",
+                    "gate": "compile-plus-essential-smoke-for-coding-tasks",
                     "visibility": "controller-only",
+                    "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
+                    "review_task_gate": "compile-only",
                     "quality_diagnostics_gate": False,
-                    "tests_required": False,
+                    "broader_tests_required": False,
                     "source_review_required": False,
                 },
             )
@@ -5822,7 +5868,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
             self.assertTrue(gate["compile_required"])
             self.assertFalse(gate["quality_diagnostics_gate"])
             self.assertEqual(gate["status"], "provider-pilot-required")
-            self.assertIn("compile", gate["treatment_launch_policy"])
+            self.assertIn("task verifier", gate["treatment_launch_policy"])
             self.assertTrue(sequence["project_compile_command"])
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             self.assertEqual(qualification["project_compile_command"], sequence["project_compile_command"])
@@ -5844,7 +5890,18 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
                 self.assertNotIn("Do not inspect, search", prompt)
                 self.assertNotIn("Do not discover or redesign", prompt)
                 self.assertNotIn("Only `", prompt)
-                self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
+                coding_task = task["task_class"] != "code-review-correction"
+                self.assertEqual(
+                    task["acceptance_visibility"],
+                    "controller-only-compile-plus-essential-smoke" if coding_task else "controller-only-compile-policy",
+                )
+                smoke = task.get("essential_smoke_command")
+                if coding_task:
+                    self.assertIsInstance(smoke, str)
+                    self.assertIn(smoke, verifier)
+                    self.assertNotIn(smoke, prompt)
+                else:
+                    self.assertIsNone(smoke)
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], [])
                 self.assertEqual(task["model_visible_validation_anchors"], [])
                 self.assertEqual(task["upstream_test_paths"], [])
@@ -5853,7 +5910,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
                 self.assertGreaterEqual(len(task["expected_changed_paths"]), 1)
                 self.assertLessEqual(len(task["expected_changed_paths"]), 2)
                 self.assertFalse((task_dir / "controller-visible").exists())
-                self.assertIn("Controller-only Lifecycle V1 compilation assessment", verifier)
+                self.assertIn("Controller-only Lifecycle V1", verifier)
 
                 production_paths = [
                     path
@@ -5885,9 +5942,9 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
                 "scripts/run_sequential_workflow_matrix.py",
                 "fastify-lifecycle-sequence-v1",
                 "--max-parallel", "1",
-                "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
+                "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-medium",
                 "--workflow-model", "gpt-5.6-sol",
-                "--workflow-reasoning-effort", "high",
+                "--workflow-reasoning-effort", "medium",
                 "--prepare-only",
                 "--dry-run",
             ],
@@ -5908,7 +5965,7 @@ class LifecycleV1CompileOnlyContractTest(unittest.TestCase):
 
 
 class LifecycleV1ContractTest(unittest.TestCase):
-    def test_active_sequences_bind_lifecycle_v1_compile_only_generation_contracts(self) -> None:
+    def test_active_sequences_bind_lifecycle_v1_acceptance_contracts(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         active = [sequence for sequence in document["sequences"] if sequence["status"] == "active"]
         self.assertEqual(
@@ -5917,16 +5974,22 @@ class LifecycleV1ContractTest(unittest.TestCase):
         )
         for sequence in active:
             self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1-20260813.json")
-            self.assertEqual(sequence["acceptance_design"], "compile-only")
+            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1-20260815.json")
+            self.assertEqual(sequence["acceptance_design"], "compile-plus-essential-smoke")
             gate = sequence["mistake_gate"]
-            self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-high")
+            self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-medium")
+            self.assertEqual(gate["reasoning_effort"], "medium")
             self.assertIs(gate["compile_required"], True)
             self.assertIs(gate["quality_diagnostics_gate"], False)
             self.assertEqual(gate["status"], "provider-pilot-required")
             for task in sequence["tasks"]:
                 self.assertIn("/lifecycle-v1/", task["prompt_path"])
-                self.assertEqual(task["acceptance_visibility"], "controller-only-compile-policy")
+                expected_visibility = (
+                    "controller-only-compile-plus-essential-smoke"
+                    if task["task_class"] != "code-review-correction"
+                    else "controller-only-compile-policy"
+                )
+                self.assertEqual(task["acceptance_visibility"], expected_visibility)
                 self.assertEqual(task["model_visible_acceptance_asset_paths"], [])
                 self.assertEqual(task["model_concealed_paths"], [])
                 self.assertEqual(task["model_visible_validation_anchors"], [])
@@ -5969,7 +6032,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high"
+        flags = "--workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium"
         any_unoccupied_pilot = False
         for sequence in active_lifecycle_v1_sequences(document):
             prepare = f"python3 scripts/run_sequential_workflow_matrix.py {sequence['id']} --max-parallel 1 {flags} --prepare-only"
@@ -5978,7 +6041,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
                 session.get("status") == "completed"
                 and session.get("session_role") == "baseline"
                 and session.get("task_sequence", {}).get("sequence_id") == sequence["id"]
-                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
+                and session.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-medium"
                 and session.get("interpretation", {}).get("accepted_for_objective") is True
                 for session in registry.get("sessions", [])
             )
@@ -6002,8 +6065,8 @@ class LifecycleV1ContractTest(unittest.TestCase):
             qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
             for key in (
                 "composite_seed_merge_zero",
-                "seeded_compile_outcomes_valid",
-                "composite_seed_compile_outcomes_valid",
+                "seeded_verifier_outcomes_valid",
+                "composite_seed_verifier_outcomes_valid",
                 "fixed_verifier_zero",
                 "full_fixed_cumulative_verifier_zero",
                 "no_unmerged_paths",
@@ -6802,18 +6865,18 @@ class LifecycleV1ContractTest(unittest.TestCase):
             for field in runner.NON_CAUSAL_PROTOCOL_PROVENANCE_FIELDS: mutated[field] = "f" * 64
             self.assertEqual(runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=descriptor, selected_execution=execution), runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=mutated, selected_execution=execution))
 
-    def test_active_generation_gates_open_after_lifecycle_v1_compile_pilot(self) -> None:
+    def test_active_generation_gates_require_lifecycle_v1_acceptance_pilot(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in active_lifecycle_v1_sequences(document):
             passed, reason = runner.lifecycle_v1_treatment_gate(sequence, ROOT)
             pilot_allowed, pilot_reason = runner.lifecycle_v1_pilot_run_gate(sequence, ROOT, 0)
             self.assertIs(passed, False, reason)
-            self.assertIn("corrected-pilot-compile-only.json", reason)
+            self.assertIn("lifecycle-v1-essential-smoke-pilot.json", reason)
             self.assertIs(pilot_allowed, False)
             self.assertIn("not authorized", pilot_reason)
             self.assertTrue(sequence["readiness_blockers"])
 
-    def test_workflow_authority_describes_lifecycle_v1_compile_only_pilot_gate(self) -> None:
+    def test_workflow_authority_describes_lifecycle_v1_acceptance_pilot_gate(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         self.assertIn("Lifecycle V1", document["description"])
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
@@ -6831,7 +6894,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
         sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text()); fixture_doc = json.loads((ROOT / "data/repository-fixtures.json").read_text()); mutated = copy.deepcopy(sequence_doc)
         next(sequence for sequence in mutated["sequences"] if sequence["status"] == "active")["mistake_gate"]["pilot_authorization_path"] = "../external-authorization.json"
         errors: list[str] = []; validate_repository.validate_workflow_task_sequences(mutated, fixture_doc, errors)
-        self.assertTrue(any("compile-only gate" in error for error in errors), errors)
+        self.assertTrue(any("essential-smoke gate" in error for error in errors), errors)
 
 
 
@@ -6856,7 +6919,7 @@ import sys
 sys.path.insert(0, 'scripts')
 import run_codex_workflow_evaluation as runner
 import run_codex_workflow_model_condition as condition
-condition.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
+condition.configure_model_condition('codex-openai-gpt-5-6-sol-medium', 'gpt-5.6-sol', 'medium')
 document = json.loads((runner.ROOT / 'data/workflow-task-sequences.json').read_text())
 for sequence in [item for item in document['sequences'] if item['status'] == 'active']:
     identity, protocol = runner.current_lifecycle_v1_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
@@ -6884,7 +6947,7 @@ print(len([item for item in document['sequences'] if item['status'] == 'active']
 from pathlib import Path
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as launcher
-launcher.configure_model_condition('codex-openai-gpt-5-6-sol-high', 'gpt-5.6-sol', 'high')
+launcher.configure_model_condition('codex-openai-gpt-5-6-sol-medium', 'gpt-5.6-sol', 'medium')
 sequence = runner.load_sequence('fastify-lifecycle-sequence-v1')
 identity, protocol = runner.current_lifecycle_v1_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
 with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocols') as temp:
@@ -7195,17 +7258,17 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
                     self.assertEqual(result.returncode, 1, (task["id"], result.stdout, result.stderr))
                     self.assertRegex(result.stderr, r"(?:differs from canonical bytes|acceptance test is missing)")
 
-    def test_provider_free_lifecycle_v1_qualification_records_compile_only_acceptance(self) -> None:
+    def test_provider_free_lifecycle_v1_qualification_records_lenient_acceptance(self) -> None:
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in active_lifecycle_v1_sequences(document):
             record = json.loads((ROOT / sequence["qualification_path"]).read_text())
             self.assertEqual(record["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(record["acceptance_visibility"], "controller-only-compile-policy")
+            self.assertEqual(record["acceptance_visibility"], "controller-only-compile-plus-essential-smoke")
             self.assertIs(record["no_model_visible_acceptance_assets"], True)
-            self.assertIs(record["controller_compile_policy_not_model_facing"], True)
+            self.assertIs(record["controller_acceptance_policy_not_model_facing"], True)
             self.assertIs(record["all_acceptance_behavior_model_visible"], False)
-            self.assertIs(record["seeded_compile_outcomes_valid"], True)
-            self.assertIs(record["composite_seed_compile_outcomes_valid"], True)
+            self.assertIs(record["seeded_verifier_outcomes_valid"], True)
+            self.assertIs(record["composite_seed_verifier_outcomes_valid"], True)
             self.assertTrue(all(code in {0, 1} for code in record["composite_seed_verifier_exits"].values()))
             self.assertIs(record["model_visible_acceptance_assets_match_verifier_copies"], True)
             self.assertIs(record["no_model_concealed_acceptance_assets"], True)
@@ -7224,7 +7287,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         for field, value in (("compile_required", False), ("quality_diagnostics_gate", True)):
             document = copy.deepcopy(source); next(sequence for sequence in document["sequences"] if sequence["status"] == "active")["mistake_gate"][field] = value
             errors: list[str] = []; validate_repository.validate_workflow_task_sequences(document, fixtures, errors)
-            self.assertTrue(any("compile-only gate" in error for error in errors), (field, errors))
+            self.assertTrue(any("essential-smoke gate" in error for error in errors), (field, errors))
 
 
 if __name__ == "__main__":

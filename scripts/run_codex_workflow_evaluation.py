@@ -243,9 +243,9 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
 
 PROFILE_META: dict[str, dict[str, Any]] = build_profile_meta()
 
-DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-luna-xhigh"
-DEFAULT_WORKFLOW_MODEL = "gpt-5.6-luna"
-DEFAULT_WORKFLOW_REASONING_EFFORT = "xhigh"
+DEFAULT_WORKFLOW_MODEL_CONDITION_ID = "codex-openai-gpt-5-6-sol-medium"
+DEFAULT_WORKFLOW_MODEL = "gpt-5.6-sol"
+DEFAULT_WORKFLOW_REASONING_EFFORT = "medium"
 RUNNER_CONTRACT_VERSION = "workflow-runner-v10"
 MAX_CODEX_OPERATIONAL_RETRIES = 1
 
@@ -313,7 +313,7 @@ def validate_default_model_condition() -> None:
         "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
         "usage_accounting": "provider-reported Codex JSONL usage extracted by scripts/extract_codex_usage.py",
     }]:
-        raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-luna-xhigh")
+        raise ValueError("active workflow model condition must be codex-openai-gpt-5-6-sol-medium")
 
 LEAKY_PROMPT_LINE_PATTERNS = [
     re.compile(r"^Issue source:.*$", re.IGNORECASE),
@@ -1218,7 +1218,7 @@ def lifecycle_v1_pilot_run_gate(
 
 
 def lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
-    """Fail closed until an audited compile-passing Lifecycle V1 pilot exists."""
+    """Fail closed until an audited acceptance-passing Lifecycle V1 pilot exists."""
     generation = seq.get("task_family_generation")
     if generation != "lifecycle-v1":
         return False, f"unsupported task family generation: {generation!r}"
@@ -1251,8 +1251,12 @@ def lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple
     if len(entries) != 1:
         return False, f"pilot audit must contain exactly one entry for {seq.get('id')}"
     entry = entries[0]
-    if entry.get("passed") is not True or entry.get("compile_passed") is not True:
-        return False, "compile-only pilot did not pass every affected-component compile verifier"
+    if (
+        entry.get("passed") is not True
+        or entry.get("task_verifiers_passed") is not True
+        or entry.get("project_compile_passed") is not True
+    ):
+        return False, "pilot did not pass every task verifier and final project compilation"
     expected_condition = {
         "id": gate.get("designated_model_condition"),
         "model": gate.get("model"),
@@ -1687,7 +1691,7 @@ def execution_condition_descriptor(
                 "codex_web_search": "disabled",
                 "external_retrieval_audit": "fail-closed",
             },
-            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while declared model-visible acceptance tests are retained",
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
         },
         "dependencies": {
             "command": PROJECT_META[seq["fixture_id"]]["dependency_command"],
@@ -1743,7 +1747,7 @@ def execution_condition_descriptor(
                 "matrix_controller_sha256": _protocol_file_hash(root / "scripts/run_sequential_workflow_matrix.py"),
             })
         acceptance_materialization = (
-            "controller-only affected-component compile commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
+            "controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
             if seq.get("task_family_generation") == "lifecycle-v1"
             else "declared model-visible acceptance tests retained"
         )
@@ -1830,6 +1834,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
             "verifier_command": str(task["verifier_command"]),
             "verifier_sha256": _protocol_file_hash(verifier_path),
             "compile_command": task.get("compile_command"),
+            "essential_smoke_command": task.get("essential_smoke_command"),
             "acceptance_visibility": task.get("acceptance_visibility"),
             "expected_changed_paths": sorted(str(path) for path in task.get("expected_changed_paths", [])),
             "controller_visible_acceptance_assets": controller_visible_assets,
@@ -3373,7 +3378,7 @@ def parse_task_verifier_results(seq: dict[str, Any], output_path: Path) -> list[
 
 
 def parse_project_compile_result(seq: dict[str, Any], output_path: Path) -> bool | None:
-    """Parse the single final project-wide compile outcome for compile-only generations."""
+    """Parse the single final project-wide compile outcome."""
     if not seq.get("project_compile_command"):
         return None
     prefix = f"{PROJECT_COMPILE_RESULT_PREFIX}\t"
@@ -4202,7 +4207,7 @@ def workflow_session_record(
             "comparison_baseline_session_id": comparison_baseline_session_id,
             "standalone_runtime_control": standalone_opencode_control,
             "exclusion_reason": "" if accepted else f"codex_exit_codes={codex_exit_codes}; audit_exit={audit_code}; thread_continuity_errors={summary.get('thread_continuity_errors', [])}; usage_warnings={usage.get('warnings')}",
-            "notes": "Provider-backed lane completed with clean integrity; verifier and review outcomes are diagnostic model-behavior evidence and do not gate token accounting." if accepted else "Lane did not complete operationally; exclude it from token accounting.",
+            "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention." if accepted else "Lane did not complete operationally; exclude it from token accounting.",
             "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
             "evaluation_validity": "valid" if accepted else "operationally-invalid",
             "primary_objective_hard_baseline": accepted and baseline_control_profile,
@@ -5193,7 +5198,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "task_prompt_evidence": rel(run_dir / "evidence.jsonl.gz"),
     }
     acceptance_visibility_limit = (
-        "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Affected-component compile commands and controller verifier scripts remain controller-only; no acceptance-test assets are injected."
+        "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected."
     )
     leakage_controls = {
         "seed_origin_concealed": not args.no_conceal_seed_origin,

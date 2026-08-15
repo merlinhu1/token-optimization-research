@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "The production lifecycle-v0 portfolio uses Lifecycle V1 for Fastify, Beets, and Terraform: three persistent feature-refactor-review workflows with authentic semantic tasks, normal repository discovery, controller-only compilation assessment, and a strongest-model pilot before treatment spend.",
+  "description": "The production portfolio uses Lifecycle V1 for Fastify and Beets: persistent feature-refactor-review workflows with authentic semantic tasks, normal repository discovery, lenient controller-only acceptance, and a strongest-model pilot before treatment spend.",
   "state_policy_defaults": {
     "reset_before_session": [
       "repository working tree",
@@ -23,20 +23,20 @@
     {
       "id": "fastify-lifecycle-sequence-v1",
       "status": "active",
-      "acceptance_design": "compile-only",
+      "acceptance_design": "compile-plus-essential-smoke",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
       "readiness_blockers": [
-        "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+        "provider-backed strongest-model Lifecycle V1 essential-smoke pilot is not authorized or executed"
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "weighted_token_cost",
-      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.",
-      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain bounded and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective, direct agents to focused existing checks, and expect a complete correct implementation; controller compile policy and broader diagnostic treatment are not disclosed.",
-      "protocol_freeze_date": "2026-08-13",
+      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke; review tasks remain compile-only. Controller acceptance details are not disclosed as the agent task objective.",
+      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain bounded and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective, permit normal repository search and relevant checks, and expect a complete correct implementation; controller acceptance and broader diagnostic treatment are not disclosed.",
+      "protocol_freeze_date": "2026-08-15",
       "production_lane": "current-production-lifecycle-v1",
-      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1-20260813.json",
-      "qualification_date": "2026-08-13",
+      "qualification_path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v1-20260815.json",
+      "qualification_date": "2026-08-15",
       "fixture_id": "medium-fastify-fastify",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
@@ -63,9 +63,10 @@
             "lib/request.js"
           ],
           "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-policy",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "node --check lib/request.js"
+          "compile_command": "node --check lib/request.js",
+          "essential_smoke_command": "node --test test/request-media-type.test.js"
         },
         {
           "id": "fastify-lifecycle-refactor-v1",
@@ -80,9 +81,10 @@
             "lib/content-type.js"
           ],
           "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-policy",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "node --check lib/content-type.js"
+          "compile_command": "node --check lib/content-type.js",
+          "essential_smoke_command": "node --test --test-name-pattern='ContentType class cache' test/content-type.test.js"
         },
         {
           "id": "fastify-lifecycle-review-v1",
@@ -106,25 +108,30 @@
       ],
       "conversion_note": "Lifecycle V1 replaces the recipe-driven active selector with authentic semantic tasks and normal repository discovery while preserving every executed Baseline V3/V4 contract and result byte-for-byte.",
       "complexity_note": "Lifecycle V1 removes exact edit recipes and target-file restrictions. Agents must inspect the repository, understand the requested behavior, and implement a coherent repair in the persistent workflow. Focused existing-check guidance bounds validation without prescribing edits.",
-      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation after each task and project-wide compilation after the workflow; all broader quality evidence remains diagnostic.",
+      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation for every task, one implementation-independent essential-behavior smoke for feature and refactor tasks, and project-wide compilation after the workflow. Review tasks remain compile-only and all broader quality evidence remains diagnostic.",
       "task_family_generation": "lifecycle-v1",
       "mistake_gate": {
-        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-medium",
         "model": "gpt-5.6-sol",
-        "reasoning_effort": "high",
+        "reasoning_effort": "medium",
         "compile_required": true,
         "quality_diagnostics_gate": false,
-        "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json",
+        "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json",
         "attempt_receipt_path": "sources/evaluations/audits/lifecycle-v1-corrected-pilot-attempt-fastify.json",
-        "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-corrected-task-family-readiness-20260813.json",
+        "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-readiness-20260815.json",
         "status": "provider-pilot-required",
-        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every declared task verifier exits zero; broader quality findings remain diagnostic only"
       },
       "acceptance_policy": {
-        "gate": "affected-component-compilation",
+        "gate": "compile-plus-essential-smoke-for-coding-tasks",
         "visibility": "controller-only",
+        "coding_task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor"
+        ],
+        "review_task_gate": "compile-only",
         "quality_diagnostics_gate": false,
-        "tests_required": false,
+        "broader_tests_required": false,
         "source_review_required": false
       },
       "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
@@ -133,20 +140,20 @@
     {
       "id": "beets-lifecycle-sequence-v1",
       "status": "active",
-      "acceptance_design": "compile-only",
+      "acceptance_design": "compile-plus-essential-smoke",
       "scope": "production-primary",
       "sequence_contract": "feature-refactor-review",
       "readiness_blockers": [
-        "provider-backed strongest-model compile-only Lifecycle V1 pilot is not authorized or executed"
+        "provider-backed strongest-model Lifecycle V1 essential-smoke pilot is not authorized or executed"
       ],
       "objective": "individual_tool_effectiveness",
       "primary_metric": "weighted_token_cost",
-      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.",
-      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain bounded and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective, direct agents to focused existing checks, and expect a complete correct implementation; controller compile policy and broader diagnostic treatment are not disclosed.",
-      "protocol_freeze_date": "2026-08-13",
+      "reset_policy": "Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke; review tasks remain compile-only. Controller acceptance details are not disclosed as the agent task objective.",
+      "seed_patch_policy": "All three generation-local semantic production regressions are applied as one composite start before task 1; prompts remain bounded and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective, permit normal repository search and relevant checks, and expect a complete correct implementation; controller acceptance and broader diagnostic treatment are not disclosed.",
+      "protocol_freeze_date": "2026-08-15",
       "production_lane": "current-production-lifecycle-v1",
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260813.json",
-      "qualification_date": "2026-08-13",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v1-20260815.json",
+      "qualification_date": "2026-08-15",
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
@@ -173,9 +180,10 @@
             "beets/util/functemplate.py"
           ],
           "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-policy",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/functemplate.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_functemplate.py::ParseTest::test_call_two_args test/util/test_functemplate.py::ParseTest::test_call_with_escaped_sep test/util/test_functemplate.py::ParseTest::test_call_with_nested_call_argument"
         },
         {
           "id": "beets-lifecycle-refactor-v1",
@@ -190,9 +198,10 @@
             "beets/dbcore/db.py"
           ],
           "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-policy",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/db.py",
+          "essential_smoke_command": "uv run --offline --frozen python -c \"import inspect; from beets.dbcore.db import LazyDict; value = LazyDict({'a': 1}, lambda key, item: item); iterator = iter(value); assert not inspect.isgenerator(iterator); assert set(iterator) == {'a'}\""
         },
         {
           "id": "beets-lifecycle-review-v1",
@@ -215,25 +224,30 @@
       ],
       "conversion_note": "Lifecycle V1 replaces the recipe-driven active selector with authentic semantic tasks and normal repository discovery while preserving every executed Baseline V3/V4 contract and result byte-for-byte.",
       "complexity_note": "Lifecycle V1 removes exact edit recipes and target-file restrictions. Agents must inspect the repository, understand the requested behavior, and implement a coherent repair in the persistent workflow. The corrected feature seed now creates a real argument-splitting regression, while focused existing-check guidance bounds validation without prescribing edits.",
-      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation after each task and project-wide compilation after the workflow; all broader quality evidence remains diagnostic.",
+      "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation for every task, one implementation-independent essential-behavior smoke for feature and refactor tasks, and project-wide compilation after the workflow. Review tasks remain compile-only and all broader quality evidence remains diagnostic.",
       "task_family_generation": "lifecycle-v1",
       "mistake_gate": {
-        "designated_model_condition": "codex-openai-gpt-5-6-sol-high",
+        "designated_model_condition": "codex-openai-gpt-5-6-sol-medium",
         "model": "gpt-5.6-sol",
-        "reasoning_effort": "high",
+        "reasoning_effort": "medium",
         "compile_required": true,
         "quality_diagnostics_gate": false,
-        "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json",
+        "pilot_audit_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json",
         "attempt_receipt_path": "sources/evaluations/audits/lifecycle-v1-corrected-pilot-attempt-beets.json",
-        "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-corrected-task-family-readiness-20260813.json",
+        "pilot_authorization_path": "sources/evaluations/audits/lifecycle-v1-essential-smoke-readiness-20260815.json",
         "status": "provider-pilot-required",
-        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every affected-component compile verifier exits zero; all other quality findings are diagnostic only"
+        "treatment_launch_policy": "blocked until one first-valid strongest-model pilot completes every task and every declared task verifier exits zero; broader quality findings remain diagnostic only"
       },
       "acceptance_policy": {
-        "gate": "affected-component-compilation",
+        "gate": "compile-plus-essential-smoke-for-coding-tasks",
         "visibility": "controller-only",
+        "coding_task_classes": [
+          "feature-implementation",
+          "behavior-preserving-refactor"
+        ],
+        "review_task_gate": "compile-only",
         "quality_diagnostics_gate": false,
-        "tests_required": false,
+        "broader_tests_required": false,
         "source_review_required": false
       },
       "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",

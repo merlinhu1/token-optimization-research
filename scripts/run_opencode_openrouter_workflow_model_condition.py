@@ -17,10 +17,10 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER_PATH = "scripts/run_opencode_openrouter_workflow_model_condition.py"
-CONDITION_ID = "opencode-openrouter-gpt-5-6-sol-high"
+CONDITION_ID = "opencode-openrouter-gpt-5-6-sol-medium"
 PROFILE_ID = "baseline-opencode-openrouter-no-mcp"
 MODEL = "gpt-5.6-sol"
-REASONING_EFFORT = "high"
+REASONING_EFFORT = "medium"
 
 
 def launcher_identity() -> dict[str, str]:
@@ -148,7 +148,7 @@ def main(argv: list[str] | None = None) -> int:
         or args.workflow_model != MODEL
         or args.workflow_reasoning_effort != REASONING_EFFORT
     ):
-        raise ValueError("OpenCode/OpenRouter launcher requires the exact registered Sol/high condition")
+        raise ValueError("OpenCode/OpenRouter launcher requires the exact registered Sol/medium condition")
     sys.path.insert(0, str(ROOT / "scripts"))
     import run_codex_workflow_evaluation as runner  # type: ignore
 

@@ -20,10 +20,12 @@ Define:
 6. **Task assistance**: Lifecycle V1 prompts state complete software-engineering objectives, expect correct implementation, permit normal repository search/inspection and relevant validation, and do not disclose controller scoring or compile commands. Freeze identical prompt bytes across compatible baseline and treatment sessions; prompts must not require or prefer treatment-tool invocation.
 7. **Token boundary**: calculate the sole token metric, `weighted_token_cost = fresh input + 0.1 × cached input + 6 × output`, across the complete persistent workflow. Capture provider counters only as internal telemetry needed to calculate and audit that value; never report or compare a raw provider total.
 8. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
-9. **Acceptance and diagnostics**: Lifecycle V1 affected-component and final project-wide compile outcomes gate task/workflow acceptance and treatment unlock. Unit tests, behavior, style, exact source shape, changed-area review, and optional source review are diagnostics; they do not gate token accounting or trigger reruns.
+9. **Acceptance and diagnostics**: Lifecycle V1 requires affected-component compilation for every task and final project-wide compilation. Feature and refactor tasks add one narrow, implementation-independent essential-behavior smoke; review tasks remain compile-only. Broader tests, behavior, style, exact source shape, changed-area review, and optional source review are diagnostics; neither acceptance nor diagnostics gate weighted-token sample retention or trigger reruns.
 10. **Invalidity rules**: fixture defects, protocol mismatch, incomplete provider usage, broken isolation, corrupted evidence, or interrupted execution.
 
 ## Current surfaces
+
+The forward model policy is GPT-5.6 Sol/medium for Codex CLI or OpenCode and direct-Anthropic Claude Opus 5/medium for Claude Code. High-effort conditions are historical only.
 
 - `data/workflow-task-sequences.json`
 - `data/workflow-sessions.json`

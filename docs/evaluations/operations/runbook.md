@@ -13,9 +13,9 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressions from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the requested outcome, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Fastify and Beets use their frozen qualified environments; Terraform V1's owner-declared-invalid r0 was removed and has no current runbook entry. Seed patch files, controller scripts, fixed parents, affected-component compile commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
+A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressions from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the requested outcome, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Fastify and Beets use their frozen qualified environments; Terraform V1's owner-declared-invalid r0 was removed and has no current runbook entry. Seed patch files, controller scripts, fixed parents, task acceptance commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
 
-Internally, every active task uses compilation-only acceptance. Unit tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
+Internally, every active task requires affected-component compilation. Feature and refactor tasks add one narrow essential-behavior smoke; review tasks remain compile-only. Broader tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 
 ## Claude Code direct-Anthropic preparation
 
@@ -37,36 +37,36 @@ _None._
 Before changing a sequence to `active`, require:
 
 - one or two semantic production targets per task, restored to completed upstream behavior;
-- standalone seed application and repair round-trips, with seeded compiler outcomes limited to 0 or 1 and repaired compilation succeeding;
-- a conflict-free composite semantic seed whose controller compile outcomes are all 0 or 1 at lane start;
+- standalone seed application and repair round-trips, with seeded verifier outcomes limited to 0 or 1 and repaired task verification succeeding;
+- a conflict-free composite semantic seed whose controller verifier outcomes are all 0 or 1 at lane start;
 - one parentless model-facing Git baseline with the fixed commit inaccessible;
 - prompts that state complete software objectives, permit repository discovery, and withhold controller scoring;
-- no model-visible compile commands or injected acceptance-test assets;
-- controller-only affected-component compile commands plus one frozen project-wide compile command;
+- no model-visible acceptance commands or injected acceptance-test assets;
+- controller-only component compilation for every task, one essential smoke for feature/refactor tasks, compile-only review tasks, and one frozen project-wide compile command;
 - controller-only seed patch files and fixed references;
-- cumulative provider usage capture, verifier integrity, isolation, structured compile outcomes, and optional quality diagnostics;
-- a machine-validated compile-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
+- cumulative provider usage capture, verifier integrity, isolation, structured task outcomes, and optional quality diagnostics;
+- a machine-validated acceptance-passing provider pilot before any treatment provider execution or treatment unlock; provider-free protocol preparation may be frozen while native integration qualification and owner authorization remain pending.
 
 A no-model prepare for a frozen candidate is allowed:
 
 ```bash
 SEQUENCE_ID=fastify-lifecycle-sequence-v1
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 ```
 
-`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including recorded seeded compiler outcomes and passing repaired/project-wide compilation boundaries, no controller seed/verifier files in the model root, no injected acceptance-test assets, and no controller compile command or scoring-policy disclosure in the current task prompt.
+`prepare-verification.json` must show every task preseeded, only task 1's prompt materialized, a clean true-root Git baseline, no fixed commit object or prior reflog, current composite qualification including recorded seeded verifier outcomes and passing repaired/project-wide boundaries, no controller seed/verifier files in the model root, no injected acceptance-test assets, and no controller acceptance command or scoring-policy disclosure in the current task prompt.
 
 ## Paid execution
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-repowise-codex-product-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-claude-code-hook-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
-Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json), `beets-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-corrected-pilot-compile-only.json). Paid pilot execution is not authorized for `fastify-lifecycle-sequence-v1`, `beets-lifecycle-sequence-v1`; provider-capable commands are suppressed until the explicit authorization authority is updated.
+Treatment protocol freezing, preparation, and execution are machine-blocked for `fastify-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json), `beets-lifecycle-sequence-v1` (pilot audit is absent: sources/evaluations/audits/lifecycle-v1-essential-smoke-pilot.json). Paid pilot execution is not authorized for `fastify-lifecycle-sequence-v1`, `beets-lifecycle-sequence-v1`; provider-capable commands are suppressed until the explicit authorization authority is updated.
 
 Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 ```
 
 Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample.
@@ -77,7 +77,7 @@ Execute the registered sample plan in full: N odd replicates per protocol, all r
 
 - Fixture: `medium-fastify-fastify`
 - Primary metric: weighted_token_cost
-- Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.
+- Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke; review tasks remain compile-only. Controller acceptance details are not disclosed as the agent task objective.
 - Final project compile: `find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js`
 
 | Order | Task | Prompt | Verifier |
@@ -90,7 +90,7 @@ Execute the registered sample plan in full: N odd replicates per protocol, all r
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: weighted_token_cost
-- Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.
+- Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke; review tasks remain compile-only. Controller acceptance details are not disclosed as the agent task objective.
 - Final project compile: `uv run --offline --frozen python -c "import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]"`
 
 | Order | Task | Prompt | Verifier |
