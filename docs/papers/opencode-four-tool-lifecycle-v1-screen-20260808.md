@@ -12,13 +12,13 @@ All eight lanes were accepted. Each lane completed all three ordered tasks, pass
 
 The matched bare-OpenCode comparison samples are protocol-bound and shared by product treatments at each sequence/fingerprint/replicate. The comparison records therefore support descriptive single-run observations only. They are marked `claim_status: single-run-screening` and `eligible_for_ranking: false`; this table must not be read as a stable product ranking or population estimate.
 
-| Profile | Fastify raw / weighted | Beets raw / weighted | Two-sequence raw delta | Two-sequence weighted delta |
-|---|---:|---:|---:|---:|
-| Matched bare OpenCode | 1,805,580 / 356,056.6 | 2,072,332 / 374,997.0 | baseline | baseline |
-| Graphify | 1,383,348 / 279,138.6 | 1,871,489 / 360,614.0 | -16.07% | -12.49% |
-| LeanCTX | 2,112,834 / 403,076.8 | 2,435,719 / 447,362.6 | +17.29% | +16.33% |
-| Snip | 797,433 / 190,354.2 | 1,856,762 / 346,146.0 | -31.56% | -26.61% |
-| CodeScope | 1,867,698 / 376,865.6 | 1,957,342 / 350,351.6 | -1.36% | -0.52% |
+| Profile | Fastify weighted cost | Beets weighted cost | Two-sequence weighted delta |
+|---|---:|---:|---:|
+| Matched bare OpenCode | 356,056.6 | 374,997.0 | baseline |
+| Graphify | 279,138.6 | 360,614.0 | -12.49% |
+| LeanCTX | 403,076.8 | 447,362.6 | +16.33% |
+| Snip | 190,354.2 | 346,146.0 | -26.61% |
+| CodeScope | 376,865.6 | 350,351.6 | -0.52% |
 
 The weighted metric is `fresh input + 0.1 × cached input + 6 × output`. Reasoning tokens are retained as a provider-reported output subset and are not added again.
 
@@ -31,7 +31,7 @@ The weighted metric is `fresh input + 0.1 × cached input + 6 × output`. Reason
 | Snip | [`snip-opencode-v2-fastify-20260808-p-72ac148f730b-r1`](../../sources/evaluations/workflow-sessions/snip-opencode-v2-fastify-20260808-p-72ac148f730b-r1/run.json) | [`snip-opencode-v2-beets-20260808-p-d8cfc5066f76-r1`](../../sources/evaluations/workflow-sessions/snip-opencode-v2-beets-20260808-p-d8cfc5066f76-r1/run.json) | `00fb94ae1c82`, `81aebd7c2ba2` |
 | CodeScope | [`codescope-opencode-v1-fastify-20260808-p-72ac148f730b-r1`](../../sources/evaluations/workflow-sessions/codescope-opencode-v1-fastify-20260808-p-72ac148f730b-r1/run.json) | [`codescope-opencode-v1-beets-20260808-p-d8cfc5066f76-r1`](../../sources/evaluations/workflow-sessions/codescope-opencode-v1-beets-20260808-p-d8cfc5066f76-r1/run.json) | `635fa0901238`, `e2dfa444cd6d` |
 
-The runner also emitted one comparison record per lane under `sources/evaluations/workflow-sessions/baseline-{sequence}-20260808-vs-{profile}-p-{fingerprint}-r1.json`. Those records retain baseline IDs, raw-token deltas, task counts, acceptance, and the single-run interpretation boundary.
+The historical runner emitted one comparison record per lane. The archived records retain their frozen telemetry bytes; this report presents only weighted token cost, task counts, acceptance, and the single-run interpretation boundary.
 
 ## Interpretation boundary
 

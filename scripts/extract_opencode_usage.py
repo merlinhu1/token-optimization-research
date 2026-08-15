@@ -18,6 +18,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+except ImportError:
+    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+
+try:
     from scripts import opencode_workflow_adapter as adapter
 except ImportError:
     import opencode_workflow_adapter as adapter  # type: ignore
@@ -133,6 +138,8 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         "extracted_at_utc": dt.datetime.now(dt.UTC).isoformat(),
         "measurement_source": "opencode-jsonl-step-finish-usage",
         **values,
+        "weighted_token_cost": weighted_token_cost(values),
+        "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "opencode_usage": {
@@ -179,15 +186,7 @@ def main(argv: list[str] | None = None) -> int:
     if summary["warnings"]:
         for warning in summary["warnings"]:
             print(f"warning: {warning}")
-    fields = (
-        "fresh_input_tokens",
-        "cached_input_tokens",
-        "cache_write_tokens",
-        "output_tokens",
-        "reasoning_tokens",
-        "total_provider_tokens",
-    )
-    print(json.dumps({key: summary[key] for key in fields}, indent=2))
+    print(json.dumps({"weighted_token_cost": summary["weighted_token_cost"]}, indent=2))
     return 1 if summary["warnings"] else 0
 
 

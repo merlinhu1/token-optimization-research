@@ -1,8 +1,18 @@
 # Token usage and software quality standards
 
-## Accounting policy
+## Metric authority
 
-The project measures **token use only**. It does not estimate or report monetary cost.
+The project always and only evaluates **weighted token cost**:
+
+`weighted_token_cost = fresh_input_tokens + 0.1 × cached_input_tokens + 6 × output_tokens`
+
+This is the sole token value used in results, comparisons, deltas, medians, rankings, charts, and
+narrative claims. Reasoning tokens are already included in output tokens and are never added
+again. Raw provider counters and reconstructed totals are internal telemetry inputs only: retain
+them when needed to calculate or audit the weighted value, but never present or interpret a raw
+token total as an evaluation metric. The project does not estimate or report monetary cost.
+
+## Accounting boundary
 
 Token claims must name their accounting boundary:
 
@@ -12,9 +22,9 @@ Token claims must name their accounting boundary:
 | `request_estimated` | Estimated tokens for one model request when provider records are unavailable. | Local diagnosis only. |
 | `provider_reported_request` | Provider-reported usage for one request, including cache components when exposed. | Request diagnosis. |
 | `provider_reported_task` | Provider-reported usage across one task. | Optional workflow diagnosis. |
-| `workflow_session_total` | Provider-reported usage across the complete persistent task sequence, including model-visible setup, retries, and corrections. | Primary metric. |
+| `workflow_session_weighted` | Weighted token cost across the complete persistent task sequence, including model-visible setup, retries, and corrections. | Sole evaluation metric. |
 
-The canonical metric is `workflow_session_total`. Estimated artifact/request counts cannot establish a workflow saving.
+The canonical metric is `workflow_session_weighted`. Estimated artifact/request counts and raw provider totals cannot establish a workflow saving.
 
 Codex exec emits cumulative thread totals, not isolated turn deltas. For one persistent thread, the session total is the final `turn.completed.usage` snapshot and each task increment is the current snapshot minus the previous snapshot. For multiple distinct threads, sum one final snapshot per thread. Summing repeated snapshots from the same thread double-counts prior work and is forbidden.
 
@@ -29,23 +39,20 @@ Record these when the provider exposes them:
 | `cache_write_tokens` | Provider-reported cache-write tokens; normalize to integer `0` for OpenAI Codex because its usage events expose cache reads but no cache-write category. |
 | `output_tokens` | Visible model output tokens. |
 | `reasoning_tokens` | Provider-reported reasoning tokens. |
-| `total_provider_tokens` | Provider total or reconstructed total with formula recorded. |
-| `tokens_per_accepted_task` | Workflow total divided by structured accepted-task count. |
+| `weighted_token_cost` | `fresh_input_tokens + 0.1 × cached_input_tokens + 6 × output_tokens`; the only reported token value. |
 | `measurement_source` | Provider event/log source used for extraction. |
-| `accounting_basis` | Provider-reported token-volume boundary and any reconstruction rule. |
+| `accounting_basis` | Provider telemetry boundary and the canonical weighted formula. |
 
 No monetary-cost field is required or produced.
 
 ## Derived metrics
 
-Use explicit formulas:
+Use only weighted formulas:
 
-- `workflow_token_change = treatment_total_provider_tokens - baseline_total_provider_tokens`
-- `workflow_token_reduction_ratio = 1 - treatment_total_provider_tokens / baseline_total_provider_tokens`
-- `tokens_per_accepted_task = total_provider_tokens / structured_accepted_task_count`
-- `artifact_reduction_ratio = 1 - transformed_artifact_tokens / raw_artifact_tokens`
+- `workflow_weighted_change = treatment_weighted_token_cost - baseline_weighted_token_cost`
+- `workflow_weighted_reduction_ratio = 1 - treatment_weighted_token_cost / baseline_weighted_token_cost`
 
-A positive artifact reduction ratio is not sufficient for a positive workflow result.
+Artifact/request token estimates are diagnostics, not evaluation metrics, and are not published as token results.
 
 ## Structured task outcomes
 
@@ -61,7 +68,7 @@ Every controller verifier runs against the final cumulative repository, regardle
 
 ### Estimand-aligned eligibility
 
-The research objective is provider-reported workflow token usage under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes the controller verifiers.
+The research objective is weighted token cost calculated from provider telemetry under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes the controller verifiers.
 
 Lifecycle V1 prompts describe complete software-engineering objectives and expect the agent to implement them correctly through normal repository search, related-code inspection, and relevant validation. They do not disclose controller scoring or compile commands. Compatible baseline and treatment sessions must use identical prompt bytes and internal verifier commands and must not require or prefer treatment-tool invocation. Historical **Solution-directed task assistance** generations remain valid only for their frozen protocols.
 
@@ -95,7 +102,7 @@ Do not ask the agent for extra reporting to collect these metrics. When a specif
 - One replicate is one complete multi-task workflow execution.
 - The **pilot gate** is unchanged and distinct from sampling: one first-valid qualifying run unlocks a campaign. Median-of-N governs the result sample, not the gate.
 - **Register the sample before spending.** A sample plan names the protocol, the model condition, and `planned_replicates` N, where N is odd and at least 3. Registration happens before the first provider call.
-- **The point estimate is the median** of total provider-reported tokens across the N retained replicates. Report the median with its observed spread, not the median alone.
+- **The point estimate is the median weighted token cost** across the N retained replicates. Report the median with its observed spread, not the median alone.
 - Retain and publish all N replicates, including verifier failures and low-quality outputs. A replicate is never dropped because its number is inconvenient.
 - A replicate that fails **before** the provider boundary produced no measurement: replace it and retain its zero-spend receipt. A replicate whose agent performed badly produced a real token count and counts toward the median.
 - Extending a sample after seeing results requires a new registration; report the original and extended estimates together.

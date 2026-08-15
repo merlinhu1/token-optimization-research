@@ -82,6 +82,7 @@ class ClaudeUsageContractTest(unittest.TestCase):
         self.assertEqual(summary["output_tokens"], 56)
         self.assertEqual(summary["reasoning_tokens"], 5)
         self.assertEqual(summary["total_provider_tokens"], 427)
+        self.assertEqual(summary["weighted_token_cost"], 509.0)
         details = summary["provider_usage_details"]
         self.assertEqual(details["accounting_mode"], "sum-unique-assistant-message-usage")
         self.assertFalse(details["result_usage_counted"])
@@ -143,6 +144,7 @@ class ClaudeUsageContractTest(unittest.TestCase):
         self.assertEqual(summary["fresh_input_tokens"], 20)
         self.assertEqual(summary["cache_write_tokens"], 8)
         self.assertEqual(summary["total_provider_tokens"], 65)
+        self.assertEqual(summary["weighted_token_cost"], 54.0)
         self.assertEqual(summary["measurement_source"], "claude-code-stream-json-result-usage")
         self.assertTrue(
             validate_repository.provider_usage_valid(
@@ -194,6 +196,7 @@ class ClaudeUsageContractTest(unittest.TestCase):
         self.assertEqual(summary["fresh_input_tokens"], 11)
         self.assertEqual(summary["cache_write_tokens"], 10)
         self.assertEqual(summary["total_provider_tokens"], 16)
+        self.assertEqual(summary["weighted_token_cost"], 29.2)
         self.assertEqual(
             summary["provider_usage_details"]["raw_token_field_totals"]["cache_creation_input_tokens"],
             10,
@@ -246,6 +249,7 @@ class OpenCodeUsageContractTest(unittest.TestCase):
     def test_cache_write_is_in_fresh_and_not_added_twice(self) -> None:
         usage = opencode_workflow_adapter.step_usage({"tokens": {"input": 100, "output": 20, "reasoning": 5, "cache": {"read": 300, "write": 40}, "total": 465}})
         self.assertEqual((usage["fresh_input_tokens"], usage["cache_write_tokens"], usage["output_tokens"], usage["total_provider_tokens"]), (140, 40, 25, 465))
+        self.assertEqual(usage["weighted_token_cost"], 320.0)
 
 
 if __name__ == "__main__":

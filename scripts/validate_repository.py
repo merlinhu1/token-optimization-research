@@ -14,6 +14,11 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 import sys
 
+try:
+    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+except ImportError:
+    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -31,6 +36,8 @@ PROVIDER_USAGE_FIELDS = (
     "output_tokens",
     "reasoning_tokens",
     "total_provider_tokens",
+    "weighted_token_cost",
+    "weighted_token_cost_formula",
 )
 
 # Compact-v1 final diffs are task deltas: the 316 retained bundles have a 5 KB median and a
@@ -123,6 +130,11 @@ def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool =
     if total != expected_total:
         return False
     if usage["reasoning_tokens"] > usage["output_tokens"]:
+        return False
+    if (
+        usage.get("weighted_token_cost") != weighted_token_cost(usage)
+        or usage.get("weighted_token_cost_formula") != WEIGHTED_TOKEN_COST_FORMULA
+    ):
         return False
     if measurement_source == "claude-code-stream-json-assistant-usage" and total == 0:
         return False
@@ -1659,8 +1671,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"workflow sequence {sid} references unknown fixture {fixture_id}")
         if sequence.get("objective") not in OBJECTIVES:
             errors.append(f"workflow sequence {sid} has invalid objective: {sequence.get('objective')}")
-        if "cumulative provider-reported" not in str(sequence.get("primary_metric", "")):
-            errors.append(f"workflow sequence {sid} primary_metric must name cumulative provider-reported tokens")
+        if sequence.get("primary_metric") != "weighted_token_cost":
+            errors.append(f"workflow sequence {sid} primary_metric must be weighted_token_cost")
         tasks = sequence.get("tasks")
         if not isinstance(tasks, list) or not tasks:
             errors.append(f"workflow sequence {sid} must define a non-empty tasks list")
@@ -2372,7 +2384,7 @@ def validate_workflow_session_contract(
             allow_legacy_null_cache_write=not current_provider_usage_contract(session),
         ):
             errors.append(
-                f"workflow session {sid} objective acceptance requires exact canonical non-boolean provider-token usage and arithmetic"
+                f"workflow session {sid} objective acceptance requires complete provider telemetry and exact weighted-token arithmetic"
             )
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
@@ -2580,8 +2592,8 @@ def validate_sample_plans(sessions: list[dict], errors: list[str]) -> None:
 def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixture_doc: dict, profiles_by_id: dict[str, dict], runtime_ids: set[str], model_condition_ids: set[str], errors: list[str]) -> None:
     if type(session_doc.get("schema_version")) is not int or session_doc.get("schema_version") != 1:
         errors.append("data/workflow-sessions.json must use schema_version 1")
-    if session_doc.get("primary_metric") != "cumulative provider-reported workflow tokens":
-        errors.append("data/workflow-sessions.json primary_metric must be cumulative provider-reported workflow tokens")
+    if session_doc.get("primary_metric") != "weighted_token_cost":
+        errors.append("data/workflow-sessions.json primary_metric must be weighted_token_cost")
     sessions = session_doc.get("sessions")
     if not isinstance(sessions, list):
         errors.append("data/workflow-sessions.json must contain a sessions list")
@@ -2962,7 +2974,8 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             or baseline_pool.get("protocol_fingerprint")
             != runner.baseline_protocol_fingerprint_from_descriptor(baseline_pool.get("descriptor", {}))
             or hashlib.sha256(path.read_bytes()).hexdigest() != binding["sha256"]
-            or "total_provider_tokens" not in protocol.get("token_accounting_boundary", {}).get("fields", [])
+            or protocol.get("token_accounting_boundary", {}).get("metric") != "weighted_token_cost"
+            or protocol.get("token_accounting_boundary", {}).get("formula") != WEIGHTED_TOKEN_COST_FORMULA
         ):
             errors.append(f"active protocol {path.name} does not match its Lifecycle V1 contract")
     if active_paths != expected_paths:

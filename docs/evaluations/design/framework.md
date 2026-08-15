@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This framework measures **cumulative provider-reported token use** across realistic software-engineering workflows. Correctness, verifier outcomes, and final software quality are reported as separate diagnostics; they do not determine which operationally valid token samples count.
+This framework measures **weighted token cost** across realistic software-engineering workflows. Correctness, verifier outcomes, and final software quality are reported as separate diagnostics; they do not determine which operationally valid token samples count.
 
 Monetary cost estimation is out of scope. Token use is the resource metric.
 
@@ -10,7 +10,7 @@ Monetary cost estimation is out of scope. Token use is the resource metric.
 
 The program should answer:
 
-> For a normal-user treatment configuration, how does total provider token use change relative to the compatible retained baseline?
+> For a normal-user treatment configuration, how does weighted token cost change relative to the compatible retained baseline?
 
 The answer must be scoped to the frozen workflow, model condition, and treatment estimand. The project does not need a language-by-language matrix to be useful.
 
@@ -33,7 +33,7 @@ The canonical unit is a `workflow_session`:
 - one baseline or treatment profile;
 - one runtime/model condition;
 - persistent repository, agent, and permitted tool state across tasks;
-- cumulative provider token use across the complete sequence.
+- weighted token cost across the complete sequence.
 
 **One replicate is one complete workflow session, not one task.** A three-task workflow executed once has three task outcomes and one replicate.
 
@@ -55,7 +55,7 @@ Canonical records require only evidence that directly changes the token-versus-c
 
 | Group | Required evidence |
 |---|---|
-| Token use | Fresh input, cached input, cache-write, output, reasoning, and total provider tokens when exposed; accounting source and reconstruction formula. |
+| Token use | Weighted token cost (`fresh + 0.1 × cached + 6 × output`) as the sole metric; provider counters retained only as calculation/audit telemetry. |
 | Task outcome | Operational exit, agent-declared completion, concealed-verifier exit, and accepted status for every task. |
 | Model-behavior diagnostics | Concealed-verifier outcomes for every task; optional independent review status, quality score, critical failures, and final diff/status. |
 | Treatment validity | Frozen treatment profile, documented installation/configuration evidence, and tool-isolation audit. Observed use is optional descriptive telemetry. |
@@ -100,7 +100,7 @@ This permits statistical evidence to accumulate over months without making every
 
 ## Interpretation rules
 
-1. Compare cumulative provider token use for compatible complete workflow sessions first; do not condition the primary metric on task acceptance.
+1. Compare weighted token cost for compatible complete workflow sessions first; do not condition the metric on task acceptance.
 2. Report token components separately when available; do not convert them to money.
 3. Report correctness and independently reviewed quality as diagnostic outcomes alongside the token result, not as sample-selection gates.
 4. Hard-lane correctness and token efficiency are separate outcomes.

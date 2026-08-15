@@ -2,6 +2,10 @@
 
 This directory separates evaluation contracts from operator instructions and historical plans.
 
+**Metric authority:** weighted token cost (`fresh input + 0.1 × cached input + 6 × output`) is
+the sole token metric. Raw provider counters may exist in evidence for calculation and audit, but
+must never be presented, compared, ranked, or interpreted as a result.
+
 ## Run an evaluation
 
 Start with the generated [operator runbook](operations/runbook.md).
@@ -29,6 +33,6 @@ Start with the generated [operator runbook](operations/runbook.md).
 
 The corrected Lifecycle V1 fixture contract remains active for Fastify and Beets, but the active provider-backed result registry is currently empty. The pre-correction corpus of 103 provider-backed sessions was archived before rerun because the model-facing prompts and shared prompt/configuration generation changed. The archive receipt is [`lifecycle-v1-fastify-beets-results-archived-20260814.json`](../../sources/evaluations/audits/lifecycle-v1-fastify-beets-results-archived-20260814.json).
 
-The corrected no-result baseline protocols are retained as `frozen-ready-not-run` contracts. Their provider-free qualifications are `qualification-lifecycle-v1-20260813.json` under the Fastify and Beets fixture directories. They prove preparation only; they are not effectiveness results. A future corrected-contract baseline and treatment campaign requires fresh provider execution and explicit authorization.
+The corrected no-result baseline protocols are retained as `frozen-ready-not-run` contracts. Their provider-free qualifications are `qualification-lifecycle-v1-20260813.json` under the Fastify and Beets fixture directories. They prove preparation only; they are not effectiveness results. The preceding unexecuted raw-metric protocol bytes were superseded and archived. A future corrected-contract baseline and treatment campaign requires fresh provider execution and explicit authorization.
 
 Historical reports and audit receipts remain available for provenance and link to the archived session/protocol paths. They are not current findings or reusable controls for the corrected rerun. Lifecycle V0 remains retired under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json).

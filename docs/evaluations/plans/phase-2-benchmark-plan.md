@@ -17,7 +17,7 @@ Run exactly three lifecycle-v0 sequences: Fastify, Beets, and Terraform. Each se
 5. Record verifier and source-review outcomes diagnostically; do not use them to select or replace token samples.
 6. Repair fixture defects before attribution, then rerun only the invalid fixture contract under a new fingerprint.
 7. Run treatment under the same compatible lane contract and replicate.
-8. Compare cumulative provider-reported tokens only within a compatible baseline pool.
+8. Compare only weighted token cost within a compatible baseline pool; raw provider counters are calculation/audit telemetry, not a result metric.
 
 ## Eligibility
 

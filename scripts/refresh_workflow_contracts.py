@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT))
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition
 from scripts import workflow_model_condition_runtime as condition_runtime
+from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA
 
 
 def digest(path: Path) -> str:
@@ -179,7 +180,7 @@ def frozen_protocol(
         "status": "frozen-ready-not-run",
         "outcome": f"Frozen {profile_id} protocol for {seq['id']}; no provider/model run has occurred.",
         "frozen_at": seq["protocol_freeze_date"],
-        "hypothesis": f"{profile_id} produces reproducible provider-reported token and software-quality evidence for {seq['id']}",
+        "hypothesis": f"{profile_id} produces reproducible weighted-token and software-quality evidence for {seq['id']}",
         "evidence_stage_target": "reproduction",
         "task_fixture": {
             "fixture_id": seq["fixture_id"],
@@ -195,14 +196,20 @@ def frozen_protocol(
         "comparison_baseline": comparison_baseline,
         "treatment": treatment,
         "token_accounting_boundary": {
+            "metric": "weighted_token_cost",
+            "formula": WEIGHTED_TOKEN_COST_FORMULA,
             "fields": [
+                "weighted_token_cost",
+            ],
+            "provider_telemetry_inputs": [
                 "fresh_input_tokens",
                 "cached_input_tokens",
                 "cache_write_tokens",
                 "output_tokens",
                 "reasoning_tokens",
                 "total_provider_tokens",
-            ]
+            ],
+            "raw_totals_are_metrics": False,
         },
         "baseline_pool": {
             "protocol_version": runner.BASELINE_POOL_PROTOCOL_VERSION,

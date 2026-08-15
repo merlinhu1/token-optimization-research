@@ -13,15 +13,21 @@ accounting integrity from a causal efficiency claim. Without them, a token delta
 a changed task rather than a changed tool.
 
 Token comparisons therefore use one final monotonic cumulative provider snapshot per distinct
-thread and compare only compatible baseline pools. The weighted-unit view
-(`fresh + 0.1 x cached + 6 x output`) was removed from the active design in the 2026-08-14
-simplification; total provider-reported tokens is the reported metric.
+thread and compare only compatible baseline pools. Those counters are telemetry inputs. The sole
+reported metric is weighted token cost:
+
+`fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens`
+
+Reasoning tokens are a subset of output tokens and are not added again. Raw provider totals are
+never a primary, secondary, comparison, ranking, or presentation metric.
 
 ## Decision
 
 - Decision (2026-08-13): A behaviorally inert seed or a model-facing prompt change mints new
   qualification and protocol identities. Completed sessions and their protocol bytes remain
   historical, and treatment gates close until the revised contract receives its own pilot.
+- Decision (2026-08-15): Weighted token cost is the repository's only token evaluation metric.
+  Provider counters remain auditable telemetry solely to calculate and verify that value.
 
 ## Consequences
 

@@ -10,6 +10,14 @@ This repository's only evaluation framework is Lifecycle V1. Lifecycle V0 was re
 
 Every active sequence, task ID, qualification file, and current execution contract must be V1. Do not reintroduce a V0 or other compatibility lane. Accepted production records are immutable historical evidence. Rejected or excluded records may be deleted only by explicit experiment-owner direction, together with their artifact roots and unreferenced protocols.
 
+## Token metric authority — top priority
+
+The repository's sole token evaluation metric is **weighted token cost**:
+
+`fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens`
+
+Every token result, comparison, delta, median, ranking, chart, and narrative claim must use this metric and name it explicitly. Reasoning tokens are already included in output tokens and must not be added again. Provider token counters and reconstructed raw totals may be retained only as internal telemetry needed to calculate or audit weighted token cost; never present, compare, rank, or interpret them as an evaluation result. Do not introduce a secondary raw-token metric.
+
 ## Fixture design
 
 - Pin the upstream repository commit.
@@ -24,7 +32,7 @@ Every active sequence, task ID, qualification file, and current execution contra
 
 ## Evidence and execution
 
-Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative tokens and isolated baseline/treatment conditions. Lifecycle V1 component and project compilation gate task/workflow acceptance and treatment unlock, but do not gate provider-token sample retention. Broader verifier and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
+Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative token telemetry sufficient to calculate weighted token cost and isolated baseline/treatment conditions. Lifecycle V1 component and project compilation gate task/workflow acceptance and treatment unlock, but do not gate weighted-token sample retention. Broader verifier and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
 
 Treatment execution is availability/natural-use only after faithful product installation. Install every tool-author-recommended normal integration surface—including its own hooks, wrappers, proxies, MCP exposure, product-authored instructions, rules, or skills. Evaluator-authored steering, quotas, and forced calls are forbidden, but evaluator neutrality must never remove or contradict the product's own guidance. Server-only, guidance-free, or otherwise reduced setups are explicit ablations rather than canonical product treatments. Zero explicit model-issued tool commands after faithful installation remains a valid observed outcome because the intervention may operate below or around the model-visible command surface. Preserve the first valid assignment sample and interpret mechanism evidence only from instrumentation appropriate to the declared integration.
 

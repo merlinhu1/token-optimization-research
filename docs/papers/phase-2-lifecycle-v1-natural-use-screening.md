@@ -2,6 +2,10 @@
 
 > **Archived pre-correction evidence.** This report describes the exact prompt and protocol bytes executed before the 2026-08-13 task-family correction. Its 103-session corpus, protocols, and campaign audits are preserved in the [pre-correction archive](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/), but they are not current findings or reusable controls. Fresh execution is required under the corrected Lifecycle V1 contract.
 
+> **Metric authority:** every token value in this report is weighted token cost
+> (`fresh input + 0.1 × cached input + 6 × output`). No raw-token result or secondary token
+> metric is used or shown.
+
 ## Executive summary
 
 - **Scope:** 27 matched product/runtime conditions, 54 persistent workflow sessions, and 162 accepted task outcomes across Fastify and Beets.
@@ -27,7 +31,7 @@ The estimand is assignment to the installed, native product surface under natura
 | Codex condition | Codex CLI, OpenAI GPT-5.6 Sol, `high` reasoning; bare-Codex matched baseline |
 | OpenCode condition | OpenCode CLI 1.18.9, OpenAI GPT-5.6 Sol, `high` reasoning; native no-treatment runtime control |
 | Treatment policy | Pinned native integration; natural use; no evaluator-forced invocation |
-| Primary measure | Weighted token cost |
+| Sole token measure | Weighted token cost |
 | Accounting | `fresh input + 0.1 × cached input + 6 × output`; reasoning is an output subset and is not added again |
 | Evidence snapshot | 2026-08-08; registry SHA-256 `324073e05a3aa79868515561714647bae1301eb4ab26b5ffb36f5c6b4764d359` |
 

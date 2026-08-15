@@ -25,6 +25,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.token_metrics import weighted_token_cost
+except ImportError:
+    from token_metrics import weighted_token_cost
+
 DEFAULT_OPENCODE_BINARY = Path(
     os.environ.get(
         "TOKEN_EVAL_OPENCODE_BINARY",
@@ -128,7 +133,7 @@ class CompatArgs:
 @dataclass(frozen=True)
 class NormalizedRun:
     session_id: str
-    usage: dict[str, int]
+    usage: dict[str, int | float]
     last_text: str
     normalized_events: list[dict[str, Any]]
 
@@ -472,7 +477,7 @@ def _token(value: object, field: str) -> int:
     return value
 
 
-def _empty_usage() -> dict[str, int]:
+def _empty_usage() -> dict[str, int | float]:
     return {
         "fresh_input_tokens": 0,
         "cached_input_tokens": 0,
@@ -480,10 +485,11 @@ def _empty_usage() -> dict[str, int]:
         "output_tokens": 0,
         "reasoning_tokens": 0,
         "total_provider_tokens": 0,
+        "weighted_token_cost": 0.0,
     }
 
 
-def step_usage(part: dict[str, Any]) -> dict[str, int]:
+def step_usage(part: dict[str, Any]) -> dict[str, int | float]:
     tokens = part.get("tokens")
     if not isinstance(tokens, dict):
         raise ValueError("OpenCode step_finish part is missing usage tokens")
@@ -508,7 +514,7 @@ def step_usage(part: dict[str, Any]) -> dict[str, int]:
         raise ValueError(
             f"OpenCode usage total does not match components: {declared_total} != {raw_total}"
         )
-    return {
+    usage = {
         "fresh_input_tokens": fresh,
         "cached_input_tokens": cached,
         "cache_write_tokens": cache_write,
@@ -516,9 +522,11 @@ def step_usage(part: dict[str, Any]) -> dict[str, int]:
         "reasoning_tokens": reasoning,
         "total_provider_tokens": total,
     }
+    usage["weighted_token_cost"] = weighted_token_cost(usage) or 0.0
+    return usage
 
 
-def _add_usage(target: dict[str, int], increment: dict[str, int]) -> None:
+def _add_usage(target: dict[str, int | float], increment: dict[str, int | float]) -> None:
     for key in target:
         target[key] += increment[key]
 

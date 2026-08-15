@@ -9,6 +9,11 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+except ImportError:
+    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SEQUENCES = (
     "fastify-lifecycle-sequence-v0",
@@ -21,16 +26,7 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def weighted_tokens(usage: dict[str, int]) -> float:
-    return round(
-        usage["fresh_input_tokens"]
-        + 0.1 * usage["cached_input_tokens"]
-        + 6 * usage["output_tokens"],
-        1,
-    )
-
-
-def summed_usage(sessions: list[dict[str, Any]]) -> dict[str, int | float]:
+def summed_usage(sessions: list[dict[str, Any]]) -> dict[str, Any]:
     totals = {
         key: sum(int(session["cumulative_token_usage"][key]) for session in sessions)
         for key in (
@@ -38,16 +34,11 @@ def summed_usage(sessions: list[dict[str, Any]]) -> dict[str, int | float]:
             "cached_input_tokens",
             "output_tokens",
             "reasoning_tokens",
-            "total_provider_tokens",
         )
     }
     return {
-        "fresh_input_tokens": totals["fresh_input_tokens"],
-        "cached_input_tokens": totals["cached_input_tokens"],
-        "output_tokens": totals["output_tokens"],
-        "reasoning_tokens": totals["reasoning_tokens"],
-        "raw_provider_tokens": totals["total_provider_tokens"],
-        "weighted_tokens": weighted_tokens(totals),
+        "weighted_token_cost": weighted_token_cost(totals),
+        "formula": WEIGHTED_TOKEN_COST_FORMULA,
     }
 
 
@@ -176,22 +167,16 @@ def build_panel(
     ordered_baselines = [baseline_by_sequence[sequence] for sequence in sequence_ids]
     baseline_usage = summed_usage(ordered_baselines)
 
-    rows.sort(key=lambda row: (row["usage"]["raw_provider_tokens"], row["profile_id"]))
+    rows.sort(key=lambda row: (row["usage"]["weighted_token_cost"], row["profile_id"]))
     for rank, row in enumerate(rows, start=1):
-        row["raw_delta_vs_baseline_percent"] = pct_delta(
-            row["usage"]["raw_provider_tokens"],
-            baseline_usage["raw_provider_tokens"],
+        row["delta_vs_baseline_percent"] = pct_delta(
+            row["usage"]["weighted_token_cost"],
+            baseline_usage["weighted_token_cost"],
         )
-        row["weighted_delta_vs_baseline_percent"] = pct_delta(
-            row["usage"]["weighted_tokens"],
-            baseline_usage["weighted_tokens"],
-        )
-        row["raw_rank"] = rank
+        row["rank"] = rank
 
-    panel_raw = sum(int(row["usage"]["raw_provider_tokens"]) for row in rows)
-    panel_weighted = round(sum(float(row["usage"]["weighted_tokens"]) for row in rows), 1)
-    repeated_baseline_raw = int(baseline_usage["raw_provider_tokens"]) * len(rows)
-    repeated_baseline_weighted = round(float(baseline_usage["weighted_tokens"]) * len(rows), 1)
+    panel_weighted = round(sum(float(row["usage"]["weighted_token_cost"]) for row in rows), 1)
+    repeated_baseline_weighted = round(float(baseline_usage["weighted_token_cost"]) * len(rows), 1)
     compact_date = date.replace("-", "")
     audit_scope = (
         f"accepted-pair-{panel_pair['accepted_replicate_ordinal']:02d}"
@@ -213,8 +198,8 @@ def build_panel(
         condition["replicate_index"] = replicate_index
     condition.update({
         "workflows": list(sequence_ids),
-        "primary_metric": "raw_provider_tokens",
-        "secondary_metric": "weighted_tokens = fresh input (input_tokens + cache_creation_input_tokens) + 0.1 * cached input + 6 * output",
+        "metric": "weighted_token_cost",
+        "formula": WEIGHTED_TOKEN_COST_FORMULA,
     })
     if panel_pair:
         condition.update({
@@ -241,12 +226,9 @@ def build_panel(
         },
         "results_ranked_by_primary_metric": rows,
         "descriptive_panel_aggregate": {
-            "treatment_raw_provider_tokens": panel_raw,
-            "repeated_baseline_raw_provider_tokens": repeated_baseline_raw,
-            "raw_delta_percent": pct_delta(panel_raw, repeated_baseline_raw),
-            "treatment_weighted_tokens": panel_weighted,
-            "repeated_baseline_weighted_tokens": repeated_baseline_weighted,
-            "weighted_delta_percent": pct_delta(panel_weighted, repeated_baseline_weighted),
+            "treatment_weighted_token_cost": panel_weighted,
+            "repeated_baseline_weighted_token_cost": repeated_baseline_weighted,
+            "delta_percent": pct_delta(panel_weighted, repeated_baseline_weighted),
             "independence_note": (
                 "The same three baseline sessions are repeated for every profile; this aggregate is descriptive, not a panel of independent controls."
                 if sequence_ids == DEFAULT_SEQUENCES

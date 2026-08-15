@@ -25,15 +25,7 @@
 
 | Metric | Baseline | Treatment | Source/notes |
 |---|---:|---:|---|
-| Raw artifact tokens | | | |
-| Transformed artifact tokens | | | |
-| Fresh input tokens | | | |
-| Cached input tokens | | | |
-| Cache-write tokens | | | |
-| Output tokens | | | |
-| Reasoning tokens | | | |
-| Total provider tokens | | | |
-| Estimated cost | | | |
+| Weighted token cost (`fresh + 0.1 × cached + 6 × output`) | | | Sole token metric |
 
 ## Agent behavior
 

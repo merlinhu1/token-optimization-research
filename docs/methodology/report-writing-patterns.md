@@ -117,7 +117,7 @@ Use when turning Phase 2 results into reports.
 Recommended visuals:
 
 - surface ownership matrix;
-- baseline versus treatment provider-reported workflow tokens;
+- baseline versus treatment weighted token cost;
 - structured per-task correctness and independent quality table;
 - treatment installation/configuration and isolation summary, with observed use included only as optional descriptive telemetry;
 - ablation chart by component;
@@ -143,7 +143,7 @@ For Lifecycle V1 research:
 1. Execute the explicitly authorized corrected baseline sample first; once retained, do not rerun a replicate for a better diagnostic outcome.
 2. Freeze a compatible treatment protocol and verify tool identity, isolation, and fixture qualification before provider use.
 3. Register the sample plan (N odd, at least 3), then run the full plan through `scripts/run_sequential_workflow_matrix.py` and retain every replicate.
-4. Compare the median of cumulative provider-reported tokens against the matched baseline sample, reporting the observed spread; verifier and optional source-review outcomes are reported separately.
+4. Compare the median weighted token cost against the matched baseline sample, reporting the observed spread; verifier and optional source-review outcomes are reported separately. Never display a raw-token comparison.
 5. Update `data/workflow-sessions.json`, fixture state, generated runbook, current findings, and any active prompt or method surface affected by the run.
 6. Delete superseded workflow guidance instead of maintaining two architectures.
 

@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Continuous workflow simulation is the primary Phase 2 evidence path for token-optimization claims. It measures cumulative provider-reported token use across a realistic persistent project session. Monetary cost is out of scope.
+Continuous workflow simulation is the primary Phase 2 evidence path for token-optimization claims. It measures weighted token cost across a realistic persistent project session. Monetary cost is out of scope.
 
-The goal is to measure how cumulative provider token use changes between compatible baseline and treatment sessions. Structured task correctness and optional independent final quality review are recorded as diagnostic outcomes, not eligibility conditions.
+The goal is to measure how weighted token cost changes between compatible baseline and treatment sessions. Structured task correctness and optional independent final quality review are recorded as diagnostic outcomes, not eligibility conditions.
 
 ## Core rule
 
@@ -31,19 +31,19 @@ Future semantic regression code may be present from lane start; future prompts, 
 
 ## Primary metric
 
-The primary metric is cumulative provider-reported workflow usage:
+The sole token metric is weighted token cost:
 
-```text
-workflow_session_total = sum(final provider-reported cumulative usage for each distinct agent thread)
-```
+`fresh_input_tokens + 0.1 × cached_input_tokens + 6 × output_tokens`
 
-For Codex exec JSONL, every `turn.completed.usage` record serializes `ThreadTokenUsage.total`. Resumed turns from the same persistent thread are therefore cumulative snapshots: select the final snapshot for the session total and difference consecutive snapshots for per-task increments. Never sum same-thread snapshots. Sum final snapshots only when a workflow legitimately uses distinct threads. Fail closed if a cumulative counter decreases.
+For Codex exec JSONL, every `turn.completed.usage` record serializes cumulative thread telemetry.
+Select the final snapshot for each distinct thread and difference consecutive snapshots for
+per-task telemetry. Never sum same-thread snapshots, and fail closed if a counter decreases.
 
-Record fresh input, cached input, cache-write, output, reasoning when available, and total provider tokens. Report tokens per structured accepted task as a derived metric. Do not estimate money.
+Record fresh input, cached input, cache-write, output, and reasoning only as internal calculation and audit telemetry. Never report a raw-token total or secondary token metric. Do not estimate money.
 
 ## Quality constraint
 
-A treatment supports a token-usage claim when it is bound to a compatible baseline and both executions are operationally complete with valid integrity and provider usage. Correctness and quality outcomes are reported alongside the token delta rather than used to select samples.
+A treatment supports a weighted-token claim when it is bound to a compatible baseline and both executions are operationally complete with valid integrity and provider telemetry. Correctness and quality outcomes are reported alongside the weighted delta rather than used to select samples.
 
 Record one structured compile-verifier outcome for every task, final diff/status, and any optional quality review. Lifecycle V1 compile commands and scoring policy remain controller-only, and no acceptance-test assets are injected. Leave `quality_score` null when unreviewed. Unit-test failures, behavioral defects, style findings, and low review scores are diagnostics and remain eligible model-behavior observations; rerun only for experiment invalidity or incomplete execution. Model-facing prompts still require agents to complete the task correctly and validate relevant behavior.
 
@@ -100,7 +100,7 @@ After one candidate has causally related behavior and passes composite-seed, con
 1. run `baseline-bare-codex` on the full persistent sequence;
 2. stop if the baseline fails any frozen gate;
 3. run one treatment profile on the same sequence and model condition;
-4. compare cumulative provider tokens, structured task outcomes, and final quality;
+4. compare weighted token cost, structured task outcomes, and final quality;
 5. expand only after the record shape, artifacts, and validation remain reliable.
 
 Candidate first treatments:

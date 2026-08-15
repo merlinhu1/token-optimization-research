@@ -34,6 +34,7 @@ import extract_claude_code_usage  # type: ignore
 import claude_code_workflow_adapter  # type: ignore
 import run_codex_fixture_evaluation as fixture  # type: ignore
 import validate_repository as repository_validation  # type: ignore
+from token_metrics import WEIGHTED_TOKEN_COST_FORMULA  # type: ignore
 
 DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_SOURCE_CODEX_HOME = Path(os.environ.get("CODEX_HOME", "/opt/data/home/.codex"))
@@ -880,7 +881,7 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
         and run_record.get("selected_execution") == session.get("selected_execution")
         and run_record.get("per_task_results") == session.get("per_task_results")
         and run_record.get("verifier_integrity_passed") is True
-        and run_record.get("token_usage", {}).get("total_provider_tokens") == usage.get("total_provider_tokens")
+        and run_record.get("token_usage", {}).get("weighted_token_cost") == usage.get("weighted_token_cost")
     )
 
 
@@ -1859,7 +1860,7 @@ def baseline_protocol_descriptor(seq: dict[str, Any], root: Path = ROOT) -> dict
         "fixture_scale": seq.get("fixture_scale"),
         "initial_snapshot": seq.get("initial_snapshot", {}),
         "objective": seq.get("objective", "individual_tool_effectiveness"),
-        "primary_metric": seq.get("primary_metric", "cumulative provider-reported workflow tokens"),
+        "primary_metric": seq.get("primary_metric", "weighted_token_cost"),
         "acceptance_design": seq.get("acceptance_design"),
         "acceptance_policy": seq.get("acceptance_policy"),
         "project_compile_command": seq.get("project_compile_command"),
@@ -4086,8 +4087,6 @@ def workflow_session_record(
     )
     audit_path = run_dir / "tool-isolation-audit.json"
     audit_result = json.loads(audit_path.read_text()) if audit_path.exists() else {}
-    total_provider_tokens = usage.get("total_provider_tokens")
-    tokens_per_accepted_task = (total_provider_tokens / tasks_passed) if tasks_passed and isinstance(total_provider_tokens, (int, float)) else None
     raw_agent_condition = summary.get("agent_condition")
     agent_condition: dict[str, Any] = dict(raw_agent_condition) if isinstance(raw_agent_condition, dict) else {}
     agent_provider = str(agent_condition.get("provider") or ("openrouter" if runtime_id == "claude-code" else "openai"))
@@ -4165,9 +4164,10 @@ def workflow_session_record(
             "output_tokens": usage.get("output_tokens"),
             "reasoning_tokens": usage.get("reasoning_tokens"),
             "total_provider_tokens": usage.get("total_provider_tokens"),
+            "weighted_token_cost": usage.get("weighted_token_cost"),
+            "weighted_token_cost_formula": usage.get("weighted_token_cost_formula"),
             "provider_usage_details": usage.get("provider_usage_details"),
-            "tokens_per_accepted_task": tokens_per_accepted_task,
-            "accounting_basis": f"{runtime_agent_name(runtime_id)}-reported token volume; monetary cost estimation is out of scope",
+            "accounting_basis": f"{runtime_agent_name(runtime_id)} telemetry; the sole evaluation metric is weighted token cost",
         },
         "per_task_results": task_checkpoints,
         "software_quality": {
@@ -4649,19 +4649,6 @@ def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) 
     update_registry(record)
 
 
-def freshish_tokens(record: dict[str, Any]) -> int | float | None:
-    usage = record.get("cumulative_token_usage", {})
-    fresh = usage.get("fresh_input_tokens")
-    output = usage.get("output_tokens")
-    if isinstance(fresh, (int, float)) and isinstance(output, (int, float)):
-        return fresh + output
-    total = usage.get("total_provider_tokens")
-    cached = usage.get("cached_input_tokens")
-    if isinstance(total, (int, float)) and isinstance(cached, (int, float)):
-        return total - cached
-    return None
-
-
 def percent_delta(delta: int | float | None, baseline: int | float | None) -> float | None:
     return (delta / baseline * 100) if delta is not None and baseline else None
 
@@ -4746,12 +4733,9 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         return None
     if reviewed_session_reuse_state(baseline, ROOT) != "reusable" or reviewed_session_reuse_state(treatment, ROOT) != "reusable":
         return None
-    b_tokens = baseline.get("cumulative_token_usage", {}).get("total_provider_tokens")
-    t_tokens = treatment.get("cumulative_token_usage", {}).get("total_provider_tokens")
+    b_tokens = baseline.get("cumulative_token_usage", {}).get("weighted_token_cost")
+    t_tokens = treatment.get("cumulative_token_usage", {}).get("weighted_token_cost")
     delta = t_tokens - b_tokens if isinstance(b_tokens, (int, float)) and isinstance(t_tokens, (int, float)) else None
-    b_freshish = freshish_tokens(baseline)
-    t_freshish = freshish_tokens(treatment)
-    freshish_delta = t_freshish - b_freshish if isinstance(b_freshish, (int, float)) and isinstance(t_freshish, (int, float)) else None
     baseline_profile_id = baseline.get("profile", {}).get("profile_id")
     nested_runtime_baseline = baseline_profile_id == "runtime-opencode-codex-product-v1"
     comparison = {
@@ -4779,14 +4763,12 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "sequence_id": seq["id"],
         "baseline_session_id": baseline["session_id"],
         "treatment_session_id": treatment["session_id"],
-        "baseline_total_provider_tokens": b_tokens,
-        "treatment_total_provider_tokens": t_tokens,
-        "delta_total_provider_tokens": delta,
+        "metric": "weighted_token_cost",
+        "formula": WEIGHTED_TOKEN_COST_FORMULA,
+        "baseline_weighted_token_cost": b_tokens,
+        "treatment_weighted_token_cost": t_tokens,
+        "delta_weighted_token_cost": delta,
         "delta_percent": percent_delta(delta, b_tokens),
-        "baseline_freshish_tokens": b_freshish,
-        "treatment_freshish_tokens": t_freshish,
-        "delta_freshish_tokens": freshish_delta,
-        "delta_freshish_percent": percent_delta(freshish_delta, b_freshish),
         "baseline_accepted": baseline.get("interpretation", {}).get("accepted_for_objective"),
         "treatment_accepted": treatment.get("interpretation", {}).get("accepted_for_objective"),
         "model_behavior_diagnostics": {
@@ -4794,7 +4776,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
             "treatment_tasks_passed": treatment.get("software_quality", {}).get("tasks_passed"),
             "task_count": len(seq["tasks"]),
         },
-        "interpretation": f"Single-run token screening observation only; do not treat one pair as a population estimate. Negative token deltas mean {treatment_profile_id} used fewer provider-reported tokens than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair. Freshish tokens are fresh_input_tokens + output_tokens for a cache-adjusted secondary view.",
+        "interpretation": f"Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean {treatment_profile_id} had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair.",
     }
     out = ROOT / "sources/evaluations/workflow-sessions" / f"{comparison['comparison_id']}.json"
     atomic_create_json(out, comparison)
@@ -5267,6 +5249,8 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "token_usage": {
             "measurement_source": usage.get("measurement_source"),
             **{key: usage.get(key) for key in PILOT_PROVIDER_USAGE_FIELDS},
+            "weighted_token_cost": usage.get("weighted_token_cost"),
+            "weighted_token_cost_formula": usage.get("weighted_token_cost_formula"),
             "provider_usage_details": usage.get("provider_usage_details"),
         },
         "usage_warnings": usage.get("warnings"),

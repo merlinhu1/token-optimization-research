@@ -694,7 +694,8 @@
       "additionalProperties": false,
       "required": [
         "measurement_source",
-        "total_provider_tokens"
+        "weighted_token_cost",
+        "weighted_token_cost_formula"
       ],
       "properties": {
         "measurement_source": {
@@ -743,19 +744,22 @@
           ],
           "minimum": 0
         },
+        "weighted_token_cost": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "weighted_token_cost_formula": {
+          "const": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens"
+        },
         "provider_usage_details": {
           "description": "Lossless normalized provider token-bearing fields and accounting provenance. Cache-write tokens are retained here and as cache_write_tokens, but are already included in fresh_input_tokens.",
           "type": [
             "object",
             "null"
           ]
-        },
-        "tokens_per_accepted_task": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "minimum": 0
         },
         "accounting_basis": {
           "type": "string"
@@ -974,7 +978,7 @@
           "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         },
         "estimator": {
-          "const": "median-total-provider-tokens"
+          "const": "median-weighted-token-cost"
         },
         "supersedes_plan_id": {
           "type": [

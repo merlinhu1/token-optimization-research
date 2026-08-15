@@ -28,6 +28,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+try:
+    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+except ImportError:
+    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+
 
 def load_events(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
     events: list[dict[str, Any]] = []
@@ -308,6 +313,12 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         "output_tokens": output_tokens,
         "reasoning_tokens": reasoning_tokens,
         "total_provider_tokens": total_provider_tokens,
+        "weighted_token_cost": weighted_token_cost({
+            "fresh_input_tokens": fresh_input_tokens,
+            "cached_input_tokens": cached_input_tokens,
+            "output_tokens": output_tokens,
+        }),
+        "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "provider_usage_details": provider_usage_details,
@@ -343,10 +354,7 @@ def main(argv: list[str] | None = None) -> int:
     if summary["warnings"]:
         for warning in summary["warnings"]:
             print(f"warning: {warning}")
-    print(json.dumps({key: summary[key] for key in (
-        "fresh_input_tokens", "cached_input_tokens", "cache_write_tokens",
-        "output_tokens", "reasoning_tokens", "total_provider_tokens",
-    )}, indent=2))
+    print(json.dumps({"weighted_token_cost": summary["weighted_token_cost"]}, indent=2))
     return 1 if summary["warnings"] else 0
 
 

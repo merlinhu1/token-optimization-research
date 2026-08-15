@@ -25,15 +25,14 @@
 ## Token accounting
 
 - Accounting boundary: complete persistent workflow session
-- Primary metric: cumulative provider-reported workflow tokens
+- Sole token metric: weighted token cost (`fresh input + 0.1 × cached input + 6 × output`)
 - Measurement source: provider API or provider-backed agent log
 - Fresh input tokens:
 - Cached input tokens:
 - Cache-write tokens:
 - Output tokens:
 - Reasoning tokens:
-- Total provider tokens:
-- Tokens per verifier-passing task, diagnostic only:
+- Weighted token cost:
 
 ## Model-behavior diagnostics
 
@@ -54,13 +53,13 @@
 6. Preserve declared session state between tasks.
 7. Retain the first operationally complete, integrity-valid provider sample. Do not rerun because of verifier or review outcomes.
 8. Record verifier results and any optional source review as diagnostics.
-9. Compare cumulative provider-reported workflow token use only within a compatible baseline pool.
+9. Compare weighted token cost only within a compatible baseline pool; never report a raw-token comparison.
 10. Record invalid or incomplete experiments with explicit reason codes; distinguish them from model-behavior failures.
 
 ## Results
 
 - Summary:
-- Cumulative provider-token result:
+- Weighted token-cost result:
 - Model-behavior diagnostics:
 - State behavior result:
 - Operational result:

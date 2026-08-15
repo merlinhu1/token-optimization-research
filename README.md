@@ -1,6 +1,6 @@
 # Token Optimization Research
 
-Research infrastructure for measuring provider-reported token usage and software quality in realistic coding-agent workflows.
+Research infrastructure for measuring weighted token cost and software quality in realistic coding-agent workflows. Weighted token cost (`fresh input + 0.1 × cached input + 6 × output`) is the repository's sole token metric; raw provider counters are calculation/audit telemetry only.
 
 ## Current evaluation portfolio
 

@@ -6,7 +6,7 @@ This page documents runner details. The maintained operator runbook is `docs/eva
 
 `scripts/run_codex_workflow_evaluation.py` runs one profile on one active multi-task sequence from `data/workflow-task-sequences.json`.
 
-The primary lane measures cumulative provider usage after model and tool state warm up:
+The primary lane measures weighted token cost after model and tool state warm up:
 
 1. merge every qualified regression against the same pinned fixed snapshot before provider execution;
 2. conceal the fixed snapshot and commit the composite broken tree as one parentless model-facing root;
@@ -14,7 +14,7 @@ The primary lane measures cumulative provider usage after model and tool state w
 4. capture its provider events and cumulative source checkpoint without running a controller verifier;
 5. resume the same Codex thread with each later prompt while preserving source, tool, index, cache, profile, and agent state;
 6. after every prompt completes, run the complete controller verifier suite once against the cumulative final repository; active Lifecycle V1 executes three controller-only affected-component compile commands and then one frozen project-wide compile command, while historical V2/V3/V4 protocols retain their frozen acceptance contracts;
-7. extract cumulative provider tokens and retain the ordered checkpoints plus final diff.
+7. calculate weighted token cost from cumulative provider telemetry and retain the ordered checkpoints plus final diff.
 
 Future prompts remain controller-only until their turn. Future regression code is present from lane start. The model container does not mount task fixtures, seed patches, controller Git objects, or verifier scripts. Controller verifier hashes are checked during the lane, but functional verification provides no intermediate feedback and never truncates a lane.
 

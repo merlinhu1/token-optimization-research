@@ -22,4 +22,4 @@ Historical papers and audit receipts remain for provenance. Their results must n
 4. Run the corrected baseline lanes first, serially, and publish their accepted evidence.
 5. Freeze compatible treatment protocols only after the corrected baseline/pilot gates pass.
 6. Run future treatments only against the new corrected controls, retaining prompt/configuration hashes in every result.
-7. Keep weighted token cost as the primary outcome and correctness/quality as separate diagnostics.
+7. Use weighted token cost as the sole token metric and keep correctness/quality as separate diagnostics; never publish a raw-token comparison.

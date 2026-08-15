@@ -4,7 +4,7 @@
 
 Primary evidence is stored as append-only workflow-session records, with compact decision fields in `data/workflow-sessions.json` and recoverable evidence under `sources/evaluations/workflow-sessions/<session-id>/`.
 
-The primary metric is cumulative provider-reported token use across a persistent software-engineering workflow. Monetary cost is out of scope.
+The sole token metric is weighted token cost across a persistent software-engineering workflow: `fresh input + 0.1 × cached input + 6 × output`. Raw provider counters are calculation/audit telemetry, never result metrics. Monetary cost is out of scope.
 
 ## Core entities
 
@@ -52,7 +52,7 @@ When one runtime has an excluded attempt and the other does not, `replicate_inde
 Each new workflow record uses session `schema_version: 2` and contains:
 
 1. **Identity and scope** — session, study, sequence, profile, model condition, replicate, evidence stage, and frozen protocol.
-2. **Token use** — provider source, exposed token components, total provider tokens, reconstruction basis, and tokens per accepted task.
+2. **Token use** — weighted token cost, provider source, canonical formula, and internal component telemetry sufficient to audit the calculation.
 3. **Per-task outcomes** — task ID/order, operational exit, declared completion, retry count, structured verifier exit/pass, and accepted state.
 4. **Software quality** — tasks attempted/completed/passed, final verifier state, independent review status, quality score, and critical failures.
 5. **Execution integrity** — verifier-integrity result, treatment-isolation result, external-retrieval hits, and pass-through treatment-command hits.

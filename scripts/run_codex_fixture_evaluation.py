@@ -4843,11 +4843,8 @@ def main(argv: list[str]) -> int:
         "tool_isolation_audit_exit_code": audit_code,
         "accepted": codex_code == 0 and usage_code == 0 and verifier_code == 0 and audit_code == 0,
         "token_usage": {
-            "fresh_input_tokens": provider_usage.get("fresh_input_tokens"),
-            "cached_input_tokens": provider_usage.get("cached_input_tokens"),
-            "output_tokens": provider_usage.get("output_tokens"),
-            "reasoning_tokens": provider_usage.get("reasoning_tokens"),
-            "total_provider_tokens": provider_usage.get("total_provider_tokens"),
+            "weighted_token_cost": provider_usage.get("weighted_token_cost"),
+            "weighted_token_cost_formula": provider_usage.get("weighted_token_cost_formula"),
         },
         "run_dir": str(run_dir),
     }

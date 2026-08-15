@@ -38,8 +38,9 @@ steps, and the new rule would be weaker than the one it replaces rather than str
 - Decision (2026-08-15): Tools whose sample ranges overlap at the reported N are reported as
   indistinguishable at that N rather than ordered against each other. Ranking does not mean
   manufacturing precision the samples do not support.
-- Decision (2026-08-15): The point estimate for a protocol is the **median** of total
-  provider-reported tokens across a pre-registered set of N replicates, N odd and at least 3.
+- Decision (2026-08-15): The point estimate for a protocol is the **median weighted token cost**
+  across a pre-registered set of N replicates, N odd and at least 3. No raw-token estimate or
+  secondary token ranking is reported.
 - Decision (2026-08-15): N and the protocol identity are registered before the first provider call.
   All N retained replicates are published, including verifier failures and low-quality outputs.
 - Decision (2026-08-15): A replicate that fails before the provider boundary produced no

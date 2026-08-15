@@ -40,6 +40,7 @@ from scripts import run_opencode_openrouter_workflow_model_condition as opencode
 from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
+from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
 
 # Generic fixture sequence for framework-agnostic tests; Lifecycle V1 is the only
 # active generation since the v0 sweep.
@@ -63,7 +64,14 @@ def reference_session_record() -> dict:
     for path in sorted(ROOT.glob("sources/evaluations/archive/*/workflow-sessions-registry.json")):
         archived = json.loads(path.read_text()).get("sessions") or []
         if archived:
-            return copy.deepcopy(archived[0])
+            record = copy.deepcopy(archived[0])
+            usage = record["cumulative_token_usage"]
+            usage["weighted_token_cost"] = weighted_token_cost(usage)
+            usage["weighted_token_cost_formula"] = WEIGHTED_TOKEN_COST_FORMULA
+            usage.pop("tokens_per_accepted_task", None)
+            if "sample_plan" in record:
+                record["sample_plan"]["estimator"] = "median-weighted-token-cost"
+            return record
     raise unittest.SkipTest("no session record in the live registry or any archive")
 
 
@@ -229,6 +237,7 @@ class CodexUsageAccountingTest(unittest.TestCase):
         self.assertEqual(summary["cache_write_tokens"], 0)
         self.assertEqual(summary["output_tokens"], 20)
         self.assertEqual(summary["reasoning_tokens"], 7)
+        self.assertEqual(summary["weighted_token_cost"], 190.0)
         codex_usage = summary["codex_usage"]
         self.assertEqual(codex_usage["accounting_mode"], "final-cumulative-total-per-thread")
         self.assertEqual(len(codex_usage["usage_blocks"]), 2)
@@ -259,6 +268,7 @@ class CodexUsageAccountingTest(unittest.TestCase):
         self.assertEqual(summary["fresh_input_tokens"], 30)
         self.assertEqual(summary["cached_input_tokens"], 120)
         self.assertEqual(summary["output_tokens"], 15)
+        self.assertEqual(summary["weighted_token_cost"], 132.0)
 
     def test_resumed_thread_rejects_decreasing_cumulative_counters(self) -> None:
         events = self.thread_usage(
@@ -2494,7 +2504,7 @@ class VerifierContractTest(unittest.TestCase):
             strict_branch["then"]["properties"]["cumulative_token_usage"]["required"],
         )
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
-        self.assertEqual(registry["primary_metric"], "cumulative provider-reported workflow tokens")
+        self.assertEqual(registry["primary_metric"], "weighted_token_cost")
         for session in registry["sessions"]:
             self.assertNotIn("estimated_cost_usd", session["cumulative_token_usage"])
             self.assertNotIn("pricing_basis", session["cumulative_token_usage"])
@@ -2505,6 +2515,39 @@ class VerifierContractTest(unittest.TestCase):
             )
         for rel in ("AGENTS.md", "data/evaluation-profiles.json"):
             self.assertNotIn("provider-billed", (ROOT / rel).read_text(), rel)
+
+    def test_weighted_token_cost_is_the_sole_token_metric(self) -> None:
+        self.assertEqual(
+            weighted_token_cost({
+                "fresh_input_tokens": 100,
+                "cached_input_tokens": 200,
+                "output_tokens": 10,
+            }),
+            180.0,
+        )
+        self.assertIsNone(weighted_token_cost({"fresh_input_tokens": 1}))
+        self.assertIn("sole token evaluation metric", (ROOT / "AGENTS.md").read_text())
+        for sequence in active_lifecycle_v1_sequences():
+            self.assertEqual(sequence["primary_metric"], "weighted_token_cost")
+
+        panel_usage = current_panel.summed_usage([
+            {"cumulative_token_usage": {
+                "fresh_input_tokens": 10,
+                "cached_input_tokens": 20,
+                "output_tokens": 2,
+                "reasoning_tokens": 1,
+            }},
+            {"cumulative_token_usage": {
+                "fresh_input_tokens": 5,
+                "cached_input_tokens": 10,
+                "output_tokens": 1,
+                "reasoning_tokens": 0,
+            }},
+        ])
+        self.assertEqual(panel_usage, {
+            "weighted_token_cost": 36.0,
+            "formula": WEIGHTED_TOKEN_COST_FORMULA,
+        })
         events = [
             {
                 "type": "turn.completed",
@@ -2528,6 +2571,11 @@ class VerifierContractTest(unittest.TestCase):
         self.assertNotIn("estimated_cost_usd", token_requirements)
         self.assertNotIn("estimated_cost_usd", template["token_usage"])
         self.assertNotIn("pricing_basis", template["token_usage"])
+        self.assertEqual(
+            token_requirements,
+            ["measurement_source", "weighted_token_cost", "weighted_token_cost_formula"],
+        )
+        self.assertNotIn("total_provider_tokens", template["token_usage"])
         self.assertIn("provider-reported", template["agent"]["usage_accounting"])
         self.assertRegex(template["evaluation_id"], r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
@@ -2694,7 +2742,7 @@ class PublishedSchemaGateTest(unittest.TestCase):
 
     def test_registry_pass_still_gates_shape_when_identity_skips_revalidation(self) -> None:
         """validate_structured_session_identity skips a repeat schema check; the loop must still catch."""
-        registry = {"schema_version": 1, "primary_metric": "cumulative provider-reported workflow tokens",
+        registry = {"schema_version": 1, "primary_metric": "weighted_token_cost",
                     "sessions": [reference_session_record()]}
         profiles = {
             profile["id"]: profile
@@ -2744,7 +2792,7 @@ class PublishedSchemaGateTest(unittest.TestCase):
             "plan_id": plan_id,
             "planned_replicates": n,
             "registered_on": "2026-08-15",
-            "estimator": "median-total-provider-tokens",
+            "estimator": "median-weighted-token-cost",
             **over,
         }
         return record
@@ -2790,7 +2838,7 @@ class PublishedSchemaGateTest(unittest.TestCase):
         self.assertIn("sample_plan", v2["then"]["required"])
         self.assertEqual(
             schema["properties"]["sample_plan"]["properties"]["estimator"]["const"],
-            "median-total-provider-tokens",
+            "median-weighted-token-cost",
         )
 
     def test_registry_summaries_are_generated_and_current(self) -> None:
@@ -3715,7 +3763,7 @@ raise SystemExit(1)
                 "plan_id": "unit-sample-plan",
                 "planned_replicates": 3,
                 "registered_on": "2026-08-15",
-                "estimator": "median-total-provider-tokens",
+                "estimator": "median-weighted-token-cost",
             },
             "frozen_protocol": frozen_protocol,
             "baseline_pool": {
@@ -3772,7 +3820,13 @@ raise SystemExit(1)
                 "time_budget_seconds": 1,
             },
             "state_policy": {"reset_before_session": [], "persist_between_tasks": []},
-            "cumulative_token_usage": {"measurement_source": "unit", "total_provider_tokens": None, "accounting_basis": "unit-test provider usage"},
+            "cumulative_token_usage": {
+                "measurement_source": "unit",
+                "total_provider_tokens": None,
+                "weighted_token_cost": None,
+                "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
+                "accounting_basis": "unit-test weighted usage",
+            },
             "per_task_results": [{
                 "task_id": "task-1",
                 "task_alias": "task-01",
@@ -3970,7 +4024,7 @@ raise SystemExit(1)
                 baseline["artifacts"] = {}
             sessions.insert(0, baseline)
         validate_repository.validate_workflow_sessions(
-            {"schema_version": 1, "primary_metric": "cumulative provider-reported workflow tokens", "sessions": sessions},
+            {"schema_version": 1, "primary_metric": "weighted_token_cost", "sessions": sessions},
             {"unit-sequence"},
             {"fixtures": [{"id": "unit-fixture"}]},
             {
@@ -4009,7 +4063,7 @@ raise SystemExit(1)
             validate_repository.validate_workflow_sessions(
                 {
                     "schema_version": malformed,
-                    "primary_metric": "cumulative provider-reported workflow tokens",
+                    "primary_metric": "weighted_token_cost",
                     "sessions": [],
                 },
                 set(),
@@ -4081,6 +4135,8 @@ raise SystemExit(1)
             "output_tokens": 1,
             "reasoning_tokens": 1,
             "total_provider_tokens": 10,
+            "weighted_token_cost": 11.4,
+            "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
         }
         self.assertTrue(validate_repository.provider_usage_valid(usage))
         legacy_null = copy.deepcopy(usage)
@@ -4125,7 +4181,7 @@ raise SystemExit(1)
             )
             errors = self.structured_session_errors(session)
             self.assertTrue(any("replicate_index" in error and "integer" in error for error in errors), errors)
-            self.assertTrue(any("canonical non-boolean provider-token usage" in error for error in errors), errors)
+            self.assertTrue(any("complete provider telemetry and exact weighted-token arithmetic" in error for error in errors), errors)
 
     def test_structured_session_identity_record_accepts_matching_payload(self) -> None:
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -4203,6 +4259,8 @@ raise SystemExit(1)
                 output_tokens=100,
                 reasoning_tokens=50,
                 total_provider_tokens=1000,
+                weighted_token_cost=1140.0,
+                weighted_token_cost_formula=WEIGHTED_TOKEN_COST_FORMULA,
             )
             session["per_task_results"] = [{
                 "task_id": "task-1",
@@ -4286,8 +4344,8 @@ raise SystemExit(1)
             original_run = json.loads(run_path.read_text())
             mutations = (
                 lambda payload: payload["token_usage"].__setitem__(
-                    "total_provider_tokens",
-                    payload["token_usage"]["total_provider_tokens"] + 1,
+                    "weighted_token_cost",
+                    payload["token_usage"]["weighted_token_cost"] + 1,
                 ),
                 lambda payload: payload.__setitem__("accepted", False),
                 lambda payload: payload.__setitem__("per_task_results", []),
@@ -4404,10 +4462,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
 
     def test_expected_session_binding_accepts_root_relative_frozen_protocol(self) -> None:
-        protocol_path = Path(
-            "sources/evaluations/protocols/"
-            "fastify-lifecycle-sequence-v1-baseline-bare-codex-20dd392eb826.json"
-        )
+        protocol_path = current_protocol_path("fastify-lifecycle-sequence-v1").relative_to(ROOT)
         binding = matrix.expected_session_binding_for_protocol(
             sequence_id="fastify-lifecycle-sequence-v1",
             profile_id="baseline-bare-codex",

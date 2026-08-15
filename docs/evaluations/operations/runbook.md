@@ -69,14 +69,14 @@ python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-high --workflow-model gpt-5.6-sol --workflow-reasoning-effort high --prepare-only
 ```
 
-Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median of total provider tokens with its observed spread. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample.
+Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample.
 
 ## Active sequence details
 
 ### `fastify-lifecycle-sequence-v1`
 
 - Fixture: `medium-fastify-fastify`
-- Primary metric: cumulative provider-reported workflow tokens
+- Primary metric: weighted_token_cost
 - Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.
 - Final project compile: `find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js`
 
@@ -89,7 +89,7 @@ Execute the registered sample plan in full: N odd replicates per protocol, all r
 ### `beets-lifecycle-sequence-v1`
 
 - Fixture: `medium-beetbox-beets`
-- Primary metric: cumulative provider-reported workflow tokens
+- Primary metric: weighted_token_cost
 - Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. A controller-only affected-component compile command determines evaluator pass/fail and is not disclosed as the agent task objective.
 - Final project compile: `uv run --offline --frozen python -c "import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]"`
 

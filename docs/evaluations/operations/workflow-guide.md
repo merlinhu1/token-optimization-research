@@ -26,7 +26,7 @@ Use this for primary evidence about individual tools and compatibility-safe stac
 6. Preserve indexes, caches, generated config, memory, and agent/tool home across tasks unless the sequence explicitly models a reset.
 7. Run every concealed task verifier after the last task, without short-circuiting, and emit structured per-task outcomes.
 8. Derive `tasks_passed` from those structured outcomes.
-9. Aggregate cumulative provider-reported tokens across all tasks; do not estimate money.
+9. Calculate and compare weighted token cost across all tasks; never report a raw-token total and do not estimate money.
 10. Write the compact bundle and append metadata to `data/workflow-sessions.json`; add an independent source-quality review only as optional diagnostic context.
 
 Minimum token condition: treatment and baseline are compatible, operationally valid provider samples. Report the cumulative token delta as the primary outcome and structured correctness/quality alongside it without gating or replacing either sample.

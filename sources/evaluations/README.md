@@ -6,6 +6,7 @@ This directory contains Lifecycle V1 fixture implementations, frozen execution c
 - `protocols/` — the two corrected bare-Codex no-result contracts eligible for the future rerun.
 - `workflow-sessions/` — active provider-backed compact workflow evidence. It is currently empty because the prior corpus was archived before rerun.
 - `archive/lifecycle-v1-pre-corrected-prompts-20260813/` — immutable pre-correction sessions, comparisons, protocols, campaign audits, and archive-only registry metadata.
+- `archive/lifecycle-v1-raw-metric-protocols-20260815/` — two unexecuted protocols superseded when weighted token cost became the sole metric.
 - `audits/` — current qualification, invalidation, archive, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
