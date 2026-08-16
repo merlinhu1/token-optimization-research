@@ -10,7 +10,7 @@ This directory contains Lifecycle V1 fixture implementations, frozen execution c
 - `audits/` — current qualification, invalidation, archive, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
-The active registry contains 3 accepted provider-backed sessions: 3 baselines. By sequence: 2 `beets-lifecycle-sequence-v1`, 1 `fastify-lifecycle-sequence-v1`. By runtime: Codex CLI 3.
+The active registry contains 4 accepted provider-backed sessions: 4 baselines. By sequence: 2 `beets-lifecycle-sequence-v1`, 2 `fastify-lifecycle-sequence-v1`. By runtime: Codex CLI 4.
 
 Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions).
 <!-- /generated:corpus-summary -->
