@@ -12,9 +12,9 @@ The active portfolio is **Lifecycle V1** for two medium-project lanes. It has pa
 | `beets-lifecycle-sequence-v1` | Beets | feature → behavior-preserving refactor → code review |
 
 <!-- generated:corpus-summary -->
-The active registry contains 4 accepted provider-backed sessions: 4 baselines. By sequence: 2 `beets-lifecycle-sequence-v1`, 2 `fastify-lifecycle-sequence-v1`. By runtime: Codex CLI 4.
+The active registry holds no provider-backed sessions. A corrected task family mints new qualification and protocol identities, so the prior corpus is archived and fresh execution is required before any result claim.
 
-Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions).
+Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions).
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
