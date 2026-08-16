@@ -2923,6 +2923,49 @@ class PublishedSchemaGateTest(unittest.TestCase):
                 self.assertIn("correct it in code", body)
         self.assertEqual(checked, len(giveaways))
 
+    def test_trajectory_replay_measures_volume_without_sampling(self) -> None:
+        """The zero-variance instrument: same trajectory, tool is the only difference."""
+        from scripts import replay_trajectory_volume as replay
+
+        trajectory = {
+            "schema_version": 1,
+            "source_session": "s",
+            "command_count": 2,
+            "commands": [
+                {"index": 0, "command": "rg foo", "exit_code": 0, "output": "x" * 1000},
+                {"index": 1, "command": "pytest", "exit_code": 1, "output": "y" * 3000},
+            ],
+        }
+
+        bare = replay.measure(trajectory, None, "bare")
+        self.assertEqual(bare["baseline_characters"], 4000)
+        self.assertEqual(bare["admitted_ratio"], 1.0)
+
+        halved = replay.measure(trajectory, "head -c 500", "halved")
+        self.assertEqual(halved["admitted_characters"], 1000)
+        self.assertEqual(halved["admitted_ratio"], 0.25)
+        # The baseline is a property of the trajectory, so configurations stay comparable.
+        self.assertEqual(halved["baseline_characters"], bare["baseline_characters"])
+
+        # A filter that crashes has compressed nothing; scoring its empty stdout as a
+        # perfect reduction would rank a broken tool first.
+        with self.assertRaises(SystemExit):
+            replay.measure(trajectory, "exit 3", "broken")
+
+    def test_trajectory_replay_states_what_it_cannot_measure(self) -> None:
+        """Holding the trajectory fixed excludes search efficiency, and must say so."""
+        from scripts import replay_trajectory_volume as replay
+
+        doc = replay.__doc__ or ""
+        self.assertIn("does not measure", doc.lower())
+        result = replay.measure(
+            {"commands": [{"index": 0, "command": "c", "exit_code": 0, "output": "z"}]},
+            None,
+            "bare",
+        )
+        self.assertIn("not which commands", result["measures"])
+        self.assertIn("none", result["variance"])
+
     def test_published_decomposition_reports_both_factors(self) -> None:
         """Both factors are published, including when they move against each other."""
         from scripts import update_registry_summaries as summaries
