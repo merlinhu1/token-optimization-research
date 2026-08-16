@@ -2495,6 +2495,45 @@ def comparison_baseline_matches_treatment(
     )
 
 
+def validate_cost_decomposition(sessions: list[dict], errors: list[str]) -> None:
+    """Gate the steps x cost-per-step decomposition against the metric it factors.
+
+    The decomposition is only worth publishing if it actually reconstructs the reported
+    weighted cost, so a per-step figure that disagrees with cost/steps is a defect rather
+    than a second opinion. Records whose runtime does not report steps are left alone;
+    a partially filled decomposition is not.
+    """
+    for session in sessions:
+        usage = session.get("cumulative_token_usage")
+        if not isinstance(usage, dict):
+            continue
+        sid = session.get("session_id") or "<unknown>"
+        steps = usage.get("agent_steps")
+        per_step = usage.get("weighted_token_cost_per_step")
+        total = usage.get("weighted_token_cost")
+        if steps is None and per_step is None:
+            continue
+        if not isinstance(steps, int) or steps <= 0:
+            errors.append(f"workflow session {sid} reports a cost decomposition without a positive agent_steps")
+            continue
+        if not isinstance(per_step, (int, float)):
+            errors.append(f"workflow session {sid} reports agent_steps without weighted_token_cost_per_step")
+            continue
+        if not isinstance(total, (int, float)):
+            errors.append(f"workflow session {sid} reports a cost decomposition without a weighted_token_cost to factor")
+            continue
+        if abs(per_step * steps - total) > max(1.0, abs(total) * 1e-6) + steps * 0.05:
+            errors.append(
+                f"workflow session {sid} cost decomposition does not reconstruct the metric: "
+                f"{per_step} * {steps} != {total}"
+            )
+        types = usage.get("agent_step_types")
+        if isinstance(types, dict) and types and sum(types.values()) != steps:
+            errors.append(
+                f"workflow session {sid} agent_step_types sum to {sum(types.values())}, not agent_steps {steps}"
+            )
+
+
 def validate_sample_plans(sessions: list[dict], errors: list[str]) -> None:
     """Enforce the pre-registered median sample (ADR 0007).
 
@@ -2566,6 +2605,7 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
         if isinstance(session, dict) and (session.get("session_id") or session.get("id"))
     }
     validate_sample_plans([s for s in sessions if isinstance(s, dict)], errors)
+    validate_cost_decomposition([s for s in sessions if isinstance(s, dict)], errors)
     seen: set[str] = set()
     for index, session in enumerate(sessions):
         if not isinstance(session, dict):

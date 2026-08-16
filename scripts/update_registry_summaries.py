@@ -60,6 +60,52 @@ def archived_generations() -> list[tuple[str, int]]:
     return generations
 
 
+def _spread(values: list[float]) -> float | None:
+    """Spread of a sample as a percentage of its smallest member."""
+    if len(values) < 2 or min(values) <= 0:
+        return None
+    return (max(values) - min(values)) / min(values) * 100
+
+
+def render_decomposition(sessions: list[dict]) -> str:
+    """Report weighted cost as steps x cost per step, per sample plan.
+
+    Weighted token cost remains the reported metric. Publishing its two factors is what
+    lets a reader see whether a difference came from carrying less context per step or
+    from taking fewer steps, and which of the two a given sample is precise enough to
+    resolve: per-step cost reproduces closely across replicates, step count does not.
+    """
+    plans: dict[str, list[dict]] = collections.defaultdict(list)
+    for session in sessions:
+        usage = session.get("cumulative_token_usage") or {}
+        plan = (session.get("sample_plan") or {}).get("plan_id")
+        if plan and isinstance(usage.get("agent_steps"), int):
+            plans[plan].append(usage)
+    if not plans:
+        return ""
+    parts: list[str] = []
+    for plan_id, usages in sorted(plans.items()):
+        steps = [float(u["agent_steps"]) for u in usages]
+        per_step = [float(u["weighted_token_cost_per_step"]) for u in usages if u.get("weighted_token_cost_per_step")]
+        fragment = (
+            f"`{plan_id}` holds {_plural(len(usages), 'replicate')} "
+            f"({', '.join(str(int(s)) for s in steps)} agent steps"
+        )
+        step_spread = _spread(steps)
+        cost_spread = _spread(per_step) if len(per_step) == len(usages) else None
+        if step_spread is not None:
+            fragment += f", spread {step_spread:.1f}%"
+        fragment += ")"
+        if cost_spread is not None:
+            fragment += f"; weighted cost per step spread {cost_spread:.1f}%"
+        parts.append(fragment)
+    return (
+        "Weighted token cost decomposes as agent steps times weighted cost per step. "
+        + "; ".join(parts)
+        + "."
+    )
+
+
 def render_summary() -> str:
     doc = json.loads(REGISTRY.read_text())
     sessions = doc.get("sessions") or []
@@ -102,6 +148,9 @@ def render_summary() -> str:
         f"The active registry contains {_plural(len(sessions), 'accepted provider-backed session')}: "
         f"{role_text}. By sequence: {seq_text}. By runtime: {runtime_text}."
     ]
+    decomposition = render_decomposition(sessions)
+    if decomposition:
+        lines.append(decomposition)
     if archives:
         detail = "; ".join(
             f"`{name}` ({_plural(count, 'session')})" for name, count in archives

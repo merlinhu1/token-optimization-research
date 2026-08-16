@@ -25,9 +25,19 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+    from scripts.token_metrics import (
+        AGENT_STEP_DEFINITION,
+        WEIGHTED_TOKEN_COST_FORMULA,
+        weighted_token_cost,
+        weighted_token_cost_per_step,
+    )
 except ImportError:
-    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+    from token_metrics import (  # type: ignore[no-redef]
+        AGENT_STEP_DEFINITION,
+        WEIGHTED_TOKEN_COST_FORMULA,
+        weighted_token_cost,
+        weighted_token_cost_per_step,
+    )
 
 TOKEN_KEYS = {
     "input_tokens",
@@ -226,9 +236,15 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         total_provider_tokens = (input_tokens or 0) + (output_tokens or 0)
 
     event_types: dict[str, int] = {}
+    agent_step_types: dict[str, int] = {}
     for event in events:
         event_type = str(event.get("type") or "unknown")
         event_types[event_type] = event_types.get(event_type, 0) + 1
+        if event_type == "item.completed":
+            item = event.get("item")
+            item_type = str((item or {}).get("type") or "unknown")
+            agent_step_types[item_type] = agent_step_types.get(item_type, 0) + 1
+    agent_steps = sum(agent_step_types.values())
 
     warnings = list(accounting_warnings)
     if not blocks:
@@ -255,6 +271,18 @@ def build_summary(events_path: Path) -> dict[str, Any]:
             "output_tokens": output_tokens,
         }),
         "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
+        # Decomposition of the metric above, not a competing metric: step count is
+        # where trajectory nondeterminism lands, per-step cost is where context
+        # compression lands, and the product is the reported weighted cost.
+        "agent_steps": agent_steps,
+        "agent_step_definition": AGENT_STEP_DEFINITION,
+        "agent_step_types": agent_step_types,
+        "weighted_token_cost_per_step": weighted_token_cost_per_step({
+            "fresh_input_tokens": fresh_input_tokens,
+            "cached_input_tokens": cached_input_tokens,
+            "output_tokens": output_tokens,
+            "agent_steps": agent_steps,
+        }),
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "codex_usage": {

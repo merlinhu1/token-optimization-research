@@ -754,6 +754,38 @@
         "weighted_token_cost_formula": {
           "const": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens"
         },
+        "agent_steps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "Completed agent items in the session; the step factor of the weighted-cost decomposition."
+        },
+        "agent_step_definition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "agent_step_types": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "weighted_token_cost_per_step": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "description": "weighted_token_cost divided by agent_steps; the context factor of the decomposition. Diagnostic only -- weighted_token_cost remains the sole reported metric."
+        },
         "provider_usage_details": {
           "description": "Lossless normalized provider token-bearing fields and accounting provenance. Cache-write tokens are retained here and as cache_write_tokens, but are already included in fresh_input_tokens.",
           "type": [

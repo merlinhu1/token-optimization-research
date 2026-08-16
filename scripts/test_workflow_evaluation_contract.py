@@ -40,7 +40,11 @@ from scripts import run_opencode_openrouter_workflow_model_condition as opencode
 from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
-from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+from scripts.token_metrics import (
+    WEIGHTED_TOKEN_COST_FORMULA,
+    weighted_token_cost,
+    weighted_token_cost_per_step,
+)
 
 # Generic fixture sequence for framework-agnostic tests; Lifecycle V1 is the only
 # active generation since the v0 sweep.
@@ -2517,6 +2521,46 @@ class VerifierContractTest(unittest.TestCase):
         for rel in ("AGENTS.md", "data/evaluation-profiles.json"):
             self.assertNotIn("provider-billed", (ROOT / rel).read_text(), rel)
 
+    def test_cost_per_step_factors_the_metric_without_replacing_it(self) -> None:
+        usage = {
+            "fresh_input_tokens": 100,
+            "cached_input_tokens": 200,
+            "output_tokens": 10,
+            "agent_steps": 4,
+        }
+        self.assertEqual(weighted_token_cost(usage), 180.0)
+        self.assertEqual(weighted_token_cost_per_step(usage), 45.0)
+        # A decomposition of nothing is not a number, and neither is division by no steps.
+        self.assertIsNone(weighted_token_cost_per_step({**usage, "agent_steps": 0}))
+        self.assertIsNone(weighted_token_cost_per_step({**usage, "agent_steps": None}))
+        self.assertIsNone(weighted_token_cost_per_step({"agent_steps": 4}))
+        # The sequence-level metric must stay the undecomposed weighted cost.
+        for sequence in active_lifecycle_v1_sequences():
+            self.assertEqual(sequence["primary_metric"], "weighted_token_cost")
+
+    def test_cost_decomposition_must_reconstruct_the_reported_metric(self) -> None:
+        def errors_for(usage: dict) -> list[str]:
+            found: list[str] = []
+            validate_repository.validate_cost_decomposition(
+                [{"session_id": "s", "cumulative_token_usage": usage}], found
+            )
+            return found
+
+        consistent = {
+            "weighted_token_cost": 292473.2,
+            "agent_steps": 40,
+            "weighted_token_cost_per_step": 7311.8,
+            "agent_step_types": {"agent_message": 16, "command_execution": 20, "file_change": 4},
+        }
+        self.assertEqual(errors_for(consistent), [])
+        # Runtimes that report no steps are exempt; half a decomposition is not.
+        self.assertEqual(errors_for({"weighted_token_cost": 1.0}), [])
+        self.assertTrue(errors_for({**consistent, "weighted_token_cost_per_step": None}))
+        self.assertTrue(errors_for({**consistent, "agent_steps": 0}))
+        # A per-step figure that disagrees with cost/steps is a defect, not a second opinion.
+        self.assertTrue(errors_for({**consistent, "weighted_token_cost_per_step": 1000.0}))
+        self.assertTrue(errors_for({**consistent, "agent_step_types": {"agent_message": 1}}))
+
     def test_weighted_token_cost_is_the_sole_token_metric(self) -> None:
         self.assertEqual(
             weighted_token_cost({
@@ -2878,6 +2922,37 @@ class PublishedSchemaGateTest(unittest.TestCase):
                 # It must still demand a code correction rather than a written review.
                 self.assertIn("correct it in code", body)
         self.assertEqual(checked, len(giveaways))
+
+    def test_published_decomposition_reports_both_factors(self) -> None:
+        """Both factors are published, including when they move against each other."""
+        from scripts import update_registry_summaries as summaries
+
+        def session(plan: str, steps: int, cost: float) -> dict:
+            return {
+                "sample_plan": {"plan_id": plan},
+                "cumulative_token_usage": {
+                    "agent_steps": steps,
+                    "weighted_token_cost": cost,
+                    "weighted_token_cost_per_step": round(cost / steps, 1),
+                },
+            }
+
+        # Real Beets replicates: 1.9% apart in total, because a 17.5% step rise was
+        # cancelled by a 15.3% per-step fall. A total alone would hide both.
+        body = summaries.render_decomposition(
+            [session("sample-beets", 40, 292473.2), session("sample-beets", 47, 298045.8)]
+        )
+        self.assertIn("40, 47 agent steps", body)
+        self.assertIn("spread 17.5%", body)
+        self.assertIn("weighted cost per step spread 15.3%", body)
+
+        # Runtimes without step telemetry contribute nothing rather than a false zero.
+        self.assertEqual(summaries.render_decomposition([{"sample_plan": {"plan_id": "p"}}]), "")
+        self.assertEqual(summaries.render_decomposition([]), "")
+        # A single replicate has a step count but no spread to report.
+        single = summaries.render_decomposition([session("sample-x", 12, 1200.0)])
+        self.assertIn("12 agent steps", single)
+        self.assertNotIn("spread", single)
 
     def test_registry_summaries_are_generated_and_current(self) -> None:
         """Registry-derived prose is generated, not hand-reconciled, and drift fails the gate."""
