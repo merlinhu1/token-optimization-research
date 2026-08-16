@@ -260,19 +260,19 @@ def operational_retry_budget(
     if (
         profile_id == "baseline-bare-codex"
         and replicate_index > 0
-        and generation == "lifecycle-v1"
+        and generation in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
     ):
         return 0
     if (
         profile_id == "runtime-opencode-codex-product-v1"
         and replicate_index in OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS
-        and generation == "lifecycle-v1"
+        and generation in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
     ):
         return 0
     if (
         profile_id == "baseline-claude-code-no-mcp"
         and replicate_index == 0
-        and generation == "lifecycle-v1"
+        and generation in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
     ):
         return 0
     return MAX_CODEX_OPERATIONAL_RETRIES
@@ -372,21 +372,26 @@ def sequence_doc() -> dict[str, Any]:
 
 
 def load_sequence(sequence_id: str) -> dict[str, Any]:
+    """Return a registered sequence, active or retired.
+
+    Retired families stay loadable because historical campaign machinery still refers to
+    them by name. Loading is not permission to run: the treatment gate below requires an
+    active status, so a superseded family cannot reach a paid launch through this door.
+    """
     for seq in sequence_doc().get("sequences", []):
         if (
             seq.get("id") == sequence_id
-            and seq.get("status") == "active"
-            and seq.get("task_family_generation") == "lifecycle-v1"
+            and seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
         ):
             return seq
-    raise KeyError(f"unknown active Lifecycle V1 workflow sequence {sequence_id}")
+    raise KeyError(f"unknown workflow sequence {sequence_id}")
 
 
 def active_sequence_ids() -> list[str]:
     return [
         seq["id"]
         for seq in sequence_doc().get("sequences", [])
-        if seq.get("status") == "active" and seq.get("task_family_generation") == "lifecycle-v1"
+        if seq.get("status") == "active" and seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
     ]
 
 
@@ -524,7 +529,7 @@ def canonical_protocol_id(
         root=root,
     )
     baseline = baseline_descriptor or baseline_protocol_descriptor(seq, root)
-    if seq.get("task_family_generation") == "lifecycle-v1":
+    if seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS:
         baseline = {
             key: value
             for key, value in baseline.items()
@@ -687,7 +692,7 @@ def current_lifecycle_v1_protocol(
                 selected_execution=selected_execution.get("descriptor"),
             )
             and fixture_block.get("sequence_id") == seq.get("id")
-            and fixture_block.get("task_family_generation") == "lifecycle-v1"
+            and fixture_block.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
             and fixture_block.get("fixture_id") == seq.get("fixture_id")
             and fixture_block.get("snapshot") == seq.get("initial_snapshot", {}).get("commit")
             and fixture_block.get("qualification_path") == qualification_rel
@@ -1079,7 +1084,7 @@ def require_lifecycle_v1_baseline_replicate(
     """
     if prepare_only or profile_id != "baseline-bare-codex":
         return
-    if seq.get("task_family_generation") == "lifecycle-v1":
+    if seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS:
         if type(replicate_index) is not int or replicate_index < 0:
             raise ValueError("Lifecycle V1 paid baselines require a non-negative integer replicate_index")
 
@@ -1094,8 +1099,10 @@ def lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple
     every campaign without changing what any result meant.
     """
     generation = seq.get("task_family_generation")
-    if generation != "lifecycle-v1":
+    if generation not in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS:
         return False, f"unsupported task family generation: {generation!r}"
+    if seq.get("status") != "active":
+        return False, f"sequence is {seq.get('status')!r}, not an active production lane"
     gate = seq.get("mistake_gate")
     if not isinstance(gate, dict):
         return False, f"missing {generation} mistake gate"
@@ -1449,7 +1456,7 @@ def execution_condition_descriptor(
             })
         acceptance_materialization = (
             "controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
-            if seq.get("task_family_generation") == "lifecycle-v1"
+            if seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
             else "declared model-visible acceptance tests retained"
         )
         descriptor["runtime"]["isolation_policy"] = (
@@ -1961,7 +1968,7 @@ def reviewed_session_reuse_state(session: dict[str, Any] | None, root: Path = RO
         {},
     )
     verifier_visibility_valid = (
-        sequence_definition.get("task_family_generation") == "lifecycle-v1"
+        sequence_definition.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
         and leakage.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
         and leakage.get("model_visible_acceptance_asset_paths")
         == sequence_model_visible_acceptance_paths(sequence_definition)
@@ -2000,7 +2007,7 @@ def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, re
 def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], profile_id: str, replicate_index: int) -> dict[str, Any] | None:
     fingerprint = baseline_protocol_fingerprint(seq)
     if (
-        seq.get("task_family_generation") == "lifecycle-v1"
+        seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
         and profile_id != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
     ):
         canonical_baseline = find_canonical_baseline_record(registry, seq, replicate_index)
@@ -2110,7 +2117,7 @@ def standalone_opencode_control_authorized(
     return bool(
         authority.get("status") == "qualified-ready-for-provider-execution"
         and owner == expected_owner
-        and contract.get("task_family_generation") == "lifecycle-v1"
+        and contract.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
         and contract.get("sequence_order") == [
             "fastify-lifecycle-sequence-v1",
             "beets-lifecycle-sequence-v1",
@@ -2246,7 +2253,7 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
     protocol_fingerprint = baseline_protocol_fingerprint(seq)
     expected_protocol_identity: dict[str, Any] | None = None
     expected_selected_execution: dict[str, Any] | None = None
-    if seq.get("task_family_generation") == "lifecycle-v1":
+    if seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS:
         expected_protocol_identity, expected_protocol = current_lifecycle_v1_protocol(
             seq, seq["mistake_gate"], ROOT
         )
@@ -2888,7 +2895,7 @@ def profile_prompt_guidance(profile_id: str) -> str:
 
 def model_facing_profile_guidance(seq: dict[str, Any], profile_id: str) -> str:
     """Return only profile guidance that belongs in this generation's model prompt."""
-    if seq.get("task_family_generation") == "lifecycle-v1":
+    if seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS:
         return ""
     return profile_prompt_guidance(profile_id)
 
@@ -3993,7 +4000,7 @@ def require_claude_lifecycle_v1_matrix_launch(
     if (
         not prepare_only
         and profile_id == "baseline-claude-code-no-mcp"
-        and sequence.get("task_family_generation") == "lifecycle-v1"
+        and sequence.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
         and inherited_provider_production_lock_fd() is None
     ):
         raise ValueError(

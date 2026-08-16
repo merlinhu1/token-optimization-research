@@ -1,0 +1,14 @@
+diff --git a/lib/route.js b/lib/route.js
+index 290598cc..8e90bda0 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -365,8 +365,7 @@ function buildRouting (options) {
+         // any route insertion error created by fastify can be safely ignore
+         // because it only duplicate route for head
+         if (!context[kRouteByFastify]) {
+-          const methods = Array.isArray(opts.method) ? opts.method : [opts.method]
+-          const isDuplicatedRoute = methods.some(method => error.message.includes(`Method '${method}' already declared for route`))
++          const isDuplicatedRoute = error.message.includes(`Method '${opts.method}' already declared for route`)
+           if (isDuplicatedRoute) {
+             throw new FST_ERR_DUPLICATED_ROUTE(opts.method, opts.url)
+           }

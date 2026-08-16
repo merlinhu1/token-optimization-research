@@ -48,7 +48,7 @@ from scripts.token_metrics import (
 
 # Generic fixture sequence for framework-agnostic tests; Lifecycle V1 is the only
 # active generation since the v0 sweep.
-SEQUENCE_ID = "beets-lifecycle-sequence-v1"
+SEQUENCE_ID = "beets-lifecycle-sequence-v2"
 
 
 def registry_sessions() -> list[dict]:
@@ -135,7 +135,7 @@ def active_lifecycle_v1_sequences(document: dict | None = None) -> list[dict]:
         sequence
         for sequence in document.get("sequences", [])
         if sequence.get("status") == "active"
-        and sequence.get("task_family_generation") == "lifecycle-v1"
+        and sequence.get("task_family_generation") in validate_repository.SUPPORTED_TASK_FAMILY_GENERATIONS
     ]
 
 
@@ -374,37 +374,47 @@ class ClaudeInstructionMaterializationTest(unittest.TestCase):
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_active_lifecycle_sequences_cover_the_required_task_mix(self) -> None:
-        sequences = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
-        lifecycle = [
-            sequence
-            for sequence in sequences
-            if sequence.get("status") == "active"
-            and sequence.get("sequence_contract") == "feature-refactor-review"
-        ]
+        """The active family's declared contract must match the task classes it actually holds."""
+        sequences = active_lifecycle_v1_sequences()
         self.assertEqual(
-            [sequence["id"] for sequence in lifecycle],
-            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+            [sequence["id"] for sequence in sequences],
+            ["fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"],
         )
-        for sequence in lifecycle:
+        for sequence in sequences:
+            design = validate_repository.TASK_FAMILY_DESIGN[sequence["task_family_generation"]]
             ordered = sorted(sequence["tasks"], key=lambda task: task["order"])
-            expected_classes = [
-                "feature-implementation",
-                "behavior-preserving-refactor",
-                "code-review-correction",
-            ]
-            self.assertEqual([task["task_class"] for task in ordered], expected_classes)
-            self.assertTrue(all(task["id"].endswith("-v1") for task in ordered))
-            descriptor = runner.baseline_protocol_descriptor(sequence)
-            self.assertEqual(descriptor["sequence_contract"], "feature-refactor-review")
-            self.assertEqual([task["task_class"] for task in descriptor["tasks"]], expected_classes)
-            review_task = ordered[2]
-            self.assertEqual(review_task["review_patch_path"], "review-change.patch")
-            self.assertIn("review_patch_sha256", descriptor["tasks"][2])
-            self.assertNotIn("review_patch_sha256", descriptor["tasks"][0])
+            classes = [task["task_class"] for task in ordered]
+            with self.subTest(sequence=sequence["id"]):
+                if sequence["sequence_contract"] == "feature-refactor-review":
+                    self.assertEqual(
+                        classes,
+                        [
+                            "feature-implementation",
+                            "behavior-preserving-refactor",
+                            "code-review-correction",
+                        ],
+                    )
+                else:
+                    # A bounded series must stay uniform and plural, so that no single task
+                    # can carry the share of cost that made V1's review task dominate.
+                    self.assertEqual(set(classes), set(design["coding_task_classes"]))
+                    self.assertGreaterEqual(len(classes), 4)
+                self.assertTrue(all(task["id"].endswith(design["task_suffix"]) for task in ordered))
 
     def test_review_patch_is_disclosed_only_with_the_review_prompt(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        review_task = sorted(sequence["tasks"], key=lambda task: task["order"])[2]
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        review_tasks = [
+            task for task in sequence["tasks"] if task.get("task_class") == "code-review-correction"
+        ]
+        if not review_tasks:
+            # Bounded defect-repair families disclose no review patch at all. Assert the
+            # stronger property directly rather than exercising machinery on a task class
+            # this family does not contain.
+            for task in sequence["tasks"]:
+                task_dir = (ROOT / task["prompt_path"]).parent
+                self.assertFalse((task_dir / "review-change.patch").exists(), task["id"])
+            self.skipTest("active family declares no review task to disclose a patch with")
+        review_task = sorted(review_tasks, key=lambda task: task["order"])[-1]
         source_dir = (ROOT / review_task["prompt_path"]).parent
         with tempfile.TemporaryDirectory() as tmp:
             project = Path(tmp)
@@ -422,14 +432,21 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("## Proposed change under review", review)
         self.assertIn("diff --git", review)
 
-    def test_refactor_qualification_uses_controller_acceptance_boundaries(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+    def test_qualification_boundaries_prove_each_seed_regresses_and_repairs(self) -> None:
+        """Every task's boundary must show a real failure seeded and a real pass repaired."""
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         qualification = json.loads((ROOT / sequence["qualification_path"]).read_text())
-        boundary = next(item for item in qualification["cumulative_boundaries"] if item["task_id"] == "beets-lifecycle-refactor-v1")
-        self.assertNotIn("seeded_behavior_exit", boundary)
-        self.assertNotIn("seeded_structure_exit", boundary)
-        self.assertEqual(boundary["seeded_verifier_exit"], 1)
-        self.assertEqual(boundary["retained_verifier_exits"]["beets-lifecycle-refactor-v1"], 0)
+        boundaries = qualification["cumulative_boundaries"]
+        self.assertEqual(
+            sorted(item["task_id"] for item in boundaries),
+            sorted(task["id"] for task in sequence["tasks"]),
+        )
+        for boundary in boundaries:
+            with self.subTest(task=boundary["task_id"]):
+                self.assertNotIn("seeded_behavior_exit", boundary)
+                self.assertNotIn("seeded_structure_exit", boundary)
+                self.assertEqual(boundary["seeded_verifier_exit"], 1)
+                self.assertEqual(boundary["retained_verifier_exits"][boundary["task_id"]], 0)
         self.assertEqual(qualification["acceptance_visibility"], "controller-only-compile-plus-essential-smoke")
 
     def test_runbook_matches_active_lifecycle_contract(self) -> None:
@@ -719,7 +736,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertFalse(any("minimum is 5" in error for error in errors), errors)
 
     def test_active_concealed_paths_are_unique_to_the_controller(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         qualification_record = json.loads((ROOT / sequence["qualification_path"]).read_text())
         self.assertTrue(qualification_record["fixed_snapshot_model_concealed_paths_absent"])
         for task in sequence["tasks"]:
@@ -729,7 +746,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             self.assertTrue(task_record["fixed_snapshot_model_concealed_absent"], task_record)
 
     def test_feature_verifier_keeps_acceptance_commands_out_of_prompt(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         feature = sorted(sequence["tasks"], key=lambda task: task["order"])[0]
         prompt = (ROOT / feature["prompt_path"]).read_text()
         verifier = (ROOT / feature["verifier_command"]).read_text()
@@ -744,7 +761,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertNotIn("read_text", verifier)
 
     def test_refactor_verifier_does_not_require_undisclosed_parameter_names(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         refactor = sorted(sequence["tasks"], key=lambda task: task["order"])[1]
         verifier = (ROOT / refactor["verifier_command"]).read_text()
         self.assertNotIn("inspect.signature", verifier)
@@ -944,7 +961,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_opencode_openrouter_workflow_model_condition as launcher
 launcher.configure_runner(runner)
-seq = runner.load_sequence('fastify-lifecycle-sequence-v1')
+seq = runner.load_sequence('fastify-lifecycle-sequence-v2')
 baseline = runner.baseline_protocol_descriptor(seq)
 execution = runner.execution_condition_descriptor(seq, 'baseline-opencode-openrouter-no-mcp')
 assert baseline['baseline_profile']['profile_id'] == 'baseline-opencode-openrouter-no-mcp'
@@ -962,7 +979,7 @@ print('ok')
         args = argparse.Namespace(
             profile_id="baseline-opencode-openrouter-no-mcp",
             prepare_only=False,
-            sequence_id="fastify-lifecycle-sequence-v1",
+            sequence_id="fastify-lifecycle-sequence-v2",
             replicate_index=0,
             session_id="baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0",
         )
@@ -1003,7 +1020,7 @@ print('ok')
 
     def test_workflow_protocol_binds_task_and_matrix_controller_sources(self) -> None:
         descriptor = runner.execution_condition_descriptor(
-            runner.load_sequence("fastify-lifecycle-sequence-v1"),
+            runner.load_sequence("fastify-lifecycle-sequence-v2"),
             "runtime-opencode-codex-product-v1",
         )
         runtime = descriptor["runtime"]
@@ -1046,7 +1063,7 @@ print('ok')
         ):
             with self.assertRaisesRegex(ValueError, "provider launch readiness gate failed"):
                 runner.validate_protocol_for_run(
-                    runner.load_sequence("fastify-lifecycle-sequence-v1"),
+                    runner.load_sequence("fastify-lifecycle-sequence-v2"),
                     "retrieval-cartog-codex-product-v2",
                     args,
                 )
@@ -1780,7 +1797,7 @@ for line in sys.stdin:
         )
 
     def test_lifecycle_v1_protocol_id_ignores_noncausal_controller_provenance(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v2")
         original_descriptor = runner.baseline_protocol_descriptor(sequence)
         original_execution = runner.execution_condition_descriptor(sequence, "baseline-bare-codex", timeout_seconds_per_task=3600)
         original = runner.canonical_protocol_id(sequence, "baseline-bare-codex", baseline_descriptor=original_descriptor, selected_execution=original_execution)
@@ -2075,10 +2092,11 @@ class VerifierContractTest(unittest.TestCase):
         tasks = [
             task
             for sequence in document["sequences"]
-            if sequence.get("status") == "active" and sequence.get("task_family_generation") == "lifecycle-v1"
+            if sequence.get("status") == "active" and sequence.get("task_family_generation") in validate_repository.SUPPORTED_TASK_FAMILY_GENERATIONS
             for task in sequence["tasks"]
         ]
-        self.assertEqual(len(tasks), 6)
+        self.assertEqual(len(tasks), sum(len(s["tasks"]) for s in active_lifecycle_v1_sequences()))
+        self.assertGreaterEqual(len(tasks), 8)
         for task in tasks:
             verifier = (ROOT / task["verifier_command"]).read_text()
             self.assertIn('PROJECT_DIR="$(cd "$TASK_DIR/../.." && pwd)"', verifier)
@@ -3153,8 +3171,8 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         self.assertEqual(
             runner.active_sequence_ids(),
             [
-                "fastify-lifecycle-sequence-v1",
-                "beets-lifecycle-sequence-v1",
+                "fastify-lifecycle-sequence-v2",
+                "beets-lifecycle-sequence-v2",
             ],
         )
         with self.assertRaises(KeyError):
@@ -3165,31 +3183,34 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 / "sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/lifecycle-v1-terraform-invalidated-20260802.json"
             ).read_text()
         )
-        self.assertEqual(invalidation["active_lifecycle_v1_sequence_ids"], runner.active_sequence_ids())
+        # The archived audit froze the lanes active on 2026-08-02. It is evidence, not a
+        # mirror of today's portfolio, so it keeps naming the V1 sequences after V2
+        # superseded them.
+        self.assertEqual(
+            invalidation["active_lifecycle_v1_sequence_ids"],
+            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+        )
         self.assertFalse(invalidation["result_was_accepted_for_objective"])
         for artifact in invalidation["removed_artifacts"]:
             self.assertFalse((ROOT / artifact["path"]).exists())
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        self.assertTrue(all(task["id"].endswith("-v2") for task in sequence["tasks"]))
+        self.assertGreaterEqual(len(sequence["tasks"]), 4)
         self.assertEqual(
-            [task["id"] for task in sequence["tasks"]],
-            [
-                "beets-lifecycle-feature-v1",
-                "beets-lifecycle-refactor-v1",
-                "beets-lifecycle-review-v1",
-            ],
+            [task["order"] for task in sequence["tasks"]],
+            list(range(1, len(sequence["tasks"]) + 1)),
         )
-        self.assertEqual([task["order"] for task in sequence["tasks"]], [1, 2, 3])
 
     def test_active_sequences_bind_current_qualifications(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         self.assertRegex(
             Path(sequence["qualification_path"]).name,
-            r"^qualification-lifecycle-v1-\d{8}\.json$",
+            r"^qualification-lifecycle-v(?:1|2)-\d{8}\.json$",
         )
 
     def test_current_protocol_fingerprint_matches_runner(self) -> None:
-        sequence = runner.load_sequence("beets-lifecycle-sequence-v1")
-        protocol_path = current_protocol_path("beets-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
+        protocol_path = current_protocol_path("beets-lifecycle-sequence-v2")
         protocol = json.loads(protocol_path.read_text())
         descriptor = protocol["baseline_pool"]["descriptor"]
         expected = runner.baseline_protocol_fingerprint_from_descriptor(descriptor)
@@ -3476,8 +3497,8 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     @requires_populated_registry
     def test_v1_opencode_panels_use_accepted_ordinal_pair_names(self) -> None:
         sequence_ids = (
-            "fastify-lifecycle-sequence-v1",
-            "beets-lifecycle-sequence-v1",
+            "fastify-lifecycle-sequence-v2",
+            "beets-lifecycle-sequence-v2",
         )
         expected = (
             (
@@ -3785,7 +3806,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             try:
                 args = argparse.Namespace(
                     prepare_only=False,
-                    sequence_id="fastify-lifecycle-sequence-v1",
+                    sequence_id="fastify-lifecycle-sequence-v2",
                     profile_id="behavior-caveman",
                     replicate_index=0,
                 )
@@ -4087,7 +4108,7 @@ raise SystemExit(1)
                 accepted_for_execution=True,
                 accepted_for_objective=True,
             )
-            session["task_sequence"]["sequence_id"] = "fastify-lifecycle-sequence-v1"
+            session["task_sequence"]["sequence_id"] = "fastify-lifecycle-sequence-v2"
             leakage = session["task_sequence"]["leakage_controls"]
             leakage.pop("verifier_assets_model_visible")
             leakage["controller_verifier_scripts_and_canonical_copies_model_visible"] = False
@@ -4622,8 +4643,8 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
         sol_protocol_errors = [
             error for error in errors
             if any(protocol_id in error for protocol_id in (
-                "beets-lifecycle-sequence-v1-baseline-bare-codex-b76903081a2d",
-                "fastify-lifecycle-sequence-v1-baseline-bare-codex-3f3ce79ce469",
+                "beets-lifecycle-sequence-v2-baseline-bare-codex-b76903081a2d",
+                "fastify-lifecycle-sequence-v2-baseline-bare-codex-3f3ce79ce469",
                 "terraform-lifecycle-sequence-v0-baseline-bare-codex-8bba1cd949b1",
             ))
         ]
@@ -4631,7 +4652,7 @@ class ModelConditionLauncherContractTest(unittest.TestCase):
 
     def test_contract_refresher_renders_registered_model_condition_launcher(self) -> None:
         command = contract_refresh.runner_command(
-            {"id": "fastify-lifecycle-sequence-v1"},
+            {"id": "fastify-lifecycle-sequence-v2"},
             "baseline-bare-codex",
             ROOT / "sources/evaluations/protocols/sol-assisted.json",
             {
@@ -4658,9 +4679,9 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
 
     def test_expected_session_binding_accepts_root_relative_frozen_protocol(self) -> None:
-        protocol_path = current_protocol_path("fastify-lifecycle-sequence-v1").relative_to(ROOT)
+        protocol_path = current_protocol_path("fastify-lifecycle-sequence-v2").relative_to(ROOT)
         binding = matrix.expected_session_binding_for_protocol(
-            sequence_id="fastify-lifecycle-sequence-v1",
+            sequence_id="fastify-lifecycle-sequence-v2",
             profile_id="baseline-bare-codex",
             replicate_index=0,
             protocol_path=protocol_path,
@@ -4668,14 +4689,15 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         )
         self.assertEqual(binding["frozen_protocol"]["path"], protocol_path.as_posix())
 
-    def test_claude_lifecycle_v1_requires_serial_plan_before_lane_root(self) -> None:
+    def test_replication_requires_serial_plan_before_lane_root(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             lane_root = Path(tmp) / "lanes"
             result = subprocess.run(
                 [
                     sys.executable,
                     "scripts/run_sequential_workflow_matrix.py",
-                    "fastify-lifecycle-sequence-v1",
+                    "fastify-lifecycle-sequence-v2",
+                    "--replicate-index", "1",
                     "--max-parallel", "2",
                     "--workflow-model-condition-id", "claude-code-anthropic-opus-5-medium",
                     "--workflow-model", "claude-opus-5",
@@ -4691,7 +4713,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn(
-            "owner-authorized Claude Code Lifecycle V1 requires --max-parallel 1",
+            "owner-authorized current baseline replication requires --max-parallel 1",
             result.stderr + result.stdout,
         )
         self.assertFalse(lane_root.exists())
@@ -5004,7 +5026,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
     def test_lane_command_propagates_replicate_index_explicitly(self) -> None:
         cmd = matrix.workflow_lane_command(
-            sequence_id="fastify-lifecycle-sequence-v1",
+            sequence_id="fastify-lifecycle-sequence-v2",
             profile_id="behavior-caveman",
             protocol=Path("sources/evaluations/protocols/caveman.json"),
             replicate_index=1,
@@ -5018,7 +5040,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
     def test_lane_command_uses_registered_model_condition_launcher(self) -> None:
         cmd = matrix.workflow_lane_command(
-            sequence_id="fastify-lifecycle-sequence-v1",
+            sequence_id="fastify-lifecycle-sequence-v2",
             profile_id="baseline-bare-codex",
             protocol=Path("sources/evaluations/protocols/sol.json"),
             replicate_index=2,
@@ -5191,7 +5213,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual(jobs, [(SEQUENCE_ID, "baseline-bare-codex")])
 
     def test_superseded_hard_baseline_is_not_reused_after_contract_change(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v2")
         registry = {
             "sessions": [{
                 "session_id": "superseded-hard-baseline",
@@ -5309,7 +5331,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             ):
                 with self.assertRaisesRegex(RuntimeError, "second comparison failed"):
                     matrix.publish_ready_comparisons(
-                        ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+                        ["fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"],
                         ["terminal-tokenjuice-codex-hook-v1"],
                         0,
                         published,
@@ -5966,7 +5988,7 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
                 self.assertEqual(task["model_visible_validation_anchors"], [])
 
     def test_lifecycle_v1_prompts_do_not_disclose_evaluator_profile_or_lane(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v2")
         first_task = min(sequence["tasks"], key=lambda task: int(task["order"]))
         prompt = (ROOT / first_task["prompt_path"]).read_text()
         rendered = runner.render_task_prompt(
@@ -5998,18 +6020,22 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
         sequences = [item for item in document["sequences"] if item["status"] == "active"]
         self.assertEqual(
             [sequence["id"] for sequence in sequences],
-            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+            ["fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"],
         )
         for sequence in sequences:
-            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
+            self.assertEqual(sequence["task_family_generation"], validate_repository.CURRENT_TASK_FAMILY_GENERATION)
             self.assertEqual(sequence["acceptance_design"], "compile-plus-essential-smoke")
             self.assertEqual(
                 sequence["acceptance_policy"],
                 {
                     "gate": "compile-plus-essential-smoke-for-coding-tasks",
                     "visibility": "controller-only",
-                    "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
-                    "review_task_gate": "compile-only",
+                    "coding_task_classes": validate_repository.TASK_FAMILY_DESIGN[
+                        sequence["task_family_generation"]
+                    ]["coding_task_classes"],
+                    "review_task_gate": validate_repository.TASK_FAMILY_DESIGN[
+                        sequence["task_family_generation"]
+                    ]["review_task_gate"],
                     "quality_diagnostics_gate": False,
                     "broader_tests_required": False,
                     "source_review_required": False,
@@ -6061,7 +6087,10 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
                 self.assertGreaterEqual(len(task["expected_changed_paths"]), 1)
                 self.assertLessEqual(len(task["expected_changed_paths"]), 2)
                 self.assertFalse((task_dir / "controller-visible").exists())
-                self.assertIn("Controller-only Lifecycle V1", verifier)
+                self.assertIn(
+                    f"Controller-only {validate_repository.GENERATION_LABELS[sequence['task_family_generation']]}",
+                    verifier,
+                )
 
                 production_paths = [
                     path
@@ -6075,7 +6104,7 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
                 self.assertLessEqual(len(production_paths), 2)
 
     def test_project_compile_result_is_structured_and_fail_closed(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v2")
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "final-verifier-output.txt"
             output.write_text(f"{runner.PROJECT_COMPILE_RESULT_PREFIX}\t0\n")
@@ -6091,7 +6120,7 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
             [
                 sys.executable,
                 "scripts/run_sequential_workflow_matrix.py",
-                "fastify-lifecycle-sequence-v1",
+                "fastify-lifecycle-sequence-v2",
                 "--max-parallel", "1",
                 "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-medium",
                 "--workflow-model", "gpt-5.6-sol",
@@ -6106,11 +6135,11 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         plan = json.loads(result.stdout)
-        self.assertEqual(plan["jobs"][0]["sequence_id"], "fastify-lifecycle-sequence-v1")
+        self.assertEqual(plan["jobs"][0]["sequence_id"], "fastify-lifecycle-sequence-v2")
         self.assertEqual(plan["max_parallel"], 1)
         self.assertTrue(
             plan["jobs"][0]["protocol"].startswith(
-                "sources/evaluations/protocols/fastify-lifecycle-sequence-v1-baseline-bare-codex-"
+                "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-baseline-bare-codex-"
             )
         )
 
@@ -6121,11 +6150,14 @@ class LifecycleV1ContractTest(unittest.TestCase):
         active = [sequence for sequence in document["sequences"] if sequence["status"] == "active"]
         self.assertEqual(
             [sequence["id"] for sequence in active],
-            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
+            ["fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"],
         )
         for sequence in active:
-            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
-            self.assertEqual(Path(sequence["qualification_path"]).name, "qualification-lifecycle-v1-20260815.json")
+            self.assertEqual(sequence["task_family_generation"], validate_repository.CURRENT_TASK_FAMILY_GENERATION)
+            self.assertEqual(
+                Path(sequence["qualification_path"]).name,
+                validate_repository.TASK_FAMILY_DESIGN[sequence["task_family_generation"]]["qualification_name"],
+            )
             self.assertEqual(sequence["acceptance_design"], "compile-plus-essential-smoke")
             gate = sequence["mistake_gate"]
             self.assertEqual(gate["designated_model_condition"], "codex-openai-gpt-5-6-sol-medium")
@@ -6134,7 +6166,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             self.assertIs(gate["quality_diagnostics_gate"], False)
             self.assertEqual(gate["status"], "runnable")
             for task in sequence["tasks"]:
-                self.assertIn("/lifecycle-v1/", task["prompt_path"])
+                self.assertIn(f'/{sequence["task_family_generation"]}/', task["prompt_path"])
                 expected_visibility = (
                     "controller-only-compile-plus-essential-smoke"
                     if task["task_class"] != "code-review-correction"
@@ -6214,7 +6246,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
                 (source / name).write_bytes(content)
             result = {
                 "lane_id": "lane-unit",
-                "sequence_id": "fastify-lifecycle-sequence-v1",
+                "sequence_id": "fastify-lifecycle-sequence-v2",
                 "lane_dir": str(lane_dir),
                 "checkout": str(checkout),
                 "produced_session_ids": [session_id],
@@ -6327,7 +6359,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             run_dir.mkdir(parents=True)
             record = {
                 "session_id": "direct-invalid",
-                "task_sequence": {"sequence_id": "fastify-lifecycle-sequence-v1"},
+                "task_sequence": {"sequence_id": "fastify-lifecycle-sequence-v2"},
                 "artifacts": {"root": str(run_dir.relative_to(root))},
             }
             sequence = {"mistake_gate": {"attempt_receipt_path": "sources/evaluations/audits/direct-attempt.json"}}
@@ -6348,7 +6380,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v1"
+            sequence_id = "fastify-lifecycle-sequence-v2"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6402,7 +6434,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v1"
+            sequence_id = "fastify-lifecycle-sequence-v2"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6452,7 +6484,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v1"
+            sequence_id = "fastify-lifecycle-sequence-v2"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6500,7 +6532,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             run_root = root / "matrix"
-            sequence_id = "fastify-lifecycle-sequence-v1"
+            sequence_id = "fastify-lifecycle-sequence-v2"
             profile_id = "baseline-bare-codex"
             lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
             lane_dir = run_root / lane_id
@@ -6623,7 +6655,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             with self.subTest(symlink_level=symlink_level), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp)
                 run_root = root / "matrix"
-                sequence_id = "fastify-lifecycle-sequence-v1"
+                sequence_id = "fastify-lifecycle-sequence-v2"
                 profile_id = "baseline-bare-codex"
                 lane_id = matrix.safe_name(f"{sequence_id}--{profile_id}")
                 lane_dir = run_root / lane_id
@@ -6936,12 +6968,15 @@ class LifecycleV1ContractTest(unittest.TestCase):
         self.assertIn("Lifecycle V1", document["description"])
         fixtures = {item["id"]: item for item in json.loads((ROOT / "data/repository-fixtures.json").read_text())["fixtures"]}
         for sequence in active_lifecycle_v1_sequences(document):
-            self.assertEqual(sequence["task_family_generation"], "lifecycle-v1")
+            self.assertEqual(sequence["task_family_generation"], validate_repository.CURRENT_TASK_FAMILY_GENERATION)
             self.assertEqual(sequence["mistake_gate"]["status"], "runnable")
             # A run is a run: an active sequence with a designated model condition is runnable.
             self.assertTrue(runner.lifecycle_v1_treatment_gate(sequence, ROOT)[0])
             fixture = fixtures[sequence["fixture_id"]]
-            self.assertEqual(fixture["current_task_family"]["generation"], "lifecycle-v1")
+            self.assertEqual(
+                fixture["current_task_family"]["generation"],
+                validate_repository.CURRENT_TASK_FAMILY_GENERATION,
+            )
         for relative in ("docs/evaluations/design/token-and-quality-policy.md", "docs/evaluations/design/workflow-model.md", "docs/evaluations/operations/fixture-guide.md"):
             self.assertIn("Lifecycle V1", (ROOT / relative).read_text(), relative)
 
@@ -6954,7 +6989,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
 
 
     def test_current_lifecycle_v1_frozen_protocol_accepts_only_noncausal_provenance_drift(self) -> None:
-        sequence = runner.load_sequence("fastify-lifecycle-sequence-v1")
+        sequence = runner.load_sequence("fastify-lifecycle-sequence-v2")
         identity, protocol = runner.current_lifecycle_v1_protocol(sequence, sequence["mistake_gate"], ROOT)
         self.assertTrue((ROOT / identity["path"]).is_file())
         descriptor = protocol["baseline_pool"]["descriptor"]
@@ -7003,7 +7038,7 @@ from pathlib import Path
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as launcher
 launcher.configure_model_condition('codex-openai-gpt-5-6-sol-medium', 'gpt-5.6-sol', 'medium')
-sequence = runner.load_sequence('fastify-lifecycle-sequence-v1')
+sequence = runner.load_sequence('fastify-lifecycle-sequence-v2')
 identity, protocol = runner.current_lifecycle_v1_protocol(sequence, sequence['mistake_gate'], runner.ROOT)
 with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocols') as temp:
     fake_path = Path(temp) / 'arbitrarily-renamed-protocol.json'
@@ -7320,7 +7355,7 @@ with tempfile.TemporaryDirectory(dir=runner.ROOT / 'sources/evaluations/protocol
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
         for sequence in active_lifecycle_v1_sequences(document):
             record = json.loads((ROOT / sequence["qualification_path"]).read_text())
-            self.assertEqual(record["task_family_generation"], "lifecycle-v1")
+            self.assertEqual(record["task_family_generation"], validate_repository.CURRENT_TASK_FAMILY_GENERATION)
             self.assertEqual(record["acceptance_visibility"], "controller-only-compile-plus-essential-smoke")
             self.assertIs(record["no_model_visible_acceptance_assets"], True)
             self.assertIs(record["controller_acceptance_policy_not_model_facing"], True)

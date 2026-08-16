@@ -1,0 +1,13 @@
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index 273ed5a4..a805c85c 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)

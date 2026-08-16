@@ -1,0 +1,9 @@
+# Restore the replace command's subcommand invocation
+
+The `replace` command fails as soon as it is invoked. Beets subcommands are called with the library, the parsed command-line options, and the remaining positional arguments, and this command's handler no longer accepts what the command framework passes it, so the call raises before any replacement work begins.
+
+The task is complete when invoking the replace command runs its normal argument handling instead of failing at the call boundary.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

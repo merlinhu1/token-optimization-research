@@ -1,0 +1,316 @@
+{
+  "schema_version": 6,
+  "task_family_generation": "lifecycle-v2",
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-08-16",
+  "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+  "observed_source": {
+    "head": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+    "tree": "6baf2f697d35c3c574c58859129f70ecb54c78d0",
+    "remotes": [
+      "origin\tgit@github.com:fastify/fastify.git (fetch) [blob:none]",
+      "origin\tgit@github.com:fastify/fastify.git (push)"
+    ],
+    "expected_upstream": "https://github.com/fastify/fastify.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "npm install --ignore-scripts --no-audit --no-fund"
+  },
+  "ordered_task_ids": [
+    "fastify-trailer-duplicate-callback-v2",
+    "fastify-nested-prefix-join-v2",
+    "fastify-serializer-compiler-flag-v2",
+    "fastify-sync-validator-throw-v2",
+    "fastify-duplicated-route-method-array-v2",
+    "fastify-head-route-web-stream-v2"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "seed_patch_sha256": "bcf925eadf1015114deab43e340457010fc1edfefe74460cf111d2c76454f70c",
+      "verifier_sha256": "82308ecd35e28a6cef89e6ac3713de28eed720cc971c8d85b1f96d9464f26e85",
+      "compile_command": "node --check lib/reply.js",
+      "essential_smoke_command": "node --test test/reply-trailers.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/reply.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "74dfc34a552f18fc36db7fd0f2745c3e4150f7bbe728b8d90662ef00dce3041c",
+      "task_directory_sha256": "4530baf2a0f463dfebe3c2598dfd74677cc54aefb8997ab7afef9c4fc7b4c10d"
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "seed_patch_sha256": "bfdc02c8c999fda6b5fa28c42bf0342a76b10cb6db6bcfeddc2b0cd9a5facf75",
+      "verifier_sha256": "275979c24c61281ea27f8f740132b75284e3124e6c711a0ee1337263079efce8",
+      "compile_command": "node --check lib/plugin-override.js",
+      "essential_smoke_command": "node --test test/route-prefix.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/plugin-override.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "0fbe12edb5a56f1ddc9b9e1946b6d7a011627dff4cd29e95783736068a9528fd",
+      "task_directory_sha256": "5f4bbba068d119dba2362b7772fb4d6ea2693af1bdcd66506fa554abdb315bf5"
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "seed_patch_sha256": "dbe5589729b58fbcf78dee12e597d77a4bd06c6fd0d721d209ebd4b0c034987b",
+      "verifier_sha256": "76e2d26b302be12f5b215a0f38e7c5e7b3d054de57a556097bd2c47323024125",
+      "compile_command": "node --check lib/schema-controller.js",
+      "essential_smoke_command": "node --test test/internals/schema-controller-perf.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/schema-controller.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "0e19b7500d068f3aa85d3bcbf67a0e105c0350cfd3519a599340ae0ecb8db2de",
+      "task_directory_sha256": "60d4320da850cb3c1b97a1c31c46670c8611d723845062146271d1bd60b5e0c4"
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "seed_patch_sha256": "bd2ce03bc823a1e0f7a6a462bb35e445374b6375a7117b5dfbe0eebedc22e22f",
+      "verifier_sha256": "da0762fd09960edcab6a930b7535cc5d7bf4ba2231a9dc2429719e1182365e37",
+      "compile_command": "node --check lib/validation.js",
+      "essential_smoke_command": "node --test test/validation-error-handling.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/validation.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "29dfeb15da949dd61099b25a6e97fcda33cf971df4885753b840b66439a4eede",
+      "task_directory_sha256": "e72ee54aa1fd61988a5a805dcd85ed59aa155c048904e761c95b1097f6bffa61"
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "seed_patch_sha256": "0df92195b1f7730fcb55c8cc3f6dbf7ffa08ab2fb47b490370d8dfddb55e4b48",
+      "verifier_sha256": "031b3fa7f2a874488900316ce4950e0fa149c8982ac48d46c982c6a779339ce3",
+      "compile_command": "node --check lib/route.js",
+      "essential_smoke_command": "node --test test/throw.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/route.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "8ecf3d62dc4c4a12a91b1503f4e1c098f3ad49035bbebd27d9f8a28a65831a9b",
+      "task_directory_sha256": "3dba2ecb97b095f9f09972837d83863918d6f386c302306eee62c92448d012c3"
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "seed_patch_sha256": "a3b3c94efcbf6b5e7d90e70e6567171f3e2afd667369a3184dfdf724cb38190f",
+      "verifier_sha256": "dd174e56209527176bfeab1a91f7f268e94cfa29c2e9d9b8fd632f91cfc5597d",
+      "compile_command": "node --check lib/head-route.js",
+      "essential_smoke_command": "node --test test/route.6.test.js && node --test test/route.7.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/head-route.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "2df6765e2128a47f1da837acf8c2f1399e533f7dbb10fccc497fc63f7c375835",
+      "task_directory_sha256": "dd94c20a79d2f20155d7df34117d9e65c9a245a0578ea4261020598f726d7acb"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0,
+        "fastify-sync-validator-throw-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0,
+        "fastify-sync-validator-throw-v2": 0,
+        "fastify-duplicated-route-method-array-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0,
+        "fastify-sync-validator-throw-v2": 0,
+        "fastify-duplicated-route-method-array-v2": 0,
+        "fastify-head-route-web-stream-v2": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seeded_verifiers_zero": false,
+  "composite_seed_verifier_outcomes_valid": true,
+  "composite_seed_verifier_exits": {
+    "fastify-trailer-duplicate-callback-v2": 1,
+    "fastify-nested-prefix-join-v2": 1,
+    "fastify-serializer-compiler-flag-v2": 1,
+    "fastify-sync-validator-throw-v2": 1,
+    "fastify-duplicated-route-method-array-v2": 1,
+    "fastify-head-route-web-stream-v2": 1
+  },
+  "composite_seed_diff_sha256": "424bb4058ccaac9a04b7c6915934f1c7f698a977eae7610c0d555052d4de8290",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "seeded_verifiers_zero": false,
+  "seeded_verifier_outcomes_valid": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "aggregate_verifier_exit": 0,
+  "aggregate_verifier_task_exits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "aggregate_verifier_environment_passed": true,
+  "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+  "project_compile_passed": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": true,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+  "controller_acceptance_policy_not_model_facing": true,
+  "all_acceptance_behavior_model_visible": false,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 0,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-fastify-fastify",
+  "sequence_id": "fastify-lifecycle-sequence-v2",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "fastify-trailer-duplicate-callback-v2": "4530baf2a0f463dfebe3c2598dfd74677cc54aefb8997ab7afef9c4fc7b4c10d",
+      "fastify-nested-prefix-join-v2": "5f4bbba068d119dba2362b7772fb4d6ea2693af1bdcd66506fa554abdb315bf5",
+      "fastify-serializer-compiler-flag-v2": "60d4320da850cb3c1b97a1c31c46670c8611d723845062146271d1bd60b5e0c4",
+      "fastify-sync-validator-throw-v2": "e72ee54aa1fd61988a5a805dcd85ed59aa155c048904e761c95b1097f6bffa61",
+      "fastify-duplicated-route-method-array-v2": "3dba2ecb97b095f9f09972837d83863918d6f386c302306eee62c92448d012c3",
+      "fastify-head-route-web-stream-v2": "dd94c20a79d2f20155d7df34117d9e65c9a245a0578ea4261020598f726d7acb"
+    }
+  }
+}

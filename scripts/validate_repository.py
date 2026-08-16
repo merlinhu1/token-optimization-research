@@ -23,6 +23,46 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+# Task-family generations whose contract this validator knows how to gate. A new
+# generation must be added here deliberately: an unlisted label would otherwise slip
+# past the prompt-contract, seed-policy and qualification checks below by simply not
+# matching them.
+# Per-generation design contract. The gate used to hardcode one task family's shape --
+# three tasks, a feature/refactor/review split, one qualification filename -- so a new
+# family could not be registered without the checks misfiring. Each generation now
+# declares its own shape and every check reads it from here.
+TASK_FAMILY_DESIGN = {
+    "lifecycle-v1": {
+        "sequence_suffix": "-lifecycle-sequence-v1",
+        "task_suffix": "-v1",
+        "sequence_contract": "feature-refactor-review",
+        "qualification_name": "qualification-lifecycle-v1-20260815.json",
+        "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
+        "review_task_gate": "compile-only",
+        "reset_policy_markers": (
+            "Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke",
+            "review tasks remain compile-only",
+            "not disclosed",
+        ),
+    },
+    "lifecycle-v2": {
+        "sequence_suffix": "-lifecycle-sequence-v2",
+        "task_suffix": "-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "qualification_name": "qualification-lifecycle-v2-20260816.json",
+        "coding_task_classes": ["defect-repair"],
+        "review_task_gate": "not-applicable",
+        "reset_policy_markers": (
+            "Every task requires affected-component compilation plus one narrow essential-behavior smoke",
+            "not disclosed",
+        ),
+    },
+}
+
+SUPPORTED_TASK_FAMILY_GENERATIONS = ("lifecycle-v1", "lifecycle-v2")
+CURRENT_TASK_FAMILY_GENERATION = "lifecycle-v2"
+GENERATION_LABELS = {"lifecycle-v1": "Lifecycle V1", "lifecycle-v2": "Lifecycle V2"}
+
 WORKFLOW_SESSION_SCHEMA_REL = "schemas/workflow-session-record.schema.json"
 WORKFLOW_SESSION_SCHEMA_UNAVAILABLE = (
     f"jsonschema is required to gate registry records on {WORKFLOW_SESSION_SCHEMA_REL}; "
@@ -263,7 +303,7 @@ def current_provider_usage_contract(session: dict) -> bool:
         protocol = json.loads((ROOT / path).read_text())
     except (OSError, json.JSONDecodeError):
         return False
-    return protocol.get("task_fixture", {}).get("task_family_generation") == "lifecycle-v1"
+    return protocol.get("task_fixture", {}).get("task_family_generation") in SUPPORTED_TASK_FAMILY_GENERATIONS
 
 
 def _json_object_without_duplicate_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -342,6 +382,8 @@ DECISION_RECORDS = [
     "docs/architecture/decision-records/0004-stack-compatibility.md",
     "docs/architecture/decision-records/0005-token-accounting-and-protocol-identity.md",
     "docs/architecture/decision-records/0006-repository-workflow-and-validation.md",
+    "docs/architecture/decision-records/0007-ranked-reporting-and-median-sampling.md",
+    "docs/architecture/decision-records/0008-bounded-task-family-and-cost-decomposition.md",
 ]
 
 REQUIRED_PATHS = [
@@ -750,7 +792,7 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
         for task in ordered
     }
     generation = sequence.get("task_family_generation")
-    if generation != "lifecycle-v1":
+    if generation not in SUPPORTED_TASK_FAMILY_GENERATIONS:
         errors.append(f"qualification {rel} references retired generation {generation!r}")
         return
     required_true = ("fixed_verifier_zero", "full_fixed_cumulative_verifier_zero", "composite_seed_merge_zero", "no_unmerged_paths", "all_expected_model_concealment_declared")
@@ -766,8 +808,11 @@ def validate_qualification(sequence: dict, errors: list[str]) -> None:
     )
     if q.get("schema_version") != 6:
         errors.append(f"qualification {rel} must use schema_version=6 for controller-only Lifecycle V1")
-    if q.get("task_family_generation") != "lifecycle-v1":
-        errors.append(f"qualification {rel} must bind task_family_generation=lifecycle-v1")
+    if q.get("task_family_generation") not in SUPPORTED_TASK_FAMILY_GENERATIONS:
+        errors.append(
+            f"qualification {rel} must bind a supported task_family_generation "
+            f"({', '.join(SUPPORTED_TASK_FAMILY_GENERATIONS)})"
+        )
     if q.get("acceptance_visibility") != "controller-only-compile-plus-essential-smoke":
         errors.append(f"qualification {rel} must record controller-only compile-plus-essential-smoke visibility")
     if q.get("all_acceptance_behavior_model_visible") is not False:
@@ -1471,19 +1516,30 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             errors.append(f"duplicate workflow sequence id: {sid}")
         sequence_ids.add(sid)
         is_active = sequence.get("status") == "active"
-        if not is_active:
-            errors.append(f"workflow sequence {sid} must be active Lifecycle V1")
+        if sequence.get("status") == "retired":
+            # A superseded family stays registered: archived sessions are evidence for the
+            # contract they executed against, and that contract must remain readable.
             continue
-        if not str(sid).endswith("-lifecycle-sequence-v1"):
-            errors.append(f"workflow sequence {sid} must use the lifecycle-sequence-v1 identity")
-        if sequence.get("sequence_contract") != "feature-refactor-review":
-            errors.append(f"workflow sequence {sid} must use the feature-refactor-review contract")
+        if not is_active:
+            errors.append(f"workflow sequence {sid} must be active or retired")
+            continue
+        design = TASK_FAMILY_DESIGN.get(str(sequence.get("task_family_generation")), {})
+        if not design:
+            errors.append(f"workflow sequence {sid} has no registered task-family design")
+            continue
+        if not str(sid).endswith(design["sequence_suffix"]):
+            errors.append(f"workflow sequence {sid} must use the {design['sequence_suffix'].lstrip('-')} identity")
+        if sequence.get("sequence_contract") != design["sequence_contract"]:
+            errors.append(f"workflow sequence {sid} must use the {design['sequence_contract']} contract")
         if is_active:
             generation = sequence.get("task_family_generation")
-            if generation != "lifecycle-v1":
-                errors.append(f"active workflow sequence {sid} must bind task_family_generation=lifecycle-v1")
+            if generation not in SUPPORTED_TASK_FAMILY_GENERATIONS:
+                errors.append(
+                    f"active workflow sequence {sid} must bind a supported task_family_generation "
+                    f"({', '.join(SUPPORTED_TASK_FAMILY_GENERATIONS)})"
+                )
             gate = sequence.get("mistake_gate")
-            if generation == "lifecycle-v1":
+            if generation in SUPPORTED_TASK_FAMILY_GENERATIONS:
                 gate_status = "runnable"
                 launch_policy = (
                     "protocol freeze and execution require the designated model condition and a "
@@ -1561,13 +1617,13 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             errors.append(f"active workflow sequence {sid} pilot attempt receipt identity is invalid")
             reset_policy = str(sequence.get("reset_policy", ""))
             seed_policy = str(sequence.get("seed_patch_policy", ""))
-            if "Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke" not in reset_policy or "review tasks remain compile-only" not in reset_policy or "not disclosed" not in reset_policy:
+            if any(marker not in reset_policy for marker in design["reset_policy_markers"]):
                 errors.append(f"active workflow sequence {sid} reset policy must bind the undisclosed lenient acceptance split")
             if "Model-facing prompts describe the software objective" not in seed_policy or "not disclosed" not in seed_policy:
                 errors.append(f"active workflow sequence {sid} seed policy must keep controller scoring out of the agent task")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        expected_qualification_name = "qualification-lifecycle-v1-20260815.json"
+        expected_qualification_name = design["qualification_name"]
         if qualification_name != expected_qualification_name:
             errors.append(f"active workflow sequence {sid} must bind {expected_qualification_name}")
         if sequence.get("status") == "active":
@@ -1577,8 +1633,8 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             if sequence.get("acceptance_policy") != {
                 "gate": "compile-plus-essential-smoke-for-coding-tasks",
                 "visibility": "controller-only",
-                "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
-                "review_task_gate": "compile-only",
+                "coding_task_classes": design["coding_task_classes"],
+                "review_task_gate": design["review_task_gate"],
                 "quality_diagnostics_gate": False,
                 "broader_tests_required": False,
                 "source_review_required": False,
@@ -1627,7 +1683,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 errors.append(f"workflow sequence {sid} has duplicate task id {tid}")
             else:
                 task_ids.add(tid)
-            expected_task_suffix = "-v1" if is_active else "-v0"
+            expected_task_suffix = design["task_suffix"] if is_active else "-v0"
             if not str(tid or "").endswith(expected_task_suffix):
                 errors.append(f"workflow sequence {sid} task {tid} must use a {expected_task_suffix.removeprefix('-')} identity")
             order = task.get("order")
@@ -1664,7 +1720,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                     anchors = task.get("model_visible_validation_anchors")
                     acceptance_asset_paths = task.get("model_visible_acceptance_asset_paths")
                     verifier_text = verifier_path.read_text() if verifier_path.is_file() else ""
-                    if generation == "lifecycle-v1":
+                    if generation in SUPPORTED_TASK_FAMILY_GENERATIONS:
                         required_markers = (
                             "Implement the task completely and correctly.",
                             "Search and inspect the repository as needed",
@@ -1694,9 +1750,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             or (isinstance(compile_command, str) and compile_command in prompt_text)
                             or (isinstance(essential_smoke_command, str) and essential_smoke_command in prompt_text)
                         ):
-                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete Lifecycle V1 software-objective prompt contract without controller scoring policy")
+                            errors.append(f"active workflow sequence {sid} task {tid} must use the complete software-objective prompt contract without controller scoring policy")
                         if not isinstance(expected_changed, list) or sorted(expected_changed) != sorted(target_production) or not 1 <= len(target_production) <= 2:
-                            errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-two exact Lifecycle V1 semantic production targets")
+                            errors.append(f"active workflow sequence {sid} task {tid} must declare one-to-two exact semantic production targets")
                         if (
                             not isinstance(compile_command, str)
                             or not compile_command
@@ -1704,7 +1760,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                             or anchors != []
                         ):
                             errors.append(f"active workflow sequence {sid} task {tid} must bind one controller-only affected-component compile command")
-                        coding_task = task.get("task_class") in {"feature-implementation", "behavior-preserving-refactor"}
+                        coding_task = task.get("task_class") in set(design["coding_task_classes"])
                         expected_visibility = (
                             "controller-only-compile-plus-essential-smoke"
                             if coding_task
@@ -1719,7 +1775,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                         ):
                             errors.append(f"active workflow sequence {sid} task {tid} must bind one narrow essential-behavior smoke")
                         if not coding_task and essential_smoke_command is not None:
-                            errors.append(f"active workflow sequence {sid} review task {tid} must remain compile-only")
+                            errors.append(f"active workflow sequence {sid} non-coding task {tid} must remain compile-only")
                         if acceptance_asset_paths != []:
                             errors.append(f"active workflow sequence {sid} task {tid} controller assessment must not inject test assets")
                     undisclosed_inline_markers = ("<<'NODE'", '<<"NODE"', "<<'PY'", '<<"PY"', "<<'TS'", '<<"TS"', "workflow-hidden")
@@ -1742,6 +1798,13 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
             task.get("task_class", "")
             for task in sorted(tasks, key=lambda item: item.get("order", 0))
         ]
+        if sequence.get("sequence_contract") == "bounded-defect-repair-series" and (
+            len(task_classes) < 4 or set(task_classes) != {"defect-repair"}
+        ):
+            errors.append(
+                f"workflow sequence {sid} bounded-defect-repair-series contract must hold at least "
+                "four tasks and only defect-repair tasks, so that no single task dominates"
+            )
         if sequence.get("sequence_contract") == "feature-refactor-review" and task_classes != [
             "feature-implementation",
             "behavior-preserving-refactor",
@@ -1753,8 +1816,11 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
         if sequence.get("status") == "active" and len(production_by_task) == len(tasks):
             validate_qualification(sequence, errors)
     active = [sequence for sequence in sequences if sequence.get("status") == "active"]
-    expected_active_ids = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
-    if [sequence.get("id") for sequence in active] != expected_active_ids:
+    expected_active_ids = sorted(
+        f"{fixture}{TASK_FAMILY_DESIGN[CURRENT_TASK_FAMILY_GENERATION]['sequence_suffix']}"
+        for fixture in ("beets", "fastify")
+    )
+    if sorted(sequence.get("id") or "" for sequence in active) != expected_active_ids:
         errors.append(
             "production lifecycle-v1 portfolio must contain exactly the two active sequences "
             f"{expected_active_ids}, found {[sequence.get('id') for sequence in active]}"
@@ -1768,7 +1834,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
     )
     for sequence in active:
         seed_policy = str(sequence.get("seed_patch_policy", "")).lower()
-        if sequence.get("task_family_generation") == "lifecycle-v1":
+        if sequence.get("task_family_generation") in SUPPORTED_TASK_FAMILY_GENERATIONS:
             if (
                 "applied as one composite start before task 1" not in seed_policy
                 or "final controller verification runs once after the final prompt" not in seed_policy
@@ -1850,7 +1916,7 @@ def validate_fixture_sequence_status_consistency(
                     errors.append(f"fixture {record.get('id')} active-generation documentation is unreadable: {exc}")
                 else:
                     generation = str(sequences[sequence_id].get("task_family_generation", ""))
-                    generation_label = "Lifecycle V1" if generation == "lifecycle-v1" else generation.replace("baseline-v", "Baseline V")
+                    generation_label = GENERATION_LABELS.get(generation) or generation.replace("baseline-v", "Baseline V")
                     if qualification_path.name not in fixture_text or generation not in fixture_text:
                         errors.append(f"fixture {record.get('id')} README does not identify the active {generation_label} qualification")
                     if f"active {generation_label}" not in tasks_text:
@@ -2280,7 +2346,13 @@ def validate_workflow_session_contract(
             isinstance(leakage_controls, dict)
             and "controller_verifier_scripts_and_canonical_copies_model_visible" in leakage_controls
         )
-        lifecycle_v1 = str(sequence.get("sequence_id", "")).endswith("-lifecycle-sequence-v1")
+        # Every Lifecycle family conceals its acceptance assets. Inferring this from a
+        # "-v1" suffix inverted the rule for V2 and would have demanded visible
+        # acceptance tests from a family that injects none.
+        lifecycle_v1 = any(
+            str(sequence.get("sequence_id", "")).endswith(design["sequence_suffix"])
+            for design in TASK_FAMILY_DESIGN.values()
+        )
         verifier_visibility_valid = (
             isinstance(leakage_controls, dict)
             and (
@@ -2343,7 +2415,13 @@ def validate_workflow_session_contract(
             )
         prompt_delivery = sequence.get("prompt_delivery", {}) if isinstance(sequence, dict) else {}
         leakage_controls = sequence.get("leakage_controls", {}) if isinstance(sequence, dict) else {}
-        lifecycle_v1 = str(sequence.get("sequence_id", "")).endswith("-lifecycle-sequence-v1")
+        # Every Lifecycle family conceals its acceptance assets. Inferring this from a
+        # "-v1" suffix inverted the rule for V2 and would have demanded visible
+        # acceptance tests from a family that injects none.
+        lifecycle_v1 = any(
+            str(sequence.get("sequence_id", "")).endswith(design["sequence_suffix"])
+            for design in TASK_FAMILY_DESIGN.values()
+        )
         objective_visibility_valid = (
             (
                 leakage_controls.get("controller_verifier_scripts_and_canonical_copies_model_visible") is False
@@ -2963,7 +3041,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             or protocol.get("status") != "frozen-ready-not-run"
             or protocol.get("protocol_id") != path.stem
             or fixture.get("sequence_id") != sequence_id
-            or fixture.get("task_family_generation") != "lifecycle-v1"
+            or fixture.get("task_family_generation") not in SUPPORTED_TASK_FAMILY_GENERATIONS
             or fixture.get("qualification_path") != sequence.get("qualification_path")
             or selected.get("descriptor_sha256") != runner._json_hash(selected.get("descriptor"))
             or baseline_pool.get("protocol_fingerprint")

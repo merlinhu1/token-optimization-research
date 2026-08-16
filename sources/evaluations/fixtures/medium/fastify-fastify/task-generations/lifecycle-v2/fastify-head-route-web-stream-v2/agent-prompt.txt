@@ -1,0 +1,9 @@
+# Handle web stream payloads on automatic HEAD routes
+
+A handler that returns a web stream breaks the automatically generated HEAD route. Node streams are recognised and disposed of without sending a body, but a web stream is not, so it falls through to the branch that measures a buffer's length. A web stream should be cancelled, with any cancellation failure logged, and the response completed with no body.
+
+The task is complete when a HEAD request against a handler returning a web stream completes with no body and the stream cancelled.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `npm run unit -- --reporter=dot -i test/close.test.js -i test/custom-http-server.test.js -i test/https/custom-https-server.test.js -i test/request-error.test.js -i test/client-timeout.test.js -i test/versioned-routes.test.js`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

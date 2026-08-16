@@ -38,7 +38,10 @@ FIXTURES = {
         "production_globs": ("lib/", "fastify.js"),
         "production_suffix": ".js",
         "test_prefix": "test/",
-        "test_command": ["npx", "borp", "--reporter=dot"],
+        # borp runs its whole configured glob regardless of file arguments, so candidate
+        # validation drives node's own runner, which does honour a single file. The
+        # agent-facing suite command is unaffected.
+        "test_command": ["node", "--test"],
         "reserved": {"lib/request.js", "lib/errors.js", "lib/content-type.js", "fastify.js"},
     },
 }

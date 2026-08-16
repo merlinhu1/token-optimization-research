@@ -89,8 +89,18 @@ def expected_model_visible_acceptance_paths(sequence: dict, task: dict) -> list[
     return []
 
 
+# Coding classes across every registered family. Reading them from the design table keeps
+# one definition of "a task that carries an essential-behavior smoke"; a second hardcoded
+# set here is how lifecycle-v2 silently failed its first qualification.
+CODING_TASK_CLASSES = {
+    task_class
+    for design in validation.TASK_FAMILY_DESIGN.values()
+    for task_class in design["coding_task_classes"]
+}
+
+
 def expected_acceptance_visibility(task: dict) -> str:
-    if task.get("task_class") in {"feature-implementation", "behavior-preserving-refactor"}:
+    if task.get("task_class") in CODING_TASK_CLASSES:
         return "controller-only-compile-plus-essential-smoke"
     return "controller-only-compile-policy"
 
@@ -159,8 +169,12 @@ def main() -> int:
     args = parser.parse_args()
     sequence_doc = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
     sequence = next(item for item in sequence_doc["sequences"] if item["id"] == args.sequence_id)
-    if sequence.get("status") != "active" or sequence.get("task_family_generation") != "lifecycle-v1":
-        raise SystemExit("qualification generation supports active Lifecycle V1 sequences only")
+    supported = validation.SUPPORTED_TASK_FAMILY_GENERATIONS
+    if sequence.get("status") != "active" or sequence.get("task_family_generation") not in supported:
+        raise SystemExit(
+            "qualification generation supports active sequences of a supported task family "
+            f"({', '.join(supported)}) only"
+        )
     source_checkout = args.checkout.resolve()
     expected_commit = sequence["initial_snapshot"]["commit"]
     expected_upstream = sequence["initial_snapshot"]["upstream"]

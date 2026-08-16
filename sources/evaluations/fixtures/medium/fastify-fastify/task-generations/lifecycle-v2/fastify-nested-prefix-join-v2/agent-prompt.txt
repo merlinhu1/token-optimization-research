@@ -1,0 +1,9 @@
+# Join nested route prefixes without a doubled or missing separator
+
+Registering a plugin under a nested prefix can produce a malformed route path. When the enclosing prefix already ends with a separator and the plugin's own prefix does not begin with one, a separator is added anyway and the joined path contains two. The existing handling of the opposite case must keep working.
+
+The task is complete when nested prefixes join with exactly one separator in every combination of leading and trailing separators.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `npm run unit -- --reporter=dot -i test/close.test.js -i test/custom-http-server.test.js -i test/https/custom-https-server.test.js -i test/request-error.test.js -i test/client-timeout.test.js -i test/versioned-routes.test.js`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

@@ -1,0 +1,21 @@
+diff --git a/lib/validation.js b/lib/validation.js
+index a7ac2aea..047d1c8a 100644
+--- a/lib/validation.js
++++ b/lib/validation.js
+@@ -117,15 +117,7 @@ function compileSchemasForValidation (context, compile, isCustom) {
+ 
+ function validateParam (validatorFunction, request, paramName) {
+   const isUndefined = request[paramName] === undefined
+-  let ret
+-
+-  try {
+-    ret = validatorFunction?.(isUndefined ? null : request[paramName])
+-  } catch (err) {
+-    // If validator throws synchronously, ensure it propagates as an internal error
+-    err.statusCode = 500
+-    return err
+-  }
++  const ret = validatorFunction && validatorFunction(isUndefined ? null : request[paramName])
+ 
+   if (ret && typeof ret.then === 'function') {
+     return ret

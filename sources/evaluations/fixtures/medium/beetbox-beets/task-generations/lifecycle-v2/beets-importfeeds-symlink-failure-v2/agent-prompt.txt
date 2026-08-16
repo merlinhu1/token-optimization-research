@@ -1,0 +1,9 @@
+# Keep importing when a feed link cannot be created
+
+An import stops with an error when the plugin that maintains a directory of links to imported music cannot create one of them. Link creation can fail for filesystem reasons that say nothing about the import itself, and the failure should be surfaced as a warning for that entry while the import proceeds.
+
+The task is complete when a link that cannot be created produces a warning and the import continues.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

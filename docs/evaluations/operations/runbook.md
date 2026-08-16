@@ -25,8 +25,8 @@ No provider-backed Fastify/Beets sessions are active. The pre-correction corpus 
 
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
-| `fastify-lifecycle-sequence-v1` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 3 |
-| `beets-lifecycle-sequence-v1` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 3 |
+| `fastify-lifecycle-sequence-v2` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 6 |
+| `beets-lifecycle-sequence-v2` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 7 |
 
 ## Planned candidates and blockers
 
@@ -50,7 +50,7 @@ Before changing a sequence to `active`, require:
 A no-model prepare for a frozen candidate is allowed:
 
 ```bash
-SEQUENCE_ID=fastify-lifecycle-sequence-v1
+SEQUENCE_ID=fastify-lifecycle-sequence-v2
 python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 ```
 
@@ -63,41 +63,48 @@ Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behav
 Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 ```
 
 Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample.
 
 ## Active sequence details
 
-### `fastify-lifecycle-sequence-v1`
+### `fastify-lifecycle-sequence-v2`
 
 - Fixture: `medium-fastify-fastify`
 - Primary metric: weighted_token_cost
-- Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke; review tasks remain compile-only. Controller acceptance details are not disclosed as the agent task objective.
+- Reset policy: Each task reset reverses only its own semantic production regression. No acceptance tests are injected. Every task requires affected-component compilation plus one narrow essential-behavior smoke drawn from the upstream tests that cover the restored behavior. Controller acceptance details are not disclosed as the agent task objective.
 - Final project compile: `find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js`
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `fastify-lifecycle-feature-v1` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-feature-v1/verify.sh` |
-| 2 | `fastify-lifecycle-refactor-v1` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-refactor-v1/verify.sh` |
-| 3 | `fastify-lifecycle-review-v1` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/fastify-lifecycle-review-v1/verify.sh` |
+| 1 | `fastify-trailer-duplicate-callback-v2` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-trailer-duplicate-callback-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-trailer-duplicate-callback-v2/verify.sh` |
+| 2 | `fastify-nested-prefix-join-v2` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-nested-prefix-join-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-nested-prefix-join-v2/verify.sh` |
+| 3 | `fastify-serializer-compiler-flag-v2` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-serializer-compiler-flag-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-serializer-compiler-flag-v2/verify.sh` |
+| 4 | `fastify-sync-validator-throw-v2` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-sync-validator-throw-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-sync-validator-throw-v2/verify.sh` |
+| 5 | `fastify-duplicated-route-method-array-v2` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-duplicated-route-method-array-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-duplicated-route-method-array-v2/verify.sh` |
+| 6 | `fastify-head-route-web-stream-v2` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-head-route-web-stream-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/fastify-head-route-web-stream-v2/verify.sh` |
 
-### `beets-lifecycle-sequence-v1`
+### `beets-lifecycle-sequence-v2`
 
 - Fixture: `medium-beetbox-beets`
 - Primary metric: weighted_token_cost
-- Reset policy: Each task reset reverses only its generation-local semantic production regression. No acceptance tests are injected. Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke; review tasks remain compile-only. Controller acceptance details are not disclosed as the agent task objective.
+- Reset policy: Each task reset reverses only its own semantic production regression. No acceptance tests are injected. Every task requires affected-component compilation plus one narrow essential-behavior smoke drawn from the upstream tests that cover the restored behavior. Controller acceptance details are not disclosed as the agent task objective.
 - Final project compile: `uv run --offline --frozen python -c "import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]"`
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-lifecycle-feature-v1` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-feature-v1/verify.sh` |
-| 2 | `beets-lifecycle-refactor-v1` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-refactor-v1/verify.sh` |
-| 3 | `beets-lifecycle-review-v1` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/beets-lifecycle-review-v1/verify.sh` |
+| 1 | `beets-replace-command-callback-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-replace-command-callback-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-replace-command-callback-v2/verify.sh` |
+| 2 | `beets-mpdstats-cli-overrides-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mpdstats-cli-overrides-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mpdstats-cli-overrides-v2/verify.sh` |
+| 3 | `beets-convert-missing-art-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-convert-missing-art-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-convert-missing-art-v2/verify.sh` |
+| 4 | `beets-importfeeds-symlink-failure-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-importfeeds-symlink-failure-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-importfeeds-symlink-failure-v2/verify.sh` |
+| 5 | `beets-lyrics-rest-directory-config-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-rest-directory-config-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-rest-directory-config-v2/verify.sh` |
+| 6 | `beets-musicbrainz-aliases-opt-in-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-musicbrainz-aliases-opt-in-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-musicbrainz-aliases-opt-in-v2/verify.sh` |
+| 7 | `beets-mbcollection-http-errors-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mbcollection-http-errors-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mbcollection-http-errors-v2/verify.sh` |
 
 ## Artifact contract
 

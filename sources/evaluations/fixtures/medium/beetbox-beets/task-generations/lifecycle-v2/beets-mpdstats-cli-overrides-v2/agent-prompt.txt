@@ -1,0 +1,9 @@
+# Restore mpdstats command-line connection overrides
+
+The mpdstats command ignores the MPD host, port, and password given on the command line and always uses the configured values. Options supplied for a single invocation are expected to take precedence over configuration for that invocation only, and the decoding each option needs differs between them.
+
+The task is complete when host, port, and password supplied on the command line override the configured values for that run.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.
