@@ -1,0 +1,676 @@
+{
+  "fixture": "beets",
+  "accepted": 10,
+  "candidates": [
+    {
+      "commit": "61f8c94e7ffed193c7e382b1898f8540984772a7",
+      "subject": "fix(hooks): remove cached property invalidation",
+      "production": [
+        "beets/autotag/hooks.py"
+      ],
+      "tests": [
+        "test/autotag/test_hooks.py",
+        "test/plugins/test_ftintitle.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 1082,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "7cc3e0b5a4d8efb19489b11469996aa5292f3069",
+      "subject": "Support multi-value modify operators",
+      "production": [
+        "beets/ui/commands/modify.py"
+      ],
+      "tests": [
+        "test/ui/commands/test_modify.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 3684,
+      "seeded_exit_code": 2,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "79c7d69311cc439aee1da7e50bdf538c25867c7e",
+      "subject": "Remove wrongly added copyright markers",
+      "production": [
+        "beets/test/fixtures.py"
+      ],
+      "tests": [
+        "test/dbcore/test_queryparse.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 968,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "7c8924d8c96eec558f28d16b08da1f1b90691e3e",
+      "subject": "Cache config.source in ConfigMixin for test speedup",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/conftest.py",
+        "test/plugins/test_lyrics.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 2251
+    },
+    {
+      "commit": "89a831613a8af68c8d4c89782fb35704ac2708ed",
+      "subject": "Centralize path asciification normalization",
+      "production": [
+        "beets/library/models.py",
+        "beets/util/__init__.py"
+      ],
+      "tests": [
+        "test/test_library.py",
+        "test/test_util.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 4121,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "65a01c2c2ad30a1c9eb7c14ef36be66d01f4f879",
+      "subject": "fix(importfeeds): keep import going when a symlink can't be created",
+      "production": [
+        "beetsplug/importfeeds.py"
+      ],
+      "tests": [
+        "test/plugins/test_importfeeds.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 1111,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "aef9c64cb07c8f828d0dd6e69a5485abf2c43396",
+      "subject": "Move DummyIMBackend to fixtures",
+      "production": [
+        "beets/test/fixtures.py"
+      ],
+      "tests": [
+        "test/plugins/test_embedart.py",
+        "test/util/test_art_resize.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 1025
+    },
+    {
+      "commit": "816cddbfd5d0976a31e9d0788db0944c62ad16db",
+      "subject": "Define DB fixtures in a shared place",
+      "production": [
+        "beets/test/fixtures.py"
+      ],
+      "tests": [
+        "test/test_dbcore.py",
+        "test/test_queryparse.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 2259
+    },
+    {
+      "commit": "01b12dca3b72de5e465e2d822c6d61478917ca37",
+      "subject": "rename CoverArt types to Artwork to match Tidal API",
+      "production": [
+        "beetsplug/tidal/__init__.py",
+        "beetsplug/tidal/api_types.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 4169
+    },
+    {
+      "commit": "26d90bbcfa44cbb6ecb0ddce73369fafdac10fe5",
+      "subject": "make cover_art_by_id required and remove broken fallback URL",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 1340
+    },
+    {
+      "commit": "d26cfdedbce96b17273d0feda59a74fc459a1125",
+      "subject": "fix cover art types and parsing to match API response",
+      "production": [
+        "beetsplug/tidal/__init__.py",
+        "beetsplug/tidal/api_types.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 2019
+    },
+    {
+      "commit": "8fe9c2e5766efbb064b2d29e9a99acd7008c24b6",
+      "subject": "Set albumtypes instead of albumtype",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 701,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "368d2c0a6d84a4133522618d92b501b11a4574a2",
+      "subject": "Normalize albumtype",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 690
+    },
+    {
+      "commit": "755ca6f139cb4a6e63f776710c0100a219ed09fb",
+      "subject": "convert: skip missing album art instead of crashing",
+      "production": [
+        "beetsplug/convert.py"
+      ],
+      "tests": [
+        "test/plugins/test_convert.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 724,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "5369a932cf7f7ddd7347839c6fa50a38e1d5072f",
+      "subject": "Instead of duplicating the message completely we just add a record for the prefix which we can than use in the formatter.",
+      "production": [
+        "beets/logging.py",
+        "beets/ui/__init__.py"
+      ],
+      "tests": [
+        "test/test_logging.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 1528
+    },
+    {
+      "commit": "904839106c7d774c5b8adf418cbd09bc387bebf5",
+      "subject": "address reviewer comments",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 778,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "d855dbf55bd077b895f91410d5ef656b5bf1ebf1",
+      "subject": "lint issues",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 3556
+    },
+    {
+      "commit": "ca3fdb7aef681bc0f5c9eb6b81d04ba8fba05335",
+      "subject": "Remove Resolution from ImportSessionFixture",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/test_importer.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 1952
+    },
+    {
+      "commit": "dcd54146d860c34eb4148a129c5192b89019898f",
+      "subject": "address reviewer comments",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 10790
+    },
+    {
+      "commit": "1fe0e34201f109af406d5a342be65968cd3911da",
+      "subject": "Removed capture_log :tada:",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/test_importer.py",
+        "test/test_logging.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 613
+    },
+    {
+      "commit": "478ac8cb639a9dd9a1fc9c8294004ea3db1cd9c4",
+      "subject": "lyrics: add rest_directory configuration option",
+      "production": [
+        "beetsplug/lyrics.py"
+      ],
+      "tests": [
+        "test/plugins/test_lyrics.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 1557,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "ab2a9ced63a95e33c78f881b78b3c502b14b5eda",
+      "subject": "Apply ruff formatting",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 2802
+    },
+    {
+      "commit": "5904dc280aabb96c4c88634e6ec7f8017bc7b30c",
+      "subject": "Fix id_field, update tests, fix flake8",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 4092
+    },
+    {
+      "commit": "4cd996cc0ea5d17d76cc834c6ef0a2d040ed25a7",
+      "subject": "apply ruff formatting",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 2780
+    },
+    {
+      "commit": "4a0b2beeeffad481ed6937c54450ab267192abf3",
+      "subject": "address reviewer comments: simplify _parse_popularity, fix flake8 E501",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 4161
+    },
+    {
+      "commit": "a6bf76b2328bd61a95923dc06a40a9538f490a61",
+      "subject": "address reviewer comments: type _parse_popularity with attributes, add album popularity to sync",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 5497
+    },
+    {
+      "commit": "bed1f024b068158bd1945b17271c7356274fad80",
+      "subject": "Fix tests and mypy error",
+      "production": [
+        "beetsplug/tidal/__init__.py"
+      ],
+      "tests": [
+        "test/plugins/test_tidal.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 600
+    },
+    {
+      "commit": "3b9034e8cfbac202383c78ed4aa3ab4c45420206",
+      "subject": "Only skip tests not in CI",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/plugins/test_art.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 494,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "912ab791d911332ca7f761e17222d3c11952295c",
+      "subject": "Exclude tests that depend on ffprobe when unavailable",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/plugins/test_embedart.py",
+        "test/test_importer.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 789
+    },
+    {
+      "commit": "4f3ac5a40a4edc3c43c033aafe4195dfc349963d",
+      "subject": "Exclude artresizer tests when unavailable",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/conftest.py",
+        "test/plugins/test_art.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 918
+    },
+    {
+      "commit": "6327f1122a101afecf3dca10000e7f796938bef0",
+      "subject": "Remove now unused ImportTestCase",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/test_logging.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 608
+    },
+    {
+      "commit": "69100c794628a5ab3f60c718751611091210de0f",
+      "subject": "test_importer: ImportTestCase -> ImporterHelper",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/test_importer.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 433
+    },
+    {
+      "commit": "fe860fd75a50dc2c86c3a1440612325e2d758d8f",
+      "subject": "fix copilot comments",
+      "production": [
+        "beets/library/models.py"
+      ],
+      "tests": [
+        "test/ui/commands/test_move.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 863
+    },
+    {
+      "commit": "faa7deaf5d2174507a11c41700e188c948644bf9",
+      "subject": "Enhance move command to handle missing files gracefully",
+      "production": [
+        "beets/library/models.py"
+      ],
+      "tests": [
+        "test/ui/commands/test_move.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 2249
+    },
+    {
+      "commit": "f1a4b22ce52dc74042bd038322f18805dceb64c6",
+      "subject": "ImportConvertTest -> TestImportConvert Renamed AsIsImporterMixin to AsIsImporterHelper",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/plugins/test_convert.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 803
+    },
+    {
+      "commit": "fb9de7a619f521b8d4d7ba8f457576a3ef4949d6",
+      "subject": "lyrics: fix musica parsing",
+      "production": [
+        "beetsplug/lyrics.py"
+      ],
+      "tests": [
+        "test/plugins/lyrics_pages.py",
+        "test/plugins/test_lyrics.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 2721,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "d06774b14df32e4383e71fb848af980ee3f153aa",
+      "subject": "Fix replace command callback signature",
+      "production": [
+        "beetsplug/replace.py"
+      ],
+      "tests": [
+        "test/plugins/test_replace.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 478,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "cf7c5e4eb2f49148d3e43414689e24be393b8a77",
+      "subject": "Fix mpdstats CLI option overrides",
+      "production": [
+        "beetsplug/mpdstats.py"
+      ],
+      "tests": [
+        "test/plugins/test_mpdstats.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 712,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "4b554e96971b1acbbc0bc09dd5504e1650fe1aae",
+      "subject": "Batch SQLite commits and follow write-before-store pattern",
+      "production": [
+        "beetsplug/spotify.py"
+      ],
+      "tests": [
+        "test/plugins/test_spotify.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 1549
+    },
+    {
+      "commit": "eedc71b41450587cbd54a44838ba4a9cfccdc597",
+      "subject": "Refactor to pytest and PluginMixin, merge into test_web.py",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/plugins/test_web.py",
+        "test/plugins/test_web_xss.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 633
+    },
+    {
+      "commit": "785f8b7a5c08cba60db70edc2c1e437de84d0b64",
+      "subject": "Make aliases-as-credits functionality opt-in.",
+      "production": [
+        "beetsplug/musicbrainz.py"
+      ],
+      "tests": [
+        "test/plugins/test_musicbrainz.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 1817,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    },
+    {
+      "commit": "31e18b2c4c15ced87b2e1edae2d661e96eaa3e77",
+      "subject": "refactor(musicbrainz): use direct aliases access and improve browse test",
+      "production": [
+        "beetsplug/musicbrainz.py"
+      ],
+      "tests": [
+        "test/plugins/test_musicbrainz.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 631,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "ed0c6fbbe6430508849613c6a1398506114a6854",
+      "subject": "I think it is a good time to move the PytestPluginTestHelper class.",
+      "production": [
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/plugins/test_embedart.py",
+        "test/plugins/test_hook.py",
+        "test/plugins/test_mbsync.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 937
+    },
+    {
+      "commit": "ba798ae281bff1196b7e8607a444bebb8160bc79",
+      "subject": "style: apply ruff formatting and address review comments",
+      "production": [
+        "beetsplug/musicbrainz.py"
+      ],
+      "tests": [
+        "test/plugins/test_musicbrainz.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 639
+    },
+    {
+      "commit": "beb1610476d0a72c48e50fe1d56a2b3046ed1079",
+      "subject": "fix(musicbrainz): handle missing aliases in browse_recordings for large releases",
+      "production": [
+        "beetsplug/musicbrainz.py"
+      ],
+      "tests": [
+        "test/plugins/test_musicbrainz.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 762
+    },
+    {
+      "commit": "9efb7eabdb33248d8c77ac00826239e513415c9d",
+      "subject": "Clarify the logic inside get_path_formats",
+      "production": [
+        "beets/util/pathformats.py"
+      ],
+      "tests": [
+        "test/ui/test_ui.py",
+        "test/util/test_pathformats.py"
+      ],
+      "accepted": false,
+      "reason": "seeded state still passes; no regression to repair",
+      "seed_characters": 916,
+      "seeded_exit_code": 0
+    },
+    {
+      "commit": "28321bd3e6f968c01136c66fc9fc0b98c2e527bc",
+      "subject": "Remove default path_formats value only used in tests",
+      "production": [
+        "beets/library/library.py",
+        "beets/test/helper.py"
+      ],
+      "tests": [
+        "test/plugins/test_bpd.py",
+        "test/test_library.py"
+      ],
+      "accepted": false,
+      "reason": "seed does not apply to the pinned snapshot",
+      "seed_characters": 1373
+    },
+    {
+      "commit": "a0a88b5301f834e75c217834b51dda6017364534",
+      "subject": "Handle BeetsHTTPError in mbcollection graciously",
+      "production": [
+        "beetsplug/mbcollection.py"
+      ],
+      "tests": [
+        "test/plugins/test_mbcollection.py"
+      ],
+      "accepted": true,
+      "reason": "seeded fails, repaired passes",
+      "seed_characters": 2158,
+      "seeded_exit_code": 1,
+      "repaired_exit_code": 0
+    }
+  ]
+}
