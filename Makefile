@@ -1,4 +1,6 @@
-PYTHON ?= python3
+# Prefer the repo virtualenv: the schema gate in validate_repository.py fails closed
+# without jsonschema, which the system interpreter does not carry.
+PYTHON ?= $(shell test -x .venv/bin/python3 && echo .venv/bin/python3 || echo python3)
 SHELL := /bin/bash
 
 .PHONY: check validate test runbook summaries

@@ -5024,7 +5024,15 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         ):
             with self.assertRaisesRegex(RuntimeError, "refusing to start lanes before validation is runnable"):
                 matrix.controller_validation_python()
-        self.assertEqual(run_probe.call_count, 2)
+        probed = [call.args[0][0] for call in run_probe.call_args_list]
+        self.assertEqual(
+            probed,
+            [
+                "/missing/controller-python",
+                str(matrix.ROOT / ".venv" / "bin" / "python3"),
+                "/missing/path-python",
+            ],
+        )
 
     def test_controller_validation_python_honors_prepared_override(self) -> None:
         with (

@@ -2687,7 +2687,12 @@ def refresh_generated_runbook(root: Path = ROOT) -> None:
 def controller_validation_python() -> str:
     """Return a controller Python with all validation dependencies before spend."""
     configured = os.environ.get("WORKFLOW_VALIDATION_PYTHON")
-    candidates = [configured, sys.executable, shutil.which("python3")]
+    candidates = [
+        configured,
+        sys.executable,
+        str(ROOT / ".venv" / "bin" / "python3"),
+        shutil.which("python3"),
+    ]
     checked: list[str] = []
     for candidate in candidates:
         if not candidate or candidate in checked:

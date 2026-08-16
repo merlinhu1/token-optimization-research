@@ -3047,6 +3047,12 @@ def validate_document_lifecycle(
 
 def main() -> int:
     errors: list[str] = []
+    # Probe the schema gate unconditionally. The per-record check only fires when the
+    # registry holds sessions, so an empty registry would otherwise report green on an
+    # interpreter that cannot run the gate at all -- and the first published run would
+    # be the one to discover it.
+    if workflow_session_schema_validator() is None:
+        errors.append(WORKFLOW_SESSION_SCHEMA_UNAVAILABLE)
     for rel in REQUIRED_PATHS + LOCAL_SKILL_ARTIFACTS + DECISION_RECORDS:
         if not (ROOT / rel).exists():
             errors.append(f"missing required path: {rel}")
