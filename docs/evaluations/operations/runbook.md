@@ -70,15 +70,13 @@ python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v1 
 Owner-authorized current-control replication is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --replicate-index 1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --replicate-index 1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v1 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 ```
 
-Reusable, zero-incident-audited baselines exist for `beets-lifecycle-sequence-v1` (r0). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+Reusable, zero-incident-audited baselines exist for `beets-lifecycle-sequence-v1` (r0, r1). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
 
 ```bash
 SEQUENCE_ID=beets-lifecycle-sequence-v1

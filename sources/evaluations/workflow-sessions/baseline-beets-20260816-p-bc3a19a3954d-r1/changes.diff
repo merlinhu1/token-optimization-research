@@ -1,0 +1,217 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 2b58af2..708ee8f 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -270,16 +270,22 @@ class Parser:
+         GROUP_CLOSE,
+         ESCAPE_CHAR,
+     )
+-    escapable_chars = (SYMBOL_DELIM, FUNC_DELIM, GROUP_CLOSE)
++    escapable_chars = (SYMBOL_DELIM, FUNC_DELIM, GROUP_CLOSE, ARG_SEP)
+     terminator_chars = (GROUP_CLOSE,)
+ 
+-    def parse_expression(self):
++    def parse_expression(self, in_argument=False):
+         """Parse a template expression starting at ``pos``. Resulting
+         components (Unicode strings, Symbols, and Calls) are added to
+         the ``parts`` field, a list.  The ``pos`` field is updated to be
+-        the next character after the expression.
++        the next character after the expression. When ``in_argument``
++        is true, an unescaped argument separator also terminates the
++        expression.
+         """
+         special_chars = self.special_chars
++        terminator_chars = self.terminator_chars
++        if in_argument:
++            special_chars += (ARG_SEP,)
++            terminator_chars += (ARG_SEP,)
+         special_char_re = re.compile(
+             rf"[{''.join(map(re.escape, special_chars))}]|\Z"
+         )
+@@ -304,7 +310,7 @@ class Parser:
+                 # The last character can never begin a structure, so we
+                 # just interpret it as a literal character (unless it
+                 # terminates the expression, as with , and }).
+-                if char not in self.terminator_chars:
++                if char not in terminator_chars:
+                     text_parts.append(char)
+                     self.pos += 1
+                 break
+@@ -332,7 +338,7 @@ class Parser:
+             elif char == FUNC_DELIM:
+                 # Parse a function call.
+                 self.parse_call()
+-            elif char in self.terminator_chars:
++            elif char in terminator_chars:
+                 # Template terminated.
+                 break
+             elif char == GROUP_OPEN:
+@@ -442,7 +448,7 @@ class Parser:
+ 
+         while self.pos < len(self.string):
+             subparser = Parser(self.string[self.pos :])
+-            subparser.parse_expression()
++            subparser.parse_expression(in_argument=True)
+ 
+             # Extract and advance past the parsed expression.
+             expressions.append(Expression(subparser.parts))
+
+# --- task-02-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 2b58af2..708ee8f 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -270,16 +270,22 @@ class Parser:
+         GROUP_CLOSE,
+         ESCAPE_CHAR,
+     )
+-    escapable_chars = (SYMBOL_DELIM, FUNC_DELIM, GROUP_CLOSE)
++    escapable_chars = (SYMBOL_DELIM, FUNC_DELIM, GROUP_CLOSE, ARG_SEP)
+     terminator_chars = (GROUP_CLOSE,)
+ 
+-    def parse_expression(self):
++    def parse_expression(self, in_argument=False):
+         """Parse a template expression starting at ``pos``. Resulting
+         components (Unicode strings, Symbols, and Calls) are added to
+         the ``parts`` field, a list.  The ``pos`` field is updated to be
+-        the next character after the expression.
++        the next character after the expression. When ``in_argument``
++        is true, an unescaped argument separator also terminates the
++        expression.
+         """
+         special_chars = self.special_chars
++        terminator_chars = self.terminator_chars
++        if in_argument:
++            special_chars += (ARG_SEP,)
++            terminator_chars += (ARG_SEP,)
+         special_char_re = re.compile(
+             rf"[{''.join(map(re.escape, special_chars))}]|\Z"
+         )
+@@ -304,7 +310,7 @@ class Parser:
+                 # The last character can never begin a structure, so we
+                 # just interpret it as a literal character (unless it
+                 # terminates the expression, as with , and }).
+-                if char not in self.terminator_chars:
++                if char not in terminator_chars:
+                     text_parts.append(char)
+                     self.pos += 1
+                 break
+@@ -332,7 +338,7 @@ class Parser:
+             elif char == FUNC_DELIM:
+                 # Parse a function call.
+                 self.parse_call()
+-            elif char in self.terminator_chars:
++            elif char in terminator_chars:
+                 # Template terminated.
+                 break
+             elif char == GROUP_OPEN:
+@@ -442,7 +448,7 @@ class Parser:
+ 
+         while self.pos < len(self.string):
+             subparser = Parser(self.string[self.pos :])
+-            subparser.parse_expression()
++            subparser.parse_expression(in_argument=True)
+ 
+             # Extract and advance past the parsed expression.
+             expressions.append(Expression(subparser.parts))
+
+# --- task-03-agent ---
+diff --git a/beets/dbcore/db.py b/beets/dbcore/db.py
+index ff57aaf..78c4432 100755
+--- a/beets/dbcore/db.py
++++ b/beets/dbcore/db.py
+@@ -189,7 +189,7 @@ class LazyDict(UserDict[str, Any]):
+ 
+     def __iter__(self) -> Iterator[str]:
+         """Iterate over the available field names (excluding computed fields)."""
+-        return (key for key in self._all_keys)
++        return iter(self._all_keys)
+ 
+     def __len__(self) -> int:
+         return len(self._all_keys)
+diff --git a/beets/util/functemplate.py b/beets/util/functemplate.py
+index 2b58af2..708ee8f 100644
+--- a/beets/util/functemplate.py
++++ b/beets/util/functemplate.py
+@@ -270,16 +270,22 @@ class Parser:
+         GROUP_CLOSE,
+         ESCAPE_CHAR,
+     )
+-    escapable_chars = (SYMBOL_DELIM, FUNC_DELIM, GROUP_CLOSE)
++    escapable_chars = (SYMBOL_DELIM, FUNC_DELIM, GROUP_CLOSE, ARG_SEP)
+     terminator_chars = (GROUP_CLOSE,)
+ 
+-    def parse_expression(self):
++    def parse_expression(self, in_argument=False):
+         """Parse a template expression starting at ``pos``. Resulting
+         components (Unicode strings, Symbols, and Calls) are added to
+         the ``parts`` field, a list.  The ``pos`` field is updated to be
+-        the next character after the expression.
++        the next character after the expression. When ``in_argument``
++        is true, an unescaped argument separator also terminates the
++        expression.
+         """
+         special_chars = self.special_chars
++        terminator_chars = self.terminator_chars
++        if in_argument:
++            special_chars += (ARG_SEP,)
++            terminator_chars += (ARG_SEP,)
+         special_char_re = re.compile(
+             rf"[{''.join(map(re.escape, special_chars))}]|\Z"
+         )
+@@ -304,7 +310,7 @@ class Parser:
+                 # The last character can never begin a structure, so we
+                 # just interpret it as a literal character (unless it
+                 # terminates the expression, as with , and }).
+-                if char not in self.terminator_chars:
++                if char not in terminator_chars:
+                     text_parts.append(char)
+                     self.pos += 1
+                 break
+@@ -332,7 +338,7 @@ class Parser:
+             elif char == FUNC_DELIM:
+                 # Parse a function call.
+                 self.parse_call()
+-            elif char in self.terminator_chars:
++            elif char in terminator_chars:
+                 # Template terminated.
+                 break
+             elif char == GROUP_OPEN:
+@@ -442,7 +448,7 @@ class Parser:
+ 
+         while self.pos < len(self.string):
+             subparser = Parser(self.string[self.pos :])
+-            subparser.parse_expression()
++            subparser.parse_expression(in_argument=True)
+ 
+             # Extract and advance past the parsed expression.
+             expressions.append(Expression(subparser.parts))
+diff --git a/beetsplug/ftintitle.py b/beetsplug/ftintitle.py
+index 1c45962..74d9d7e 100644
+--- a/beetsplug/ftintitle.py
++++ b/beetsplug/ftintitle.py
+@@ -75,7 +75,7 @@ def split_on_feat(
+     # Try explicit featuring tokens first (ft, feat, featuring, etc.)
+     # to avoid splitting on generic separators like "&" when both are present
+     regex_explicit = re.compile(
+-        plugins.feat_tokens(for_artist=for_artist, custom_words=custom_words),
++        plugins.feat_tokens(for_artist=False, custom_words=custom_words),
+         re.IGNORECASE,
+     )
+     parts = _split_on_feat_token(regex_explicit, artist)
