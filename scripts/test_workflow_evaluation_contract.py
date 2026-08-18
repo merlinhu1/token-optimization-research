@@ -6154,9 +6154,9 @@ class LifecycleV1ContractTest(unittest.TestCase):
         )
         for sequence in active:
             self.assertEqual(sequence["task_family_generation"], validate_repository.CURRENT_TASK_FAMILY_GENERATION)
-            self.assertEqual(
+            self.assertRegex(
                 Path(sequence["qualification_path"]).name,
-                validate_repository.TASK_FAMILY_DESIGN[sequence["task_family_generation"]]["qualification_name"],
+                validate_repository.TASK_FAMILY_DESIGN[sequence["task_family_generation"]]["qualification_name_pattern"],
             )
             self.assertEqual(sequence["acceptance_design"], "compile-plus-essential-smoke")
             gate = sequence["mistake_gate"]

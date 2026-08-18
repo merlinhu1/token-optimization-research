@@ -36,19 +36,11 @@ ROOT = Path(__file__).resolve().parents[1]
 GENERATION = "lifecycle-v2"
 
 BEETS_SUITE = "uv run --offline --frozen pytest -q --tb=no"
-# Six Fastify test files fail on a clean pinned checkout in the sandboxed lane because they
-# open real sockets. Left in, they show the agent seven failures it did not cause and cannot
-# fix, which is noise charged to the measurement. Excluding them keeps the suite a valid
-# oracle: the seeded regressions still fail underneath.
-FASTIFY_IGNORES = (
-    "test/close.test.js",
-    "test/custom-http-server.test.js",
-    "test/https/custom-https-server.test.js",
-    "test/request-error.test.js",
-    "test/client-timeout.test.js",
-    "test/versioned-routes.test.js",
-)
-FASTIFY_SUITE = "npm run unit -- --reporter=dot " + " ".join(f"-i {p}" for p in FASTIFY_IGNORES)
+# Six Fastify test files fail on a clean checkout of the pinned commit in the sandboxed lane
+# because the sandbox resolves `localhost` to ::1 first; the fixture preparation script removes
+# them from the prepared base, so the suite command carries no exclusion list. See
+# sources/evaluations/fixtures/medium/fastify-fastify/setup.sh.
+FASTIFY_SUITE = "npm run unit -- --reporter=dot"
 
 CLOSING = (
     "Implement the task completely and correctly. Search and inspect the repository as "

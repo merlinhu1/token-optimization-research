@@ -31,12 +31,18 @@ if str(ROOT) not in sys.path:
 # three tasks, a feature/refactor/review split, one qualification filename -- so a new
 # family could not be registered without the checks misfiring. Each generation now
 # declares its own shape and every check reads it from here.
+#
+# The qualification filename is matched by pattern rather than pinned to one exact name.
+# Two fixtures share a generation but qualify on their own schedule, so requalifying one --
+# after a fixture-preparation or prompt change that touches only it -- must not force the
+# other to regenerate evidence that did not change. The generation and the dated-name
+# discipline stay enforced.
 TASK_FAMILY_DESIGN = {
     "lifecycle-v1": {
         "sequence_suffix": "-lifecycle-sequence-v1",
         "task_suffix": "-v1",
         "sequence_contract": "feature-refactor-review",
-        "qualification_name": "qualification-lifecycle-v1-20260815.json",
+        "qualification_name_pattern": r"qualification-lifecycle-v1-\d{8}\.json",
         "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
         "review_task_gate": "compile-only",
         "reset_policy_markers": (
@@ -49,7 +55,7 @@ TASK_FAMILY_DESIGN = {
         "sequence_suffix": "-lifecycle-sequence-v2",
         "task_suffix": "-v2",
         "sequence_contract": "bounded-defect-repair-series",
-        "qualification_name": "qualification-lifecycle-v2-20260816.json",
+        "qualification_name_pattern": r"qualification-lifecycle-v2-\d{8}\.json",
         "coding_task_classes": ["defect-repair"],
         "review_task_gate": "not-applicable",
         "reset_policy_markers": (
@@ -1623,9 +1629,9 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
                 errors.append(f"active workflow sequence {sid} seed policy must keep controller scoring out of the agent task")
         qualification_path = str(sequence.get("qualification_path", ""))
         qualification_name = Path(qualification_path).name
-        expected_qualification_name = design["qualification_name"]
-        if qualification_name != expected_qualification_name:
-            errors.append(f"active workflow sequence {sid} must bind {expected_qualification_name}")
+        expected_qualification_pattern = design["qualification_name_pattern"]
+        if not re.fullmatch(expected_qualification_pattern, qualification_name):
+            errors.append(f"active workflow sequence {sid} must bind {expected_qualification_pattern}")
         if sequence.get("status") == "active":
             expected_design = "compile-plus-essential-smoke"
             if sequence.get("acceptance_design") != expected_design:

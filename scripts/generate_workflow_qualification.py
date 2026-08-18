@@ -178,13 +178,22 @@ def main() -> int:
     source_checkout = args.checkout.resolve()
     expected_commit = sequence["initial_snapshot"]["commit"]
     expected_upstream = sequence["initial_snapshot"]["upstream"]
+    # When the sequence declares prepared removals, the qualified starting point is the
+    # prepared base the controller builds on top of the pin, not the pin itself. The recorded
+    # snapshot stays the upstream commit; the prepared commit is what a checkout must be at.
+    prepared_removals = sequence["initial_snapshot"].get("prepared_removals")
+    expected_head = prepared_removals["prepared_commit"] if prepared_removals else expected_commit
     observed_head = out(["git", "rev-parse", "HEAD"], source_checkout)
-    observed_tree = out(["git", "rev-parse", f"{expected_commit}^{{tree}}"], source_checkout)
+    observed_tree = out(["git", "rev-parse", f"{expected_head}^{{tree}}"], source_checkout)
     observed_remotes = out(["git", "remote", "-v"], source_checkout).splitlines()
     remote_urls = {line.split()[1] for line in observed_remotes if line.split()}
     normalized_remotes = {normalize_remote(url) for url in remote_urls}
-    if observed_head != expected_commit:
-        raise SystemExit(f"checkout HEAD {observed_head} does not match sequence snapshot {expected_commit}")
+    if observed_head != expected_head:
+        raise SystemExit(f"checkout HEAD {observed_head} does not match expected starting point {expected_head}")
+    if prepared_removals:
+        present = [p for p in prepared_removals["paths"] if (source_checkout / p).exists()]
+        if present:
+            raise SystemExit(f"checkout still carries prepared-removal paths: {present}")
     if normalize_remote(expected_upstream) not in normalized_remotes:
         raise SystemExit(f"checkout remotes do not include expected upstream {expected_upstream}")
     status = out(["git", "status", "--porcelain", "--untracked-files=all"], source_checkout)
@@ -488,6 +497,7 @@ def main() -> int:
         "controller_hidden_sha256": validation.task_directory_sha256(controller_hidden) if controller_hidden.is_dir() else None,
         "qualified_on": sequence["qualification_date"],
         "snapshot": expected_commit,
+        "prepared_removals": prepared_removals,
         "observed_source": {"head": observed_head, "tree": observed_tree, "remotes": observed_remotes, "expected_upstream": expected_upstream, "clean": True},
         "tool_versions": {"git": out(["git", "--version"], ROOT), "qualification_dependency_command": dependency_command},
         "ordered_task_ids": [task["id"] for task in ordered],

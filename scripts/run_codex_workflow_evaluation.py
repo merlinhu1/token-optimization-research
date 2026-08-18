@@ -2525,6 +2525,50 @@ def conceal_seed(seq: dict[str, Any], repo: Path, run_dir: Path, order: int, fix
     return verification
 
 
+def prepared_removal_commit_env(removals: dict[str, Any]) -> dict[str, str]:
+    """Fixed committer identity and date, so the prepared base is a reproducible hash.
+
+    Everything that decides the hash lives in the sequence, so the evaluation checkout and the
+    local fixture cannot build different bases from the same declaration.
+    """
+    identity = removals["commit_identity"]
+    return {
+        "GIT_AUTHOR_NAME": identity["name"],
+        "GIT_AUTHOR_EMAIL": identity["email"],
+        "GIT_COMMITTER_NAME": identity["name"],
+        "GIT_COMMITTER_EMAIL": identity["email"],
+        "GIT_AUTHOR_DATE": identity["date"],
+        "GIT_COMMITTER_DATE": identity["date"],
+    }
+
+
+def apply_prepared_removals(repo: Path, seq: dict, run_dir: Path) -> None:
+    """Remove upstream tests the sandboxed lane cannot run, before anything is seeded.
+
+    A sequence declares these only when the pinned checkout fails them on a clean tree for
+    reasons the pin does not own, so leaving them in would charge every run the cost of an
+    agent investigating failures it did not cause. The removal is committed, not left in the
+    working tree, so the composite seed diff stays exactly the seeded regressions.
+    """
+    removals = seq.get("initial_snapshot", {}).get("prepared_removals")
+    if not removals:
+        return
+    paths = list(removals["paths"])
+    missing = [p for p in paths if not (repo / p).exists()]
+    if missing:
+        raise RuntimeError(f"prepared removals not present in pinned checkout: {missing}")
+    run(["git", "rm", "-q", "--", *paths], cwd=repo)
+    env = {**os.environ, **prepared_removal_commit_env(removals)}
+    run(["git", "commit", "-q", "-m", removals["commit_message"]], cwd=repo, env=env)
+    prepared = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+    expected = removals["prepared_commit"]
+    if prepared != expected:
+        raise RuntimeError(f"prepared base {prepared}, expected {expected}")
+    (run_dir / "setup-prepared-removals.json").write_text(
+        json.dumps({"prepared_commit": prepared, "paths": paths}, indent=2) + "\n"
+    )
+
+
 def apply_composite_seed_patches(repo: Path, patches: list[Path], scratch: Path, log_path: Path) -> None:
     """Merge independently-authored regressions against one fixed snapshot."""
     scratch.mkdir(parents=True, exist_ok=True)
@@ -2661,6 +2705,7 @@ def create_project(seq: dict[str, Any], project: Path, run_dir: Path, *, conceal
     run(["git", "clean", "-fdx"], cwd=repo, stdout=run_dir / "setup-clean.txt")
     run(["git", "config", "user.email", "workflow-eval@example.invalid"], cwd=repo)
     run(["git", "config", "user.name", "Workflow Eval"], cwd=repo)
+    apply_prepared_removals(repo, seq, run_dir)
 
     # Build every regression against the same fixed commit before provider
     # execution. The model then receives one persistent composite-broken root;

@@ -1,0 +1,334 @@
+{
+  "schema_version": 6,
+  "task_family_generation": "lifecycle-v2",
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-08-18",
+  "snapshot": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+  "prepared_removals": {
+    "prepared_commit": "9246fddd50b8031a8b943ef50c5abff8df48be29",
+    "reason": "Six upstream test files fail on a clean checkout of the pinned commit in the sandboxed lane, and not because of anything the pin contains: the sandbox resolves `localhost` to ::1 ahead of 127.0.0.1, so a server bound through a serverFactory listens on ::1 while undici's fetch connects IPv4-first and is refused. Upstream v5.11.3, 34 days past the pin, fails the same seven. Left in place they show the agent seven failures it did not cause and cannot fix, and whether it investigates them is variance charged to the measurement. The controller removes them and commits the removal onto the pinned tree with a fixed identity and date, so the prepared base is a reproducible commit that both the evaluation checkout and the local fixture pin. The clean prepared tree exits zero and every seeded regression still fails underneath.",
+    "paths": [
+      "test/close.test.js",
+      "test/custom-http-server.test.js",
+      "test/https/custom-https-server.test.js",
+      "test/request-error.test.js",
+      "test/client-timeout.test.js",
+      "test/versioned-routes.test.js"
+    ],
+    "commit_message": "Fixture preparation: remove tests requiring dual-stack loopback",
+    "commit_identity": {
+      "name": "fixture-preparation",
+      "email": "fixture-preparation@invalid",
+      "date": "2026-08-18T00:00:00+00:00"
+    }
+  },
+  "observed_source": {
+    "head": "9246fddd50b8031a8b943ef50c5abff8df48be29",
+    "tree": "5e38d6e0a5ca400cce7cf0d37b7bad20e2d80a23",
+    "remotes": [
+      "origin\tgit@github.com:fastify/fastify.git (fetch) [blob:none]",
+      "origin\tgit@github.com:fastify/fastify.git (push)"
+    ],
+    "expected_upstream": "https://github.com/fastify/fastify.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "npm install --ignore-scripts --no-audit --no-fund"
+  },
+  "ordered_task_ids": [
+    "fastify-trailer-duplicate-callback-v2",
+    "fastify-nested-prefix-join-v2",
+    "fastify-serializer-compiler-flag-v2",
+    "fastify-sync-validator-throw-v2",
+    "fastify-duplicated-route-method-array-v2",
+    "fastify-head-route-web-stream-v2"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "seed_patch_sha256": "bcf925eadf1015114deab43e340457010fc1edfefe74460cf111d2c76454f70c",
+      "verifier_sha256": "82308ecd35e28a6cef89e6ac3713de28eed720cc971c8d85b1f96d9464f26e85",
+      "compile_command": "node --check lib/reply.js",
+      "essential_smoke_command": "node --test test/reply-trailers.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/reply.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "1d2bf5446958e8478bd799a398f85a8e6b2055204b031feca92c10aa1d7c8f42",
+      "task_directory_sha256": "d6b18f126489f05c9153db5fdaecfc8666cb6d9885c72efe5a34fe5c5b121eba"
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "seed_patch_sha256": "bfdc02c8c999fda6b5fa28c42bf0342a76b10cb6db6bcfeddc2b0cd9a5facf75",
+      "verifier_sha256": "275979c24c61281ea27f8f740132b75284e3124e6c711a0ee1337263079efce8",
+      "compile_command": "node --check lib/plugin-override.js",
+      "essential_smoke_command": "node --test test/route-prefix.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/plugin-override.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "9140e35789ff2a0c308da7d9a193199743b11ea43730c1c67203bd53bb03ab87",
+      "task_directory_sha256": "80c040141188deec173eac3e2d4447b8f646c32e28b2c041a439f830ac71c6ac"
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "seed_patch_sha256": "dbe5589729b58fbcf78dee12e597d77a4bd06c6fd0d721d209ebd4b0c034987b",
+      "verifier_sha256": "76e2d26b302be12f5b215a0f38e7c5e7b3d054de57a556097bd2c47323024125",
+      "compile_command": "node --check lib/schema-controller.js",
+      "essential_smoke_command": "node --test test/internals/schema-controller-perf.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/schema-controller.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "aba4caeb621c7c6fd15f655b7f9cb9b75ba064ff79c00c8779a89132e16a6a8b",
+      "task_directory_sha256": "9a47948fe84280ce5e9075327290535e1bb251a090cdf303910e266995e4bad5"
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "seed_patch_sha256": "bd2ce03bc823a1e0f7a6a462bb35e445374b6375a7117b5dfbe0eebedc22e22f",
+      "verifier_sha256": "da0762fd09960edcab6a930b7535cc5d7bf4ba2231a9dc2429719e1182365e37",
+      "compile_command": "node --check lib/validation.js",
+      "essential_smoke_command": "node --test test/validation-error-handling.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/validation.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "8cb5e260f11112e26fbbbac94959ef624dec990600d68a629dfd83f14ffc0596",
+      "task_directory_sha256": "99d9f721b25d507d3b003bc63b97ac0c81b4febc6ba10e94b92297e9ddefc1e4"
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "seed_patch_sha256": "0df92195b1f7730fcb55c8cc3f6dbf7ffa08ab2fb47b490370d8dfddb55e4b48",
+      "verifier_sha256": "031b3fa7f2a874488900316ce4950e0fa149c8982ac48d46c982c6a779339ce3",
+      "compile_command": "node --check lib/route.js",
+      "essential_smoke_command": "node --test test/throw.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/route.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "8af7ae673c49f3ee7cb1c5c0d5a39ea653d937822e138eaeb82466ef81dd5604",
+      "task_directory_sha256": "fd369b0de1cfbd1298633fcf67d98570706e20519856ea73ac856af45e5cbeda"
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "seed_patch_sha256": "a3b3c94efcbf6b5e7d90e70e6567171f3e2afd667369a3184dfdf724cb38190f",
+      "verifier_sha256": "dd174e56209527176bfeab1a91f7f268e94cfa29c2e9d9b8fd632f91cfc5597d",
+      "compile_command": "node --check lib/head-route.js",
+      "essential_smoke_command": "node --test test/route.6.test.js && node --test test/route.7.test.js",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "lib/head-route.js"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "a03cca0d9c17810222bc37e71a29d39a4ebdabe9c5715216a638af2de9256d57",
+      "task_directory_sha256": "73d92e897d01c2260e26af05acd9b5130ca3d0a826045da9f3598dddde8523e9"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0,
+        "fastify-sync-validator-throw-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0,
+        "fastify-sync-validator-throw-v2": 0,
+        "fastify-duplicated-route-method-array-v2": 0
+      }
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "fastify-trailer-duplicate-callback-v2": 0,
+        "fastify-nested-prefix-join-v2": 0,
+        "fastify-serializer-compiler-flag-v2": 0,
+        "fastify-sync-validator-throw-v2": 0,
+        "fastify-duplicated-route-method-array-v2": 0,
+        "fastify-head-route-web-stream-v2": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seeded_verifiers_zero": false,
+  "composite_seed_verifier_outcomes_valid": true,
+  "composite_seed_verifier_exits": {
+    "fastify-trailer-duplicate-callback-v2": 1,
+    "fastify-nested-prefix-join-v2": 1,
+    "fastify-serializer-compiler-flag-v2": 1,
+    "fastify-sync-validator-throw-v2": 1,
+    "fastify-duplicated-route-method-array-v2": 1,
+    "fastify-head-route-web-stream-v2": 1
+  },
+  "composite_seed_diff_sha256": "424bb4058ccaac9a04b7c6915934f1c7f698a977eae7610c0d555052d4de8290",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "seeded_verifiers_zero": false,
+  "seeded_verifier_outcomes_valid": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "aggregate_verifier_exit": 0,
+  "aggregate_verifier_task_exits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "aggregate_verifier_environment_passed": true,
+  "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+  "project_compile_passed": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": true,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+  "controller_acceptance_policy_not_model_facing": true,
+  "all_acceptance_behavior_model_visible": false,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 0,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-fastify-fastify",
+  "sequence_id": "fastify-lifecycle-sequence-v2",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "fastify-trailer-duplicate-callback-v2": "d6b18f126489f05c9153db5fdaecfc8666cb6d9885c72efe5a34fe5c5b121eba",
+      "fastify-nested-prefix-join-v2": "80c040141188deec173eac3e2d4447b8f646c32e28b2c041a439f830ac71c6ac",
+      "fastify-serializer-compiler-flag-v2": "9a47948fe84280ce5e9075327290535e1bb251a090cdf303910e266995e4bad5",
+      "fastify-sync-validator-throw-v2": "99d9f721b25d507d3b003bc63b97ac0c81b4febc6ba10e94b92297e9ddefc1e4",
+      "fastify-duplicated-route-method-array-v2": "fd369b0de1cfbd1298633fcf67d98570706e20519856ea73ac856af45e5cbeda",
+      "fastify-head-route-web-stream-v2": "73d92e897d01c2260e26af05acd9b5130ca3d0a826045da9f3598dddde8523e9"
+    }
+  }
+}

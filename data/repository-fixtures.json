@@ -37,7 +37,8 @@
       "snapshot": {
         "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
         "branch": "detached",
-        "snapshot_policy": "Pinned Lifecycle V1 fixed snapshot; all three semantic regressions are controller-injected before sequential prompt disclosure."
+        "snapshot_policy": "Pinned Lifecycle V2 fixed snapshot. The controller first builds the prepared base by removing six upstream test files the sandboxed lane cannot run on a clean checkout of the pin and committing that removal with a fixed identity and date, which is why prepared_commit is reproducible and pinned alongside the upstream commit; see initial_snapshot.prepared_removals in data/workflow-task-sequences.json. All six bounded semantic regressions are then controller-injected as one composite start before sequential prompt disclosure.",
+        "prepared_commit": "9246fddd50b8031a8b943ef50c5abff8df48be29"
       },
       "task_classes": [
         "feature-implementation",
@@ -55,8 +56,8 @@
         "command": "sources/evaluations/fixtures/medium/fastify-fastify/verify-smoke.sh"
       },
       "prompt": {
-        "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v1/README.md",
-        "prompt_policy": "Lifecycle V1 gives complete software objectives with normal repository discovery and relevant-check guidance; task 3 alone receives the proposed review patch."
+        "path": "sources/evaluations/fixtures/medium/fastify-fastify/task-generations/lifecycle-v2/",
+        "prompt_policy": "Lifecycle V2 gives one bounded software objective per task, stating the observable symptom without naming the file, function, or test, and permitting normal repository discovery and relevant checks. One agent-prompt.txt per task directory is the model-facing byte source; there is no review-patch task in this generation."
       },
       "artifact_paths": {
         "root": "sources/evaluations/workflow-sessions/",
@@ -86,20 +87,23 @@
         "behavior-caveman-codex-skill-v1"
       ],
       "blockers": [
-        "Lifecycle V1 essential-smoke provider pilot must complete every task with all task verifiers and final project compilation exiting zero before treatment launch."
+        "Lifecycle V2 essential-smoke provider pilot must complete every task with all task verifiers and final project compilation exiting zero before treatment launch."
       ],
       "caveats": [
         "Task acceptance does not gate weighted-token sample retention; broader tests and source review remain diagnostic.",
         "Earlier compile-only sessions and protocols remain historical evidence and are not compatible controls for the active acceptance contract."
       ],
       "tasks": [
-        "fastify-lifecycle-feature-v1",
-        "fastify-lifecycle-refactor-v1",
-        "fastify-lifecycle-review-v1"
+        "fastify-trailer-duplicate-callback-v2",
+        "fastify-nested-prefix-join-v2",
+        "fastify-serializer-compiler-flag-v2",
+        "fastify-sync-validator-throw-v2",
+        "fastify-duplicated-route-method-array-v2",
+        "fastify-head-route-web-stream-v2"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "fastify-lifecycle-sequence-v2",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v2-20260816.json",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v2-20260818.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],
