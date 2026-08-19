@@ -6,7 +6,7 @@ The current execution contract is Lifecycle V2 across Fastify and Beets: 6 bound
 
 The previous provider-backed Lifecycle V1 corpus was archived before rerun because model-facing prompts and shared prompt/configuration identity changed. The archive contains 103 historical sessions, their comparisons, and superseded protocols. They remain immutable evidence for the prior bytes and are not current controls.
 
-The active registry therefore contains one provider-backed baseline session, Fastify r0, in sample plan `sample-bd72ef33cf25` (N=3). The Beets bare-Codex protocol remains `frozen-ready-not-run`; future provider work must be fresh, explicitly authorized, and bound to the current Lifecycle V2 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
+The active registry therefore contains one provider-backed baseline session, Fastify r0. It is a single replicate: a screen of the lane's cost, not an effect estimate, and no treatment has run against it. The Beets bare-Codex protocol remains `frozen-ready-not-run`; future provider work must be fresh, explicitly authorized, and bound to the current Lifecycle V2 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
 
 ## Archived evidence
 

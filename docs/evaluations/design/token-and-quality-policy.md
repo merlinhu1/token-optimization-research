@@ -101,11 +101,12 @@ Do not ask the agent for extra reporting to collect these metrics. When a specif
 
 - One replicate is one complete multi-task workflow execution.
 - The **pilot gate** is unchanged and distinct from sampling: one first-valid qualifying run unlocks a campaign. Median-of-N governs the result sample, not the gate.
-- **Register the sample before spending.** A sample plan names the protocol, the model condition, and `planned_replicates` N, where N is odd and at least 3. Registration happens before the first provider call.
-- **The point estimate is the median weighted token cost** across the N retained replicates. Report the median with its observed spread, not the median alone.
-- Retain and publish all N replicates, including verifier failures and low-quality outputs. A replicate is never dropped because its number is inconvenient.
+- **Replicate counts are chosen per protocol as the work warrants** ([ADR 0009](../../architecture/decision-records/0009-replicate-counts-are-chosen-not-registered.md)). There is no minimum, no parity requirement, no cap, and nothing to register in advance.
+- A **single replicate is a screen, not an effect estimate**: it can support "not worth carrying forward", never a ranked effect size. State which claim you are making.
+- **Where several replicates exist, the point estimate is the median weighted token cost** reported with its observed spread and its two-factor decomposition.
+- Retain and publish all replicates, including verifier failures and low-quality outputs. A replicate is never dropped because its number is inconvenient.
 - A replicate that fails **before** the provider boundary produced no measurement: replace it and retain its zero-spend receipt. A replicate whose agent performed badly produced a real token count and counts toward the median.
-- Extending a sample after seeing results requires a new registration; report the original and extended estimates together.
+- **State how many replicates each arm holds** in every comparison. Optional stopping is managed by disclosure, so the count is part of the result.
 - Pair baseline and treatment by comparison identity and explicit baseline binding. Raw `replicate_index` values are runtime-local; use a validated accepted-replicate ordinal when accepted labels differ across runtimes.
 - Never compare across incomparable or fixture-invalid protocols. Do not discard a compatible pair because model quality differs.
 

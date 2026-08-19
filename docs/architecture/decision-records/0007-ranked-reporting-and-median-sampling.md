@@ -2,6 +2,12 @@
 
 ## Status
 
+Partially superseded (2026-08-19). The pre-registration decisions here -- registering N before the
+first provider call, requiring N odd and at least 3, and rejecting a retained set larger than its
+registered N -- are superseded by
+[`0009-replicate-counts-are-chosen-not-registered.md`](0009-replicate-counts-are-chosen-not-registered.md).
+The ranking, dispersion, and publish-every-replicate decisions remain accepted and in force.
+
 Accepted. Supersedes the first-valid-sample rule in
 [`0005-token-accounting-and-protocol-identity.md`](0005-token-accounting-and-protocol-identity.md)
 and the no-ranking position in

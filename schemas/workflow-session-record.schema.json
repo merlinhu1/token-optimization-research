@@ -987,10 +987,9 @@
     },
     "sample_plan": {
       "type": "object",
-      "description": "Pre-registered sample this replicate belongs to. Registered before the first provider call so a median cannot be assembled by rerunning until the number is favourable (ADR 0007).",
+      "description": "Optional legacy pre-registration retained on records that carry it. No longer required or enforced: replicate counts are chosen per protocol as the work warrants, including a single screening replicate (ADR 0009).",
       "required": [
         "plan_id",
-        "planned_replicates",
         "registered_on",
         "estimator"
       ],
@@ -1002,8 +1001,8 @@
         },
         "planned_replicates": {
           "type": "integer",
-          "minimum": 3,
-          "description": "N, odd and at least 3. Enforced odd by validate_repository."
+          "minimum": 1,
+          "description": "Historical: replicates the plan intended to hold."
         },
         "registered_on": {
           "type": "string",
@@ -1040,8 +1039,7 @@
           "frozen_protocol",
           "selected_execution",
           "docker_image_identity",
-          "tool_adapter_identity",
-          "sample_plan"
+          "tool_adapter_identity"
         ],
         "properties": {
           "task_sequence": {

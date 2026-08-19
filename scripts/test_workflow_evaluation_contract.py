@@ -2872,61 +2872,34 @@ class PublishedSchemaGateTest(unittest.TestCase):
             )
         self.assertEqual(spy.call_count, len(registry["sessions"]))
 
-    def _planned(self, plan_id="unit-plan", n=3, index=0, **over):
+    def _replicate(self, index=0, sequence="s", profile="p", condition="c", pool="f", **over):
         record = reference_session_record()
-        record["replicate_index"] = index
-        record["sample_plan"] = {
-            "plan_id": plan_id,
-            "planned_replicates": n,
-            "registered_on": "2026-08-15",
-            "estimator": "median-weighted-token-cost",
-            **over,
-        }
+        record.update(replicate_index=index, **over)
+        record.setdefault("task_sequence", {})["sequence_id"] = sequence
+        record.setdefault("profile", {})["profile_id"] = profile
+        record.setdefault("agent", {})["model_condition_id"] = condition
+        record.setdefault("baseline_pool", {})["protocol_fingerprint"] = pool
         return record
 
-    def test_sample_plan_requires_odd_n_of_at_least_three(self) -> None:
-        for bad in (2, 4, 1, 0):
+    def test_replicate_count_is_unconstrained(self) -> None:
+        """ADR 0009: no minimum, no parity, and no cap on retained replicates."""
+        for count in (1, 2, 4, 9):
             errors: list[str] = []
-            validate_repository.validate_sample_plans([self._planned(n=bad)], errors)
-            self.assertTrue(
-                any("odd integer >= 3" in e for e in errors), (bad, errors)
-            )
-        for good in (3, 5, 7):
-            errors = []
-            validate_repository.validate_sample_plans([self._planned(n=good)], errors)
-            self.assertEqual(errors, [], good)
+            members = [self._replicate(index=i) for i in range(count)]
+            validate_repository.validate_replicate_indexes(members, errors)
+            self.assertEqual(errors, [], f"{count} replicates should validate")
 
-    def test_sample_plan_rejects_retaining_more_replicates_than_registered(self) -> None:
-        """Running past N after seeing results is cherry-picking with extra steps."""
-        members = [self._planned(n=3, index=i) for i in range(4)]
+    def test_duplicate_replicate_index_is_still_rejected(self) -> None:
         errors: list[str] = []
-        validate_repository.validate_sample_plans(members, errors)
-        self.assertTrue(
-            any("registered 3" in e and "retains 4" in e for e in errors), errors
+        validate_repository.validate_replicate_indexes(
+            [self._replicate(index=0), self._replicate(index=0)], errors
         )
+        self.assertTrue(any("duplicate replicate_index" in e for e in errors), errors)
 
-    def test_sample_plan_rejects_inconsistent_or_duplicated_members(self) -> None:
-        conflicting = [self._planned(n=3, index=0), self._planned(n=5, index=1)]
-        errors: list[str] = []
-        validate_repository.validate_sample_plans(conflicting, errors)
-        self.assertTrue(any("conflicting planned_replicates" in e for e in errors), errors)
-
-        duplicated = [self._planned(n=3, index=0), self._planned(n=3, index=0)]
-        errors = []
-        validate_repository.validate_sample_plans(duplicated, errors)
-        self.assertTrue(any("reuses a replicate_index" in e for e in errors), errors)
-
-    def test_schema_requires_a_registered_sample_plan_for_v2_records(self) -> None:
-        schema = json.loads((ROOT / validate_repository.WORKFLOW_SESSION_SCHEMA_REL).read_text())
-        v2 = next(
-            branch for branch in schema["allOf"]
-            if branch.get("if", {}).get("properties", {}).get("schema_version", {}).get("const") == 2
-        )
-        self.assertIn("sample_plan", v2["then"]["required"])
-        self.assertEqual(
-            schema["properties"]["sample_plan"]["properties"]["estimator"]["const"],
-            "median-weighted-token-cost",
-        )
+    def test_schema_no_longer_requires_a_sample_plan(self) -> None:
+        schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
+        self.assertNotIn("sample_plan", json.dumps(schema.get("allOf", [])))
+        self.assertIn("sample_plan", schema["properties"])
 
     def test_review_prompts_withhold_the_review_finding(self) -> None:
         """A review task must require diagnosis, not restate it.
@@ -3012,9 +2985,9 @@ class PublishedSchemaGateTest(unittest.TestCase):
         """Both factors are published, including when they move against each other."""
         from scripts import update_registry_summaries as summaries
 
-        def session(plan: str, steps: int, cost: float) -> dict:
+        def session(pool: str, steps: int, cost: float) -> dict:
             return {
-                "sample_plan": {"plan_id": plan},
+                "baseline_pool": {"protocol_fingerprint": pool},
                 "cumulative_token_usage": {
                     "agent_steps": steps,
                     "weighted_token_cost": cost,
@@ -3032,7 +3005,7 @@ class PublishedSchemaGateTest(unittest.TestCase):
         self.assertIn("weighted cost per step spread 15.3%", body)
 
         # Runtimes without step telemetry contribute nothing rather than a false zero.
-        self.assertEqual(summaries.render_decomposition([{"sample_plan": {"plan_id": "p"}}]), "")
+        self.assertEqual(summaries.render_decomposition([{"baseline_pool": {"protocol_fingerprint": "p"}}]), "")
         self.assertEqual(summaries.render_decomposition([]), "")
         # A single replicate has a step count but no spread to report.
         single = summaries.render_decomposition([session("sample-x", 12, 1200.0)])

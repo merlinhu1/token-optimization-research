@@ -423,7 +423,7 @@ def render() -> str:
                 f"{pair_names}. See `docs/evaluations/design/lifecycle-v1-accepted-replicate-pairing.md`."
             )
         chunks.append(
-            "Execute the registered sample plan in full: N odd replicates per protocol, all retained and published. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample."
+            "Run as many replicates per protocol as the work warrants; there is no registered N. All retained replicates are published, and a single replicate is a screen rather than an effect estimate. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample."
         )
         execution_text = "\n\n".join(chunks)
     else:

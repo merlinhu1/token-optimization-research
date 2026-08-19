@@ -31,14 +31,13 @@ produce a slightly worse result, it produces evidence that looks valid and is no
 
 1. **Run `make check` before finishing any change to evaluation state.** Nothing runs it
    automatically: this repository has no CI, and an unrun gate is the same as no gate.
-2. **Weighted token cost is the sole token metric**, reported from a pre-registered median sample.
-   See [Measurement and inference](#measurement-and-inference).
+2. **Weighted token cost is the sole token metric.** See [Measurement and inference](#measurement-and-inference).
 3. **Never hand-edit generated or frozen files.** Regenerate the first; leave the second alone.
 4. **An action that changes research state updates every active surface that reports it, in the
    same change.** See [Documentation lifecycle](#documentation-lifecycle).
 5. **Solution-directed task assistance is forbidden** in model-facing prompts. See
    [Fixture design](#fixture-design).
-6. **Never select, drop, or rerun a sample because of the number it produced.** See
+6. **Never drop or rerun a retained replicate because of the number it produced.** See
    [Threats to validity](#threats-to-validity).
 
 ## Setup
@@ -77,25 +76,26 @@ The factors move independently, and a total alone hides which one a tool actuall
 
 ### The estimator
 
-A single run is not a result. The point estimate for a protocol is the **median weighted token
-cost across a pre-registered set of N replicates, N odd and at least 3**
-([ADR 0007](docs/architecture/decision-records/0007-ranked-reporting-and-median-sampling.md)).
+Replicate counts are chosen per protocol as the work warrants
+([ADR 0009](docs/architecture/decision-records/0009-replicate-counts-are-chosen-not-registered.md)).
+There is no minimum, no parity requirement, no cap, and nothing to register in advance.
 
-- **Register before spending.** N and the protocol identity are fixed before the first provider
-  call. Every session record carries a schema-required `sample_plan`; `validate_repository` enforces
-  N odd and ≥ 3. Registration is what stops a median from being assembled by rerunning until the
-  number is favourable.
-- **Replicates accumulate additively across sessions as budget allows.** N fixes how many the sample
-  holds, never when they run.
-- **Publish all N**, including verifier failures and low-quality outputs. A replicate whose agent
-  performed badly produced a real token count and counts toward the median. Only a replicate that
-  failed *before* the provider boundary produced no measurement; replace it and retain its
-  zero-spend receipt.
-- **Extending a sample after seeing results requires a new registration**, and both the original and
-  extended estimates are reported.
-- **Report the median with its observed spread.** A ranking states its workload set, model
-  conditions, N, and dispersion; tools whose ranges overlap at the reported N are reported as
-  indistinguishable at that N rather than ordered.
+- **A single replicate is a legitimate retained result, and it is a screen, not an effect
+  estimate.** It can support "not worth carrying forward"; it cannot support a ranked effect size.
+  Say which one you are claiming.
+- **Where several replicates exist, the point estimate is the median weighted token cost reported
+  with its observed spread**, decomposed into its two factors as above.
+- **Publish every retained replicate**, including verifier failures and low-quality outputs. A
+  replicate whose agent performed badly produced a real token count. Only a replicate that failed
+  *before* the provider boundary produced no measurement; replace it and retain its zero-spend
+  receipt.
+- **State how many replicates each arm holds** in any comparison. Optional stopping is managed by
+  disclosure rather than by a registered N, so the count is part of the result.
+- **Where ranges overlap at the counts held, report the tools as indistinguishable** rather than
+  ordering them ([ADR 0007](docs/architecture/decision-records/0007-ranked-reporting-and-median-sampling.md)).
+
+`replicate_index` must stay unique within a sequence, profile, model condition and protocol pool.
+That is data integrity, not sampling policy: two runs must never be presented as one attempt.
 
 ### Grading a claim
 
@@ -121,7 +121,7 @@ before it could. Removing a control silently is how a study stops measuring what
 | A model or effort change silently reuses an incomparable control | Model/effort changes mint new protocol identities; a baseline cannot cross conditions |
 | Environmental noise in a fixture is charged to the treatment | A fixture must exit zero on a clean prepared base — see [Fixture design](#fixture-design) |
 | An unbounded task lets one task dominate and swamp the effect | Bounded tasks with closed stopping conditions ([ADR 0008](docs/architecture/decision-records/0008-bounded-task-family-and-cost-decomposition.md)) |
-| Rerunning until the number looks right | Pre-registered N; first valid sample retained; acceptance never gates sample retention |
+| Rerunning until the number looks right | First valid sample retained; acceptance never gates retention; replicate counts disclosed with every comparison |
 | Reduced tool setups flatter or penalize a product | Faithful installation of every author-recommended surface; reduced setups are declared ablations |
 
 ## Evaluation contract

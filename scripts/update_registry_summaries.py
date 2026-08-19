@@ -68,7 +68,7 @@ def _spread(values: list[float]) -> float | None:
 
 
 def render_decomposition(sessions: list[dict]) -> str:
-    """Report weighted cost as steps x cost per step, per sample plan.
+    """Report weighted cost as steps x cost per step, per protocol.
 
     Weighted token cost remains the reported metric. Publishing its two factors is what
     lets a reader see whether a difference came from carrying less context per step or
@@ -78,7 +78,7 @@ def render_decomposition(sessions: list[dict]) -> str:
     plans: dict[str, list[dict]] = collections.defaultdict(list)
     for session in sessions:
         usage = session.get("cumulative_token_usage") or {}
-        plan = (session.get("sample_plan") or {}).get("plan_id")
+        plan = (session.get("baseline_pool") or {}).get("protocol_fingerprint")
         if plan and isinstance(usage.get("agent_steps"), int):
             plans[plan].append(usage)
     if not plans:
