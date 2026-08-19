@@ -220,14 +220,25 @@ def render() -> str:
         }
         if completed_sequences == active_sequence_ids:
             completed_opencode_profiles.append(profile_id)
+    # Prefer the frozen protocol's pool fingerprint, which is what a session records, and fall
+    # back to the sequence-derived value only when no current protocol resolves. This used to
+    # allowlist generation names, so a new task family silently took the fallback and produced a
+    # fingerprint no session could ever match: the runbook then kept offering a paid baseline for
+    # an occupied pool, and the contract test that catches that rolled a completed paid run back.
+    # Ask whether a protocol resolves, never which generation is current.
     current_default_pool_fingerprints = {}
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
-        if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"} and isinstance(gate, dict):
-            current_protocol, _document = workflow.current_lifecycle_protocol(sequence, gate, ROOT)
-            current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
-        else:
-            current_default_pool_fingerprints[sequence["id"]] = workflow.baseline_protocol_fingerprint(sequence)
+        fingerprint = None
+        if isinstance(gate, dict):
+            try:
+                current_protocol, _document = workflow.current_lifecycle_protocol(sequence, gate, ROOT)
+                fingerprint = current_protocol["baseline_pool_fingerprint"]
+            except (ValueError, KeyError, OSError):
+                fingerprint = None
+        if fingerprint is None:
+            fingerprint = workflow.baseline_protocol_fingerprint(sequence)
+        current_default_pool_fingerprints[sequence["id"]] = fingerprint
     current_baseline_condition_ids = {
         sequence["id"]: str(sequence.get("mistake_gate", {}).get("designated_model_condition") or active_default_condition_id)
         for sequence in sequences

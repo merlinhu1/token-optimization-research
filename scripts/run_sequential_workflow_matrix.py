@@ -3154,6 +3154,11 @@ def main(argv: list[str] | None = None) -> int:
                 published_comparisons,
                 authority_snapshots,
             )
+            # The pre-validation refresh regenerated the runbook and corpus summaries against a
+            # registry that no longer holds these sessions. Restoring only the registry and the
+            # artifacts leaves those generated surfaces describing sessions that do not exist,
+            # and every later `make check` fails on the drift rather than on the real failure.
+            refresh_generated_runbook()
             merge_summary["rolled_back_after_validation_failure"] = True
             published_comparisons = []
         execution_passed = lanes_passed and authoritative_outputs_complete and validation["passed"]
