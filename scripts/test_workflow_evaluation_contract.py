@@ -5714,7 +5714,8 @@ class CorrectionContractTest(unittest.TestCase):
         guidance = (ROOT / "AGENTS.md").read_text()
         framework = (ROOT / "docs/evaluations/design/framework.md").read_text()
         skill = (ROOT / ".agents/skills/benchmark-protocol-writer.md").read_text()
-        self.assertIn("Solution-directed task assistance** is forbidden", guidance)
+        normalized = guidance.replace("*", "")
+        self.assertIn("Solution-directed task assistance is forbidden", normalized)
         self.assertNotIn("Prompts may prescribe target files", framework)
         self.assertNotIn("Solution-directed task assistance", skill)
 
