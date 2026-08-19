@@ -1113,7 +1113,7 @@ def lifecycle_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bo
     ]
     if missing:
         return False, f"{generation} mistake gate is missing {', '.join(missing)}"
-    return True, "active lifecycle-v1 sequence with a designated model condition"
+    return True, "active sequence with a designated model condition"
 
 
 def require_lifecycle_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> None:
