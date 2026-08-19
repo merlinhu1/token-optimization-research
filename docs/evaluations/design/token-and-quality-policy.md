@@ -56,7 +56,7 @@ Artifact/request token estimates are diagnostics, not evaluation metrics, and ar
 
 ## Structured task outcomes
 
-Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The active Lifecycle V1 generation keeps its acceptance commands controller-only and injects no acceptance-test assets. Every task requires affected-component compilation; feature and refactor tasks add one narrow essential-behavior smoke check, review tasks remain compile-only, and the workflow ends with project-wide compilation. The smoke checks cover only the task's stated core behavior, admit coherent alternative implementations, and reject missing or seriously flawed repairs. Broader tests, behavior, style, and source-review quality are diagnostics only. Historical Baseline V2/V3/V4 assertions remain immutable evidence for their executed protocols. Record for each task:
+Every controller verifier runs against the final cumulative repository, regardless of earlier failures. The active Lifecycle V2 generation keeps its acceptance commands controller-only and injects no acceptance-test assets. Every task requires affected-component compilation plus one narrow essential-behavior smoke check, and the workflow ends with project-wide compilation. The smoke checks cover only the task's stated core behavior, admit coherent alternative implementations, and reject missing or seriously flawed repairs. Broader tests, behavior, style, and source-review quality are diagnostics only. Historical Baseline V2/V3/V4 assertions remain immutable evidence for their executed protocols. Record for each task:
 
 - `task_id` and `order`;
 - agent operational exit and declared-completion state;
@@ -70,9 +70,9 @@ Every controller verifier runs against the final cumulative repository, regardle
 
 The research objective is weighted token cost calculated from provider telemetry under fair, disclosed software-engineering tasks. An operationally complete, integrity-valid provider run is eligible regardless of whether the sampled model passes the controller verifiers.
 
-Lifecycle V1 prompts describe complete software-engineering objectives and expect the agent to implement them correctly through normal repository search, related-code inspection, and relevant validation. They do not disclose controller scoring or compile commands. Compatible baseline and treatment sessions must use identical prompt bytes and internal verifier commands and must not require or prefer treatment-tool invocation. Historical **Solution-directed task assistance** generations remain valid only for their frozen protocols.
+Lifecycle V2 prompts describe complete software-engineering objectives and expect the agent to implement them correctly through normal repository search, related-code inspection, and relevant validation. They do not disclose controller scoring or compile commands. Compatible baseline and treatment sessions must use identical prompt bytes and internal verifier commands and must not require or prefer treatment-tool invocation. Historical **Solution-directed task assistance** generations remain valid only for their frozen protocols.
 
-The Lifecycle V1 verifier internally enforces the task-class acceptance split plus the frozen project-wide compile command after task 3. Broader unit tests, behavioral fidelity beyond the essential smoke, style, maintainability, and source review may still be recorded, but they are diagnostics and cannot change task pass/fail or select which weighted-token sample counts. This internal quality-assessment policy must not be presented as an instruction to the agent.
+The Lifecycle V2 verifier internally enforces per-task compilation and essential-behavior smoke plus the frozen project-wide compile command after the final prompt. Broader unit tests, behavioral fidelity beyond the essential smoke, style, maintainability, and source review may still be recorded, but they are diagnostics and cannot change task pass/fail or select which weighted-token sample counts. This internal quality-assessment policy must not be presented as an instruction to the agent.
 
 Repair prompt/verifier/fixture mismatches in the sole v0 contract. Mark runs produced by an invalid fixture `evaluation_validity: invalid-fixture` and exclude them. Never replace an otherwise valid run merely because model output failed or received a low review score.
 
@@ -82,7 +82,7 @@ Correctness and independent quality are classified to interpret each token sampl
 
 | Quality dimension | Diagnostic check |
 |---|---|
-| Functional correctness | Lifecycle V1 requires compilation everywhere and one essential-behavior smoke on feature/refactor tasks; review tasks stay compile-only and broader behavior/tests are diagnostic. |
+| Functional correctness | Lifecycle V2 requires compilation and one essential-behavior smoke on every task; broader behavior/tests are diagnostic. |
 | Diagnostic fidelity | Repair/review tasks preserve actionable evidence when required. |
 | Code quality | Final diff is conventional and does not bypass validation. |
 | Maintainability | New abstractions, config, and generated files are assessed. |

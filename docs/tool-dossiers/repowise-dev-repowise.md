@@ -37,7 +37,7 @@ RepoWise precomputes a local codebase-intelligence index and exposes task-shaped
 - MCP response budgeting and truncation bound returned material, while index freshness metadata warns when live `HEAD` diverges from indexed state.
 - `repowise init --codex` creates project-local `.codex/config.toml`, `.codex/hooks.json`, and a managed `AGENTS.md`. The hooks supply lifecycle guidance and stale-index reminders.
 - RepoWise documents generic stdio MCP compatibility. The OpenCode profile therefore uses the same pinned local server plus RepoWise-generated `AGENTS.md`; it does not claim an upstream OpenCode-specific installer.
-- Command-output distillation is a second token surface. Because its automatic rewrite hook is opt-in, the prepared non-interactive Lifecycle V1 profiles do not force-enable it.
+- Command-output distillation is a second token surface. Because its automatic rewrite hook is opt-in, the prepared non-interactive lifecycle profiles do not force-enable it.
 
 ## Token-saving mechanism
 

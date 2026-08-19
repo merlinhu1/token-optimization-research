@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Repository fixture state for the production Lifecycle V1 portfolio. Each active fixture requires a compatible acceptance-passing baseline before treatment launch.",
+  "description": "Repository fixture state for the production Lifecycle V2 portfolio. Each active fixture requires a compatible acceptance-passing baseline before treatment launch.",
   "lifecycle_states": [
     "candidate-fixture",
     "qualified-fixture",
@@ -8,6 +8,7 @@
     "treatment-ready"
   ],
   "task_classes": [
+    "defect-repair",
     "feature-implementation",
     "behavior-preserving-refactor",
     "code-review-correction"
@@ -41,9 +42,7 @@
         "prepared_commit": "9246fddd50b8031a8b943ef50c5abff8df48be29"
       },
       "task_classes": [
-        "feature-implementation",
-        "behavior-preserving-refactor",
-        "code-review-correction"
+        "defect-repair"
       ],
       "primary_token_waste_surface": "retrieval-context",
       "setup": {
@@ -61,10 +60,7 @@
       },
       "artifact_paths": {
         "root": "sources/evaluations/workflow-sessions/",
-        "baseline_session_ids": [
-          "baseline-fastify-20260716-p-769d40697529-r0",
-          "baseline-fastify-20260716-p-769d40697529-r1"
-        ]
+        "baseline_session_ids": []
       },
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -293,12 +289,10 @@
       "snapshot": {
         "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
         "branch": "detached",
-        "snapshot_policy": "Pinned Lifecycle V1 fixed snapshot; all three semantic regressions are controller-injected before sequential prompt disclosure."
+        "snapshot_policy": "Pinned Lifecycle V2 fixed snapshot; all seven bounded semantic regressions are controller-injected as one composite start before sequential prompt disclosure."
       },
       "task_classes": [
-        "feature-implementation",
-        "behavior-preserving-refactor",
-        "code-review-correction"
+        "defect-repair"
       ],
       "primary_token_waste_surface": "retrieval-context",
       "setup": {
@@ -311,16 +305,12 @@
         "command": "sources/evaluations/fixtures/medium/beetbox-beets/verify-smoke.sh"
       },
       "prompt": {
-        "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v1/README.md",
-        "prompt_policy": "Lifecycle V1 gives complete software objectives with normal repository discovery and relevant-check guidance; task 3 alone receives the proposed review patch."
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/",
+        "prompt_policy": "Lifecycle V2 gives one bounded software objective per task, stating the observable symptom without naming the file, function, or test, and permitting normal repository discovery and relevant checks. One agent-prompt.txt per task directory is the model-facing byte source; there is no review-patch task in this generation."
       },
       "artifact_paths": {
         "root": "sources/evaluations/workflow-sessions/",
-        "baseline_session_ids": [
-          "baseline-beets-20260716-p-b440da225a3a-r0",
-          "baseline-beets-20260716-p-b440da225a3a-r1",
-          "baseline-beets-20260728-p-fcc8438d2077-r0"
-        ]
+        "baseline_session_ids": []
       },
       "candidate_profiles": [
         "baseline-bare-codex",
@@ -343,16 +333,20 @@
         "behavior-caveman-codex-skill-v1"
       ],
       "blockers": [
-        "Lifecycle V1 essential-smoke provider pilot must complete every task with all task verifiers and final project compilation exiting zero before treatment launch."
+        "Lifecycle V2 essential-smoke provider pilot must complete every task with all task verifiers and final project compilation exiting zero before treatment launch."
       ],
       "caveats": [
         "Task acceptance does not gate weighted-token sample retention; broader tests and source review remain diagnostic.",
         "Earlier compile-only sessions and protocols remain historical evidence and are not compatible controls for the active acceptance contract."
       ],
       "tasks": [
-        "beets-lifecycle-feature-v1",
-        "beets-lifecycle-refactor-v1",
-        "beets-lifecycle-review-v1"
+        "beets-replace-command-callback-v2",
+        "beets-mpdstats-cli-overrides-v2",
+        "beets-convert-missing-art-v2",
+        "beets-importfeeds-symlink-failure-v2",
+        "beets-lyrics-rest-directory-config-v2",
+        "beets-musicbrainz-aliases-opt-in-v2",
+        "beets-mbcollection-http-errors-v2"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "beets-lifecycle-sequence-v2",

@@ -2,13 +2,9 @@
 
 ## Evaluation contract
 
-This repository's only evaluation framework is Lifecycle V1. Lifecycle V0 was retired on 2026-08-14 under `sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json` and no longer exists in the corpus:
+This repository's only evaluation framework is Lifecycle V2: a series of bounded defect repairs, each restoring one named behavior that a specific upstream test already decides, so every task has a closed stopping condition and no single task dominates session cost. Fastify runs 6 and Beets runs 7. Lifecycle V1 was superseded on 2026-08-16 and Lifecycle V0 was retired on 2026-08-14 under `sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json`; V0 no longer exists in the corpus.
 
-1. feature implementation;
-2. behavior-preserving refactor;
-3. code review/correction.
-
-Every active sequence, task ID, qualification file, and current execution contract must be V1. Do not reintroduce a V0 or other compatibility lane. Accepted production records are immutable historical evidence. Rejected or excluded records may be deleted only by explicit experiment-owner direction, together with their artifact roots and unreferenced protocols.
+Every active sequence, task ID, qualification file, and current execution contract must be V2. Do not reintroduce a V0 or other compatibility lane. Accepted production records are immutable historical evidence. Rejected or excluded records may be deleted only by explicit experiment-owner direction, together with their artifact roots and unreferenced protocols.
 
 New Codex CLI and OpenCode runs use `gpt-5.6-sol` at `medium` reasoning effort. New Claude Code runs use direct Anthropic `claude-opus-5` at `medium` effort. High-effort conditions are historical only: do not prepare or execute a new protocol under them. Model or effort changes mint new protocol identities and cannot reuse a baseline from another condition.
 
@@ -25,16 +21,15 @@ Every token result, comparison, delta, median, ranking, chart, and narrative cla
 - Pin the upstream repository commit.
 - Build authentic tasks from upstream code/history.
 - Start patches must be independently applicable and compose without overlap.
-- Active Lifecycle V1 tasks seed authentic semantic regressions from completed upstream behavior in one or two production files. Seed patches must apply independently and compose cleanly; standalone and composite seeded verifier outcomes may be either 0 or 1 but must be recorded without infrastructure failure. Every cumulative repaired state must pass its retained task verifiers, and the fully repaired project-wide snapshot must compile.
-- Model-facing Lifecycle V1 prompts state the software objective and expected behavior, permit normal repository search and related-code inspection, expect a complete correct implementation, and forbid changes to tests, generated files, dependency locks, or evaluation controls. They must not disclose controller compile commands, evaluator scoring, or the internal acceptance policy.
-- Internally, every task must pass affected-component compilation and the final workflow must pass project-wide compilation. Feature and refactor tasks also receive exactly one narrow, implementation-independent essential-behavior smoke check; review tasks remain compile-only. The smoke check should reject a missing or seriously flawed implementation while admitting coherent alternatives—it must not compare exact source, prescribe the repair, or expand into a broad suite. All broader tests, behavioral fidelity, style, maintainability, exact source shape, and source review remain diagnostic only. This distinction belongs in controller metadata and documentation, never in the agent instruction.
+- Active Lifecycle V2 tasks seed authentic semantic regressions from completed upstream behavior in one or two production files. Seed patches must apply independently and compose cleanly; standalone and composite seeded verifier outcomes may be either 0 or 1 but must be recorded without infrastructure failure. Every cumulative repaired state must pass its retained task verifiers, and the fully repaired project-wide snapshot must compile.
+- Model-facing Lifecycle V2 prompts state the observable symptom and expected behavior without naming the file, function, or test, permit normal repository search and related-code inspection, expect a complete correct implementation, and forbid changes to tests, generated files, dependency locks, or evaluation controls. They must not disclose controller compile commands, evaluator scoring, or the internal acceptance policy.
+- Internally, every task must pass affected-component compilation and the final workflow must pass project-wide compilation. Every task also receives exactly one narrow, implementation-independent essential-behavior smoke check. The smoke check should reject a missing or seriously flawed implementation while admitting coherent alternatives—it must not compare exact source, prescribe the repair, or expand into a broad suite. All broader tests, behavioral fidelity, style, maintainability, exact source shape, and source review remain diagnostic only. This distinction belongs in controller metadata and documentation, never in the agent instruction.
 - **Solution-directed task assistance** is forbidden. Prescribing target files, symbols, implementation steps, or validation commands suppresses the search and exploration that context-reduction tools act on, which is why Lifecycle V0 was retired; see [ADR 0005](docs/architecture/decision-records/0005-token-accounting-and-protocol-identity.md). Compatible baseline and treatment sessions must receive identical prompt bytes and must not require or prefer treatment-tool invocation.
-- Review tasks include the exact proposed patch under review.
 - Run all task verifiers and the project-wide compile verifier after the final prompt in one persistent workflow.
 
 ## Evidence and execution
 
-Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative token telemetry sufficient to calculate weighted token cost and isolated baseline/treatment conditions. Lifecycle V1 task verifiers and final project compilation gate task/workflow acceptance and treatment unlock, but do not gate weighted-token sample retention. Broader tests and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
+Qualification JSON is generated executable evidence; never hand-edit it. Production runs require provider-reported cumulative token telemetry sufficient to calculate weighted token cost and isolated baseline/treatment conditions. Lifecycle V2 task verifiers and final project compilation gate task/workflow acceptance and treatment unlock, but do not gate weighted-token sample retention. Broader tests and source-review outcomes are diagnostic and must not trigger pass-selection reruns. Do not infer a token result from qualification readiness.
 
 Treatment execution is availability/natural-use only after faithful product installation. Install every tool-author-recommended normal integration surface—including its own hooks, wrappers, proxies, MCP exposure, product-authored instructions, rules, or skills. Evaluator-authored steering, quotas, and forced calls are forbidden, but evaluator neutrality must never remove or contradict the product's own guidance. Server-only, guidance-free, or otherwise reduced setups are explicit ablations rather than canonical product treatments. Zero explicit model-issued tool commands after faithful installation remains a valid observed outcome because the intervention may operate below or around the model-visible command surface. Preserve the first valid assignment sample and interpret mechanism evidence only from instrumentation appropriate to the declared integration.
 
@@ -84,7 +79,7 @@ and fails closed when `jsonschema` is absent, so install `requirements-dev.txt` 
 record shape legitimately changes, update the schema in the same change: it is enforced against
 all retained sessions, not just new ones.
 
-When task contracts change, regenerate the affected `qualification-lifecycle-v1-*.json`, regenerate the runbook and registry summaries, and refresh only current V1 execution contracts. A model-facing prompt change mints new qualification and protocol identities and archives the prior corpus.
+When task contracts change, regenerate the affected `qualification-lifecycle-v2-*.json`, regenerate the runbook and registry summaries, and refresh only current V2 execution contracts. A model-facing prompt change mints new qualification and protocol identities and archives the prior corpus.
 
 ## Local skills
 

@@ -1,6 +1,6 @@
 ---
 name: benchmark-protocol-writer
-description: Use before a Lifecycle V1 baseline or treatment run to freeze the token estimand, compatible execution condition, integrity controls, diagnostics, and compact artifacts.
+description: Use before a Lifecycle V2 baseline or treatment run to freeze the token estimand, compatible execution condition, integrity controls, diagnostics, and compact artifacts.
 ---
 # Benchmark Protocol Writer
 
@@ -17,10 +17,10 @@ Define:
 3. **Lifecycle sequence**: sequence ID, pinned fixture/snapshot, ordered prompts, state policy, and time budget.
 4. **Compatible baseline pool**: protocol fingerprint, model/provider condition, replicate index, and retained baseline session when one exists.
 5. **Treatment identity**: profile, enabled surfaces, pinned tool-author installation guide, every author-recommended host surface (including product-authored guidance/rules/skills/hooks), adapter command, binary/config hashes, isolation policy, and reset path. Evaluator-authored treatment-tool steering is forbidden, but reduced or guidance-free setups must be named as ablations rather than canonical product treatments.
-6. **Task assistance**: Lifecycle V1 prompts state complete software-engineering objectives, expect correct implementation, permit normal repository search/inspection and relevant validation, and do not disclose controller scoring or compile commands. Freeze identical prompt bytes across compatible baseline and treatment sessions; prompts must not require or prefer treatment-tool invocation.
+6. **Task assistance**: Lifecycle V2 prompts state complete software-engineering objectives, expect correct implementation, permit normal repository search/inspection and relevant validation, and do not disclose controller scoring or compile commands. Freeze identical prompt bytes across compatible baseline and treatment sessions; prompts must not require or prefer treatment-tool invocation.
 7. **Token boundary**: calculate the sole token metric, `weighted_token_cost = fresh input + 0.1 × cached input + 6 × output`, across the complete persistent workflow. Capture provider counters only as internal telemetry needed to calculate and audit that value; never report or compare a raw provider total.
 8. **Operational validity**: complete execution, thread continuity, warning-free usage, fixture/contract validity, verifier integrity, tool isolation, and compact-artifact integrity.
-9. **Acceptance and diagnostics**: Lifecycle V1 requires affected-component compilation for every task and final project-wide compilation. Feature and refactor tasks add one narrow, implementation-independent essential-behavior smoke; review tasks remain compile-only. Broader tests, behavior, style, exact source shape, changed-area review, and optional source review are diagnostics; neither acceptance nor diagnostics gate weighted-token sample retention or trigger reruns.
+9. **Acceptance and diagnostics**: Lifecycle V2 requires affected-component compilation for every task and final project-wide compilation. Every task adds one narrow, implementation-independent essential-behavior smoke. Broader tests, behavior, style, exact source shape, changed-area review, and optional source review are diagnostics; neither acceptance nor diagnostics gate weighted-token sample retention or trigger reruns.
 10. **Invalidity rules**: fixture defects, protocol mismatch, incomplete provider usage, broken isolation, corrupted evidence, or interrupted execution.
 
 ## Current surfaces
@@ -35,7 +35,7 @@ The forward model policy is GPT-5.6 Sol/medium for Codex CLI or OpenCode and dir
 - `sources/evaluations/protocols/`
 - `sources/evaluations/workflow-sessions/`
 
-Use `scripts/run_sequential_workflow_matrix.py`. Never route Lifecycle V1 results through the older `data/evaluations.json` artifact model.
+Use `scripts/run_sequential_workflow_matrix.py`. Never route Lifecycle V2 results through the older `data/evaluations.json` artifact model.
 
 ## After a run
 

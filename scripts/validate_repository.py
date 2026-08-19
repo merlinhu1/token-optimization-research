@@ -534,6 +534,7 @@ FIXTURE_STATES = {
 }
 
 FIXTURE_TASK_CLASSES = {
+    "defect-repair",
     "feature-implementation",
     "behavior-preserving-refactor",
     "code-review",
@@ -1012,7 +1013,7 @@ def validate_large_project_candidates(candidate_doc: dict, fixture_doc: dict, er
     if candidate_doc.get("schema_version") != 1:
         errors.append("data/large-project-candidates.json must use schema_version 1")
     candidates = candidate_doc.get("candidates")
-    # The list may be empty: the active Lifecycle V1 portfolio currently has no large-project lane.
+    # The list may be empty: the active portfolio currently has no large-project lane.
     # removed Terraform. The file still carries the selection policy for a future large lane.
     if not isinstance(candidates, list):
         errors.append("data/large-project-candidates.json must contain a candidates list")
@@ -3031,7 +3032,7 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
     for sequence_id in runner.active_sequence_ids():
         sequence = runner.load_sequence(sequence_id)
         try:
-            binding, protocol = runner.current_lifecycle_v1_protocol(
+            binding, protocol = runner.current_lifecycle_protocol(
                 sequence, sequence.get("mistake_gate", {}), ROOT
             )
         except (OSError, ValueError, KeyError, RuntimeError, subprocess.SubprocessError) as exc:

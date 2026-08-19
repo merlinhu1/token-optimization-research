@@ -45,7 +45,7 @@ The active pools retain their existing fingerprints through guarded causal-ident
 
 ### Cross-runtime accepted-order pairing
 
-When one runtime has an excluded attempt and the other does not, `replicate_index` cannot be used as the cross-runtime key. The accepted treatment record must instead carry both `interpretation.comparison_baseline_session_id` and `interpretation.comparison_pair`, which names an `accepted-replicate-ordinal` and the two runtime-local labels. The validator requires matching pool, sequence, model-facing prompt hashes, model, reasoning effort, and accepted compact evidence before accepting that cross-index binding. See [Lifecycle V1 accepted-replicate pairing](lifecycle-v1-accepted-replicate-pairing.md) for the current map.
+When one runtime has an excluded attempt and the other does not, `replicate_index` cannot be used as the cross-runtime key. The accepted treatment record must instead carry both `interpretation.comparison_baseline_session_id` and `interpretation.comparison_pair`, which names an `accepted-replicate-ordinal` and the two runtime-local labels. The validator requires matching pool, sequence, model-facing prompt hashes, model, reasoning effort, and accepted compact evidence before accepting that cross-index binding. See [Lifecycle V1 accepted-replicate pairing](lifecycle-v1-accepted-replicate-pairing.md) for the worked V1 map; the rule applies to any generation.
 
 ## Required decision fields
 

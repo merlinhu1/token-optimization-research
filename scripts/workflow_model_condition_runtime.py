@@ -151,9 +151,9 @@ def configure_runner(
     original_validate = runner.validate_default_model_condition
     original_baseline_descriptor = runner.baseline_protocol_descriptor
     original_execution_descriptor = runner.execution_condition_descriptor
-    original_current_baseline_protocol = runner.current_lifecycle_v1_protocol
-    original_baseline_treatment_gate = runner.lifecycle_v1_treatment_gate
-    original_require_treatment_gate = runner.require_lifecycle_v1_treatment_gate
+    original_current_baseline_protocol = runner.current_lifecycle_protocol
+    original_baseline_treatment_gate = runner.lifecycle_treatment_gate
+    original_require_treatment_gate = runner.require_lifecycle_treatment_gate
 
     setattr(runner, "DEFAULT_WORKFLOW_MODEL_CONDITION_ID", str(selected["id"]))
     setattr(runner, "DEFAULT_WORKFLOW_MODEL", str(selected["model"]))
@@ -249,9 +249,9 @@ def configure_runner(
     setattr(runner, "validate_default_model_condition", validate_condition)
     setattr(runner, "baseline_protocol_descriptor", baseline_descriptor)
     setattr(runner, "execution_condition_descriptor", execution_descriptor)
-    setattr(runner, "current_lifecycle_v1_protocol", current_baseline_protocol)
-    setattr(runner, "lifecycle_v1_treatment_gate", baseline_treatment_gate)
-    setattr(runner, "require_lifecycle_v1_treatment_gate", require_treatment_gate)
+    setattr(runner, "current_lifecycle_protocol", current_baseline_protocol)
+    setattr(runner, "lifecycle_treatment_gate", baseline_treatment_gate)
+    setattr(runner, "require_lifecycle_treatment_gate", require_treatment_gate)
     # Keep a handle only for diagnostic callers that need to prove this is a
     # deliberate replacement; it is never called during normal execution.
     setattr(runner, "_unconfigured_validate_default_model_condition", original_validate)

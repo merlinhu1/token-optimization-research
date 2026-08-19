@@ -224,7 +224,7 @@ def render() -> str:
     for sequence in sequences:
         gate = sequence.get("mistake_gate")
         if sequence.get("task_family_generation") in {"baseline-v2", "baseline-v3", "baseline-v4", "lifecycle-v1"} and isinstance(gate, dict):
-            current_protocol, _document = workflow.current_lifecycle_v1_protocol(sequence, gate, ROOT)
+            current_protocol, _document = workflow.current_lifecycle_protocol(sequence, gate, ROOT)
             current_default_pool_fingerprints[sequence["id"]] = current_protocol["baseline_pool_fingerprint"]
         else:
             current_default_pool_fingerprints[sequence["id"]] = workflow.baseline_protocol_fingerprint(sequence)
@@ -308,7 +308,7 @@ def render() -> str:
             )
         blocked_gates = []
         for sequence in sequences:
-            gate_passed, gate_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
+            gate_passed, gate_reason = workflow.lifecycle_treatment_gate(sequence, ROOT)
             if not gate_passed:
                 blocked_gates.append(f"`{sequence['id']}` ({gate_reason})")
         if blocked_gates:
@@ -356,7 +356,7 @@ def render() -> str:
                 )
             unlocked_baselines = []
             for sequence in retained_baselines:
-                gate_passed, gate_reason = workflow.lifecycle_v1_treatment_gate(sequence, ROOT)
+                gate_passed, gate_reason = workflow.lifecycle_treatment_gate(sequence, ROOT)
                 if gate_passed:
                     unlocked_baselines.append((sequence, gate_reason))
             if unlocked_baselines:
@@ -440,7 +440,7 @@ python3 scripts/validate_repository.py
 
 ## Evidence boundary
 
-A valid active Lifecycle V1 workflow pre-seeds three authentic semantic regressions from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the requested outcome, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Fastify and Beets use their frozen qualified environments; Terraform V1's owner-declared-invalid r0 was removed and has no current runbook entry. Seed patch files, controller scripts, fixed parents, task acceptance commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
+A valid active Lifecycle V2 workflow pre-seeds every authentic semantic regression from completed upstream behavior into one qualified composite start, then materializes one normal software-engineering prompt at a time. Each prompt states the observable symptom without naming the file, function, or test, permits repository search and related-code inspection, and expects a complete correct implementation without disclosing evaluator scoring or controller commands. Fastify and Beets use their frozen qualified environments; Terraform V1's owner-declared-invalid r0 was removed and has no current runbook entry. Seed patch files, controller scripts, fixed parents, task acceptance commands, and the final project-wide compile command remain outside the model-visible surface. Product-effect eligibility also requires parity with the pinned official integration and positive treatment-assignment evidence; configuration/listing alone is insufficient.
 
 Internally, every active task requires affected-component compilation. Feature and refactor tasks add one narrow essential-behavior smoke; review tasks remain compile-only. Broader tests, behavioral fidelity, style, maintainability, and source review remain diagnostic and do not determine evaluator pass/fail. This internal policy must never be presented as an agent instruction.
 

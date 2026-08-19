@@ -277,7 +277,7 @@ def main(argv: list[str] | None = None) -> int:
             ):
                 # Validate the published Codex baseline before replacement-runtime
                 # conditions patch the selected execution descriptor.
-                runner.require_lifecycle_v1_treatment_gate(seq, ROOT)
+                runner.require_lifecycle_treatment_gate(seq, ROOT)
         current, _ = runner.qualification_is_current(seq)
         if not current:
             raise ValueError(

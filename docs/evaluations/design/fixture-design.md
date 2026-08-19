@@ -33,7 +33,7 @@ candidate repositories
 
 ## Task classes
 
-The table below is the general fixture taxonomy. Active Lifecycle V1 uses the first three task classes as genuine model-facing engineering objectives. Each task seeds an authentic semantic regression and tells the agent to implement the requested behavior correctly; normal repository discovery and relevant validation are expected. Internally, affected-component and final project-wide compilation determine evaluator pass/fail, while the semantic expectations below remain diagnostics. The internal scoring distinction and controller commands are not model-facing.
+The table below is the general fixture taxonomy. Active Lifecycle V2 uses bounded defect repair as its single model-facing task class. Each task seeds an authentic semantic regression and tells the agent to implement the requested behavior correctly; normal repository discovery and relevant validation are expected. Internally, affected-component and final project-wide compilation determine evaluator pass/fail, while the semantic expectations below remain diagnostics. The internal scoring distinction and controller commands are not model-facing.
 
 | Task class | Token-waste target | Minimum verifier expectation |
 |---|---|---|
@@ -91,4 +91,4 @@ Readiness states stricter than `candidate-fixture` require concrete setup, reset
 
 ## Non-goals
 
-This framework does not run baselines or treatments, select winners, or claim provider-token reductions. Those actions belong to the Lifecycle V1 workflow runner with frozen protocols and compact session records.
+This framework does not run baselines or treatments, select winners, or claim provider-token reductions. Those actions belong to the Lifecycle V2 workflow runner with frozen protocols and compact session records.

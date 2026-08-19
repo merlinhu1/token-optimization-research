@@ -67,7 +67,7 @@ OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS = {
 }
 
 
-def opencode_lifecycle_v1_authority_rel(replicate_index: int) -> Path:
+def opencode_lifecycle_authority_rel(replicate_index: int) -> Path:
     """Return the separately owner-authorized Lifecycle V1 OpenCode authority."""
     try:
         return OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS[replicate_index]
@@ -636,10 +636,10 @@ def condition_bound_protocol_descriptors(
     return baseline_descriptor, selected_execution
 
 
-def current_lifecycle_v1_protocol(
+def current_lifecycle_protocol(
     seq: dict[str, Any], gate: dict[str, Any], root: Path = ROOT
 ) -> tuple[dict[str, str], dict[str, Any]]:
-    """Return the one frozen baseline protocol matching the active Lifecycle V1 inputs."""
+    """Return the one frozen baseline protocol matching the active generation's inputs."""
     expected_descriptor, expected_execution = condition_bound_protocol_descriptors(
         seq,
         "baseline-bare-codex",
@@ -944,7 +944,7 @@ OPENROUTER_LIFECYCLE_V1_MODEL = {
 OPENROUTER_LIFECYCLE_V1_ORDER = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
 
 
-def load_openrouter_lifecycle_v1_authority(root: Path = ROOT) -> dict[str, Any]:
+def load_openrouter_lifecycle_authority(root: Path = ROOT) -> dict[str, Any]:
     """Validate Merlin's single, serial OpenRouter r0 execution authority."""
     path = repository_authority_path(root, OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL, "OpenRouter Lifecycle V1 authorization")
     try:
@@ -1016,16 +1016,16 @@ def load_openrouter_lifecycle_v1_authority(root: Path = ROOT) -> dict[str, Any]:
     return authority
 
 
-def openrouter_lifecycle_v1_binding(seq: dict[str, Any], root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
-    authority = load_openrouter_lifecycle_v1_authority(root)
+def openrouter_lifecycle_binding(seq: dict[str, Any], root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
+    authority = load_openrouter_lifecycle_authority(root)
     bindings = [item for item in authority["sequences"] if item["sequence_id"] == seq.get("id")]
     if len(bindings) != 1:
         raise ValueError(f"OpenRouter Lifecycle V1 authorization does not cover {seq.get('id')}")
     return authority, bindings[0]
 
 
-def require_openrouter_lifecycle_v1_launch(args: argparse.Namespace, seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
-    authority, binding = openrouter_lifecycle_v1_binding(seq, root)
+def require_openrouter_lifecycle_launch(args: argparse.Namespace, seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
+    authority, binding = openrouter_lifecycle_binding(seq, root)
     if args.profile_id != OPENROUTER_LIFECYCLE_V1_PROFILE_ID or args.replicate_index != 0 or args.session_id != binding["session_id"]:
         raise ValueError("OpenRouter Lifecycle V1 launch does not match its authorized profile, replicate, or session identity")
     if {
@@ -1043,12 +1043,12 @@ def require_openrouter_lifecycle_v1_launch(args: argparse.Namespace, seq: dict[s
         registry = json.loads((root / "data/workflow-sessions.json").read_text())
         prior = [item for item in registry.get("sessions", []) if item.get("session_id") == previous["session_id"]]
         if len(prior) != 1 or prior[0].get("status") != "completed":
-            raise ValueError("OpenRouter Lifecycle V1 requires the prior authorized sequence to complete first")
+            raise ValueError("OpenRouter lifecycle runs require the prior authorized sequence to complete first")
     return binding
 
 
-def reserve_openrouter_lifecycle_v1_attempt(seq: dict[str, Any], session_id: str, root: Path = ROOT) -> None:
-    authority, binding = openrouter_lifecycle_v1_binding(seq, root)
+def reserve_openrouter_lifecycle_attempt(seq: dict[str, Any], session_id: str, root: Path = ROOT) -> None:
+    authority, binding = openrouter_lifecycle_binding(seq, root)
     if session_id != binding["session_id"]:
         raise ValueError("OpenRouter attempt reservation does not match the authorized session identity")
     receipt = {
@@ -1069,7 +1069,7 @@ def reserve_openrouter_lifecycle_v1_attempt(seq: dict[str, Any], session_id: str
     atomic_create_json(repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt"), receipt)
 
 
-def require_lifecycle_v1_baseline_replicate(
+def require_lifecycle_baseline_replicate(
     seq: dict[str, Any],
     profile_id: str,
     replicate_index: int,
@@ -1089,8 +1089,8 @@ def require_lifecycle_v1_baseline_replicate(
             raise ValueError("Lifecycle V1 paid baselines require a non-negative integer replicate_index")
 
 
-def lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
-    """Allow execution for an active Lifecycle V1 sequence with a designated model condition.
+def lifecycle_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple[bool, str]:
+    """Allow execution for an active sequence with a designated model condition.
 
     A run is a run. What makes a result meaningful is the frozen protocol identity and the
     model condition it declares, both verified at launch and recorded in the session. The
@@ -1116,8 +1116,8 @@ def lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> tuple
     return True, "active lifecycle-v1 sequence with a designated model condition"
 
 
-def require_lifecycle_v1_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> None:
-    passed, reason = lifecycle_v1_treatment_gate(seq, root)
+def require_lifecycle_treatment_gate(seq: dict[str, Any], root: Path = ROOT) -> None:
+    passed, reason = lifecycle_treatment_gate(seq, root)
     if not passed:
         raise ValueError(f"treatments are blocked for {seq.get('id')}: {reason}")
 
@@ -2086,7 +2086,7 @@ def standalone_opencode_control_authorized(
         }
     ):
         return False
-    path = root / opencode_lifecycle_v1_authority_rel(replicate_index)
+    path = root / opencode_lifecycle_authority_rel(replicate_index)
     try:
         authority = json.loads(path.read_text())
     except (OSError, ValueError):
@@ -2254,7 +2254,7 @@ def find_canonical_baseline_record(registry: dict[str, Any], seq: dict[str, Any]
     expected_protocol_identity: dict[str, Any] | None = None
     expected_selected_execution: dict[str, Any] | None = None
     if seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS:
-        expected_protocol_identity, expected_protocol = current_lifecycle_v1_protocol(
+        expected_protocol_identity, expected_protocol = current_lifecycle_protocol(
             seq, seq["mistake_gate"], ROOT
         )
         expected_protocol_identity = {
@@ -4035,7 +4035,7 @@ def inherited_provider_production_lock_fd() -> int | None:
     return fd
 
 
-def require_claude_lifecycle_v1_matrix_launch(
+def require_claude_lifecycle_matrix_launch(
     profile_id: str,
     sequence: dict[str, Any],
     *,
@@ -4053,7 +4053,7 @@ def require_claude_lifecycle_v1_matrix_launch(
         )
 
 
-def require_opencode_lifecycle_v1_matrix_launch(
+def require_opencode_lifecycle_matrix_launch(
     profile_id: str,
     sequence: dict[str, Any],
     *,
@@ -4172,7 +4172,7 @@ def restore_compact_evidence_sources(run_dir: Path) -> None:
         raise
 
 
-def recover_openrouter_lifecycle_v1_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
+def recover_openrouter_lifecycle_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
     """Publish a completed OpenRouter lane after the known missing-adapter ingress defect.
 
     This is recovery only: it never starts an adapter, provider call, or task.
@@ -4190,7 +4190,7 @@ def recover_openrouter_lifecycle_v1_strict_ingress(session_id: str, root: Path =
     if not isinstance(sequence_id, str):
         raise ValueError("OpenRouter strict-ingress recovery lacks a workflow sequence")
     seq = load_sequence(sequence_id)
-    authority, binding = openrouter_lifecycle_v1_binding(seq, root)
+    authority, binding = openrouter_lifecycle_binding(seq, root)
     del authority
     if (
         binding.get("session_id") != session_id
@@ -4256,7 +4256,7 @@ def recover_openrouter_lifecycle_v1_strict_ingress(session_id: str, root: Path =
     return session_record
 
 
-def recover_direct_claude_lifecycle_v1_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
+def recover_direct_claude_lifecycle_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
     """Publish one retained direct-Anthropic Claude V1 lane without provider work."""
     if not isinstance(session_id, str) or not session_id:
         raise ValueError("direct Claude strict-ingress recovery requires a session ID")
@@ -4385,7 +4385,7 @@ def recover_direct_claude_lifecycle_v1_strict_ingress(session_id: str, root: Pat
     return session_record
 
 
-def recover_direct_claude_lifecycle_v1_retained_run(
+def recover_direct_claude_lifecycle_retained_run(
     source_run_dir: Path, session_id: str, root: Path = ROOT
 ) -> dict[str, Any]:
     """Stage an externally retained compact lane, then apply direct-Claude recovery."""
@@ -4409,7 +4409,7 @@ def recover_direct_claude_lifecycle_v1_retained_run(
     destination.mkdir()
     for name in sorted(expected_names):
         shutil.copy2(source / name, destination / name)
-    return recover_direct_claude_lifecycle_v1_strict_ingress(session_id, root)
+    return recover_direct_claude_lifecycle_strict_ingress(session_id, root)
 
 
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
@@ -4575,21 +4575,21 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
         return _run_one_locked(args)
     selected_sequence = load_sequence(args.sequence_id)
     if args.profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
-        require_openrouter_lifecycle_v1_launch(args, selected_sequence)
+        require_openrouter_lifecycle_launch(args, selected_sequence)
         checkout_errors = paid_launch_checkout_errors(ROOT)
         if checkout_errors:
             raise ValueError("OpenRouter paid launch checkout gate failed: " + "; ".join(checkout_errors))
-    require_claude_lifecycle_v1_matrix_launch(
+    require_claude_lifecycle_matrix_launch(
         args.profile_id,
         selected_sequence,
         prepare_only=False,
     )
-    require_opencode_lifecycle_v1_matrix_launch(
+    require_opencode_lifecycle_matrix_launch(
         args.profile_id,
         selected_sequence,
         prepare_only=False,
     )
-    require_lifecycle_v1_baseline_replicate(
+    require_lifecycle_baseline_replicate(
         selected_sequence,
         args.profile_id,
         args.replicate_index,
@@ -4625,7 +4625,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         sequence_id=seq["id"],
     )
     if not baseline_control_profile and not standalone_opencode_control:
-        require_lifecycle_v1_treatment_gate(seq, ROOT)
+        require_lifecycle_treatment_gate(seq, ROOT)
     validate_protocol_for_run(seq, profile_id, args)
     comparison_baseline_session_id = ""
     if not args.prepare_only:
@@ -4819,7 +4819,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         return result
 
     if profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
-        reserve_openrouter_lifecycle_v1_attempt(seq, session_id, ROOT)
+        reserve_openrouter_lifecycle_attempt(seq, session_id, ROOT)
 
     thread_id: str | None = None
     codex_exit_codes: list[int] = []

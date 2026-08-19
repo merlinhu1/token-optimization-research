@@ -427,7 +427,7 @@ def find_protocol(
     return matches[0]
 
 
-def claude_lifecycle_v1_attempt_path(
+def claude_lifecycle_attempt_path(
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
@@ -439,7 +439,7 @@ def claude_lifecycle_v1_attempt_path(
     return root / attempt_dir / f"{lane}-r{replicate_index}.json"
 
 
-def claude_lifecycle_v1_run_gate(
+def claude_lifecycle_run_gate(
     registry: dict[str, Any],
     sequence_id: str,
     replicate_index: int,
@@ -535,7 +535,7 @@ def claude_lifecycle_v1_run_gate(
         ):
             return False, f"Claude Code Lifecycle V1 authority has stale protocol binding: {active_id}"
     try:
-        receipt = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root)
+        receipt = claude_lifecycle_attempt_path(sequence_id, replicate_index, root)
     except ValueError as exc:
         return False, str(exc)
     if receipt.exists():
@@ -551,7 +551,7 @@ def claude_lifecycle_v1_run_gate(
     return True, "owner-authorized Claude Code Lifecycle V1 Sol/high baseline is unoccupied"
 
 
-def reserve_claude_lifecycle_v1_attempt(
+def reserve_claude_lifecycle_attempt(
     *,
     sequence_id: str,
     replicate_index: int,
@@ -574,7 +574,7 @@ def reserve_claude_lifecycle_v1_attempt(
     ):
         raise ValueError("Claude Code Lifecycle V1 receipt binding does not match the requested identity")
     condition = model_condition or CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
-    path = claude_lifecycle_v1_attempt_path(sequence_id, replicate_index, root, attempt_dir)
+    path = claude_lifecycle_attempt_path(sequence_id, replicate_index, root, attempt_dir)
     if path.exists():
         if not (
             allow_existing_recovery
@@ -787,7 +787,7 @@ def claude_baseline_run_gate(
             ):
                 return False, f"direct-Anthropic baseline authorization has stale protocol binding: {active_id}"
         try:
-            receipt = claude_lifecycle_v1_attempt_path(
+            receipt = claude_lifecycle_attempt_path(
                 sequence_id,
                 replicate_index,
                 root,
@@ -820,7 +820,7 @@ def claude_baseline_run_gate(
             return False, f"direct-Anthropic Claude Code identity is already occupied by session {occupied.get('session_id')}"
         return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/{expected_model['reasoning_effort']} baseline is unoccupied{recovery_reason}"
     if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
-        return claude_lifecycle_v1_run_gate(registry, sequence_id, replicate_index, root)
+        return claude_lifecycle_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
     if not path.is_file():
         return False, f"missing Claude Code baseline authority: {CLAUDE_BASELINE_AUTHORITY_REL}"
@@ -1010,7 +1010,7 @@ def opencode_baseline_attempt_path(
     return root / OPENCODE_BASELINE_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
 
 
-def opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+def opencode_lifecycle_r1_no_provider_recovery_authorized(
     sequence_id: str,
     replicate_index: int,
     root: Path = ROOT,
@@ -1065,7 +1065,7 @@ def opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
 
 
 
-def opencode_lifecycle_v1_r2_beets_retry_authorized(root: Path = ROOT) -> bool:
+def opencode_lifecycle_r2_beets_retry_authorized(root: Path = ROOT) -> bool:
     """Authorize one distinct r2 Beets retry without reusing its failed receipt."""
     sequence_id = "beets-lifecycle-sequence-v1"
     original_receipt_rel = (
@@ -1148,7 +1148,7 @@ def opencode_lifecycle_v1_r2_beets_retry_authorized(root: Path = ROOT) -> bool:
     )
 
 
-def opencode_lifecycle_v1_r2_beets_retry_attempt_path(root: Path = ROOT) -> Path:
+def opencode_lifecycle_r2_beets_retry_attempt_path(root: Path = ROOT) -> Path:
     return root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL
 
 
@@ -1164,7 +1164,7 @@ def opencode_baseline_run_gate(
         if (
             sequence_id != "beets-lifecycle-sequence-v1"
             or replicate_index != 2
-            or not opencode_lifecycle_v1_r2_beets_retry_authorized(root)
+            or not opencode_lifecycle_r2_beets_retry_authorized(root)
         ):
             return False, "r2 Beets retry does not match its exact owner authorization"
         authority = load_json(root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
@@ -1179,7 +1179,7 @@ def opencode_baseline_run_gate(
         ):
             return False, "Lifecycle V1 OpenCode authority does not match the requested identity"
         try:
-            authority = load_json(root / workflow.opencode_lifecycle_v1_authority_rel(replicate_index))
+            authority = load_json(root / workflow.opencode_lifecycle_authority_rel(replicate_index))
         except (OSError, ValueError) as exc:
             return False, f"unreadable Lifecycle V1 OpenCode authority: {exc}"
         ready_reason = f"owner-authorized Lifecycle V1 OpenCode r{replicate_index} baseline is unoccupied"
@@ -1228,12 +1228,12 @@ def opencode_baseline_run_gate(
             return False, "Lifecycle V1 OpenCode protocol hash or baseline pool drifted from authority"
 
     receipt = (
-        opencode_lifecycle_v1_r2_beets_retry_attempt_path(root)
+        opencode_lifecycle_r2_beets_retry_attempt_path(root)
         if r2_beets_retry
         else opencode_baseline_attempt_path(sequence_id, replicate_index, root)
     )
     if receipt.exists():
-        if not r2_beets_retry and opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+        if not r2_beets_retry and opencode_lifecycle_r1_no_provider_recovery_authorized(
             sequence_id, replicate_index, root
         ):
             ready_reason = "owner-authorized same-r1 recovery after locally proven no-provider subprocess boundary"
@@ -1267,14 +1267,14 @@ def reserve_opencode_baseline_attempt(
         if (
             sequence_id != "beets-lifecycle-sequence-v1"
             or replicate_index != 2
-            or not opencode_lifecycle_v1_r2_beets_retry_authorized(ROOT)
+            or not opencode_lifecycle_r2_beets_retry_authorized(ROOT)
         ):
             raise ValueError("r2 Beets retry reservation does not match its exact authority")
-        path = opencode_lifecycle_v1_r2_beets_retry_attempt_path(ROOT)
+        path = opencode_lifecycle_r2_beets_retry_attempt_path(ROOT)
     else:
         path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
     if path.exists():
-        if lifecycle_v1 and opencode_lifecycle_v1_r1_no_provider_recovery_authorized(
+        if lifecycle_v1 and opencode_lifecycle_r1_no_provider_recovery_authorized(
             sequence_id, replicate_index, ROOT
         ):
             return path
@@ -1285,7 +1285,7 @@ def reserve_opencode_baseline_attempt(
         authority_rel = (
             Path(OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
             if r2_beets_retry
-            else workflow.opencode_lifecycle_v1_authority_rel(replicate_index)
+            else workflow.opencode_lifecycle_authority_rel(replicate_index)
         )
         authority = load_json(ROOT / authority_rel)
         owner = authority.get("owner_authorization", {})
@@ -1520,7 +1520,7 @@ def run_flow_lane(
             if isinstance(model_condition, dict)
             else None
         )
-        reserve_claude_lifecycle_v1_attempt(
+        reserve_claude_lifecycle_attempt(
             sequence_id=sequence_id,
             replicate_index=replicate_index,
             expected_session_binding=parent_claude_receipt_binding,
@@ -2887,7 +2887,7 @@ def main(argv: list[str] | None = None) -> int:
         and any(sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER for sequence_id in sequences)
         and args.max_parallel != 1
     ):
-        raise SystemExit("owner-authorized Claude Code Lifecycle V1 requires --max-parallel 1")
+        raise SystemExit("owner-authorized Claude Code lifecycle runs require --max-parallel 1")
     if args.lane_root.exists() and not nonsymlink_directory_ancestry(args.lane_root):
         raise ValueError("lane root contains a symlink or non-directory ancestor")
 
@@ -2919,7 +2919,7 @@ def main(argv: list[str] | None = None) -> int:
                 "model": "gpt-5.6-sol",
                 "reasoning_effort": "high",
             }
-            or not opencode_lifecycle_v1_r2_beets_retry_authorized(ROOT)
+            or not opencode_lifecycle_r2_beets_retry_authorized(ROOT)
         ):
             raise SystemExit(
                 "--r2-beets-retry requires exactly Beets r2, bare OpenCode Sol/high, --max-parallel 1, "
@@ -2966,7 +2966,7 @@ def main(argv: list[str] | None = None) -> int:
         return state
 
     def treatment_gate(sequence_id: str) -> tuple[bool, str]:
-        return workflow.lifecycle_v1_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
+        return workflow.lifecycle_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli":
@@ -2987,7 +2987,7 @@ def main(argv: list[str] | None = None) -> int:
                 ROOT,
                 model_condition_id=str(model_condition.get("id")),
             )
-        return workflow.lifecycle_v1_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
+        return workflow.lifecycle_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     if args.prepare_only and treatment_profiles:
         for sequence_id in sequences:
@@ -3016,7 +3016,7 @@ def main(argv: list[str] | None = None) -> int:
         )
     )
     for sequence_id, profile_id in jobs:
-        workflow.require_lifecycle_v1_baseline_replicate(
+        workflow.require_lifecycle_baseline_replicate(
             workflow.load_sequence(sequence_id),
             profile_id,
             args.replicate_index,

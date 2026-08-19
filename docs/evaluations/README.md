@@ -11,7 +11,7 @@ must never be presented, compared, ranked, or interpreted as a result.
 Start with the generated [operator runbook](operations/runbook.md).
 
 - [Runner reference](operations/runner-reference.md) — command-line and resume details
-- [Workflow guide](operations/workflow-guide.md) — the active Lifecycle V1 flows
+- [Workflow guide](operations/workflow-guide.md) — the active Lifecycle V2 flows
 - [Fixture guide](operations/fixture-guide.md) — fixture layout and preparation
 
 ## Understand the design
@@ -20,7 +20,7 @@ Start with the generated [operator runbook](operations/runbook.md).
 - [Persistent workflow model](design/workflow-model.md) — why tasks run in one resumed session
 - [Result schema](design/result-schema.md) — cumulative result structure
 - [Fixture design](design/fixture-design.md) — fixture and verifier contract
-- [Lifecycle V1 accepted-replicate pairing](design/lifecycle-v1-accepted-replicate-pairing.md) — canonical cross-runtime pair names and raw-label rules
+- [Lifecycle V1 accepted-replicate pairing](design/lifecycle-v1-accepted-replicate-pairing.md) — cross-runtime pair-naming rules, worked on the archived V1 pairs
 - [Token and quality policy](design/token-and-quality-policy.md) — provider accounting and diagnostic quality
 - [Tool isolation policy](design/tool-isolation-policy.md) — treatment isolation requirements
 
@@ -31,8 +31,8 @@ Start with the generated [operator runbook](operations/runbook.md).
 
 ## Current evidence
 
-The corrected Lifecycle V1 fixture contract remains active for Fastify and Beets, but the active provider-backed result registry is currently empty. The pre-correction corpus of 103 provider-backed sessions was archived before rerun because the model-facing prompts and shared prompt/configuration generation changed. The archive receipt is [`lifecycle-v1-fastify-beets-results-archived-20260814.json`](../../sources/evaluations/audits/lifecycle-v1-fastify-beets-results-archived-20260814.json).
+The Lifecycle V2 fixture contract is active for Fastify and Beets, but the active provider-backed result registry is currently empty. The pre-correction corpus of 103 provider-backed sessions was archived before rerun because the model-facing prompts and shared prompt/configuration generation changed. The archive receipt is [`lifecycle-v1-fastify-beets-results-archived-20260814.json`](../../sources/evaluations/audits/lifecycle-v1-fastify-beets-results-archived-20260814.json).
 
-The current no-result baseline protocols are retained as `frozen-ready-not-run` contracts under the forward GPT-5.6 Sol/medium condition. Their provider-free qualifications are `qualification-lifecycle-v1-20260815.json` under the Fastify and Beets fixture directories. They prove preparation only; they are not effectiveness results. The preceding unexecuted High-effort, compile-only, and raw-metric protocol bytes were superseded and archived. New OpenCode runs also use GPT-5.6 Sol/medium; new Claude Code runs use direct-Anthropic Claude Opus 5/medium. A future current-contract baseline and treatment campaign requires fresh provider execution and explicit authorization.
+The current no-result baseline protocols are retained as `frozen-ready-not-run` contracts under the forward GPT-5.6 Sol/medium condition. Their provider-free qualifications are `qualification-lifecycle-v2-20260818.json` (Fastify) and `qualification-lifecycle-v2-20260816.json` (Beets) under the fixture directories. They prove preparation only; they are not effectiveness results. The preceding unexecuted High-effort, compile-only, and raw-metric protocol bytes were superseded and archived. New OpenCode runs also use GPT-5.6 Sol/medium; new Claude Code runs use direct-Anthropic Claude Opus 5/medium. A future current-contract baseline and treatment campaign requires fresh provider execution and explicit authorization.
 
-Historical reports and audit receipts remain available for provenance and link to the archived session/protocol paths. They are not current findings or reusable controls for the corrected rerun. Lifecycle V0 remains retired under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json).
+Historical reports and audit receipts remain available for provenance and link to the archived session/protocol paths. They are not current findings or reusable controls for the Lifecycle V2 rerun. Lifecycle V0 remains retired under [`lifecycle-v0-framework-retired-20260814.json`](../../sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json).
