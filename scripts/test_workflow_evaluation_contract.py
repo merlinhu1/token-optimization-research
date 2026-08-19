@@ -126,6 +126,30 @@ def requires_populated_registry(method):
     return wrapper
 
 
+def requires_retained_sequence(sequence_id: str):
+    """Skip while *this* sequence has no retained session.
+
+    Sequences are baselined independently, so the corpus is routinely partial: one lane can
+    hold r0 while the other holds nothing. A global "is the registry empty" guard passes as
+    soon as any lane is populated and then fails every test pinned to a different lane, which
+    is how the first retained Fastify baseline broke three Beets-pinned protocol tests.
+    """
+
+    def decorate(method):
+        @functools.wraps(method)
+        def wrapper(self, *args, **kwargs):
+            if not any(
+                session.get("task_sequence", {}).get("sequence_id") == sequence_id
+                for session in registry_sessions()
+            ):
+                self.skipTest(f"no retained session for {sequence_id} yet")
+            return method(self, *args, **kwargs)
+
+        return wrapper
+
+    return decorate
+
+
 
 def active_lifecycle_sequences(document: dict | None = None) -> list[dict]:
     if document is None:
@@ -3259,7 +3283,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "--protocol is required"):
             runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
 
-    @requires_populated_registry
+    @requires_retained_sequence(SEQUENCE_ID)
     def test_protocol_timeout_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
@@ -3272,7 +3296,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "timeout"):
             runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
 
-    @requires_populated_registry
+    @requires_retained_sequence(SEQUENCE_ID)
     def test_protocol_docker_image_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
@@ -3285,7 +3309,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "docker image inspect failed"):
             runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
 
-    @requires_populated_registry
+    @requires_retained_sequence(SEQUENCE_ID)
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(

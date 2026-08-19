@@ -4,7 +4,7 @@ Research infrastructure for measuring weighted token cost and software quality i
 
 ## Current evaluation portfolio
 
-The active portfolio is **Lifecycle V2** for two medium-project lanes. It has passed provider-free qualification but currently has no provider-backed results. New Codex CLI and OpenCode evaluations use GPT-5.6 Sol/medium; new Claude Code evaluations use direct-Anthropic Claude Opus 5/medium. High-effort conditions are historical only because the added deliberation can increase trajectory divergence. Each task pre-seeds an authentic semantic regression from completed upstream behavior and gives the agent a normal software-engineering objective: implement the requested outcome correctly, search and inspect related code, preserve prior work, and validate appropriately. Prompts state the observable symptom and never name the file, function, or test, so locating the defect remains real retrieval work, and they do not disclose evaluator scoring or controller commands. The controller applies every regression as one composite start before prompt 1; after the final prompt it runs each task verifier and one frozen project-wide compile command. Every task requires affected-component compilation plus one narrow essential-behavior smoke check. Broader tests, behavioral fidelity, style, maintainability, and source review are diagnostics. The active lifecycle portfolio is:
+The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lanes have passed provider-free qualification. Fastify holds its first provider-backed baseline replicate; Beets has none yet, and no treatment has been run against either, so no tool-effect claim is available. New Codex CLI and OpenCode evaluations use GPT-5.6 Sol/medium; new Claude Code evaluations use direct-Anthropic Claude Opus 5/medium. High-effort conditions are historical only because the added deliberation can increase trajectory divergence. Each task pre-seeds an authentic semantic regression from completed upstream behavior and gives the agent a normal software-engineering objective: implement the requested outcome correctly, search and inspect related code, preserve prior work, and validate appropriately. Prompts state the observable symptom and never name the file, function, or test, so locating the defect remains real retrieval work, and they do not disclose evaluator scoring or controller commands. The controller applies every regression as one composite start before prompt 1; after the final prompt it runs each task verifier and one frozen project-wide compile command. Every task requires affected-component compilation plus one narrow essential-behavior smoke check. Broader tests, behavioral fidelity, style, maintainability, and source review are diagnostics. The active lifecycle portfolio is:
 
 | Sequence | Fixture | Ordered stages |
 |---|---|---|
@@ -12,7 +12,9 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. It has pa
 | `beets-lifecycle-sequence-v2` | Beets | 7 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry holds no provider-backed sessions. A corrected task family mints new qualification and protocol identities, so the prior corpus is archived and fresh execution is required before any result claim.
+The active registry contains 1 accepted provider-backed session: 1 baselines. By sequence: 1 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 1.
+
+Weighted token cost decomposes as agent steps times weighted cost per step. `sample-bd72ef33cf25` holds 1 replicate (71 agent steps).
 
 Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions).
 <!-- /generated:corpus-summary -->

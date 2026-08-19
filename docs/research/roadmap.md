@@ -2,11 +2,11 @@
 
 ## Current state
 
-The current execution contract is Lifecycle V2 across Fastify and Beets: 6 bounded Fastify and 7 bounded Beets defect repairs, each restoring one named behavior a specific upstream test decides, under authentic semantic regressions, normal software-engineering prompts, and lenient controller-only acceptance. Every task compiles and also runs one narrow essential-behavior smoke. The Fastify qualification completed on 2026-08-18 and the Beets qualification on 2026-08-16, but no provider-backed result has been executed under that contract.
+The current execution contract is Lifecycle V2 across Fastify and Beets: 6 bounded Fastify and 7 bounded Beets defect repairs, each restoring one named behavior a specific upstream test decides, under authentic semantic regressions, normal software-engineering prompts, and lenient controller-only acceptance. Every task compiles and also runs one narrow essential-behavior smoke. The Fastify qualification completed on 2026-08-18 and the Beets qualification on 2026-08-16. The first provider-backed baseline under this contract, Fastify r0, is retained; Beets has no provider-backed result yet.
 
 The previous provider-backed Lifecycle V1 corpus was archived before rerun because model-facing prompts and shared prompt/configuration identity changed. The archive contains 103 historical sessions, their comparisons, and superseded protocols. They remain immutable evidence for the prior bytes and are not current controls.
 
-The active registry therefore contains zero provider-backed sessions. The current bare-Codex protocols remain `frozen-ready-not-run`; future provider work must be fresh, explicitly authorized, and bound to the current Lifecycle V2 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
+The active registry therefore contains one provider-backed baseline session, Fastify r0, in sample plan `sample-bd72ef33cf25` (N=3). The Beets bare-Codex protocol remains `frozen-ready-not-run`; future provider work must be fresh, explicitly authorized, and bound to the current Lifecycle V2 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
 
 ## Archived evidence
 
