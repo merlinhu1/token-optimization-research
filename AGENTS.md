@@ -11,16 +11,35 @@ repository first: most files are either machine authority, generated output, or 
 evidence, and each kind has different editing rules. Read [Editing rules by file kind](#editing-rules-by-file-kind)
 before your first write.
 
+The measurement is a comparison. Every rule below exists because something can make a baseline and
+a treatment differ for a reason that is not the treatment. When a rule seems inconvenient, that is
+usually what it is protecting.
+
+## Precedence
+
+1. **Registries decide state.** `data/*.json` says what is active, pinned, registered, or retired.
+   Where this file and a registry disagree about state, the registry is right and this file is
+   stale — fix it.
+2. **This file decides policy**, and the [ADRs](docs/architecture/decision-records/) record why the
+   policy exists. Do not work around a rule you disagree with; raise it.
+3. **Frozen evidence decides history.** It is never edited to agree with either.
+
+If you cannot satisfy a rule, stop and say so. A silent workaround in this repository does not
+produce a slightly worse result, it produces evidence that looks valid and is not.
+
 ## Non-negotiables
 
 1. **Run `make check` before finishing any change to evaluation state.** Nothing runs it
    automatically: this repository has no CI, and an unrun gate is the same as no gate.
-2. **Weighted token cost is the sole token metric.** See [Token metric authority](#token-metric-authority).
+2. **Weighted token cost is the sole token metric**, reported from a pre-registered median sample.
+   See [Measurement and inference](#measurement-and-inference).
 3. **Never hand-edit generated or frozen files.** Regenerate the first; leave the second alone.
 4. **An action that changes research state updates every active surface that reports it, in the
    same change.** See [Documentation lifecycle](#documentation-lifecycle).
 5. **Solution-directed task assistance is forbidden** in model-facing prompts. See
    [Fixture design](#fixture-design).
+6. **Never select, drop, or rerun a sample because of the number it produced.** See
+   [Threats to validity](#threats-to-validity).
 
 ## Setup
 
@@ -38,7 +57,9 @@ Fixture work additionally needs `node`/`npm` (Fastify) and `uv` (Beets). Fixture
 `sources/evaluations/fixtures/*/*/repo/` are gitignored and materialized locally by each
 fixture's `setup.sh`.
 
-## Token metric authority
+## Measurement and inference
+
+### The metric
 
 The repository's sole token evaluation metric is **weighted token cost**:
 
@@ -50,43 +71,109 @@ be added again. Provider token counters and reconstructed raw totals may be reta
 internal telemetry needed to calculate or audit weighted token cost; never present, compare, rank,
 or interpret them as an evaluation result. Do not introduce a secondary raw-token metric.
 
+Publish weighted cost as its two factors — **agent steps times weighted cost per step** — with the
+spread of each factor, not as a single number ([ADR 0008](docs/architecture/decision-records/0008-bounded-task-family-and-cost-decomposition.md)).
+The factors move independently, and a total alone hides which one a tool actually changed.
+
+### The estimator
+
+A single run is not a result. The point estimate for a protocol is the **median weighted token
+cost across a pre-registered set of N replicates, N odd and at least 3**
+([ADR 0007](docs/architecture/decision-records/0007-ranked-reporting-and-median-sampling.md)).
+
+- **Register before spending.** N and the protocol identity are fixed before the first provider
+  call. Every session record carries a schema-required `sample_plan`; `validate_repository` enforces
+  N odd and ≥ 3. Registration is what stops a median from being assembled by rerunning until the
+  number is favourable.
+- **Replicates accumulate additively across sessions as budget allows.** N fixes how many the sample
+  holds, never when they run.
+- **Publish all N**, including verifier failures and low-quality outputs. A replicate whose agent
+  performed badly produced a real token count and counts toward the median. Only a replicate that
+  failed *before* the provider boundary produced no measurement; replace it and retain its
+  zero-spend receipt.
+- **Extending a sample after seeing results requires a new registration**, and both the original and
+  extended estimates are reported.
+- **Report the median with its observed spread.** A ranking states its workload set, model
+  conditions, N, and dispersion; tools whose ranges overlap at the reported N are reported as
+  indistinguishable at that N rather than ordered.
+
+### Grading a claim
+
+Every claim carries an evidence stage — `lead`, `source-logic`, `benchmark-audit`, or `reproduction`
+([ADR 0002](docs/architecture/decision-records/0002-evidence-stages.md)). Source-logic is
+decision-bearing only for prioritization and stack-hypothesis formation; benchmark and reproduction
+wording requires benchmark or reproduction artifacts.
+
+`evidence_stage` is schema-required on session and run records, and those schemas admit only
+`benchmark_audit` and `reproduction` — a lead or a source-logic reading can never be recorded as
+execution evidence. Do not infer a token result from qualification readiness either: a passing
+qualification proves preparation, not effect.
+
+## Threats to validity
+
+Each control below exists because the corresponding failure has already happened here or was found
+before it could. Removing a control silently is how a study stops measuring what it claims to.
+
+| Threat | Control |
+|---|---|
+| Prompt differences between arms confound the comparison | Compatible baseline and treatment sessions receive identical prompt bytes, and must not require or prefer treatment-tool invocation |
+| Telling the agent where to look suppresses the retrieval that context tools act on | Solution-directed task assistance forbidden; this retired Lifecycle V0 ([ADR 0005](docs/architecture/decision-records/0005-token-accounting-and-protocol-identity.md)) |
+| A model or effort change silently reuses an incomparable control | Model/effort changes mint new protocol identities; a baseline cannot cross conditions |
+| Environmental noise in a fixture is charged to the treatment | A fixture must exit zero on a clean prepared base — see [Fixture design](#fixture-design) |
+| An unbounded task lets one task dominate and swamp the effect | Bounded tasks with closed stopping conditions ([ADR 0008](docs/architecture/decision-records/0008-bounded-task-family-and-cost-decomposition.md)) |
+| Rerunning until the number looks right | Pre-registered N; first valid sample retained; acceptance never gates sample retention |
+| Reduced tool setups flatter or penalize a product | Faithful installation of every author-recommended surface; reduced setups are declared ablations |
+
 ## Evaluation contract
 
-This repository's only evaluation framework is **Lifecycle V2**: a series of bounded defect
-repairs, each restoring one named behavior that a specific upstream test already decides, so every
-task has a closed stopping condition and no single task dominates session cost. The active
-sequences, their task counts, and their ordered task IDs live in `data/workflow-task-sequences.json`
-— read them there rather than restating them here, because a restated count is what goes stale.
+The active task family, its sequences, its ordered task IDs, and their counts live in
+`data/workflow-task-sequences.json`; the current generation is
+`validate_repository.CURRENT_TASK_FAMILY_GENERATION`. Read them there rather than restating them
+here — a restated count is what goes stale.
 
-Lifecycle V1 was superseded on 2026-08-16. Lifecycle V0 was retired on 2026-08-14 under
+The active framework is **Lifecycle V2**: a series of bounded defect repairs, each restoring one
+named behavior that a specific upstream test already decides, so every task has a closed stopping
+condition and no single task dominates session cost. Lifecycle V1 was superseded on 2026-08-16.
+Lifecycle V0 was retired on 2026-08-14 under
 `sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json` and no longer exists in
 the corpus.
 
-Every active sequence, task ID, qualification file, and current execution contract must be V2. Do
-not reintroduce a V0 or other compatibility lane. Accepted production records are immutable
-historical evidence. Rejected or excluded records may be deleted only by explicit experiment-owner
-direction, together with their artifact roots and unreferenced protocols.
+Every active sequence, task ID, qualification file, and current execution contract must belong to
+the active generation. Do not reintroduce a V0 or other compatibility lane. Accepted production
+records are immutable historical evidence. Rejected or excluded records may be deleted only by
+explicit experiment-owner direction, together with their artifact roots and unreferenced protocols.
 
-New Codex CLI and OpenCode runs use `gpt-5.6-sol` at `medium` reasoning effort. New Claude Code
-runs use direct Anthropic `claude-opus-5` at `medium` effort. High-effort conditions are historical
-only: do not prepare or execute a new protocol under them. Model or effort changes mint new
-protocol identities and cannot reuse a baseline from another condition.
+New runs use the model conditions registered as active in `data/evaluation-agent-runtimes.json` —
+that registry is the authority for runtime, model, and reasoning effort. Conditions marked
+`historical-inactive` are historical only: do not prepare or execute a new protocol under them.
+Model or effort changes mint new protocol identities and cannot reuse a baseline from another
+condition.
 
 ## Fixture design
 
 - Pin the upstream repository commit.
 - Build authentic tasks from upstream code/history.
 - Start patches must be independently applicable and compose without overlap.
-- Active Lifecycle V2 tasks seed authentic semantic regressions from completed upstream behavior in
-  one or two production files. Seed patches must apply independently and compose cleanly; standalone
-  and composite seeded verifier outcomes may be either 0 or 1 but must be recorded without
+- **A fixture must exit zero on a clean prepared base.** Tests that fail on a clean tree show the
+  agent failures it did not cause and cannot fix, and whether it investigates them is variance
+  charged to the measurement. Diagnose the cause before excluding anything: exclude only what the
+  pin does not own — environment-dependent failures — never a genuine upstream defect, and record
+  the finding. A fixture may then declare `initial_snapshot.prepared_removals`; the controller
+  removes those paths and commits the removal with a fixed identity and date, so the prepared base
+  is a reproducible commit pinned alongside the upstream commit. Everything deciding that hash lives
+  in the sequence, so the evaluation checkout and the local fixture cannot build different bases.
+  Verify afterwards that the seeded regressions still fail: an exclusion that blinds the oracle is
+  worse than the noise it removed.
+- Active tasks seed authentic semantic regressions from completed upstream behavior in one or two
+  production files. Seed patches must apply independently and compose cleanly; standalone and
+  composite seeded verifier outcomes may be either 0 or 1 but must be recorded without
   infrastructure failure. Every cumulative repaired state must pass its retained task verifiers, and
   the fully repaired project-wide snapshot must compile.
-- Model-facing Lifecycle V2 prompts state the observable symptom and expected behavior without
-  naming the file, function, or test, permit normal repository search and related-code inspection,
-  expect a complete correct implementation, and forbid changes to tests, generated files, dependency
-  locks, or evaluation controls. They must not disclose controller compile commands, evaluator
-  scoring, or the internal acceptance policy.
+- Model-facing prompts state the observable symptom and expected behavior without naming the file,
+  function, or test, permit normal repository search and related-code inspection, expect a complete
+  correct implementation, and forbid changes to tests, generated files, dependency locks, or
+  evaluation controls. They must not disclose controller compile commands, evaluator scoring, or the
+  internal acceptance policy.
 - Internally, every task must pass affected-component compilation and the final workflow must pass
   project-wide compilation. Every task also receives exactly one narrow, implementation-independent
   essential-behavior smoke check. The smoke check should reject a missing or seriously flawed
@@ -100,11 +187,6 @@ protocol identities and cannot reuse a baseline from another condition.
   [ADR 0005](docs/architecture/decision-records/0005-token-accounting-and-protocol-identity.md).
   Compatible baseline and treatment sessions must receive identical prompt bytes and must not
   require or prefer treatment-tool invocation.
-- A fixture may declare `initial_snapshot.prepared_removals` when the pinned checkout fails tests on
-  a clean tree for reasons the pin does not own. The controller removes those paths and commits the
-  removal with a fixed identity and date, so the prepared base is a reproducible commit pinned
-  alongside the upstream commit. Everything deciding that hash lives in the sequence, so the
-  evaluation checkout and the local fixture cannot build different bases.
 - Run all task verifiers and the project-wide compile verifier after the final prompt in one
   persistent workflow.
 
@@ -112,10 +194,9 @@ protocol identities and cannot reuse a baseline from another condition.
 
 Qualification JSON is generated executable evidence; never hand-edit it. Production runs require
 provider-reported cumulative token telemetry sufficient to calculate weighted token cost and
-isolated baseline/treatment conditions. Lifecycle V2 task verifiers and final project compilation
-gate task/workflow acceptance and treatment unlock, but do not gate weighted-token sample retention.
+isolated baseline/treatment conditions. Task verifiers and final project compilation gate
+task/workflow acceptance and treatment unlock, but **do not gate weighted-token sample retention**.
 Broader tests and source-review outcomes are diagnostic and must not trigger pass-selection reruns.
-Do not infer a token result from qualification readiness.
 
 Treatment execution is availability/natural-use only after faithful product installation:
 
@@ -157,9 +238,9 @@ Run these in order. Getting the order wrong wastes a full qualification run.
 6. `make check`.
 
 When task contracts change, regenerate the affected `qualification-lifecycle-v2-*.json`, regenerate
-the runbook and registry summaries, and refresh only current V2 execution contracts. A model-facing
+the runbook and registry summaries, and refresh only current execution contracts. A model-facing
 prompt change mints new qualification and protocol identities and archives the prior corpus.
-Qualification filenames are `qualification-lifecycle-v2-<YYYYMMDD>.json`; each fixture qualifies on
+Qualification filenames are `qualification-<generation>-<YYYYMMDD>.json`; each fixture qualifies on
 its own schedule, so requalifying one does not force the other.
 
 ### Protocol-minting traps
@@ -208,11 +289,11 @@ After such an action:
 Do not finish an evaluation run with stale `ready-not-run`, `no production result`, empty-registry,
 mandatory-quality-review, or baseline-rerun guidance in active surfaces.
 
-**Do not pin a generation name, task count, or dated filename into a check or a document that is not
-about that generation.** Both have gone stale here before: a contract test asserted the literal
-string `Lifecycle V1`, and identifiers carried a `lifecycle_v1_` prefix while operating on whatever
-generation was active. Read the current generation from
-`validate_repository.CURRENT_TASK_FAMILY_GENERATION` and the counts from the sequence registry.
+**Do not pin a generation name, task count, dated filename, or model ID into a check or a document
+that is not about that specific thing.** All of these have gone stale here: a contract test asserted
+the literal string `Lifecycle V1`, identifiers carried a `lifecycle_v1_` prefix while operating on
+whatever generation was active, and this file restated task counts and model IDs the registries
+already owned. Read state from the registry; assert policy, not wording.
 
 ## Required checks
 
