@@ -22,7 +22,7 @@
     "A single pathological task: the spread is distributed, with task-07 contributing 35%, task-05 21% and task-06 20%.",
     "Task file overlap: both lanes change exactly one distinct production file per task."
   ],
-  "consequence": "At three replicates the Beets lane cannot resolve a treatment effect below roughly 30%. Fastify at 1.7% can resolve far smaller effects. Adding Beets replicates narrows the median but does not remove the compounding, because the correlation is within a session rather than between sessions.",
+  "consequence": "At three replicates the Beets lane cannot resolve a treatment effect below roughly 30%. Fastify at 1.7% can resolve far smaller effects. Adding Beets replicates narrows the median but does not remove the compounding, because the correlation is within a session rather than between sessions. Selecting low-variance tasks is not a usable lever: Beets task-04 is quiet but is followed by tasks spreading 36%, 36% and 60%, and in a persistent session a later task inherits whatever divergence preceded it.",
   "lanes": {
     "fastify": {
       "replicates": [
@@ -157,5 +157,45 @@
         }
       }
     }
+  },
+  "per_task_ranking": {
+    "beets_cost_spread_pct": {
+      "task-04": 3.5,
+      "task-03": 28.6,
+      "task-02": 28.7,
+      "task-06": 36.2,
+      "task-05": 36.3,
+      "task-01": 37.5,
+      "task-07": 60.0
+    },
+    "fastify_cost_spread_pct": {
+      "task-04": 9.2,
+      "task-06": 15.1,
+      "task-05": 15.4,
+      "task-02": 18.1,
+      "task-03": 20.3,
+      "task-01": 75.3
+    },
+    "note": "Beets task-04 is the lowest-variance task in either lane at 3.5%, so it is not true that every Beets task is unstable. Its low increment is partly offsetting rather than intrinsic: at that point the replicates' carried context differed 22.5% while their step counts differed 18.2% in the opposite direction (11, 11, 13), so the two nearly cancel within the task."
+  },
+  "convergence": {
+    "finding": "Both lanes diverge immediately and only one recovers. Cumulative carried context is already 88.3% apart after Fastify task-01 and 44.4% apart after Beets task-01. Fastify then closes: 31.6%, 16.3%, 7.8%, 6.6%, 4.9% by the final task. Beets does not: 28.8%, 31.4%, 22.5%, 28.6%, 32.8%, 39.6%. The distinguishing property is convergence of accumulated context, not per-task stability.",
+    "beets_cumulative_context_spread_pct_by_task": [
+      44.4,
+      28.8,
+      31.4,
+      22.5,
+      28.6,
+      32.8,
+      39.6
+    ],
+    "fastify_cumulative_context_spread_pct_by_task": [
+      88.3,
+      31.6,
+      16.3,
+      7.8,
+      6.6,
+      4.9
+    ]
   }
 }
