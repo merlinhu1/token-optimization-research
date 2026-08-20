@@ -1,0 +1,653 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 
+
+# --- task-02-agent ---
+diff --git a/beetsplug/mpdstats.py b/beetsplug/mpdstats.py
+index 183ab72..3df2065 100644
+--- a/beetsplug/mpdstats.py
++++ b/beetsplug/mpdstats.py
+@@ -354,14 +354,6 @@ class MPDStatsPlugin(plugins.BeetsPlugin):
+         def func(lib, opts, args):
+             mpd_config.set_args(opts)
+ 
+-            # Overrides for MPD settings.
+-            if opts.host:
+-                mpd_config["host"] = opts.host.decode("utf-8")
+-            if opts.port:
+-                mpd_config["host"] = int(opts.port)
+-            if opts.password:
+-                mpd_config["password"] = opts.password.decode("utf-8")
+-
+             try:
+                 MPDStats(lib, self._log).run()
+             except KeyboardInterrupt:
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 
+
+# --- task-03-agent ---
+diff --git a/beetsplug/convert.py b/beetsplug/convert.py
+index 3aacb72..604dae8 100644
+--- a/beetsplug/convert.py
++++ b/beetsplug/convert.py
+@@ -572,6 +572,12 @@ class ConvertPlugin(BeetsPlugin):
+         if not album or not album.artpath:
+             return
+ 
++        if not os.path.isfile(util.syspath(album.artpath)):
++            self._log.info(
++                "Skipping {.art_filepath} (source file not found)", album
++            )
++            return
++
+         album_item = album.items().get()
+         # Album shouldn't be empty.
+         if not album_item:
+diff --git a/beetsplug/mpdstats.py b/beetsplug/mpdstats.py
+index 183ab72..3df2065 100644
+--- a/beetsplug/mpdstats.py
++++ b/beetsplug/mpdstats.py
+@@ -354,14 +354,6 @@ class MPDStatsPlugin(plugins.BeetsPlugin):
+         def func(lib, opts, args):
+             mpd_config.set_args(opts)
+ 
+-            # Overrides for MPD settings.
+-            if opts.host:
+-                mpd_config["host"] = opts.host.decode("utf-8")
+-            if opts.port:
+-                mpd_config["host"] = int(opts.port)
+-            if opts.password:
+-                mpd_config["password"] = opts.password.decode("utf-8")
+-
+             try:
+                 MPDStats(lib, self._log).run()
+             except KeyboardInterrupt:
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 
+
+# --- task-04-agent ---
+diff --git a/beetsplug/convert.py b/beetsplug/convert.py
+index 3aacb72..604dae8 100644
+--- a/beetsplug/convert.py
++++ b/beetsplug/convert.py
+@@ -572,6 +572,12 @@ class ConvertPlugin(BeetsPlugin):
+         if not album or not album.artpath:
+             return
+ 
++        if not os.path.isfile(util.syspath(album.artpath)):
++            self._log.info(
++                "Skipping {.art_filepath} (source file not found)", album
++            )
++            return
++
+         album_item = album.items().get()
+         # Album shouldn't be empty.
+         if not album_item:
+diff --git a/beetsplug/importfeeds.py b/beetsplug/importfeeds.py
+index 04f97ca..92a413c 100644
+--- a/beetsplug/importfeeds.py
++++ b/beetsplug/importfeeds.py
+@@ -9,7 +9,14 @@ import re
+ 
+ from beets import config
+ from beets.plugins import BeetsPlugin
+-from beets.util import bytestring_path, link, mkdirall, normpath, syspath
++from beets.util import (
++    FilesystemError,
++    bytestring_path,
++    link,
++    mkdirall,
++    normpath,
++    syspath,
++)
+ 
+ M3U_DEFAULT_NAME = "imported.m3u"
+ 
+@@ -113,7 +120,12 @@ class ImportFeedsPlugin(BeetsPlugin):
+             for path in paths:
+                 dest = os.path.join(feedsdir, os.path.basename(path))
+                 if not os.path.exists(syspath(dest)):
+-                    link(path, dest)
++                    try:
++                        link(path, dest)
++                    except FilesystemError as exc:
++                        self._log.warning(
++                            "Could not create link for {}: {}", path, exc
++                        )
+ 
+         if "echo" in formats:
+             self._log.info("Location of imported music:")
+diff --git a/beetsplug/mpdstats.py b/beetsplug/mpdstats.py
+index 183ab72..3df2065 100644
+--- a/beetsplug/mpdstats.py
++++ b/beetsplug/mpdstats.py
+@@ -354,14 +354,6 @@ class MPDStatsPlugin(plugins.BeetsPlugin):
+         def func(lib, opts, args):
+             mpd_config.set_args(opts)
+ 
+-            # Overrides for MPD settings.
+-            if opts.host:
+-                mpd_config["host"] = opts.host.decode("utf-8")
+-            if opts.port:
+-                mpd_config["host"] = int(opts.port)
+-            if opts.password:
+-                mpd_config["password"] = opts.password.decode("utf-8")
+-
+             try:
+                 MPDStats(lib, self._log).run()
+             except KeyboardInterrupt:
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 
+
+# --- task-05-agent ---
+diff --git a/beetsplug/convert.py b/beetsplug/convert.py
+index 3aacb72..604dae8 100644
+--- a/beetsplug/convert.py
++++ b/beetsplug/convert.py
+@@ -572,6 +572,12 @@ class ConvertPlugin(BeetsPlugin):
+         if not album or not album.artpath:
+             return
+ 
++        if not os.path.isfile(util.syspath(album.artpath)):
++            self._log.info(
++                "Skipping {.art_filepath} (source file not found)", album
++            )
++            return
++
+         album_item = album.items().get()
+         # Album shouldn't be empty.
+         if not album_item:
+diff --git a/beetsplug/importfeeds.py b/beetsplug/importfeeds.py
+index 04f97ca..92a413c 100644
+--- a/beetsplug/importfeeds.py
++++ b/beetsplug/importfeeds.py
+@@ -9,7 +9,14 @@ import re
+ 
+ from beets import config
+ from beets.plugins import BeetsPlugin
+-from beets.util import bytestring_path, link, mkdirall, normpath, syspath
++from beets.util import (
++    FilesystemError,
++    bytestring_path,
++    link,
++    mkdirall,
++    normpath,
++    syspath,
++)
+ 
+ M3U_DEFAULT_NAME = "imported.m3u"
+ 
+@@ -113,7 +120,12 @@ class ImportFeedsPlugin(BeetsPlugin):
+             for path in paths:
+                 dest = os.path.join(feedsdir, os.path.basename(path))
+                 if not os.path.exists(syspath(dest)):
+-                    link(path, dest)
++                    try:
++                        link(path, dest)
++                    except FilesystemError as exc:
++                        self._log.warning(
++                            "Could not create link for {}: {}", path, exc
++                        )
+ 
+         if "echo" in formats:
+             self._log.info("Location of imported music:")
+diff --git a/beetsplug/lyrics.py b/beetsplug/lyrics.py
+index a9d77cc..1b8a9e9 100644
+--- a/beetsplug/lyrics.py
++++ b/beetsplug/lyrics.py
+@@ -1038,6 +1038,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+                 "keep_synced": False,
+                 "local": False,
+                 "print": False,
++                "rest_directory": None,
+                 "synced": False,
+                 # Musixmatch and Tekstowo are disabled by default as they
+                 # currently block requests with the beets user agent.
+@@ -1070,7 +1071,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             "--write-rest",
+             dest="rest_directory",
+             action="store",
+-            default=None,
++            default=self.config["rest_directory"].get(),
+             metavar="dir",
+             help="write lyrics to given directory as ReST files",
+         )
+@@ -1108,7 +1109,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             if opts.rest_directory and (
+                 items := [i for i in items if i.lyrics]
+             ):
+-                RestFiles(Path(opts.rest_directory)).write(items)
++                RestFiles(Path(opts.rest_directory).expanduser()).write(items)
+ 
+         cmd.func = func
+         return [cmd]
+diff --git a/beetsplug/mpdstats.py b/beetsplug/mpdstats.py
+index 183ab72..3df2065 100644
+--- a/beetsplug/mpdstats.py
++++ b/beetsplug/mpdstats.py
+@@ -354,14 +354,6 @@ class MPDStatsPlugin(plugins.BeetsPlugin):
+         def func(lib, opts, args):
+             mpd_config.set_args(opts)
+ 
+-            # Overrides for MPD settings.
+-            if opts.host:
+-                mpd_config["host"] = opts.host.decode("utf-8")
+-            if opts.port:
+-                mpd_config["host"] = int(opts.port)
+-            if opts.password:
+-                mpd_config["password"] = opts.password.decode("utf-8")
+-
+             try:
+                 MPDStats(lib, self._log).run()
+             except KeyboardInterrupt:
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 
+
+# --- task-06-agent ---
+diff --git a/beetsplug/convert.py b/beetsplug/convert.py
+index 3aacb72..604dae8 100644
+--- a/beetsplug/convert.py
++++ b/beetsplug/convert.py
+@@ -572,6 +572,12 @@ class ConvertPlugin(BeetsPlugin):
+         if not album or not album.artpath:
+             return
+ 
++        if not os.path.isfile(util.syspath(album.artpath)):
++            self._log.info(
++                "Skipping {.art_filepath} (source file not found)", album
++            )
++            return
++
+         album_item = album.items().get()
+         # Album shouldn't be empty.
+         if not album_item:
+diff --git a/beetsplug/importfeeds.py b/beetsplug/importfeeds.py
+index 04f97ca..92a413c 100644
+--- a/beetsplug/importfeeds.py
++++ b/beetsplug/importfeeds.py
+@@ -9,7 +9,14 @@ import re
+ 
+ from beets import config
+ from beets.plugins import BeetsPlugin
+-from beets.util import bytestring_path, link, mkdirall, normpath, syspath
++from beets.util import (
++    FilesystemError,
++    bytestring_path,
++    link,
++    mkdirall,
++    normpath,
++    syspath,
++)
+ 
+ M3U_DEFAULT_NAME = "imported.m3u"
+ 
+@@ -113,7 +120,12 @@ class ImportFeedsPlugin(BeetsPlugin):
+             for path in paths:
+                 dest = os.path.join(feedsdir, os.path.basename(path))
+                 if not os.path.exists(syspath(dest)):
+-                    link(path, dest)
++                    try:
++                        link(path, dest)
++                    except FilesystemError as exc:
++                        self._log.warning(
++                            "Could not create link for {}: {}", path, exc
++                        )
+ 
+         if "echo" in formats:
+             self._log.info("Location of imported music:")
+diff --git a/beetsplug/lyrics.py b/beetsplug/lyrics.py
+index a9d77cc..1b8a9e9 100644
+--- a/beetsplug/lyrics.py
++++ b/beetsplug/lyrics.py
+@@ -1038,6 +1038,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+                 "keep_synced": False,
+                 "local": False,
+                 "print": False,
++                "rest_directory": None,
+                 "synced": False,
+                 # Musixmatch and Tekstowo are disabled by default as they
+                 # currently block requests with the beets user agent.
+@@ -1070,7 +1071,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             "--write-rest",
+             dest="rest_directory",
+             action="store",
+-            default=None,
++            default=self.config["rest_directory"].get(),
+             metavar="dir",
+             help="write lyrics to given directory as ReST files",
+         )
+@@ -1108,7 +1109,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             if opts.rest_directory and (
+                 items := [i for i in items if i.lyrics]
+             ):
+-                RestFiles(Path(opts.rest_directory)).write(items)
++                RestFiles(Path(opts.rest_directory).expanduser()).write(items)
+ 
+         cmd.func = func
+         return [cmd]
+diff --git a/beetsplug/mpdstats.py b/beetsplug/mpdstats.py
+index 183ab72..3df2065 100644
+--- a/beetsplug/mpdstats.py
++++ b/beetsplug/mpdstats.py
+@@ -354,14 +354,6 @@ class MPDStatsPlugin(plugins.BeetsPlugin):
+         def func(lib, opts, args):
+             mpd_config.set_args(opts)
+ 
+-            # Overrides for MPD settings.
+-            if opts.host:
+-                mpd_config["host"] = opts.host.decode("utf-8")
+-            if opts.port:
+-                mpd_config["host"] = int(opts.port)
+-            if opts.password:
+-                mpd_config["password"] = opts.password.decode("utf-8")
+-
+             try:
+                 MPDStats(lib, self._log).run()
+             except KeyboardInterrupt:
+diff --git a/beetsplug/musicbrainz.py b/beetsplug/musicbrainz.py
+index a2608ce..fb25f89 100644
+--- a/beetsplug/musicbrainz.py
++++ b/beetsplug/musicbrainz.py
+@@ -270,6 +270,7 @@ class MusicBrainzPlugin(
+         super().__init__()
+         self.config.add(
+             {
++                "aliases_as_credits": False,
+                 "genres": False,
+                 "genres_tag": "genre",
+                 "external_ids": {
+@@ -293,8 +294,9 @@ class MusicBrainzPlugin(
+                 "'musicbrainz.search_limit'",
+             )
+ 
+-    @staticmethod
+-    def _parse_artist_credits(artist_credits: list[ArtistCredit]) -> ArtistInfo:
++    def _parse_artist_credits(
++        self, artist_credits: list[ArtistCredit]
++    ) -> ArtistInfo:
+         """Normalize MusicBrainz artist-credit data into tag-friendly fields.
+ 
+         MusicBrainz represents credits as a sequence of credited artists, each
+@@ -307,8 +309,8 @@ class MusicBrainzPlugin(
+         - Parallel lists that keep the per-artist granularity for callers that
+           need to reason about individual credited artists.
+ 
+-        When available, a preferred alias is used for the canonical artist name,
+-        sort name and the credit name.
++        When available, a preferred alias is used for the canonical artist name
++        and sort name. It is also used for the credit name when configured.
+         """
+         artist_parts: list[str] = []
+         artist_sort_parts: list[str] = []
+@@ -322,7 +324,11 @@ class MusicBrainzPlugin(
+             artists_ids.append(el["artist"]["id"])
+             alias = _preferred_alias(el["artist"].get("aliases", []))
+             artist_object = alias or el["artist"]
+-            credit_artist_object = alias or el
++            credit_artist_object = (
++                alias
++                if alias and self.config["aliases_as_credits"].get(bool)
++                else el
++            )
+ 
+             joinphrase = el["joinphrase"]
+             for name, parts, multi in (
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 
+
+# --- task-07-agent ---
+diff --git a/beetsplug/convert.py b/beetsplug/convert.py
+index 3aacb72..604dae8 100644
+--- a/beetsplug/convert.py
++++ b/beetsplug/convert.py
+@@ -572,6 +572,12 @@ class ConvertPlugin(BeetsPlugin):
+         if not album or not album.artpath:
+             return
+ 
++        if not os.path.isfile(util.syspath(album.artpath)):
++            self._log.info(
++                "Skipping {.art_filepath} (source file not found)", album
++            )
++            return
++
+         album_item = album.items().get()
+         # Album shouldn't be empty.
+         if not album_item:
+diff --git a/beetsplug/importfeeds.py b/beetsplug/importfeeds.py
+index 04f97ca..92a413c 100644
+--- a/beetsplug/importfeeds.py
++++ b/beetsplug/importfeeds.py
+@@ -9,7 +9,14 @@ import re
+ 
+ from beets import config
+ from beets.plugins import BeetsPlugin
+-from beets.util import bytestring_path, link, mkdirall, normpath, syspath
++from beets.util import (
++    FilesystemError,
++    bytestring_path,
++    link,
++    mkdirall,
++    normpath,
++    syspath,
++)
+ 
+ M3U_DEFAULT_NAME = "imported.m3u"
+ 
+@@ -113,7 +120,12 @@ class ImportFeedsPlugin(BeetsPlugin):
+             for path in paths:
+                 dest = os.path.join(feedsdir, os.path.basename(path))
+                 if not os.path.exists(syspath(dest)):
+-                    link(path, dest)
++                    try:
++                        link(path, dest)
++                    except FilesystemError as exc:
++                        self._log.warning(
++                            "Could not create link for {}: {}", path, exc
++                        )
+ 
+         if "echo" in formats:
+             self._log.info("Location of imported music:")
+diff --git a/beetsplug/lyrics.py b/beetsplug/lyrics.py
+index a9d77cc..1b8a9e9 100644
+--- a/beetsplug/lyrics.py
++++ b/beetsplug/lyrics.py
+@@ -1038,6 +1038,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+                 "keep_synced": False,
+                 "local": False,
+                 "print": False,
++                "rest_directory": None,
+                 "synced": False,
+                 # Musixmatch and Tekstowo are disabled by default as they
+                 # currently block requests with the beets user agent.
+@@ -1070,7 +1071,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             "--write-rest",
+             dest="rest_directory",
+             action="store",
+-            default=None,
++            default=self.config["rest_directory"].get(),
+             metavar="dir",
+             help="write lyrics to given directory as ReST files",
+         )
+@@ -1108,7 +1109,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             if opts.rest_directory and (
+                 items := [i for i in items if i.lyrics]
+             ):
+-                RestFiles(Path(opts.rest_directory)).write(items)
++                RestFiles(Path(opts.rest_directory).expanduser()).write(items)
+ 
+         cmd.func = func
+         return [cmd]
+diff --git a/beetsplug/mbcollection.py b/beetsplug/mbcollection.py
+index d6a9c84..3507bd9 100644
+--- a/beetsplug/mbcollection.py
++++ b/beetsplug/mbcollection.py
+@@ -6,6 +6,7 @@ from functools import cached_property
+ from typing import TYPE_CHECKING, ClassVar
+ 
+ from requests.auth import HTTPDigestAuth
++from requests.exceptions import RequestException
+ 
+ from beets import __version__, config
+ from beets.exceptions import UserError
+@@ -184,7 +185,12 @@ class MusicBrainzCollectionPlugin(BeetsPlugin):
+     def update_collection(self, lib: Library, opts, args) -> None:
+         self.config.set_args(opts)
+         remove_missing = self.config["remove"].get(bool)
+-        self.update_album_list(lib, lib.albums(), remove_missing)
++        try:
++            self.update_album_list(lib, lib.albums(), remove_missing)
++        except RequestException as exc:
++            self._log.error(
++                "Failed to update MusicBrainz collection: {}", exc
++            )
+ 
+     def imported(self, session: ImportSession, task: ImportTask) -> None:
+         """Add each imported album to the collection."""
+diff --git a/beetsplug/mpdstats.py b/beetsplug/mpdstats.py
+index 183ab72..3df2065 100644
+--- a/beetsplug/mpdstats.py
++++ b/beetsplug/mpdstats.py
+@@ -354,14 +354,6 @@ class MPDStatsPlugin(plugins.BeetsPlugin):
+         def func(lib, opts, args):
+             mpd_config.set_args(opts)
+ 
+-            # Overrides for MPD settings.
+-            if opts.host:
+-                mpd_config["host"] = opts.host.decode("utf-8")
+-            if opts.port:
+-                mpd_config["host"] = int(opts.port)
+-            if opts.password:
+-                mpd_config["password"] = opts.password.decode("utf-8")
+-
+             try:
+                 MPDStats(lib, self._log).run()
+             except KeyboardInterrupt:
+diff --git a/beetsplug/musicbrainz.py b/beetsplug/musicbrainz.py
+index a2608ce..fb25f89 100644
+--- a/beetsplug/musicbrainz.py
++++ b/beetsplug/musicbrainz.py
+@@ -270,6 +270,7 @@ class MusicBrainzPlugin(
+         super().__init__()
+         self.config.add(
+             {
++                "aliases_as_credits": False,
+                 "genres": False,
+                 "genres_tag": "genre",
+                 "external_ids": {
+@@ -293,8 +294,9 @@ class MusicBrainzPlugin(
+                 "'musicbrainz.search_limit'",
+             )
+ 
+-    @staticmethod
+-    def _parse_artist_credits(artist_credits: list[ArtistCredit]) -> ArtistInfo:
++    def _parse_artist_credits(
++        self, artist_credits: list[ArtistCredit]
++    ) -> ArtistInfo:
+         """Normalize MusicBrainz artist-credit data into tag-friendly fields.
+ 
+         MusicBrainz represents credits as a sequence of credited artists, each
+@@ -307,8 +309,8 @@ class MusicBrainzPlugin(
+         - Parallel lists that keep the per-artist granularity for callers that
+           need to reason about individual credited artists.
+ 
+-        When available, a preferred alias is used for the canonical artist name,
+-        sort name and the credit name.
++        When available, a preferred alias is used for the canonical artist name
++        and sort name. It is also used for the credit name when configured.
+         """
+         artist_parts: list[str] = []
+         artist_sort_parts: list[str] = []
+@@ -322,7 +324,11 @@ class MusicBrainzPlugin(
+             artists_ids.append(el["artist"]["id"])
+             alias = _preferred_alias(el["artist"].get("aliases", []))
+             artist_object = alias or el["artist"]
+-            credit_artist_object = alias or el
++            credit_artist_object = (
++                alias
++                if alias and self.config["aliases_as_credits"].get(bool)
++                else el
++            )
+ 
+             joinphrase = el["joinphrase"]
+             for name, parts, multi in (
+diff --git a/beetsplug/replace.py b/beetsplug/replace.py
+index c86e4b3..309a032 100644
+--- a/beetsplug/replace.py
++++ b/beetsplug/replace.py
+@@ -22,7 +22,7 @@ class ReplacePlugin(BeetsPlugin):
+         cmd.func = self.run
+         return [cmd]
+ 
+-    def run(self, lib: Library, args: list[str]) -> None:
++    def run(self, lib: Library, opts, args: list[str]) -> None:
+         if len(args) < 2:
+             raise UserError("Usage: beet replace <query> <new_file_path>")
+ 

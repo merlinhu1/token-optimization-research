@@ -12,9 +12,9 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lane
 | `beets-lifecycle-sequence-v2` | Beets | 7 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry contains 5 accepted provider-backed sessions: 5 baselines. By sequence: 2 `beets-lifecycle-sequence-v2`, 3 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 5.
+The active registry contains 6 accepted provider-backed sessions: 6 baselines. By sequence: 3 `beets-lifecycle-sequence-v2`, 3 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 6.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `bd72ef33cf25` holds 3 replicates (71, 74, 76 agent steps, spread 7.0%); weighted cost per step spread 8.4%; `e3e28a69acd2` holds 2 replicates (79, 93 agent steps, spread 17.7%); weighted cost per step spread 3.9%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `bd72ef33cf25` holds 3 replicates (71, 74, 76 agent steps, spread 7.0%); weighted cost per step spread 8.4%; `e3e28a69acd2` holds 3 replicates (79, 93, 91 agent steps, spread 17.7%); weighted cost per step spread 33.5%.
 
 Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions).
 <!-- /generated:corpus-summary -->
