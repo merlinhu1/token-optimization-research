@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-20",
+  "action": "diagnostic-investigation",
+  "question": "Why does the Beets lane reproduce badly (31.3% spread at n=3) while Fastify reproduces to 1.7%?",
+  "inputs": {
+    "sessions": [
+      "baseline-beets-20260819-p-e3e28a69acd2-r0",
+      "baseline-beets-20260819-p-e3e28a69acd2-r1",
+      "baseline-beets-20260820-p-e3e28a69acd2-r2",
+      "baseline-fastify-20260819-p-bd72ef33cf25-r0",
+      "baseline-fastify-20260819-p-bd72ef33cf25-r1",
+      "baseline-fastify-20260820-p-bd72ef33cf25-r2"
+    ],
+    "metric": "weighted token cost = fresh + 0.1*cached + 6*output",
+    "per_task_method": "Codex reports cumulative thread totals; a task's cost is its final usage snapshot minus the previous task's."
+  },
+  "finding": "Beets does not vary because one task is unstable. Per-task variability is comparable in both lanes; what differs is whether it cancels. In Fastify the per-task deviations offset (cancellation ratio 12.4x) and no replicate is consistently dear. In Beets they align (ratio 1.1x): one replicate is the most expensive in 6 of 7 tasks and another the cheapest in 6 of 7, so deviations compound instead of averaging out.",
+  "mechanism": "The workflow is one persistent session, so context accumulates across tasks and roughly two thirds of weighted cost is cached input. A session that pulls in more context early carries that penalty into every later task. Fastify re-converges -- its cheapest first task, r2 at 87,056 against 152,573, still ends with the largest final context -- so early exploration is traded against later exploration and final context lands within 5%. Beets never re-converges: final context spreads 40%.",
+  "not_supported": [
+    "Cache warming across runs: the cached share of input is flat at 95.5-97.3% across all six sessions.",
+    "A single pathological task: the spread is distributed, with task-07 contributing 35%, task-05 21% and task-06 20%.",
+    "Task file overlap: both lanes change exactly one distinct production file per task."
+  ],
+  "consequence": "At three replicates the Beets lane cannot resolve a treatment effect below roughly 30%. Fastify at 1.7% can resolve far smaller effects. Adding Beets replicates narrows the median but does not remove the compounding, because the correlation is within a session rather than between sessions.",
+  "lanes": {
+    "fastify": {
+      "replicates": [
+        "r0",
+        "r1",
+        "r2"
+      ],
+      "session_totals": {
+        "r0": 678873.4,
+        "r1": 681953.6,
+        "r2": 670346.6
+      },
+      "total_spread_pct": 1.7,
+      "sum_of_per_task_ranges": 143355.8,
+      "range_of_session_totals": 11607.0,
+      "cancellation_ratio": 12.4,
+      "most_expensive_replicate": {
+        "replicate": "r2",
+        "tasks": 4,
+        "of": 6
+      },
+      "cheapest_replicate": {
+        "replicate": "r1",
+        "tasks": 3,
+        "of": 6
+      },
+      "final_context_cached_tokens": {
+        "r0": 4230144,
+        "r1": 4084736,
+        "r2": 4284416
+      },
+      "final_context_spread_pct": 4.9,
+      "per_task_weighted_cost": {
+        "task-01": {
+          "r0": 140258.4,
+          "r1": 152573.2,
+          "r2": 87056.4
+        },
+        "task-02": {
+          "r0": 82695.0,
+          "r1": 70028.8,
+          "r2": 75294.8
+        },
+        "task-03": {
+          "r0": 90624.2,
+          "r1": 80719.2,
+          "r2": 97127.6
+        },
+        "task-04": {
+          "r0": 107789.4,
+          "r1": 114714.4,
+          "r2": 117745.0
+        },
+        "task-05": {
+          "r0": 125886.4,
+          "r1": 122694.0,
+          "r2": 141608.8
+        },
+        "task-06": {
+          "r0": 131620.0,
+          "r1": 141224.0,
+          "r2": 151514.0
+        }
+      }
+    },
+    "beets": {
+      "replicates": [
+        "r0",
+        "r1",
+        "r2"
+      ],
+      "session_totals": {
+        "r0": 862731.2,
+        "r1": 977780.8,
+        "r2": 744470.2
+      },
+      "total_spread_pct": 31.3,
+      "sum_of_per_task_ranges": 249706.0,
+      "range_of_session_totals": 233310.6,
+      "cancellation_ratio": 1.1,
+      "most_expensive_replicate": {
+        "replicate": "r1",
+        "tasks": 6,
+        "of": 7
+      },
+      "cheapest_replicate": {
+        "replicate": "r2",
+        "tasks": 6,
+        "of": 7
+      },
+      "final_context_cached_tokens": {
+        "r0": 5812992,
+        "r1": 6751488,
+        "r2": 4837632
+      },
+      "final_context_spread_pct": 39.6,
+      "per_task_weighted_cost": {
+        "task-01": {
+          "r0": 68359.6,
+          "r1": 65289.2,
+          "r2": 49711.8
+        },
+        "task-02": {
+          "r0": 86729.6,
+          "r1": 111656.8,
+          "r2": 100054.6
+        },
+        "task-03": {
+          "r0": 88907.2,
+          "r1": 111284.6,
+          "r2": 86511.4
+        },
+        "task-04": {
+          "r0": 109078.2,
+          "r1": 112161.8,
+          "r2": 108415.6
+        },
+        "task-05": {
+          "r0": 166537.0,
+          "r1": 184797.4,
+          "r2": 135609.8
+        },
+        "task-06": {
+          "r0": 156040.8,
+          "r1": 172071.8,
+          "r2": 126310.8
+        },
+        "task-07": {
+          "r0": 187078.8,
+          "r1": 220519.2,
+          "r2": 137856.2
+        }
+      }
+    }
+  }
+}
