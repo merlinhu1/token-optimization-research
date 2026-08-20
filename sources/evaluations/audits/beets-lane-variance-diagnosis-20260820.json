@@ -197,5 +197,27 @@
       6.6,
       4.9
     ]
+  },
+  "rebuild_test": {
+    "status": "hypothesis not supported",
+    "change": "Beets rebuilt from 7 independent beetsplug modules to 6 tasks in the beets/ core package (2026-08-20).",
+    "prediction_registered_before_r1": "If front-loading is what makes a lane converge, the rebuilt lane should still reproduce badly, near 31.3% rather than Fastify's 1.7%.",
+    "result": {
+      "r0_weighted": 573627.4,
+      "r1_weighted": 713165.8,
+      "pair_spread_pct": 24.3,
+      "comparison": {
+        "fastify_first_pair_pct": 0.45,
+        "beets_plugin_first_pair_pct": 13.3
+      }
+    },
+    "front_load_ratio": {
+      "fastify_r0": 4.52,
+      "beets_plugin_r0": 1.36,
+      "beets_core_r0": 0.86,
+      "beets_core_r1": 0.77
+    },
+    "conclusion": "Sharing a code region is not the lever. The rebuilt lane is materially cheaper -- 573,627 and 713,166 against 862,731 to 977,781 for the plugin set -- but no less variable, and it front-loads less than the set it replaced. Task selection therefore does not explain the difference between the lanes. Fastify's convergence remains unexplained and is the thing to investigate; the remaining candidates are the persistent-session design itself, the intrinsic open-endedness of the Beets tasks, and repository or language differences that the two-lane contrast cannot separate.",
+    "cost_note": "A cheaper lane that is equally noisy is not progress: resolving a treatment effect depends on spread, not on the total."
   }
 }
