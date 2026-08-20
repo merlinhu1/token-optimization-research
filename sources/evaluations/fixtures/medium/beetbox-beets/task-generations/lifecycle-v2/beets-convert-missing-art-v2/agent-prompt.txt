@@ -1,9 +1,0 @@
-# Skip album art that is recorded but absent
-
-Converting an album whose stored art path points at a file that no longer exists aborts the conversion. A recorded art path is not a guarantee that the file is present -- the cover may live in the album root rather than a per-disc directory -- and a missing source should be reported and stepped over rather than ending the run.
-
-The task is complete when conversion continues, logging the skipped art, when the recorded art file is not present.
-
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
-
-Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

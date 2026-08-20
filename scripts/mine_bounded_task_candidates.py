@@ -162,6 +162,17 @@ def evaluate(spec: dict[str, Any], candidate: dict[str, Any], timeout: int) -> d
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("fixture", choices=sorted(FIXTURES))
+    parser.add_argument(
+        "--production-glob",
+        action="append",
+        dest="production_globs",
+        help=(
+            "restrict candidates to production paths under this prefix; repeat to allow several. "
+            "Use it to mine a shared code region: tasks drawn from one region amortise the context "
+            "an agent reads, where tasks in independent modules each pull in material no other task "
+            "needs and the session's accumulated context never converges."
+        ),
+    )
     parser.add_argument("--scan", type=int, default=200, help="commits of history to consider")
     parser.add_argument("--max-candidates", type=int, default=12)
     parser.add_argument("--timeout", type=int, default=600)
@@ -169,6 +180,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     spec = FIXTURES[args.fixture]
+    if args.production_globs:
+        spec = {**spec, "production_globs": tuple(args.production_globs)}
     repo = spec["repo"]
     if git(repo, "status", "--porcelain").strip():
         raise SystemExit(f"{repo} is dirty; refusing to mine against an unpinned tree")

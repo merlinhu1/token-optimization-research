@@ -1,9 +1,0 @@
-# Make artist aliases-as-credits opt-in
-
-Artist credits from MusicBrainz are always replaced by artist aliases. This changes tags for everyone whether they asked for it or not, and it should instead be a plugin setting that defaults to off, consulted where the credits are parsed.
-
-The task is complete when alias substitution happens only when the corresponding plugin setting is enabled, and defaults to off.
-
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
-
-Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

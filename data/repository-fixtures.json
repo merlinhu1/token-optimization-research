@@ -289,7 +289,7 @@
       "snapshot": {
         "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
         "branch": "detached",
-        "snapshot_policy": "Pinned Lifecycle V2 fixed snapshot; all seven bounded semantic regressions are controller-injected as one composite start before sequential prompt disclosure."
+        "snapshot_policy": "Pinned Lifecycle V2 fixed snapshot; all six bounded semantic regressions are controller-injected as one composite start before sequential prompt disclosure. Every task is drawn from the beets/ core package so consecutive tasks share the code an agent reads."
       },
       "task_classes": [
         "defect-repair"
@@ -337,20 +337,20 @@
       ],
       "caveats": [
         "Task acceptance does not gate weighted-token sample retention; broader tests and source review remain diagnostic.",
-        "Earlier compile-only sessions and protocols remain historical evidence and are not compatible controls for the active acceptance contract."
+        "Earlier compile-only sessions and protocols remain historical evidence and are not compatible controls for the active acceptance contract.",
+        "Baselines of the previous seven-task beetsplug set are archived under sources/evaluations/archive/lifecycle-v2-beets-plugin-tasks-20260820/ and are not compatible controls for this task family."
       ],
       "tasks": [
-        "beets-replace-command-callback-v2",
-        "beets-mpdstats-cli-overrides-v2",
-        "beets-convert-missing-art-v2",
-        "beets-importfeeds-symlink-failure-v2",
-        "beets-lyrics-rest-directory-config-v2",
-        "beets-musicbrainz-aliases-opt-in-v2",
-        "beets-mbcollection-http-errors-v2"
+        "beets-library-file-error-message-v2",
+        "beets-migration-text-paths-v2",
+        "beets-subcommand-help-alignment-v2",
+        "beets-concurrent-plugin-dispatch-v2",
+        "beets-cached-attribute-error-surface-v2",
+        "beets-zero-penalty-display-v2"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "beets-lifecycle-sequence-v2",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260816.json",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260820.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],

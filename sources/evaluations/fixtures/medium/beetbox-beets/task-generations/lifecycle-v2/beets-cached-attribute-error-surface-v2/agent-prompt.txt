@@ -1,0 +1,9 @@
+# Surface the real failure inside a cached attribute
+
+When the body of a lazily computed attribute raises a missing-attribute error, the attribute machinery treats it as the attribute itself being absent and falls back, so the reported failure names the outer attribute and hides where the error really came from. The failure should be re-raised as a different error class that stops the fallback, must still point at the line that actually failed, and must not print a second chained traceback for the same event.
+
+The task is complete when a missing-attribute failure inside a lazily computed attribute is reported against the line that raised it, without a chained duplicate traceback.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

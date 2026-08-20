@@ -1,130 +1,112 @@
 {
   "beets-lifecycle-sequence-v2": [
     {
-      "id": "beets-replace-command-callback-v2",
+      "id": "beets-library-file-error-message-v2",
       "order": 1,
       "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-replace-command-callback-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-replace-command-callback-v2/verify.sh",
+      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-library-file-error-message-v2/agent-prompt.txt",
+      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-library-file-error-message-v2/verify.sh",
       "upstream_test_paths": [],
       "compatibility_rebased_test_paths": [],
       "model_concealed_paths": [],
       "expected_changed_paths": [
-        "beetsplug/replace.py"
+        "beets/library/exceptions.py"
       ],
       "model_visible_validation_anchors": [],
       "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
       "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/replace.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_replace.py"
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/library/exceptions.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_library.py"
     },
     {
-      "id": "beets-mpdstats-cli-overrides-v2",
+      "id": "beets-migration-text-paths-v2",
       "order": 2,
       "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mpdstats-cli-overrides-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mpdstats-cli-overrides-v2/verify.sh",
+      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-migration-text-paths-v2/agent-prompt.txt",
+      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-migration-text-paths-v2/verify.sh",
       "upstream_test_paths": [],
       "compatibility_rebased_test_paths": [],
       "model_concealed_paths": [],
       "expected_changed_paths": [
-        "beetsplug/mpdstats.py"
+        "beets/library/migrations.py"
       ],
       "model_visible_validation_anchors": [],
       "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
       "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/mpdstats.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_mpdstats.py"
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/library/migrations.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/library/test_migrations.py"
     },
     {
-      "id": "beets-convert-missing-art-v2",
+      "id": "beets-subcommand-help-alignment-v2",
       "order": 3,
       "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-convert-missing-art-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-convert-missing-art-v2/verify.sh",
+      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-subcommand-help-alignment-v2/agent-prompt.txt",
+      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-subcommand-help-alignment-v2/verify.sh",
       "upstream_test_paths": [],
       "compatibility_rebased_test_paths": [],
       "model_concealed_paths": [],
       "expected_changed_paths": [
-        "beetsplug/convert.py"
+        "beets/ui/__init__.py"
       ],
       "model_visible_validation_anchors": [],
       "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
       "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/convert.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_convert.py"
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/ui/__init__.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/ui/test_ui.py"
     },
     {
-      "id": "beets-importfeeds-symlink-failure-v2",
+      "id": "beets-concurrent-plugin-dispatch-v2",
       "order": 4,
       "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-importfeeds-symlink-failure-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-importfeeds-symlink-failure-v2/verify.sh",
+      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-concurrent-plugin-dispatch-v2/agent-prompt.txt",
+      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-concurrent-plugin-dispatch-v2/verify.sh",
       "upstream_test_paths": [],
       "compatibility_rebased_test_paths": [],
       "model_concealed_paths": [],
       "expected_changed_paths": [
-        "beetsplug/importfeeds.py"
+        "beets/metadata_plugins.py"
       ],
       "model_visible_validation_anchors": [],
       "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
       "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/importfeeds.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_importfeeds.py"
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/metadata_plugins.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_metadata_plugins.py"
     },
     {
-      "id": "beets-lyrics-rest-directory-config-v2",
+      "id": "beets-cached-attribute-error-surface-v2",
       "order": 5,
       "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-rest-directory-config-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-rest-directory-config-v2/verify.sh",
+      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-cached-attribute-error-surface-v2/agent-prompt.txt",
+      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-cached-attribute-error-surface-v2/verify.sh",
       "upstream_test_paths": [],
       "compatibility_rebased_test_paths": [],
       "model_concealed_paths": [],
       "expected_changed_paths": [
-        "beetsplug/lyrics.py"
+        "beets/autotag/hooks.py"
       ],
       "model_visible_validation_anchors": [],
       "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
       "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/lyrics.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_lyrics.py"
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/hooks.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py"
     },
     {
-      "id": "beets-musicbrainz-aliases-opt-in-v2",
+      "id": "beets-zero-penalty-display-v2",
       "order": 6,
       "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-musicbrainz-aliases-opt-in-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-musicbrainz-aliases-opt-in-v2/verify.sh",
+      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-zero-penalty-display-v2/agent-prompt.txt",
+      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-zero-penalty-display-v2/verify.sh",
       "upstream_test_paths": [],
       "compatibility_rebased_test_paths": [],
       "model_concealed_paths": [],
       "expected_changed_paths": [
-        "beetsplug/musicbrainz.py"
+        "beets/autotag/distance.py"
       ],
       "model_visible_validation_anchors": [],
       "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
       "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/musicbrainz.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_musicbrainz.py"
-    },
-    {
-      "id": "beets-mbcollection-http-errors-v2",
-      "order": 7,
-      "task_class": "defect-repair",
-      "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mbcollection-http-errors-v2/agent-prompt.txt",
-      "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-mbcollection-http-errors-v2/verify.sh",
-      "upstream_test_paths": [],
-      "compatibility_rebased_test_paths": [],
-      "model_concealed_paths": [],
-      "expected_changed_paths": [
-        "beetsplug/mbcollection.py"
-      ],
-      "model_visible_validation_anchors": [],
-      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
-      "model_visible_acceptance_asset_paths": [],
-      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/mbcollection.py",
-      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_mbcollection.py"
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/distance.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_distance.py"
     }
   ],
   "fastify-lifecycle-sequence-v2": [

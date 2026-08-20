@@ -1,0 +1,13 @@
+diff --git a/beets/ui/__init__.py b/beets/ui/__init__.py
+index 88f03126..9c6451af 100644
+--- a/beets/ui/__init__.py
++++ b/beets/ui/__init__.py
+@@ -736,7 +736,7 @@ class SubcommandsOptionParser(CommonOptionsParser):
+                 name = f"{' ' * formatter.current_indent}{name}\n"
+                 indent_first = help_position
+             else:
+-                name = f"{' ' * formatter.current_indent}{name:<{name_width}}  "
++                name = f"{' ' * formatter.current_indent}{name:<{name_width}}\n"
+                 indent_first = 0
+             result.append(name)
+             help_width = formatter.width - help_position

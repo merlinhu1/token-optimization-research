@@ -90,90 +90,82 @@ FIXTURES: dict[str, dict[str, Any]] = {
 TASKS: dict[str, list[dict[str, Any]]] = {
     "beets": [
         {
-            "slug": "replace-command-callback",
-            "commit": "d06774b14d",
-            "title": "Restore the replace command's subcommand invocation",
+            "slug": "library-file-error-message",
+            "commit": "6e6fee93bf",
+            "title": "Restore the path and reason in file read and write errors",
             "symptom": (
-                "The `replace` command fails as soon as it is invoked. Beets subcommands are "
-                "called with the library, the parsed command-line options, and the remaining "
-                "positional arguments, and this command's handler no longer accepts what the "
-                "command framework passes it, so the call raises before any replacement work "
-                "begins."
+                "When reading or writing a media file fails, the reported error says only that a "
+                "read or a write failed. The path that failed and the underlying reason are both "
+                "lost, although the base error class already knows them and formats them into a "
+                "message. The subclasses interpolate their parent into a string without asking it "
+                "for that message, so what reaches the user is the placeholder text of an object "
+                "rather than the detail the parent produced."
             ),
-            "done": "invoking the replace command runs its normal argument handling instead of failing at the call boundary",
+            "done": "a failed read or write reports the file path and the underlying reason alongside the operation that failed",
         },
         {
-            "slug": "mpdstats-cli-overrides",
-            "commit": "cf7c5e4eb2",
-            "title": "Restore mpdstats command-line connection overrides",
+            "slug": "migration-text-paths",
+            "commit": "2e3ca0a018",
+            "title": "Migrate stored paths that were saved as text",
             "symptom": (
-                "The mpdstats command ignores the MPD host, port, and password given on the "
-                "command line and always uses the configured values. Options supplied for a "
-                "single invocation are expected to take precedence over configuration for that "
-                "invocation only, and the decoding each option needs differs between them."
+                "Converting a library to relative paths fails for users whose path values were set "
+                "by hand through sqlite rather than written by the application, because those "
+                "values come back as text where the migration expects bytes. The same scan also "
+                "reads rows whose path is unset, which it cannot migrate and must not consider. "
+                "Both the selection and the conversion need to account for this."
             ),
-            "done": "host, port, and password supplied on the command line override the configured values for that run",
+            "done": "the relative-path migration skips rows with no stored path and converts text path values without failing",
         },
         {
-            "slug": "convert-missing-art",
-            "commit": "755ca6f139",
-            "title": "Skip album art that is recorded but absent",
+            "slug": "subcommand-help-alignment",
+            "commit": "9e3f22b8be",
+            "title": "Keep a short subcommand's description on its own line",
             "symptom": (
-                "Converting an album whose stored art path points at a file that no longer "
-                "exists aborts the conversion. A recorded art path is not a guarantee that the "
-                "file is present -- the cover may live in the album root rather than a per-disc "
-                "directory -- and a missing source should be reported and stepped over rather "
-                "than ending the run."
+                "In the command listing, a subcommand whose name is short enough to share a line "
+                "with its description is instead followed by a line break, so the description is "
+                "pushed onto the next line and the column alignment the listing pays for is wasted. "
+                "The separate handling of names too long to share a line must keep working."
             ),
-            "done": "conversion continues, logging the skipped art, when the recorded art file is not present",
+            "done": "a subcommand short enough to share its line is followed by its description on that line instead of a break",
         },
         {
-            "slug": "importfeeds-symlink-failure",
-            "commit": "65a01c2c2a",
-            "title": "Keep importing when a feed link cannot be created",
+            "slug": "concurrent-plugin-dispatch",
+            "commit": "ca36df2d00",
+            "title": "Dispatch each metadata plugin to its own concurrent call",
             "symptom": (
-                "An import stops with an error when the plugin that maintains a directory of "
-                "links to imported music cannot create one of them. Link creation can fail for "
-                "filesystem reasons that say nothing about the import itself, and the failure "
-                "should be surfaced as a warning for that entry while the import proceeds."
+                "Querying metadata sources concurrently returns the results of one source repeated "
+                "instead of the results of each. The work submitted for every source closes over "
+                "the loop variable rather than binding the source it was created for, so by the "
+                "time the submitted work runs the variable holds whichever source was last in the "
+                "sequence and every call targets that one."
             ),
-            "done": "a link that cannot be created produces a warning and the import continues",
+            "done": "each metadata source contributes its own results when sources are queried concurrently",
         },
         {
-            "slug": "lyrics-rest-directory-config",
-            "commit": "478ac8cb63",
-            "title": "Honor the configured ReST output directory for lyrics",
+            "slug": "cached-attribute-error-surface",
+            "commit": "8a1f9d916a",
+            "title": "Surface the real failure inside a cached attribute",
             "symptom": (
-                "The directory that lyrics are written to as ReST files can only be given on the "
-                "command line. Setting it in configuration has no effect, because the option's "
-                "default does not consult the plugin's configuration. The setting is optional and "
-                "absent by default, and an explicit command-line value must still win."
+                "When the body of a lazily computed attribute raises a missing-attribute error, the "
+                "attribute machinery treats it as the attribute itself being absent and falls back, "
+                "so the reported failure names the outer attribute and hides where the error really "
+                "came from. The failure should be re-raised as a different error class that stops "
+                "the fallback, must still point at the line that actually failed, and must not print "
+                "a second chained traceback for the same event."
             ),
-            "done": "the ReST output directory can be set in configuration, with the command-line option overriding it",
+            "done": "a missing-attribute failure inside a lazily computed attribute is reported against the line that raised it, without a chained duplicate traceback",
         },
         {
-            "slug": "musicbrainz-aliases-opt-in",
-            "commit": "785f8b7a5c",
-            "title": "Make artist aliases-as-credits opt-in",
+            "slug": "zero-penalty-display",
+            "commit": "a734b9bce1",
+            "title": "List only the penalties that actually applied",
             "symptom": (
-                "Artist credits from MusicBrainz are always replaced by artist aliases. This "
-                "changes tags for everyone whether they asked for it or not, and it should "
-                "instead be a plugin setting that defaults to off, consulted where the credits "
-                "are parsed."
+                "The summary of why a match was penalised lists every penalty the comparison can "
+                "produce, including those that scored nothing. A penalty that contributed no "
+                "distance is not a reason the match was downgraded and should not appear among the "
+                "reasons shown."
             ),
-            "done": "alias substitution happens only when the corresponding plugin setting is enabled, and defaults to off",
-        },
-        {
-            "slug": "mbcollection-http-errors",
-            "commit": "a0a88b5301",
-            "title": "Handle MusicBrainz collection HTTP failures gracefully",
-            "symptom": (
-                "Updating a MusicBrainz collection lets a failed HTTP request escape as an "
-                "unhandled error, ending the command. A remote service that is unreachable or "
-                "returns an error is an expected condition for this operation and should be "
-                "reported through the plugin's logging rather than terminating the run."
-            ),
-            "done": "an HTTP failure during a collection update is reported and handled instead of propagating",
+            "done": "the listed penalties include only those with a non-zero contribution",
         },
     ],
     "fastify": [
