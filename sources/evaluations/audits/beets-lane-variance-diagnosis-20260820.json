@@ -219,5 +219,50 @@
     },
     "conclusion": "Sharing a code region is not the lever. The rebuilt lane is materially cheaper -- 573,627 and 713,166 against 862,731 to 977,781 for the plugin set -- but no less variable, and it front-loads less than the set it replaced. Task selection therefore does not explain the difference between the lanes. Fastify's convergence remains unexplained and is the thing to investigate; the remaining candidates are the persistent-session design itself, the intrinsic open-endedness of the Beets tasks, and repository or language differences that the two-lane contrast cannot separate.",
     "cost_note": "A cheaper lane that is equally noisy is not progress: resolving a treatment effect depends on spread, not on the total."
+  },
+  "prompt_openness_test": {
+    "question": "Is the Beets variance caused by prompts that leave too much open?",
+    "measure": "spread in fresh input tokens for the same task across replicates, i.e. how differently the agent explores when given the same prompt",
+    "fastify_n3": {
+      "task-01": 82.0,
+      "task-02": 3.6,
+      "task-03": 21.6,
+      "task-04": 38.2,
+      "task-05": 26.3,
+      "task-06": 12.3,
+      "runaway_over_80pct": 1
+    },
+    "beets_plugins_n3_archived": {
+      "task-01": 59.1,
+      "task-02": 27.3,
+      "task-03": 26.4,
+      "task-04": 11.4,
+      "task-05": 40.5,
+      "task-06": 21.3,
+      "task-07": 62.0,
+      "runaway_over_80pct": 0
+    },
+    "beets_core_n2": {
+      "task-01": 46.8,
+      "task-02": 211.6,
+      "task-03": 101.7,
+      "task-04": 20.6,
+      "task-05": 30.2,
+      "task-06": 12.9,
+      "runaway_over_80pct": 2
+    },
+    "finding": "Partly yes, and only for the rebuilt lane. Two of its six prompts drive runaway exploration: beets-migration-text-paths-v2 at 211.6% and beets-subcommand-help-alignment-v2 at 101.7%, against a worst case of 82% in Fastify and 62% in the archived plugin lane. Both prompts were written by hand for the rebuild rather than carried over.",
+    "defects_identified": [
+      {
+        "task": "beets-subcommand-help-alignment-v2",
+        "defect": "The title, 'Keep a short subcommand's description on its own line', is ambiguous and reads naturally as the opposite of the intent. The body and completion condition require the description to stay on the same line as the name; 'its own line' invites the reading that the description belongs on a separate line, which is the seeded bug."
+      },
+      {
+        "task": "beets-migration-text-paths-v2",
+        "defect": "Bundles two independent requirements -- skip rows with no stored path, and convert text path values -- and describes a rarely exercised administrative code path, so locating it costs more search and the cost varies with how the search happens to go."
+      }
+    ],
+    "does_not_explain_everything": "The archived plugin lane spread 31.3% with no runaway task at all, its worst being 62%. So prompt openness cannot be the whole cause: that lane's variance was distributed rather than concentrated. There are two distinct sources -- a structural one visible without any runaway task, and a prompt-driven one introduced by the rebuild.",
+    "recommendation": "Repair the two prompts and re-baseline before drawing further conclusions about the lane. That is cheap relative to a treatment campaign and isolates the prompt-driven component. It will not by itself reach Fastify's 1.7%, because the structural component remains."
   }
 }
