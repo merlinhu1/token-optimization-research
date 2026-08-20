@@ -1,8 +1,8 @@
-# Migrate stored paths that were saved as text
+# Complete the relative-path conversion on a hand-edited database
 
-Converting a library to relative paths fails for users whose path values were set by hand through sqlite rather than written by the application, because those values come back as text where the migration expects bytes. The same scan also reads rows whose path is unset, which it cannot migrate and must not consider. Both the selection and the conversion need to account for this.
+Converting a library to store paths relative to its root aborts when a stored path is text rather than bytes, which is what a user gets after editing the database directly with sqlite. The conversion assumes bytes. The same pass first collects the rows it intends to convert, and that collection includes rows holding no path at all, which cannot be converted and must be excluded before the conversion runs.
 
-The task is complete when the relative-path migration skips rows with no stored path and converts text path values without failing.
+The task is complete when the relative-path conversion excludes rows with no stored path and succeeds on rows whose path was stored as text.
 
 Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
 

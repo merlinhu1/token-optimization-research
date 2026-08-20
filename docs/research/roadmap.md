@@ -2,11 +2,11 @@
 
 ## Current state
 
-The current execution contract is Lifecycle V2 across Fastify and Beets: 6 bounded defect repairs per lane, each restoring one named behavior a specific upstream test decides, under authentic semantic regressions, normal software-engineering prompts, and lenient controller-only acceptance. Every task compiles and also runs one narrow essential-behavior smoke. The Fastify qualification completed on 2026-08-18 and the rebuilt Beets qualification on 2026-08-20.
+The current execution contract is Lifecycle V2 across Fastify and Beets: 6 bounded defect repairs per lane, each restoring one named behavior a specific upstream test decides, under authentic semantic regressions, normal software-engineering prompts, and lenient controller-only acceptance. Every task compiles and also runs one narrow essential-behavior smoke. Both lanes requalified on 2026-08-21 against the repaired prompts.
 
 The previous provider-backed Lifecycle V1 corpus was archived before rerun because model-facing prompts and shared prompt/configuration identity changed. The archive contains 103 historical sessions, their comparisons, and superseded protocols. They remain immutable evidence for the prior bytes and are not current controls.
 
-The active registry therefore contains three Fastify baseline replicates, r0 to r2, with a median of 678,873.4 weighted token cost and a 1.7% spread. Beets holds no baseline: its seven-plugin task set reproduced to 31.3% and was rebuilt onto beets/ core, so it needs fresh baselines before it can carry a comparison. No treatment has run against either lane. Further provider work must be fresh, explicitly authorized, and bound to the current Lifecycle V2 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
+The active registry therefore contains no provider-backed sessions. Fastify's pre-repair baselines reproduced to 1.7% and Beets' to 24-31%; measuring how differently an agent explores the same prompt traced a large part of that to prompt precision, so six prompts were rewritten on 2026-08-21 and both lanes need fresh baselines. No treatment has run against either lane. Further provider work must be fresh, explicitly authorized, and bound to the current Lifecycle V2 qualification/protocol hashes. The forward model policy is GPT-5.6 Sol/medium for Codex CLI and OpenCode, and direct-Anthropic Claude Opus 5/medium for Claude Code. High effort is retired for new work because excess deliberation can increase trajectory divergence.
 
 ## Archived evidence
 

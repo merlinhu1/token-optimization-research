@@ -42,6 +42,24 @@ BEETS_SUITE = "uv run --offline --frozen pytest -q --tb=no"
 # sources/evaluations/fixtures/medium/fastify-fastify/setup.sh.
 FASTIFY_SUITE = "npm run unit -- --reporter=dot"
 
+# Prompt design, derived from measured exploration variance across replicates.
+#
+# beets-concurrent-plugin-dispatch reproduced to 0.2% between replicates while siblings reached
+# 27-57%. What separates it is precision about the *observable*, never about the location: naming
+# files, symbols or tests is forbidden (ADR 0005) and would suppress the retrieval this study
+# exists to measure. Four properties travel with the low-variance prompts:
+#
+#   1. A symptom distinctive enough that it could not describe anything else in the project, so the
+#      search converges instead of sampling plausible areas.
+#   2. A mechanism stated in terms a reader recognises as a known defect shape, so recognition takes
+#      over from exploration once the right code is in view.
+#   3. One required behavioural change; bundled requirements multiply the paths a run can take.
+#   4. No design latitude in the repair, so two runs cannot pick different valid designs.
+#
+# The high-variance prompts each broke at least one. migration-text-paths bundled two requirements
+# behind a rarely exercised entry point; subcommand-help-alignment carried a title that read as the
+# opposite of its own completion condition.
+
 CLOSING = (
     "Implement the task completely and correctly. Search and inspect the repository as "
     "needed, including related definitions and call sites. Run individual tests or test "
@@ -92,41 +110,40 @@ TASKS: dict[str, list[dict[str, Any]]] = {
         {
             "slug": "library-file-error-message",
             "commit": "6e6fee93bf",
-            "title": "Restore the path and reason in file read and write errors",
+            "title": "Report the file and the reason when a read or write fails",
             "symptom": (
-                "When reading or writing a media file fails, the reported error says only that a "
-                "read or a write failed. The path that failed and the underlying reason are both "
-                "lost, although the base error class already knows them and formats them into a "
-                "message. The subclasses interpolate their parent into a string without asking it "
-                "for that message, so what reaches the user is the placeholder text of an object "
-                "rather than the detail the parent produced."
+                "A failed media-file read or write reports a message of the form 'error reading' followed by the "
+                "internal representation of an object, where the path and the underlying reason should be. The "
+                "base error type already composes a message carrying both. The two error types that prefix it "
+                "with the failed operation embed their parent itself rather than the message their parent "
+                "produces, so placeholder text replaces the detail."
             ),
-            "done": "a failed read or write reports the file path and the underlying reason alongside the operation that failed",
+            "done": "a failed read or write reports the operation, the file path, and the underlying reason in one message",
         },
         {
             "slug": "migration-text-paths",
             "commit": "2e3ca0a018",
-            "title": "Migrate stored paths that were saved as text",
+            "title": "Complete the relative-path conversion on a hand-edited database",
             "symptom": (
-                "Converting a library to relative paths fails for users whose path values were set "
-                "by hand through sqlite rather than written by the application, because those "
-                "values come back as text where the migration expects bytes. The same scan also "
-                "reads rows whose path is unset, which it cannot migrate and must not consider. "
-                "Both the selection and the conversion need to account for this."
+                "Converting a library to store paths relative to its root aborts when a stored path is text "
+                "rather than bytes, which is what a user gets after editing the database directly with sqlite. "
+                "The conversion assumes bytes. The same pass first collects the rows it intends to convert, and "
+                "that collection includes rows holding no path at all, which cannot be converted and must be "
+                "excluded before the conversion runs."
             ),
-            "done": "the relative-path migration skips rows with no stored path and converts text path values without failing",
+            "done": "the relative-path conversion excludes rows with no stored path and succeeds on rows whose path was stored as text",
         },
         {
             "slug": "subcommand-help-alignment",
             "commit": "9e3f22b8be",
-            "title": "Keep a short subcommand's description on its own line",
+            "title": "Keep a short subcommand and its description on one line",
             "symptom": (
-                "In the command listing, a subcommand whose name is short enough to share a line "
-                "with its description is instead followed by a line break, so the description is "
-                "pushed onto the next line and the column alignment the listing pays for is wasted. "
-                "The separate handling of names too long to share a line must keep working."
+                "In the listing of available subcommands, a name short enough to fit the column reserved for "
+                "names is followed by a line break, so its description begins on the following line and the "
+                "reserved column is left empty beside it. A name too long for that column is handled by a "
+                "separate branch that is correct and must stay that way."
             ),
-            "done": "a subcommand short enough to share its line is followed by its description on that line instead of a break",
+            "done": "a subcommand whose name fits the reserved column is followed by its description on the same line",
         },
         {
             "slug": "concurrent-plugin-dispatch",
@@ -144,16 +161,15 @@ TASKS: dict[str, list[dict[str, Any]]] = {
         {
             "slug": "cached-attribute-error-surface",
             "commit": "8a1f9d916a",
-            "title": "Surface the real failure inside a cached attribute",
+            "title": "Report the error raised inside a lazily computed attribute",
             "symptom": (
-                "When the body of a lazily computed attribute raises a missing-attribute error, the "
-                "attribute machinery treats it as the attribute itself being absent and falls back, "
-                "so the reported failure names the outer attribute and hides where the error really "
-                "came from. The failure should be re-raised as a different error class that stops "
-                "the fallback, must still point at the line that actually failed, and must not print "
-                "a second chained traceback for the same event."
+                "When the body of a lazily computed attribute raises a missing-attribute error, the lookup "
+                "machinery reads that as the attribute itself being absent and falls back to ordinary key lookup, "
+                "so the reported failure names the outer attribute and the line that actually failed is lost. It "
+                "has to surface as a failure the fallback does not intercept, still pointing at the original "
+                "line, and reported once rather than as a chained pair of tracebacks."
             ),
-            "done": "a missing-attribute failure inside a lazily computed attribute is reported against the line that raised it, without a chained duplicate traceback",
+            "done": "an error raised inside a lazily computed attribute is reported once, against the line that raised it, instead of being masked by the attribute fallback",
         },
         {
             "slug": "zero-penalty-display",
@@ -185,27 +201,26 @@ TASKS: dict[str, list[dict[str, Any]]] = {
         {
             "slug": "nested-prefix-join",
             "commit": "2f597a9297",
-            "title": "Join nested route prefixes without a doubled or missing separator",
+            "title": "Join a nested route prefix with exactly one separator",
             "symptom": (
-                "Registering a plugin under a nested prefix can produce a malformed route path. "
-                "When the enclosing prefix already ends with a separator and the plugin's own "
-                "prefix does not begin with one, a separator is added anyway and the joined path "
-                "contains two. The existing handling of the opposite case must keep working."
+                "Registering a plugin under a nested prefix produces a route path containing two consecutive "
+                "separators whenever the enclosing prefix already ends with one and the plugin's own prefix does "
+                "not begin with one. The opposite arrangement, where the plugin's prefix supplies the separator, "
+                "is already handled and must keep working."
             ),
-            "done": "nested prefixes join with exactly one separator in every combination of leading and trailing separators",
+            "done": "a nested prefix joins to its enclosing prefix with exactly one separator, whichever side supplies it",
         },
         {
             "slug": "serializer-compiler-flag",
             "commit": "d76dbcd58b",
-            "title": "Detect a custom serializer compiler correctly",
+            "title": "Derive each custom-compiler flag from its own factory function",
             "symptom": (
-                "An instance configured with a custom serializer compiler is not recognised as "
-                "having one, while an instance with only a custom validator compiler is "
-                "sometimes treated as though it had both. The flag that records whether a custom "
-                "serializer compiler was supplied is derived from the wrong member of the "
-                "compiler factory."
+                "An instance given a custom serializer compiler is not recorded as having one, and an instance "
+                "given only a custom validator compiler is recorded as having both. The two flags that record "
+                "which custom compilers were supplied are read from the same member of the compiler factory, so "
+                "the serializer flag reports whether a validator was supplied."
             ),
-            "done": "each custom-compiler flag reflects the presence of its own factory function",
+            "done": "the validator flag reflects a supplied validator compiler and the serializer flag reflects a supplied serializer compiler, independently",
         },
         {
             "slug": "sync-validator-throw",

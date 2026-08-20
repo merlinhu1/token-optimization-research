@@ -1,7 +1,7 @@
-# Detect a custom serializer compiler correctly
+# Derive each custom-compiler flag from its own factory function
 
-An instance configured with a custom serializer compiler is not recognised as having one, while an instance with only a custom validator compiler is sometimes treated as though it had both. The flag that records whether a custom serializer compiler was supplied is derived from the wrong member of the compiler factory.
+An instance given a custom serializer compiler is not recorded as having one, and an instance given only a custom validator compiler is recorded as having both. The two flags that record which custom compilers were supplied are read from the same member of the compiler factory, so the serializer flag reports whether a validator was supplied.
 
-Completion condition: each custom-compiler flag reflects the presence of its own factory function.
+Completion condition: the validator flag reflects a supplied validator compiler and the serializer flag reflects a supplied serializer compiler, independently.
 
 Derived by reversing the production half of upstream `d76dbcd58b`; the covering upstream tests are test/internals/schema-controller-perf.test.js.

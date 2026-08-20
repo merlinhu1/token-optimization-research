@@ -1,0 +1,317 @@
+{
+  "schema_version": 6,
+  "task_family_generation": "lifecycle-v2",
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-08-21",
+  "snapshot": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+  "prepared_removals": null,
+  "observed_source": {
+    "head": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+    "tree": "47a0d93d5ea4afc6d1e11c11add615322ddc3c87",
+    "remotes": [
+      "origin\tgit@github.com:beetbox/beets.git (fetch) [blob:none]",
+      "origin\tgit@github.com:beetbox/beets.git (push)"
+    ],
+    "expected_upstream": "https://github.com/beetbox/beets.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "uv sync --group test --frozen"
+  },
+  "ordered_task_ids": [
+    "beets-library-file-error-message-v2",
+    "beets-migration-text-paths-v2",
+    "beets-subcommand-help-alignment-v2",
+    "beets-concurrent-plugin-dispatch-v2",
+    "beets-cached-attribute-error-surface-v2",
+    "beets-zero-penalty-display-v2"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "beets-library-file-error-message-v2",
+      "seed_patch_sha256": "88fa91a5a3361e0c5dcad596da7b3607978c369e44fe3c96911fadce8d3590fb",
+      "verifier_sha256": "761c898c09fbc4771725b23b99a3c6f1249babf3dc3c82557f1709dc7c50030a",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/library/exceptions.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_library.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/library/exceptions.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "c06882a114b442680886fde1efbe91638b65b401b508ed0b9bb8dda41f76e304",
+      "task_directory_sha256": "c243942c74290744b199882b0e27d18bc441b7e96146f0b9c1ba08d35f380b95"
+    },
+    {
+      "task_id": "beets-migration-text-paths-v2",
+      "seed_patch_sha256": "da8b8afa4f5c52f78eb042ddca814ef596cb989a25aab118b44f71d10040552c",
+      "verifier_sha256": "cc90f32a47836b6e42ff76fbeb9865d749b44fdc71db55ce0ae5a9c8c770f2f3",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/library/migrations.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/library/test_migrations.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/library/migrations.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "9aef810f15c842bfaf7937afdf532ba6d710f3203fbc8fc2cd759ad8afd39666",
+      "task_directory_sha256": "e861074b623a4d91fdc8659f2d3402d11eb9e3aed95c7fef61022ca302e50183"
+    },
+    {
+      "task_id": "beets-subcommand-help-alignment-v2",
+      "seed_patch_sha256": "a65f5b30747b270dc7797321f6af7d7f268d49399e1d626cf26d3e0625440cd7",
+      "verifier_sha256": "22ba51c3ab44a1edeaaeb9c1308fb94987f5f471e5b6eb22a3b23be3a2cb5f4b",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/ui/__init__.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/ui/test_ui.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/ui/__init__.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "cacabad5cc4011e1e60e5fb12823eb7615ede95465c79eb2694ce20efbcd43fc",
+      "task_directory_sha256": "f55256ff9f6010399ab4c4a2a3ccf7ca3cd86ef00ea06095fbec24beb9802b92"
+    },
+    {
+      "task_id": "beets-concurrent-plugin-dispatch-v2",
+      "seed_patch_sha256": "d3b9700de6be0c8862ca4432d4ddd2c5a754dc07d7c40a10e9c0e1c142c3a7f0",
+      "verifier_sha256": "134631cb2b58f293805d967c5767a5e978d2b8cdf118f68e856bf45720134f5e",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/metadata_plugins.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_metadata_plugins.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/metadata_plugins.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "76742b85e3476bdb5367f8acc8ac8d8a0271e016744a0362c3846cb613d60f8d",
+      "task_directory_sha256": "4e57fb9a9d704832f4af77394622a9f060f1971ba4a544c39ab491dbebd5dba4"
+    },
+    {
+      "task_id": "beets-cached-attribute-error-surface-v2",
+      "seed_patch_sha256": "f9876508b7366d52cf75560866b07964d7f875cb8bb877c3b47d7b95c3b96d12",
+      "verifier_sha256": "62f73de90085a7cc77d85dd77597aca50db00d55b1a40b9af8173a624c055c33",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/hooks.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/autotag/hooks.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "e0ec215633f1f2ccd1a7fc97f997c5730e07e88c566093200ee2bf6b6258d3cd",
+      "task_directory_sha256": "448b42cb2831738e8ad2d32b11646d320b0c9ded54b293ae0108ee84f35c28b0"
+    },
+    {
+      "task_id": "beets-zero-penalty-display-v2",
+      "seed_patch_sha256": "499609c6b2f394b70c2a929b1026d8cc4bd34e378e1d8e494a36c8f57db48b94",
+      "verifier_sha256": "be7965f2c4572babafe943cd533f97c47a0cfb501d2d10afb04636b58d2967a0",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/distance.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_distance.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/autotag/distance.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "70ff6384034ccdce0e0b2e5dcedb91ded791cca2fc2bdea2ccc25d95934e2c02",
+      "task_directory_sha256": "991e88048902fe9b8c21c604ca4241a8c5e05e1781b24fe31aead9c7888b0338"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "beets-library-file-error-message-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-library-file-error-message-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-migration-text-paths-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-library-file-error-message-v2": 0,
+        "beets-migration-text-paths-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-subcommand-help-alignment-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-library-file-error-message-v2": 0,
+        "beets-migration-text-paths-v2": 0,
+        "beets-subcommand-help-alignment-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-concurrent-plugin-dispatch-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-library-file-error-message-v2": 0,
+        "beets-migration-text-paths-v2": 0,
+        "beets-subcommand-help-alignment-v2": 0,
+        "beets-concurrent-plugin-dispatch-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-cached-attribute-error-surface-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-library-file-error-message-v2": 0,
+        "beets-migration-text-paths-v2": 0,
+        "beets-subcommand-help-alignment-v2": 0,
+        "beets-concurrent-plugin-dispatch-v2": 0,
+        "beets-cached-attribute-error-surface-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-zero-penalty-display-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-library-file-error-message-v2": 0,
+        "beets-migration-text-paths-v2": 0,
+        "beets-subcommand-help-alignment-v2": 0,
+        "beets-concurrent-plugin-dispatch-v2": 0,
+        "beets-cached-attribute-error-surface-v2": 0,
+        "beets-zero-penalty-display-v2": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seeded_verifiers_zero": false,
+  "composite_seed_verifier_outcomes_valid": true,
+  "composite_seed_verifier_exits": {
+    "beets-library-file-error-message-v2": 1,
+    "beets-migration-text-paths-v2": 1,
+    "beets-subcommand-help-alignment-v2": 1,
+    "beets-concurrent-plugin-dispatch-v2": 1,
+    "beets-cached-attribute-error-surface-v2": 1,
+    "beets-zero-penalty-display-v2": 1
+  },
+  "composite_seed_diff_sha256": "1207d488ed53e836c896cf651130ce6254902021926809d62ab28376efb95e86",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "seeded_verifiers_zero": false,
+  "seeded_verifier_outcomes_valid": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "aggregate_verifier_exit": 0,
+  "aggregate_verifier_task_exits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "aggregate_verifier_environment_passed": true,
+  "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+  "project_compile_passed": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": true,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+  "controller_acceptance_policy_not_model_facing": true,
+  "all_acceptance_behavior_model_visible": false,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 0,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-beetbox-beets",
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "beets-library-file-error-message-v2": "c243942c74290744b199882b0e27d18bc441b7e96146f0b9c1ba08d35f380b95",
+      "beets-migration-text-paths-v2": "e861074b623a4d91fdc8659f2d3402d11eb9e3aed95c7fef61022ca302e50183",
+      "beets-subcommand-help-alignment-v2": "f55256ff9f6010399ab4c4a2a3ccf7ca3cd86ef00ea06095fbec24beb9802b92",
+      "beets-concurrent-plugin-dispatch-v2": "4e57fb9a9d704832f4af77394622a9f060f1971ba4a544c39ab491dbebd5dba4",
+      "beets-cached-attribute-error-surface-v2": "448b42cb2831738e8ad2d32b11646d320b0c9ded54b293ae0108ee84f35c28b0",
+      "beets-zero-penalty-display-v2": "991e88048902fe9b8c21c604ca4241a8c5e05e1781b24fe31aead9c7888b0338"
+    }
+  }
+}

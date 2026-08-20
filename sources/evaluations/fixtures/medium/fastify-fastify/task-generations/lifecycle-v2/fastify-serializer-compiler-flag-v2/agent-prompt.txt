@@ -1,8 +1,8 @@
-# Detect a custom serializer compiler correctly
+# Derive each custom-compiler flag from its own factory function
 
-An instance configured with a custom serializer compiler is not recognised as having one, while an instance with only a custom validator compiler is sometimes treated as though it had both. The flag that records whether a custom serializer compiler was supplied is derived from the wrong member of the compiler factory.
+An instance given a custom serializer compiler is not recorded as having one, and an instance given only a custom validator compiler is recorded as having both. The two flags that record which custom compilers were supplied are read from the same member of the compiler factory, so the serializer flag reports whether a validator was supplied.
 
-The task is complete when each custom-compiler flag reflects the presence of its own factory function.
+The task is complete when the validator flag reflects a supplied validator compiler and the serializer flag reflects a supplied serializer compiler, independently.
 
 Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `npm run unit -- --reporter=dot`, and preserve earlier task work in the persistent checkout.
 
