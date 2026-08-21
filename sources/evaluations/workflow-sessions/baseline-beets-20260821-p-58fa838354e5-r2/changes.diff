@@ -1,0 +1,508 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beets/library/exceptions.py b/beets/library/exceptions.py
+index 0dc874c..72fd2c7 100644
+--- a/beets/library/exceptions.py
++++ b/beets/library/exceptions.py
+@@ -28,11 +28,11 @@ class ReadError(FileOperationError):
+     """An error while reading a file (i.e. in `Item.read`)."""
+ 
+     def __str__(self):
+-        return f"error reading {super()}"
++        return f"error reading {super().__str__()}"
+ 
+ 
+ class WriteError(FileOperationError):
+     """An error while writing a file (i.e. in `Item.write`)."""
+ 
+     def __str__(self):
+-        return f"error writing {super()}"
++        return f"error writing {super().__str__()}"
+
+# --- task-02-agent ---
+diff --git a/beets/library/exceptions.py b/beets/library/exceptions.py
+index 0dc874c..72fd2c7 100644
+--- a/beets/library/exceptions.py
++++ b/beets/library/exceptions.py
+@@ -28,11 +28,11 @@ class ReadError(FileOperationError):
+     """An error while reading a file (i.e. in `Item.read`)."""
+ 
+     def __str__(self):
+-        return f"error reading {super()}"
++        return f"error reading {super().__str__()}"
+ 
+ 
+ class WriteError(FileOperationError):
+     """An error while writing a file (i.e. in `Item.write`)."""
+ 
+     def __str__(self):
+-        return f"error writing {super()}"
++        return f"error writing {super().__str__()}"
+diff --git a/beets/library/migrations.py b/beets/library/migrations.py
+index 11d3709..539bd8c 100644
+--- a/beets/library/migrations.py
++++ b/beets/library/migrations.py
+@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, ClassVar, NamedTuple
+ from confuse.exceptions import ConfigError
+ 
+ import beets
+-from beets import ui
++from beets import ui, util
+ from beets.dbcore.db import Migration
+ from beets.dbcore.pathutils import normalize_path_for_db
+ from beets.dbcore.types import MULTI_VALUE_DELIMITER
+@@ -227,10 +227,18 @@ class RelativePathMigration(Migration):
+         table = model_cls._table
+ 
+         with self.db.transaction() as tx:
+-            rows = tx.query(f"SELECT id, {field} FROM {table}")  # type: ignore[assignment]
++            rows = tx.query(  # type: ignore[assignment]
++                f"SELECT id, {field} FROM {table} "
++                f"WHERE {field} IS NOT NULL"
++            )
+ 
+         total = len(rows)
+-        to_migrate = [r for r in rows if r[field] and os.path.isabs(r[field])]
++        to_migrate = [
++            r
++            for r in rows
++            if r[field]
++            and os.path.isabs(util.bytestring_path(r[field]))
++        ]
+         if not to_migrate:
+             return
+ 
+@@ -239,7 +247,10 @@ class RelativePathMigration(Migration):
+             tx.mutate_many(
+                 f"UPDATE {table} SET {field} = ? WHERE id = ?",
+                 [
+-                    (normalize_path_for_db(r[field]), r["id"])
++                    (
++                        normalize_path_for_db(util.bytestring_path(r[field])),
++                        r["id"],
++                    )
+                     for r in to_migrate
+                 ],
+             )
+
+# --- task-03-agent ---
+diff --git a/beets/library/exceptions.py b/beets/library/exceptions.py
+index 0dc874c..72fd2c7 100644
+--- a/beets/library/exceptions.py
++++ b/beets/library/exceptions.py
+@@ -28,11 +28,11 @@ class ReadError(FileOperationError):
+     """An error while reading a file (i.e. in `Item.read`)."""
+ 
+     def __str__(self):
+-        return f"error reading {super()}"
++        return f"error reading {super().__str__()}"
+ 
+ 
+ class WriteError(FileOperationError):
+     """An error while writing a file (i.e. in `Item.write`)."""
+ 
+     def __str__(self):
+-        return f"error writing {super()}"
++        return f"error writing {super().__str__()}"
+diff --git a/beets/library/migrations.py b/beets/library/migrations.py
+index 11d3709..539bd8c 100644
+--- a/beets/library/migrations.py
++++ b/beets/library/migrations.py
+@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, ClassVar, NamedTuple
+ from confuse.exceptions import ConfigError
+ 
+ import beets
+-from beets import ui
++from beets import ui, util
+ from beets.dbcore.db import Migration
+ from beets.dbcore.pathutils import normalize_path_for_db
+ from beets.dbcore.types import MULTI_VALUE_DELIMITER
+@@ -227,10 +227,18 @@ class RelativePathMigration(Migration):
+         table = model_cls._table
+ 
+         with self.db.transaction() as tx:
+-            rows = tx.query(f"SELECT id, {field} FROM {table}")  # type: ignore[assignment]
++            rows = tx.query(  # type: ignore[assignment]
++                f"SELECT id, {field} FROM {table} "
++                f"WHERE {field} IS NOT NULL"
++            )
+ 
+         total = len(rows)
+-        to_migrate = [r for r in rows if r[field] and os.path.isabs(r[field])]
++        to_migrate = [
++            r
++            for r in rows
++            if r[field]
++            and os.path.isabs(util.bytestring_path(r[field]))
++        ]
+         if not to_migrate:
+             return
+ 
+@@ -239,7 +247,10 @@ class RelativePathMigration(Migration):
+             tx.mutate_many(
+                 f"UPDATE {table} SET {field} = ? WHERE id = ?",
+                 [
+-                    (normalize_path_for_db(r[field]), r["id"])
++                    (
++                        normalize_path_for_db(util.bytestring_path(r[field])),
++                        r["id"],
++                    )
+                     for r in to_migrate
+                 ],
+             )
+diff --git a/beets/ui/__init__.py b/beets/ui/__init__.py
+index fa0721f..85e22f8 100644
+--- a/beets/ui/__init__.py
++++ b/beets/ui/__init__.py
+@@ -683,7 +683,7 @@ class SubcommandsOptionParser(CommonOptionsParser):
+                 name = f"{' ' * formatter.current_indent}{name}\n"
+                 indent_first = help_position
+             else:
+-                name = f"{' ' * formatter.current_indent}{name:<{name_width}}\n"
++                name = f"{' ' * formatter.current_indent}{name:<{name_width}}  "
+                 indent_first = 0
+             result.append(name)
+             help_width = formatter.width - help_position
+
+# --- task-04-agent ---
+diff --git a/beets/library/exceptions.py b/beets/library/exceptions.py
+index 0dc874c..72fd2c7 100644
+--- a/beets/library/exceptions.py
++++ b/beets/library/exceptions.py
+@@ -28,11 +28,11 @@ class ReadError(FileOperationError):
+     """An error while reading a file (i.e. in `Item.read`)."""
+ 
+     def __str__(self):
+-        return f"error reading {super()}"
++        return f"error reading {super().__str__()}"
+ 
+ 
+ class WriteError(FileOperationError):
+     """An error while writing a file (i.e. in `Item.write`)."""
+ 
+     def __str__(self):
+-        return f"error writing {super()}"
++        return f"error writing {super().__str__()}"
+diff --git a/beets/library/migrations.py b/beets/library/migrations.py
+index 11d3709..539bd8c 100644
+--- a/beets/library/migrations.py
++++ b/beets/library/migrations.py
+@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, ClassVar, NamedTuple
+ from confuse.exceptions import ConfigError
+ 
+ import beets
+-from beets import ui
++from beets import ui, util
+ from beets.dbcore.db import Migration
+ from beets.dbcore.pathutils import normalize_path_for_db
+ from beets.dbcore.types import MULTI_VALUE_DELIMITER
+@@ -227,10 +227,18 @@ class RelativePathMigration(Migration):
+         table = model_cls._table
+ 
+         with self.db.transaction() as tx:
+-            rows = tx.query(f"SELECT id, {field} FROM {table}")  # type: ignore[assignment]
++            rows = tx.query(  # type: ignore[assignment]
++                f"SELECT id, {field} FROM {table} "
++                f"WHERE {field} IS NOT NULL"
++            )
+ 
+         total = len(rows)
+-        to_migrate = [r for r in rows if r[field] and os.path.isabs(r[field])]
++        to_migrate = [
++            r
++            for r in rows
++            if r[field]
++            and os.path.isabs(util.bytestring_path(r[field]))
++        ]
+         if not to_migrate:
+             return
+ 
+@@ -239,7 +247,10 @@ class RelativePathMigration(Migration):
+             tx.mutate_many(
+                 f"UPDATE {table} SET {field} = ? WHERE id = ?",
+                 [
+-                    (normalize_path_for_db(r[field]), r["id"])
++                    (
++                        normalize_path_for_db(util.bytestring_path(r[field])),
++                        r["id"],
++                    )
+                     for r in to_migrate
+                 ],
+             )
+diff --git a/beets/metadata_plugins.py b/beets/metadata_plugins.py
+index 23c717a..0571059 100644
+--- a/beets/metadata_plugins.py
++++ b/beets/metadata_plugins.py
+@@ -87,7 +87,7 @@ def _yield_from_plugins(
+                 executor.submit(
+                     # Evaluate iterator with list such that results are ready when
+                     # future.result() is called.
+-                    lambda *args, **kwargs: list(
++                    lambda *args, plugin=plugin, **kwargs: list(
+                         getattr(plugin, method_name)(
+                             *args,
+                             **kwargs,
+diff --git a/beets/ui/__init__.py b/beets/ui/__init__.py
+index fa0721f..85e22f8 100644
+--- a/beets/ui/__init__.py
++++ b/beets/ui/__init__.py
+@@ -683,7 +683,7 @@ class SubcommandsOptionParser(CommonOptionsParser):
+                 name = f"{' ' * formatter.current_indent}{name}\n"
+                 indent_first = help_position
+             else:
+-                name = f"{' ' * formatter.current_indent}{name:<{name_width}}\n"
++                name = f"{' ' * formatter.current_indent}{name:<{name_width}}  "
+                 indent_first = 0
+             result.append(name)
+             help_width = formatter.width - help_position
+
+# --- task-05-agent ---
+diff --git a/beets/autotag/hooks.py b/beets/autotag/hooks.py
+index ad4deb9..90788a5 100644
+--- a/beets/autotag/hooks.py
++++ b/beets/autotag/hooks.py
+@@ -100,10 +100,9 @@ class AttrDict(dict[str, V]):
+         # the property itself raises AttributeError (the real bug), wrap
+         # it in RuntimeError so the attribute machinery stops there
+         # instead of falling back to __getattr__ with the property name.
+-        # ``raise ... from exc`` chains the original AttributeError so
+-        # Python prints its traceback once (pointing at the actual line
+-        # where the lookup failed) followed by "The above exception was
+-        # the direct cause of the following exception".
++        # Reuse the original traceback on the wrapper so it points at the
++        # actual line where the lookup failed. Suppress the exception chain
++        # so the error is reported only once.
+         # See #6558 (and #6503 / #6506 for the same masking pattern
+         # with different metadata providers).
+         if not attr.startswith("__"):
+@@ -117,7 +116,7 @@ class AttrDict(dict[str, V]):
+                     except AttributeError as exc:
+                         raise RuntimeError(
+                             f"{type(self).__name__}.{attr} failed: {exc}"
+-                        ) from exc
++                        ).with_traceback(exc.__traceback__) from None
+                 break
+         return super().__getattribute__(attr)
+ 
+diff --git a/beets/library/exceptions.py b/beets/library/exceptions.py
+index 0dc874c..72fd2c7 100644
+--- a/beets/library/exceptions.py
++++ b/beets/library/exceptions.py
+@@ -28,11 +28,11 @@ class ReadError(FileOperationError):
+     """An error while reading a file (i.e. in `Item.read`)."""
+ 
+     def __str__(self):
+-        return f"error reading {super()}"
++        return f"error reading {super().__str__()}"
+ 
+ 
+ class WriteError(FileOperationError):
+     """An error while writing a file (i.e. in `Item.write`)."""
+ 
+     def __str__(self):
+-        return f"error writing {super()}"
++        return f"error writing {super().__str__()}"
+diff --git a/beets/library/migrations.py b/beets/library/migrations.py
+index 11d3709..539bd8c 100644
+--- a/beets/library/migrations.py
++++ b/beets/library/migrations.py
+@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, ClassVar, NamedTuple
+ from confuse.exceptions import ConfigError
+ 
+ import beets
+-from beets import ui
++from beets import ui, util
+ from beets.dbcore.db import Migration
+ from beets.dbcore.pathutils import normalize_path_for_db
+ from beets.dbcore.types import MULTI_VALUE_DELIMITER
+@@ -227,10 +227,18 @@ class RelativePathMigration(Migration):
+         table = model_cls._table
+ 
+         with self.db.transaction() as tx:
+-            rows = tx.query(f"SELECT id, {field} FROM {table}")  # type: ignore[assignment]
++            rows = tx.query(  # type: ignore[assignment]
++                f"SELECT id, {field} FROM {table} "
++                f"WHERE {field} IS NOT NULL"
++            )
+ 
+         total = len(rows)
+-        to_migrate = [r for r in rows if r[field] and os.path.isabs(r[field])]
++        to_migrate = [
++            r
++            for r in rows
++            if r[field]
++            and os.path.isabs(util.bytestring_path(r[field]))
++        ]
+         if not to_migrate:
+             return
+ 
+@@ -239,7 +247,10 @@ class RelativePathMigration(Migration):
+             tx.mutate_many(
+                 f"UPDATE {table} SET {field} = ? WHERE id = ?",
+                 [
+-                    (normalize_path_for_db(r[field]), r["id"])
++                    (
++                        normalize_path_for_db(util.bytestring_path(r[field])),
++                        r["id"],
++                    )
+                     for r in to_migrate
+                 ],
+             )
+diff --git a/beets/metadata_plugins.py b/beets/metadata_plugins.py
+index 23c717a..0571059 100644
+--- a/beets/metadata_plugins.py
++++ b/beets/metadata_plugins.py
+@@ -87,7 +87,7 @@ def _yield_from_plugins(
+                 executor.submit(
+                     # Evaluate iterator with list such that results are ready when
+                     # future.result() is called.
+-                    lambda *args, **kwargs: list(
++                    lambda *args, plugin=plugin, **kwargs: list(
+                         getattr(plugin, method_name)(
+                             *args,
+                             **kwargs,
+diff --git a/beets/ui/__init__.py b/beets/ui/__init__.py
+index fa0721f..85e22f8 100644
+--- a/beets/ui/__init__.py
++++ b/beets/ui/__init__.py
+@@ -683,7 +683,7 @@ class SubcommandsOptionParser(CommonOptionsParser):
+                 name = f"{' ' * formatter.current_indent}{name}\n"
+                 indent_first = help_position
+             else:
+-                name = f"{' ' * formatter.current_indent}{name:<{name_width}}\n"
++                name = f"{' ' * formatter.current_indent}{name:<{name_width}}  "
+                 indent_first = 0
+             result.append(name)
+             help_width = formatter.width - help_position
+
+# --- task-06-agent ---
+diff --git a/beets/autotag/distance.py b/beets/autotag/distance.py
+index 533c7ee..d5821f4 100644
+--- a/beets/autotag/distance.py
++++ b/beets/autotag/distance.py
+@@ -144,6 +144,7 @@ class Distance:
+         return [
+             k.replace("album_", "").replace("track_", "").replace("_", " ")
+             for k in self._penalties
++            if self[k]
+         ]
+ 
+     # Access the components and their aggregates.
+diff --git a/beets/autotag/hooks.py b/beets/autotag/hooks.py
+index ad4deb9..90788a5 100644
+--- a/beets/autotag/hooks.py
++++ b/beets/autotag/hooks.py
+@@ -100,10 +100,9 @@ class AttrDict(dict[str, V]):
+         # the property itself raises AttributeError (the real bug), wrap
+         # it in RuntimeError so the attribute machinery stops there
+         # instead of falling back to __getattr__ with the property name.
+-        # ``raise ... from exc`` chains the original AttributeError so
+-        # Python prints its traceback once (pointing at the actual line
+-        # where the lookup failed) followed by "The above exception was
+-        # the direct cause of the following exception".
++        # Reuse the original traceback on the wrapper so it points at the
++        # actual line where the lookup failed. Suppress the exception chain
++        # so the error is reported only once.
+         # See #6558 (and #6503 / #6506 for the same masking pattern
+         # with different metadata providers).
+         if not attr.startswith("__"):
+@@ -117,7 +116,7 @@ class AttrDict(dict[str, V]):
+                     except AttributeError as exc:
+                         raise RuntimeError(
+                             f"{type(self).__name__}.{attr} failed: {exc}"
+-                        ) from exc
++                        ).with_traceback(exc.__traceback__) from None
+                 break
+         return super().__getattribute__(attr)
+ 
+diff --git a/beets/library/exceptions.py b/beets/library/exceptions.py
+index 0dc874c..72fd2c7 100644
+--- a/beets/library/exceptions.py
++++ b/beets/library/exceptions.py
+@@ -28,11 +28,11 @@ class ReadError(FileOperationError):
+     """An error while reading a file (i.e. in `Item.read`)."""
+ 
+     def __str__(self):
+-        return f"error reading {super()}"
++        return f"error reading {super().__str__()}"
+ 
+ 
+ class WriteError(FileOperationError):
+     """An error while writing a file (i.e. in `Item.write`)."""
+ 
+     def __str__(self):
+-        return f"error writing {super()}"
++        return f"error writing {super().__str__()}"
+diff --git a/beets/library/migrations.py b/beets/library/migrations.py
+index 11d3709..539bd8c 100644
+--- a/beets/library/migrations.py
++++ b/beets/library/migrations.py
+@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, ClassVar, NamedTuple
+ from confuse.exceptions import ConfigError
+ 
+ import beets
+-from beets import ui
++from beets import ui, util
+ from beets.dbcore.db import Migration
+ from beets.dbcore.pathutils import normalize_path_for_db
+ from beets.dbcore.types import MULTI_VALUE_DELIMITER
+@@ -227,10 +227,18 @@ class RelativePathMigration(Migration):
+         table = model_cls._table
+ 
+         with self.db.transaction() as tx:
+-            rows = tx.query(f"SELECT id, {field} FROM {table}")  # type: ignore[assignment]
++            rows = tx.query(  # type: ignore[assignment]
++                f"SELECT id, {field} FROM {table} "
++                f"WHERE {field} IS NOT NULL"
++            )
+ 
+         total = len(rows)
+-        to_migrate = [r for r in rows if r[field] and os.path.isabs(r[field])]
++        to_migrate = [
++            r
++            for r in rows
++            if r[field]
++            and os.path.isabs(util.bytestring_path(r[field]))
++        ]
+         if not to_migrate:
+             return
+ 
+@@ -239,7 +247,10 @@ class RelativePathMigration(Migration):
+             tx.mutate_many(
+                 f"UPDATE {table} SET {field} = ? WHERE id = ?",
+                 [
+-                    (normalize_path_for_db(r[field]), r["id"])
++                    (
++                        normalize_path_for_db(util.bytestring_path(r[field])),
++                        r["id"],
++                    )
+                     for r in to_migrate
+                 ],
+             )
+diff --git a/beets/metadata_plugins.py b/beets/metadata_plugins.py
+index 23c717a..0571059 100644
+--- a/beets/metadata_plugins.py
++++ b/beets/metadata_plugins.py
+@@ -87,7 +87,7 @@ def _yield_from_plugins(
+                 executor.submit(
+                     # Evaluate iterator with list such that results are ready when
+                     # future.result() is called.
+-                    lambda *args, **kwargs: list(
++                    lambda *args, plugin=plugin, **kwargs: list(
+                         getattr(plugin, method_name)(
+                             *args,
+                             **kwargs,
+diff --git a/beets/ui/__init__.py b/beets/ui/__init__.py
+index fa0721f..85e22f8 100644
+--- a/beets/ui/__init__.py
++++ b/beets/ui/__init__.py
+@@ -683,7 +683,7 @@ class SubcommandsOptionParser(CommonOptionsParser):
+                 name = f"{' ' * formatter.current_indent}{name}\n"
+                 indent_first = help_position
+             else:
+-                name = f"{' ' * formatter.current_indent}{name:<{name_width}}\n"
++                name = f"{' ' * formatter.current_indent}{name:<{name_width}}  "
+                 indent_first = 0
+             result.append(name)
+             help_width = formatter.width - help_position

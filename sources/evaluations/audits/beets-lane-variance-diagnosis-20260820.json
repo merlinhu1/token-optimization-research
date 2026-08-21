@@ -307,6 +307,28 @@
     },
     "finding": "Mixed and not conclusive at n=2. The two prompts with the largest exploration gaps improved sharply -- migration-text-paths 212% to 62% and subcommand-help-alignment 102% to 15% -- which is the predicted direction. But cached-attribute-error-surface was also repaired and got worse, 30% to 135%, and concurrent-plugin-dispatch, the untouched exemplar, went 21% to 69%. A prompt that was not edited moving that far means single-pair gaps are dominated by run-to-run noise, so the improvements cannot be separated from it.",
     "direction_change": "The one qualitative shift: pre-repair all six Beets tasks moved the same way between replicates, so deviations accumulated and a 24.8% per-task median passed through to a 24.3% lane total. Post-repair the signs alternate (+-+-+-) and the lane total, 16.4%, falls below several individual task gaps. Some cancellation is now present. Whether that is a property of the repaired tasks or a coincidence of two runs is untested.",
-    "not_established": "That the repair reduced variance. Fastify, which also had two prompts repaired, moved from 0.45% to 4.0%. Neither lane has enough replicates to estimate a spread rather than observe one gap."
+    "not_established": "That the repair reduced variance. Fastify, which also had two prompts repaired, moved from 0.45% to 4.0%. Neither lane has enough replicates to estimate a spread rather than observe one gap.",
+    "n3_verdict": {
+      "beets_repaired_n3": {
+        "weighted": [
+          674791.2,
+          579890.6,
+          708501.6
+        ],
+        "median": 674791.2,
+        "spread_pct": 22.2,
+        "cancellation_ratio": 1.4,
+        "sum_of_per_task_ranges": 176607,
+        "range_of_lane_totals": 128611
+      },
+      "reference_cancellation_ratio": {
+        "fastify_pre_repair": 12.4,
+        "beets_plugin_set": 1.1
+      },
+      "finding": "The repair did not fix the lane. At three replicates the repaired Beets lane spreads 22.2%, against 24.3% at n=2 pre-repair and 31.3% for the plugin set, and its cancellation ratio is 1.4x against 1.1x for the plugin set and 12.4x for Fastify. Deviations still accumulate rather than offset. The alternating signs observed at n=2 did not survive the third replicate.",
+      "prompt_precision_verdict": "Not supported as a lever on lane variance. Exploration gaps at n=3 are 42-135% across all six tasks, including 69% for concurrent-plugin-dispatch, which was never edited and whose 0.2% pair was the entire basis for the design principles. That 0.2% was a fortunate draw, not a property. The four principles remain a reasonable style guide and are not evidence-backed as a variance control.",
+      "what_is_established": "Lane variance is governed by whether per-task deviations cancel, not by their size. Fastify cancels at 12.4x and reproduces to 1.7%; both Beets task sets fail to cancel, at 1.1x and 1.4x, and reproduce to 22-31% despite comparable per-task magnitudes. Three interventions have now failed to induce cancellation in Beets: shared code region, task count matched to Fastify, and prompt precision.",
+      "recommended_next": "Stop modifying Beets tasks. The remaining untested difference is structural -- the persistent session and how context accumulates within it -- and it is testable directly by resetting context between tasks on one lane and comparing, rather than by further task authoring."
+    }
   }
 }
