@@ -330,5 +330,33 @@
       "what_is_established": "Lane variance is governed by whether per-task deviations cancel, not by their size. Fastify cancels at 12.4x and reproduces to 1.7%; both Beets task sets fail to cancel, at 1.1x and 1.4x, and reproduce to 22-31% despite comparable per-task magnitudes. Three interventions have now failed to induce cancellation in Beets: shared code region, task count matched to Fastify, and prompt precision.",
       "recommended_next": "Stop modifying Beets tasks. The remaining untested difference is structural -- the persistent session and how context accumulates within it -- and it is testable directly by resetting context between tasks on one lane and comparing, rather than by further task authoring."
     }
+  },
+  "seed_size_finding_20260821": {
+    "correction_to_earlier_reporting": [
+      "The n=3 repaired spread (22.2%) was compared against an n=2 pre-repair spread (24.3%). Spread grows with sample size, so that comparison understated the repair. At matched n=2 the lane went 24.3% to 16.4%, a 33% relative reduction, and at matched n=3 the plugin set to the repaired core set went 31.3% to 22.2%. The direction is consistent in both.",
+      "zero-penalty-display was described as the lane's worst task on a 54% weighted range. That range is confounded by position: it runs last and inherits all accumulated context, so its weighted cost is the largest of the six for reasons unrelated to the task. On the position-independent measure it is the tightest task in the lane."
+    ],
+    "finding": "Seed size predicts exploration gap. Across the six repaired Beets tasks at n=3 the rank correlation between seed patch size and between-replicate fresh-token gap is +1.00: 420 chars to 42%, 637 to 44%, 942 to 62%, 1,217 to 62%, 1,259 to 69%, 2,701 to 135%.",
+    "beets_v2_n3": {
+      "420": 42,
+      "637": 44,
+      "942": 62,
+      "1217": 62,
+      "1259": 69,
+      "2701": 135,
+      "spearman": 1.0
+    },
+    "fastify_v2_n2": {
+      "520": 6,
+      "606": 29,
+      "650": 36,
+      "750": 29,
+      "789": 32,
+      "855": 19,
+      "spearman": 0.26
+    },
+    "why_fastify_shows_no_correlation": "Its seeds span 520 to 855 characters, a 1.6x range, against 6.4x for Beets. There is too little variation to detect a slope, and the whole Fastify range sits below the point where Beets degrades.",
+    "proposed_guideline": "Cap seed size at roughly 900 characters, the top of Fastify's range. On the current Beets set that would exclude cached-attribute-error-surface at 2,701, concurrent-plugin-dispatch at 1,259 and migration-text-paths at 1,217, and retain the two tightest. This is a mechanical, checkable property of a candidate, unlike the four prose principles it replaces.",
+    "limits": "Six tasks at three replicates. The correlation is with seed size, which plausibly proxies for how bounded the underlying defect is rather than causing anything by itself. It addresses per-task exploration only and says nothing about cancellation, which is the lane-level property that governs the total."
   }
 }
