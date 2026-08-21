@@ -10,7 +10,9 @@ This directory contains Lifecycle V2 fixture implementations, frozen execution c
 - `audits/` — current qualification, invalidation, archive, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
-The active registry holds no provider-backed sessions. A corrected task family mints new qualification and protocol identities, so the prior corpus is archived and fresh execution is required before any result claim.
+The active registry contains 1 accepted provider-backed session: 1 baselines. By sequence: 1 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 1.
+
+Weighted token cost decomposes as agent steps times weighted cost per step. `dc16afea3ad5` holds 1 replicate (69 agent steps).
 
 Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions); `lifecycle-v2-beets-plugin-tasks-20260820` (3 sessions); `lifecycle-v2-pre-prompt-repair-20260821` (5 sessions).
 <!-- /generated:corpus-summary -->

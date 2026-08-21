@@ -19,7 +19,7 @@ Internally, every active task requires affected-component compilation. Feature a
 
 ## Claude Code direct-Anthropic preparation
 
-No provider-backed Fastify/Beets sessions are active. The pre-correction corpus is archived under `sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/`; fresh provider execution under the corrected prompt/configuration generation is required before any treatment readiness claim.
+_No direct-Anthropic Claude Code preparation authority is present._
 
 ## Active sequences
 
@@ -63,10 +63,29 @@ Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behav
 Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
 
 ```bash
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+```
+
+Owner-authorized current-control replication is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:
+
+```bash
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 1 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+```
+
+Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v2` (r0). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+
+```bash
+SEQUENCE_ID=fastify-lifecycle-sequence-v2
+PROFILE_ID=replace-with-compatible-profile-id
+python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+python3 scripts/validate_repository.py
+python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --dry-run
 ```
 
 Run as many replicates per protocol as the work warrants; there is no registered N. All retained replicates are published, and a single replicate is a screen rather than an effect estimate. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample.
