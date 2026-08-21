@@ -264,5 +264,49 @@
     ],
     "does_not_explain_everything": "The archived plugin lane spread 31.3% with no runaway task at all, its worst being 62%. So prompt openness cannot be the whole cause: that lane's variance was distributed rather than concentrated. There are two distinct sources -- a structural one visible without any runaway task, and a prompt-driven one introduced by the rebuild.",
     "recommendation": "Repair the two prompts and re-baseline before drawing further conclusions about the lane. That is cheap relative to a treatment campaign and isolates the prompt-driven component. It will not by itself reach Fastify's 1.7%, because the structural component remains."
+  },
+  "prompt_repair_result_20260821": {
+    "change": "Six prompts rewritten 2026-08-21; both lanes requalified and re-baselined at n=2.",
+    "lane_pair_spreads": {
+      "beets_pre": 24.3,
+      "beets_post": 16.4,
+      "fastify_pre": 0.45,
+      "fastify_post": 4.0
+    },
+    "exploration_gap_pct_fresh_tokens": {
+      "library-file-error-message": {
+        "pre": 47,
+        "post": 21,
+        "repaired": true
+      },
+      "migration-text-paths": {
+        "pre": 212,
+        "post": 62,
+        "repaired": true
+      },
+      "subcommand-help-alignment": {
+        "pre": 102,
+        "post": 15,
+        "repaired": true
+      },
+      "concurrent-plugin-dispatch": {
+        "pre": 21,
+        "post": 69,
+        "repaired": false
+      },
+      "cached-attribute-error-surface": {
+        "pre": 30,
+        "post": 135,
+        "repaired": true
+      },
+      "zero-penalty-display": {
+        "pre": 13,
+        "post": 10,
+        "repaired": false
+      }
+    },
+    "finding": "Mixed and not conclusive at n=2. The two prompts with the largest exploration gaps improved sharply -- migration-text-paths 212% to 62% and subcommand-help-alignment 102% to 15% -- which is the predicted direction. But cached-attribute-error-surface was also repaired and got worse, 30% to 135%, and concurrent-plugin-dispatch, the untouched exemplar, went 21% to 69%. A prompt that was not edited moving that far means single-pair gaps are dominated by run-to-run noise, so the improvements cannot be separated from it.",
+    "direction_change": "The one qualitative shift: pre-repair all six Beets tasks moved the same way between replicates, so deviations accumulated and a 24.8% per-task median passed through to a 24.3% lane total. Post-repair the signs alternate (+-+-+-) and the lane total, 16.4%, falls below several individual task gaps. Some cancellation is now present. Whether that is a property of the repaired tasks or a coincidence of two runs is untested.",
+    "not_established": "That the repair reduced variance. Fastify, which also had two prompts repaired, moved from 0.45% to 4.0%. Neither lane has enough replicates to estimate a spread rather than observe one gap."
   }
 }
