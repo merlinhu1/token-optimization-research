@@ -10,9 +10,9 @@ This directory contains Lifecycle V2 fixture implementations, frozen execution c
 - `audits/` — current qualification, invalidation, archive, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
-The active registry contains 2 accepted provider-backed sessions: 2 baselines. By sequence: 1 `beets-lifecycle-sequence-v2`, 1 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 2.
+The active registry contains 3 accepted provider-backed sessions: 3 baselines. By sequence: 1 `beets-lifecycle-sequence-v2`, 2 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 3.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `58fa838354e5` holds 1 replicate (75 agent steps); `dc16afea3ad5` holds 1 replicate (69 agent steps).
+Weighted token cost decomposes as agent steps times weighted cost per step. `58fa838354e5` holds 1 replicate (75 agent steps); `dc16afea3ad5` holds 2 replicates (69, 73 agent steps, spread 5.8%); weighted cost per step spread 10.0%.
 
 Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions); `lifecycle-v2-beets-plugin-tasks-20260820` (3 sessions); `lifecycle-v2-pre-prompt-repair-20260821` (5 sessions).
 <!-- /generated:corpus-summary -->
