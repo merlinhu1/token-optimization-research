@@ -518,15 +518,18 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "mcp_command": "{tool_data_dir}/venv/bin/repowise",
         "mcp_args": ["mcp"],
         "path_entries": ["{tool_data_dir}/venv/bin"],
-        "env": {"REPOWISE_PROVIDER": "codex_cli", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
+        "env": {"REPOWISE_PROVIDER": "codex_cli"},
         "mounts": [str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
-        "diff_exclude_paths": [".repowise", ".mcp.json", ".codex", "AGENTS.md"],
+        "diff_exclude_paths": [".repowise", ".mcp.json", ".codex", ".vscode", ".claude", "AGENTS.md"],
         "codex_features": {"hooks": True},
         "host_integration": {
+            # repowise detects Codex by probing ~/.codex, so the lane-private CODEX_HOME has to
+            # be aliased there or the Codex half of `init` silently does nothing.
+            "home_dot_codex_alias": True,
             "install_commands": [
                 [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
                 [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
-                ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "codex_cli", "--no-prose", "--no-claude-md", "--no-editor-setup", "--codex", "--agents", "--no-workspace", "{repo}"],
+                ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "codex_cli", "--no-prose", "--no-claude-md", "--codex", "--agents", "--no-workspace", "{repo}"],
             ],
             "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
             "required_files": [
@@ -2413,12 +2416,12 @@ TOOL_CONFIGS.update(
             mounts=[str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
             adapter_path=OPENCODE_ADAPTER_V9,
             path_entries=["{tool_data_dir}/venv/bin"],
-            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_PROVIDER": "opencode", "REPOWISE_SKIP_EDITOR_SETUP": "1"},
+            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_PROVIDER": "opencode"},
             host_integration={
                 "install_commands": [
                     [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
                     [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(REPOWISE_WHEEL)],
-                    ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "opencode", "--no-prose", "--no-claude-md", "--no-editor-setup", "--no-codex", "--agents", "--no-workspace", "{repo}"],
+                    ["{tool_data_dir}/venv/bin/repowise", "init", "--yes", "--provider", "opencode", "--no-prose", "--no-claude-md", "--no-codex", "--agents", "--no-workspace", "{repo}"],
                 ],
                 "verify_commands": [["{tool_data_dir}/venv/bin/repowise", "--version"]],
                 "required_files": [

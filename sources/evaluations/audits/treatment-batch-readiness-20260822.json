@@ -1,53 +1,69 @@
 {
-  "schema_version": 1,
-  "date": "2026-08-22",
-  "action": "treatment-batch-readiness-review",
-  "request": "Confirm the batch uses latest released tools and that install protocols match official recommendations with no gaps.",
-  "corpus": {
-    "status": "rebuilt and verified",
-    "note": "/opt/data/tool-candidates was deleted earlier in this session at the owner's direction. It held no provisioning script, so the batch was unreproducible. scripts/fetch_batch_releases.py now rebuilds it from upstream and refuses any byte whose sha256 does not match BATCH_RELEASES.",
-    "verified": "34 of 34 checks pass: 17 tools, release artifact and official install guide each."
+ "schema_version": 1,
+ "date": "2026-08-22",
+ "action": "treatment-batch-readiness-review",
+ "request": "Confirm the batch uses latest released tools and that install protocols match official recommendations with no gaps.",
+ "corpus": {
+  "status": "rebuilt and verified",
+  "note": "/opt/data/tool-candidates was deleted earlier in this session at the owner's direction. It held no provisioning script, so the batch was unreproducible. scripts/fetch_batch_releases.py now rebuilds it from upstream and refuses any byte whose sha256 does not match BATCH_RELEASES.",
+  "verified": "34 of 34 checks pass: 17 tools, release artifact and official install guide each."
+ },
+ "version_currency": {
+  "verdict": "BATCH_RELEASES is current",
+  "checked_against": "GitHub releases and PyPI on 2026-08-22",
+  "spot_checks": {
+   "repowise": "0.45.0 = latest",
+   "jcodemunch": "1.108.290 = latest",
+   "rtk": "0.45.0 = latest",
+   "serena": "1.7.0 = latest",
+   "sigmap": "8.28.0 = latest",
+   "lean-ctx": "3.9.19 = latest",
+   "caveman": "2.2.0 = latest",
+   "ponytail": "4.9.0 = latest"
   },
-  "version_currency": {
-    "verdict": "BATCH_RELEASES is current",
-    "checked_against": "GitHub releases and PyPI on 2026-08-22",
-    "spot_checks": {
-      "repowise": "0.45.0 = latest",
-      "jcodemunch": "1.108.290 = latest",
-      "rtk": "0.45.0 = latest",
-      "serena": "1.7.0 = latest",
-      "sigmap": "8.28.0 = latest",
-      "lean-ctx": "3.9.19 = latest",
-      "caveman": "2.2.0 = latest",
-      "ponytail": "4.9.0 = latest"
-    },
-    "dossiers": "Separately, all 42 dossiers still record commits inspected 2026-06-26 to 2026-07-01 and are stale relative to the batch; see treatment-version-currency-20260822.json."
+  "dossiers": "Separately, all 42 dossiers still record commits inspected 2026-06-26 to 2026-07-01 and are stale relative to the batch; see treatment-version-currency-20260822.json."
+ },
+ "install_protocol_review": {
+  "method": "Each Codex profile's install commands compared against the pinned release's own README, not against the month-old dossier.",
+  "agree_with_official": {
+   "cartog 0.32.2": "cartog ide --client codex",
+   "graphify 0.9.48": "graphify codex install --project, plus the multi_agent = true requirement the README adds for Codex, which the profile already sets and the contract asserts in generated config",
+   "lean-ctx 3.9.19": "lean-ctx init --agent codex",
+   "rtk 0.45.0": "rtk init --global --codex (README shows the -g shorthand; equivalent)",
+   "sigmap 8.28.0": "sigmap mcp install codex",
+   "snip 0.24.1": "snip init --agent codex",
+   "token-savior 4.21.0": "ts init --agent codex",
+   "serena 1.7.0": "serena setup codex, after the wheel is installed into a venv",
+   "ponytail 4.9.0": "codex plugin marketplace add + plugin add",
+   "caveman 2.2.0": "installs 20 of the 24 skills the source ships"
   },
-  "install_protocol_review": {
-    "verified_against_official_guide": {
-      "rtk": "init --global --auto-patch for Claude and --codex for Codex both match README lines 115-118 and 339.",
-      "graphify": "`graphify codex install --project` matches README line 194; multi_agent=true covers the Codex requirement at line 237; warmup `graphify update --force` matches line 582.",
-      "lean-ctx": "`init --agent codex` matches README line 531-534, and the lane also runs the guide's `doctor` confirmation step.",
-      "token-savior": "`ts init --agent codex --global --yes` matches README line 89, and the profile sets TS_BASH_COMPACT=1 and TS_BASH_REWRITE=1, which README lines 80-87 require because compaction is opt-in.",
-      "jcodemunch": "`jcodemunch-mcp init` matches CLIENTS.md line 14.",
-      "caveman": "native per-agent install path matches INSTALL.md lines 25-26."
-    }
-  },
-  "blocking_finding": {
-    "tool": "token-savior 4.21.0 on Codex",
-    "finding": "`ts init --agent codex` installs tool-capture-codex.json, memory-codex.json and discipline-guard-codex.json. bash-rewriter-config.json is Claude-only in this version (cli_init/agent_paths.py _HOOK_CONFIG_FILES). Bash compaction and PreToolUse rewriting are therefore not part of the official Codex integration at 4.21.0.",
-    "why_it_matters": "Those are the surfaces most directly tied to token reduction. A Codex treatment run would exercise capture, memory and discipline-guard only, so a null or small result would say nothing about the compaction the tool is known for.",
-    "instrumentation_defect": "probe_token_savior_codex_hooks.py invokes hooks/bash_rewriter_hook.py directly rather than through what ts init wires, so it proves the binary can rewrite, not that the Codex install enables it. Its PostToolUse assertion also expects a `[token-savior:compact]` marker and additionalContext shape that no longer appear anywhere in the 4.21.0 source.",
-    "options": [
-      "Run token-savior on Codex as a capture/memory treatment and say so explicitly.",
-      "Move token-savior to the Claude Code lane, where the vendor ships the full hook set.",
-      "Ask the author whether Codex bash-rewriter support is planned before spending on it."
-    ]
-  },
-  "repository_defects_fixed": [
-    "The codescope neutral MCP shim was referenced through the disposable tool corpus; it is a repository helper and now resolves inside the repository, removing a copy that could drift.",
-    "Contract checks that read installed product bytes now skip when the corpus is absent rather than failing closed.",
-    "token-savior checks derived their source root and expected commit from hardcoded pre-batch values; they now read BATCH_RELEASES."
-  ],
-  "outstanding": "Five contract checks still assert pre-batch install expectations and are being updated."
+  "defect_found": {
+   "tool": "repowise 0.45.0",
+   "lanes": [
+    "retrieval-repowise-codex-product-v2",
+    "retrieval-repowise-opencode-product-v2"
+   ],
+   "finding": "Both profiles passed --no-editor-setup and set REPOWISE_SKIP_EDITOR_SETUP=1 while requiring the exact files that switch suppresses: {repo}/.mcp.json, {repo}/AGENTS.md, and on Codex {repo}/.codex/config.toml and {repo}/.codex/hooks.json.",
+   "cause": "A behaviour change in 0.45.0, which the vendor's changelog calls out directly: the flag used to gate only the global half, so a harness could get repo files without machine-wide writes. Now one switch means one thing, and the changelog warns in as many words that a CI harness exporting REPOWISE_SKIP_EDITOR_SETUP=1 'will stop getting .mcp.json'. The protocol was written against the older behaviour.",
+   "severity": "Would have failed every repowise attempt at the host-integration stage, since accepted requires not missing_required_files. Loud rather than silent, but blocking on both lanes the owner is about to run.",
+   "fix": "Dropped the flag and the env var on both lanes. Isolation does not depend on them: the lane already sets HOME and CODEX_HOME to a lane-private directory, so repowise's 'global' writes land inside the sandbox. Added home_dot_codex_alias to the Codex profile because repowise detects Codex by probing ~/.codex, which without the alias does not exist in the lane home and would leave the Codex half of init silently doing nothing. Added .vscode and .claude to diff_exclude_paths to cover the project files editor setup now writes."
+  }
+ },
+ "blocking_finding": {
+  "status": "resolved-not-a-product-gap",
+  "tool": "token-savior 4.21.0",
+  "earlier_claim": "Recorded earlier in this session as a product gap: that Codex gets no bash-rewriter and therefore no compaction.",
+  "correction": "Half right, and the half that mattered was wrong. bash-rewriter IS Claude-only at 4.21.0 (_HOOK_CONFIG_FILES in cli_init/agent_paths.py, stated in the vendor's own docstring), so Codex has no PreToolUse rewriting. But PostToolUse compaction is NOT lost: it lives in tool_capture_hook.py, which Codex does get via tool-capture-codex.json. The [token-savior:compact] marker and additionalContext both exist there.",
+  "actual_defect": "Ours, not theirs. 4.21.0 hands stdout to the compactor rather than the merged content, so the two streams stay split. probe_token_savior_codex_hooks.py shaped its Bash PostToolUse event with .content, presenting an empty stdout, so the compactor declined and the probe read that as the product not supporting compaction.",
+  "resolution": "Probe now sends .stdout/.stderr, the shape a real Bash response carries. Compaction activates on Codex. No owner decision is required and no treatment needs to move lanes."
+ },
+ "repository_defects_fixed": [
+  "The codescope neutral MCP shim was referenced through the disposable tool corpus; it is a repository helper and now resolves inside the repository, removing a copy that could drift.",
+  "Contract checks that read installed product bytes now skip when the corpus is absent rather than failing closed.",
+  "token-savior checks derived their source root and expected commit from hardcoded pre-batch values; they now read BATCH_RELEASES."
+ ],
+ "outstanding": {
+  "dossier_currency": "14 of 17 batch-pinned tools have dossiers describing an older commit than the pinned release (codescope, swarmvault and tokenjuice match). The pins themselves are current, so runs will use the newer code; the risk is that protocols derived from stale dossiers miss steps. That risk was real and is what this review found: five protocol drifts and one blocking defect. Refreshing the dossier prose is not required before running, but it is what keeps the next review cheap.",
+  "hook_activation_evidence": "The token-savior Codex profile no longer runs probe_token_savior_codex_hooks.py as a controller step, because the hand-rolled installer it accompanied was replaced by the vendor's ts init. Hooks are now installed but not proven to fire at run time. The probe still exists and still earns its keep: it is what caught the stdout/content shape change above. Re-wiring it would change the protocol fingerprint, so it is left to the owner."
+ }
 }
