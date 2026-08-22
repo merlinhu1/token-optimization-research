@@ -1,0 +1,672 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "beets-lifecycle-sequence-v2-runtime-opencode-codex-product-v1-3149609a8794",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen runtime-opencode-codex-product-v1 protocol for beets-lifecycle-sequence-v2; no provider/model run has occurred.",
+  "frozen_at": "2026-08-22",
+  "hypothesis": "runtime-opencode-codex-product-v1 produces reproducible weighted token cost and software-quality evidence for beets-lifecycle-sequence-v2",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v2",
+    "task_family_generation": "lifecycle-v2",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+    "qualification_sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v2 --profile-id runtime-opencode-codex-product-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v2-runtime-opencode-codex-product-v1-3149609a8794.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "metric": "weighted_token_cost",
+    "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "fields": [
+      "weighted_token_cost"
+    ],
+    "provider_telemetry_inputs": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ],
+    "raw_totals_are_metrics": false
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "c86863838e8b",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "task_family_generation": "lifecycle-v2",
+      "runner_contract_version": "workflow-runner-v10",
+      "runner_sha256": "2c6756ccaeb14248db1ccc687d54703420fcb07733ec622ae1d6c83c3b290736",
+      "qualification_generator_sha256": "30229f3b7e848ef621b1a2b2d7c3aba78d58d6723dd543838c0a3515cc856e20",
+      "validator_sha256": "2294684a849e59a9fd2664090e454289bdd0822fca894dc6beb221a2b75e1fb4",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "sequence_contract": "bounded-defect-repair-series",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "weighted_token_cost",
+      "acceptance_design": "compile-plus-essential-smoke",
+      "acceptance_policy": {
+        "gate": "compile-plus-essential-smoke-for-coding-tasks",
+        "visibility": "controller-only",
+        "coding_task_classes": [
+          "defect-repair"
+        ],
+        "review_task_gate": "not-applicable",
+        "quality_diagnostics_gate": false,
+        "broader_tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+      "tasks": [
+        {
+          "id": "beets-unique-path-counter-v2",
+          "order": 1,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/agent-prompt.txt",
+          "prompt_sha256": "0338f9af2e63a4807949125a93016b8be5ad6cb088c983e5ba1dfa139eea1053",
+          "seed_patch_sha256": "389887a516de22d73c74e6e7343926b8a03265145931dce078ef151efa2081f9",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/verify.sh",
+          "verifier_sha256": "8b71484d47416d050d7603f5245abeab9b8dc438a9cd3e8c9e071ac71044bb56",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/__init__.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_util.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/util/__init__.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-empty-string-field-split-v2",
+          "order": 2,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/agent-prompt.txt",
+          "prompt_sha256": "eeea034bc7ce0374de1f09af4b5371ce6228f6d2d78d0f7aade55bcc7e5653a6",
+          "seed_patch_sha256": "c043f380ac2a9bf55daaa87d942dc38ad512f748aa60a6129cddf789ff04938e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/verify.sh",
+          "verifier_sha256": "62f73de90085a7cc77d85dd77597aca50db00d55b1a40b9af8173a624c055c33",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/hooks.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/autotag/hooks.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-date-query-alternation-v2",
+          "order": 3,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/agent-prompt.txt",
+          "prompt_sha256": "a4bff3579e9e1c44b6a5f8c59491b08589b06f02aeafc413b6f4b989a5bb9dbf",
+          "seed_patch_sha256": "f513faa82863d106df17b31c7598a9ff4353a192f8b716d19fd320fb071cb4af",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/verify.sh",
+          "verifier_sha256": "2b8fdb3443268e96db976aa95ad345115aebd86986fedab2cc09c933841be184",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_datequery.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-membership-query-hashable-v2",
+          "order": 4,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/agent-prompt.txt",
+          "prompt_sha256": "cd6002b41853aaca802dab6ef8d2a202d2ca351d1cb6e97798b80847f319a0f6",
+          "seed_patch_sha256": "ae732cba3535faefacbf756c2fcbdaa8b7b2f17d68d116057c51553804a65d19",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/verify.sh",
+          "verifier_sha256": "7f3a21db5310007ded0580124ad357a84626adde932e12e06cd9e4aef0a9c948",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_query.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-spotify-uri-extraction-v2",
+          "order": 5,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/agent-prompt.txt",
+          "prompt_sha256": "c878c706b7aa2da8fea308156f07911c7cfcf84644561cc0371c9636ffe9490c",
+          "seed_patch_sha256": "a099d9854485494c8967f80bf9a29ec1cef7946c5248124cd474982eeb1b39e1",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/verify.sh",
+          "verifier_sha256": "7e6c0c5dc76ab9537c75cc1109d2302d2ba51f380cd5d2c7dfed8696c5930a53",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/id_extractors.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_id_extractors.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/util/id_extractors.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lyrics-keep-synced-override-v2",
+          "order": 6,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/agent-prompt.txt",
+          "prompt_sha256": "77cd8cf5b1d6cbff3a5be16f6d7ac512a8d04bf7f073a20dafd68641f570531b",
+          "seed_patch_sha256": "aafbf8f90a56275c87da43d9790dc73d54a159e3068ab9862667815d8676b06d",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/verify.sh",
+          "verifier_sha256": "e58464136109a44b20ef71f6b1e64c02c11d827de80371f437c2a635ff6eae34",
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/lyrics.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_lyrics.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beetsplug/lyrics.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+        "sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "uv sync --group test --frozen",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-medium",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "model_condition_launcher": "scripts/run_codex_workflow_model_condition.py"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "acceptance_design": "compile-plus-essential-smoke",
+        "acceptance_policy": {
+          "gate": "compile-plus-essential-smoke-for-coding-tasks",
+          "visibility": "controller-only",
+          "coding_task_classes": [
+            "defect-repair"
+          ],
+          "review_task_gate": "not-applicable",
+          "quality_diagnostics_gate": false,
+          "broader_tests_required": false,
+          "source_review_required": false
+        },
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-default",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "d098d58576a8fb0cec59f8edd5cf45ae98c1fdcd4d46a11b50ad8fc284166eb3",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "replacement_runtime",
+      "selected_profile": {
+        "profile_id": "runtime-opencode-codex-product-v1",
+        "profile_type": "replacement_runtime",
+        "component_ids": [
+          "runtime-opencode-codex-product-v1"
+        ],
+        "enabled_surfaces": [
+          "opencode-native-shell-edit",
+          "opencode-native-file-read-search"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "project and global OpenCode instructions",
+          "external plugins",
+          "external skills",
+          "subagents",
+          "web fetch and web search",
+          "warm indexes"
+        ],
+        "registry_entry_sha256": "e3950e0b28671f7a82e1a6b80745d69d25952c0cd00b83b887a5d86987fe4942",
+        "registry_entry": {
+          "id": "runtime-opencode-codex-product-v1",
+          "profile_type": "replacement_runtime",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
+          "enabled_surfaces": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search"
+          ],
+          "disabled_overlaps": [
+            "all MCP servers",
+            "all token-saving surfaces",
+            "project and global OpenCode instructions",
+            "external plugins",
+            "external skills",
+            "subagents",
+            "web fetch and web search",
+            "warm indexes"
+          ],
+          "components": [
+            {
+              "component_id": "runtime-opencode-codex-product-v1",
+              "surface": "replacement-agent-runtime",
+              "role": "replacement_runtime"
+            }
+          ],
+          "native_agent_tools_allowed": [
+            "shell_command_execution",
+            "file_editing",
+            "plain_file_read_search",
+            "git",
+            "verifier_commands"
+          ],
+          "forbidden_surfaces": [
+            "external retrieval",
+            "MCP",
+            "external skills/plugins",
+            "subagents",
+            "all unlisted retrieval/compression/memory/token-saving tools"
+          ],
+          "install": {
+            "policy": "Run official opencode-ai 1.18.9 from the pinned npm binary behind the workflow controller's runtime adapter; translate only lane-private OpenAI OAuth, disable project config/external plugins/external skills/subagents/web tools, and preserve provider-only model-shell network isolation."
+          },
+          "reset": {
+            "policy": "Delete the lane-private OpenCode XDG data/config/cache/state, translated auth, session database, adapter accounting state, and generated evaluation artifacts after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "none",
+            "tool_state": "native-runtime",
+            "integration_state": "official-opencode-cli-via-controller-runtime-adapter",
+            "instruction_policy": "no-project-or-global-instructions",
+            "assignment_proof": "provider-free pinned-binary/version/model/auth-shape/config/isolation probe required"
+          },
+          "source_snapshot": {
+            "repository": "anomalyco/opencode",
+            "tag": "v1.18.9",
+            "commit": "4da7bb44c84e013fa53e9c5d02ac753d1435c81a",
+            "npm_package": "opencode-ai",
+            "version": "1.18.9",
+            "binary": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
+            "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+          },
+          "notes": "Replacement-runtime treatment comparing official OpenCode with the canonical bare Codex baseline on the same provider, model, reasoning effort, fixtures, prompts, and controller verification."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "opencode-codex-product-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "8508f59023ec750e93a807603db8fac42dc4a1620983cdef79b973aa4c05aa56",
+        "tool_config": {
+          "display_name": "OpenCode CLI 1.18.9",
+          "lane_name": "runtime-opencode-codex-product-v1",
+          "surface": "replacement-agent-runtime",
+          "allowed_terms": [
+            "opencode"
+          ],
+          "data_dir_name": "opencode-runtime",
+          "mounts": [
+            "{repository_root}/scripts/token_metrics.py",
+            "{repository_root}/scripts/opencode_workflow_adapter.py"
+          ],
+          "executable": "/opt/data/.local/bin/opencode",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "{repository_root}/scripts/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/.local/bin/opencode",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--probe"
+          ],
+          "default_tool_state": "native-runtime",
+          "tool_manifest_identity": "current-file-v1"
+        },
+        "tool_config_sha256": "b424b7f6bb2456c9cd7012f13be4868c6dc4263f4e7c2222b791ec11f1405d44",
+        "tool_state": "native-runtime",
+        "tool_use_policy": "none",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227"
+          },
+          {
+            "path": "{repository_root}/scripts/token_metrics.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "97cfaeb687fe7ffa04a29cbec75567fdb618b2cf35e58310ecdbda3a0aeb0158"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "8508f59023ec750e93a807603db8fac42dc4a1620983cdef79b973aa4c05aa56",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+        "workflow_controller_sha256": "2c6756ccaeb14248db1ccc687d54703420fcb07733ec622ae1d6c83c3b290736",
+        "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+        "matrix_controller_sha256": "d07c08bcc5e4b1c115ade251e6b73183543b85a0abe36ade8974875358a1e0b2",
+        "agent_runtime_id": "codex-cli",
+        "model_condition": {
+          "id": "codex-openai-gpt-5-6-sol-medium",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_codex_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "c86863838e8b",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-default",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
+      }
+    }
+  }
+}
