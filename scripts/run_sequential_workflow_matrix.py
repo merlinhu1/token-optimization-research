@@ -631,6 +631,8 @@ def run_flow_lane(
     )
     reserved_binding = parent_claude_receipt_binding or parent_opencode_receipt_binding
     if reserved_binding is not None:
+        # A reservation is compared against the protocol-derived binding only. Falling back to
+        # the partial identity here would let a lane satisfy a reservation it never matched.
         if expected_session_binding is None:
             raise UnsafeLaneOutputError(
                 "parent reserved a session identity but no current protocol matches this lane"
@@ -639,6 +641,15 @@ def run_flow_lane(
             raise UnsafeLaneOutputError(
                 "child protocol does not match the parent-reserved identity"
             )
+    if expected_session_binding is None:
+        # The lane mints its own protocol, so there is no reserved protocol identity to check
+        # against. The identity facts from the plan still are, so the lane cannot contribute a
+        # session belonging to another job.
+        expected_session_binding = {
+            "sequence_id": sequence_id,
+            "profile_id": treatment_profile,
+            "replicate_index": replicate_index,
+        }
     cmd = workflow_lane_command(
         sequence_id=sequence_id,
         profile_id=treatment_profile,
@@ -840,14 +851,20 @@ def lane_session_records(
         )
     session = records[0]
     selected = session.get("selected_execution", {})
-    bindings_match = (
-        session.get("replicate_index") == expected["replicate_index"]
-        and session.get("task_sequence", {}).get("sequence_id") == expected["sequence_id"]
-        and session.get("profile", {}).get("profile_id") == expected["profile_id"]
-        and session.get("frozen_protocol") == expected["frozen_protocol"]
-        and session.get("baseline_pool", {}).get("protocol_fingerprint")
-        == expected["baseline_pool_fingerprint"]
-        and selected == expected["selected_execution"]
+    # Compare only what the caller actually declared. A lane that minted its own protocol has no
+    # pre-reserved protocol identity to be checked against, but the identity facts from the plan
+    # -- replicate, sequence and profile -- still have to match, so a lane can never contribute a
+    # session belonging to a different job.
+    actual = {
+        "replicate_index": session.get("replicate_index"),
+        "sequence_id": session.get("task_sequence", {}).get("sequence_id"),
+        "profile_id": session.get("profile", {}).get("profile_id"),
+        "frozen_protocol": session.get("frozen_protocol"),
+        "baseline_pool_fingerprint": session.get("baseline_pool", {}).get("protocol_fingerprint"),
+        "selected_execution": selected,
+    }
+    bindings_match = all(
+        actual[key] == value for key, value in (expected or {}).items() if key in actual
     )
     prompt_delivery = session.get("task_sequence", {}).get("prompt_delivery", {})
     if not bindings_match or prompt_delivery.get("mode") != "sequential-one-task-at-a-time":
