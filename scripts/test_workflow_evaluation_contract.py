@@ -920,10 +920,13 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "strip-mandatory-uptake-text",
         )
         self.assertIn("--codescope-bin", codescope["mcp_args"])
+        # The neutral MCP shim is mounted from the repository rather than copied into the tool
+        # corpus, so there is no second copy that can drift from the source under review.
         self.assertEqual(
-            runner.fixture.CODESCOPE_NEUTRAL_MCP.read_bytes(),
-            runner.fixture.CODESCOPE_NEUTRAL_MCP_SOURCE.read_bytes(),
+            runner.fixture.CODESCOPE_NEUTRAL_MCP,
+            "{repository_root}/scripts/run_codescope_neutral_mcp.py",
         )
+        self.assertTrue(runner.fixture.CODESCOPE_NEUTRAL_MCP_SOURCE.is_file())
         self.assertTrue({str(runner.fixture.CODESCOPE_BIN), str(runner.fixture.CODESCOPE_SURREAL_BIN)}.issubset(codescope["mounts"]))
         self.assertEqual(codescope["diff_exclude_paths"], [".fastembed_cache", ".codescope"])
         self.assertEqual(
@@ -1142,7 +1145,7 @@ print('ok')
                 [
                     "/bin/sh",
                     "-lc",
-                    "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/rtk/target/release/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch",
+                    "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch",
                 ],
             ],
         )
@@ -1280,11 +1283,15 @@ print('ok')
         self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[graphify_profile], "graphify-codex-skill-v1")
         self.assertEqual(
             graphify_cfg["host_integration"]["install_commands"][-1],
-            ["{tool_data_dir}/venv/bin/graphify", "install", "--platform", "codex"],
+            ["{tool_data_dir}/venv/bin/graphify", "codex", "install", "--project"],
         )
         self.assertTrue(graphify_cfg["codex_features"]["hooks"])
         self.assertTrue(graphify_cfg["codex_features"]["multi_agent"])
-        self.assertIn("graphify codex install", graphify_cfg["warmup"]["command"][-1])
+        # Install registers the skill (asserted above); warmup builds the graph the skill reads.
+        self.assertEqual(
+            graphify_cfg["warmup"]["command"],
+            ["{tool_data_dir}/venv/bin/graphify", "update", "{repo}", "--force"],
+        )
         self.assertNotIn("mcp_server", graphify_cfg)
 
         codegraph_profile = "retrieval-codegraph-codex-mcp-v1"
@@ -1303,12 +1310,16 @@ print('ok')
         leanctx_cfg = runner.fixture.active_tool_config({}, leanctx_profile)
         assert leanctx_cfg is not None
         self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[leanctx_profile], "leanctx-codex-hybrid-v1")
-        self.assertEqual(leanctx_cfg["host_integration"]["install_commands"], [["/opt/data/bin/lean-ctx", "init", "--agent", "codex"]])
-        self.assertEqual(leanctx_cfg["host_integration"]["verify_commands"], [["/opt/data/bin/lean-ctx", "--version"]])
+        self.assertEqual(leanctx_cfg["host_integration"]["install_commands"], [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "init", "--agent", "codex"]])
+        self.assertEqual(
+            leanctx_cfg["host_integration"]["verify_commands"],
+            # `doctor` is the guide's own "confirm you're wired up" step, so the lane runs it.
+            [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "--version"], ["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "doctor"]],
+        )
         self.assertIn("{codex_home}/hooks.json", leanctx_cfg["host_integration"]["required_files"])
         self.assertIn("{repo}/AGENTS.md", leanctx_cfg["host_integration"]["required_files"])
         self.assertTrue(leanctx_cfg["mcp_handshake"]["required"])
-        self.assertEqual(leanctx_cfg["warmup"]["command"], ["/opt/data/bin/lean-ctx", "index", "build", "{repo}"])
+        self.assertEqual(leanctx_cfg["warmup"]["command"], ["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "index", "build", "{repo}"])
 
     def test_codex_config_renders_all_declared_boolean_features(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1572,8 +1583,13 @@ print('ok')
 
         serena = runner.fixture.active_tool_config({}, "retrieval-serena-codex-mcp-v1")
         assert serena is not None
-        self.assertIn("setup", serena["host_integration"]["install_commands"][0])
-        self.assertIn("codex", serena["host_integration"]["install_commands"][0])
+        # The vendor's setup step is asserted by content, not by position: the 1.7.0 protocol
+        # builds a uv venv and installs the wheel before it can run `serena setup codex`.
+        serena_installs = serena["host_integration"]["install_commands"]
+        self.assertTrue(
+            any(cmd[-2:] == ["setup", "codex"] for cmd in serena_installs),
+            serena_installs,
+        )
         self.assertIn("--project-from-cwd", serena["mcp_args"])
         self.assertIn("--context=codex", serena["mcp_args"])
 
@@ -1596,20 +1612,33 @@ print('ok')
         self.assertEqual(cfg["env"]["TS_CAPTURE_DISABLED"], "0")
         self.assertEqual(cfg["env"]["TS_BASH_COMPACT"], "1")
         self.assertEqual(cfg["env"]["TS_BASH_REWRITE"], "1")
-        self.assertIn("mcp>=1.25,<2", cfg["mcp_args"])
+        # 4.21.0 is installed into a pinned venv via its own [mcp] extra, whose metadata
+        # declares mcp<2,>=1.25; the constraint is the vendor's rather than an ad-hoc --with.
+        self.assertTrue(
+            any("[mcp]" in str(cmd[-1]) for cmd in cfg["host_integration"]["install_commands"]),
+            cfg["host_integration"]["install_commands"],
+        )
+        self.assertTrue(cfg["mcp_command"].endswith("/venv/bin/token-savior"), cfg["mcp_command"])
         self.assertTrue(cfg["codex_features"]["hooks"])
         self.assertTrue(cfg["codex_hook_bypass_trust"])
         self.assertTrue(cfg["mcp_handshake"]["required"])
         self.assertIn("AGENTS.md", cfg["diff_exclude_paths"])
         required = cfg["host_integration"]["required_files"]
-        self.assertIn("{repo}/AGENTS.md", required)
+        # 4.21.0 authors no guidance file: `ts init --agent codex` wires hooks and MCP only,
+        # and the sole AGENTS.md reference in the product reads the operator's file rather
+        # than writing one. The installed surface asserted here is the vendor's own.
         self.assertIn("{codex_home}/hooks.json", required)
-        self.assertIn("{tool_data_dir}/codex-product-installation.json", required)
-        self.assertIn("{tool_data_dir}/codex-hook-probe.json", required)
-        self.assertEqual(cfg["host_integration"]["install_commands"], [])
-        installs = [" ".join(command) for command in cfg["host_integration"]["controller_install_commands"]]
-        self.assertTrue(any("install_token_savior_codex_product.py" in command for command in installs))
-        self.assertTrue(any("probe_token_savior_codex_hooks.py" in command for command in installs))
+        self.assertIn("{tool_data_dir}/venv/bin/ts", required)
+        self.assertIn("{tool_data_dir}/venv/bin/token-savior", required)
+        self.assertTrue(
+            any(cmd[-4:] == ["init", "--agent", "codex", "--global"] or cmd[-5:-1] == ["init", "--agent", "codex", "--global"]
+                for cmd in cfg["host_integration"]["install_commands"]),
+            cfg["host_integration"]["install_commands"],
+        )
+        self.assertTrue(cfg["host_integration"]["install_commands"])
+        # The hand-rolled installer this profile used to carry is gone: 4.21.0 is wired by the
+        # vendor's own `ts init`, so there is no controller-side install step to assert.
+        self.assertNotIn("controller_install_commands", cfg["host_integration"])
         self.assertIn('backend="host"', inspect.getsource(runner.fixture.prepare_profile_integration))
         self.assertEqual(
             runner.tool_adapter_identity("integrated-token-savior-mcp-v1")["tool_manifest_sha256"],
@@ -1645,10 +1674,12 @@ print('ok')
                 [
                     sys.executable,
                     str(ROOT / "scripts/install_token_savior_codex_product.py"),
+                    # Read the pinned batch rather than restating it, so a version bump cannot
+                    # leave this check verifying an installer against a superseded source tree.
                     "--source-root",
-                    "/opt/data/tool-candidates/token-savior",
+                    str(runner.fixture.BATCH_RELEASE_ROOT / runner.fixture.BATCH_RELEASES["token-savior"][0] / "source"),
                     "--expected-commit",
-                    "ff42ef14cc972dad5470e0ca8101e4501e00600f",
+                    runner.fixture.BATCH_RELEASES["token-savior"][5],
                     "--codex-home",
                     str(codex_home),
                     "--repo",
@@ -1662,7 +1693,7 @@ print('ok')
             )
             self.assertEqual(proc.returncode, 0, proc.stderr)
             agents = (repo / "AGENTS.md").read_text()
-            product_guidance = Path("/opt/data/tool-candidates/token-savior/CLAUDE.md").read_text().rstrip()
+            product_guidance = Path(runner.fixture.BATCH_RELEASE_ROOT / runner.fixture.BATCH_RELEASES["token-savior"][0] / "source/CLAUDE.md").read_text().rstrip()
             self.assertTrue(agents.startswith("# Existing project guidance\n\nKeep me.\n"))
             self.assertIn(product_guidance, agents)
             hooks = json.loads((codex_home / "hooks.json").read_text())
@@ -1673,7 +1704,7 @@ print('ok')
             payload = json.loads(receipt.read_text())
             self.assertFalse(payload["evaluator_authored_guidance"])
             self.assertTrue(payload["host_adapter_authored_by_evaluator"])
-            self.assertEqual(payload["source_commit"], "ff42ef14cc972dad5470e0ca8101e4501e00600f")
+            self.assertEqual(payload["source_commit"], runner.fixture.BATCH_RELEASES["token-savior"][5])
 
             probe_receipt = root / "hook-probe.json"
             hook_probe = subprocess.run(
@@ -1681,7 +1712,7 @@ print('ok')
                     sys.executable,
                     str(ROOT / "scripts/probe_token_savior_codex_hooks.py"),
                     "--source-root",
-                    "/opt/data/tool-candidates/token-savior",
+                    str(runner.fixture.BATCH_RELEASE_ROOT / runner.fixture.BATCH_RELEASES["token-savior"][0] / "source"),
                     "--repo",
                     str(repo),
                     "--state-dir",
@@ -3289,6 +3320,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "descriptor|selected_execution|protocol_fingerprint"):
                     runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
 
+    @requires_tool_corpus
     def test_treatment_executable_identity_mismatch_rejects(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         image = {"image_ref": runner.DEFAULT_DOCKER_IMAGE, "image_id": "sha256:" + "1" * 64, "repo_digests": [], "repo_tags": [runner.DEFAULT_DOCKER_IMAGE]}
@@ -5622,8 +5654,8 @@ class CorrectionContractTest(unittest.TestCase):
             receipt = Path(temp) / "receipt.json"
             proc = subprocess.run([
                 sys.executable, str(ROOT / "scripts/install_jcodemunch_codex_guidance.py"),
-                "--source-root", "/opt/data/tool-candidates/jcodemunch-mcp",
-                "--expected-commit", "fbc14e40c7057ebc6d718fb48083d30522afe15f",
+                "--source-root", str(runner.fixture.BATCH_RELEASE_ROOT / runner.fixture.BATCH_RELEASES["jcodemunch"][0] / "source"),
+                "--expected-commit", runner.fixture.BATCH_RELEASES["jcodemunch"][5],
                 "--codex-home", str(home), "--receipt", str(receipt),
             ], text=True, capture_output=True)
             self.assertEqual(proc.returncode, 0, proc.stderr)
@@ -5655,10 +5687,13 @@ class CorrectionContractTest(unittest.TestCase):
         self.assertTrue(any(path.endswith("ponytail-hook-trust.json") for path in pony["host_integration"]["required_files"]))
         self.assertTrue(cave["surface"].startswith("codex-project-skills+"))
         self.assertEqual(cave["session_activation"], "/caveman")
-        self.assertEqual(len(cave["host_integration"]["required_files"]), 7)
+        # Caveman 2.2.0 installs 20 of the 24 skills its source ships; the count is asserted so a
+        # version bump that changes the installed surface fails here instead of silently.
+        self.assertEqual(len(cave["host_integration"]["required_files"]), 20)
         self.assertNotIn("prompt_instructions_command", pony)
         self.assertNotIn("prompt_instructions_command", cave)
 
+    @requires_tool_corpus
     def test_repository_local_integration_helpers_use_portable_descriptor_paths(self) -> None:
         pony = runner.fixture.active_tool_config({}, "artifact-ponytail-codex-plugin-v1")
         jcodemunch = runner.fixture.active_tool_config({}, "retrieval-jcodemunch-codex-mcp-v2")

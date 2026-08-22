@@ -159,7 +159,7 @@ CODESCOPE_RELEASE_ROOT = Path("/opt/data/tool-candidates/codescope-release-v0.8.
 CODESCOPE_BIN = CODESCOPE_RELEASE_ROOT / "codescope"
 CODESCOPE_SURREAL_BIN = CODESCOPE_RELEASE_ROOT / "surreal"
 CODESCOPE_NEUTRAL_MCP_SOURCE = ROOT / "scripts" / "run_codescope_neutral_mcp.py"
-CODESCOPE_NEUTRAL_MCP = Path("/opt/data/tool-candidates/codescope-adapter/run_codescope_neutral_mcp.py")
+CODESCOPE_NEUTRAL_MCP = "{repository_root}/scripts/run_codescope_neutral_mcp.py"
 SWARMVAULT_ROOT = Path("/opt/data/tool-candidates/swarmvault")
 SWARMVAULT_CLI = SWARMVAULT_ROOT / "packages" / "cli" / "dist" / "index.js"
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
@@ -245,7 +245,11 @@ def _pin_batch_release(tool_id: str, release_name: str, *runtime_paths: Path) ->
     artifact = _batch_path(release_name, 1)
     guide = _batch_path(release_name, 3)
     local_helpers = [path for path in cfg.get("mounts", []) if "{repository_root}" in str(path)]
+    # A batch runtime directory holds the tool's own executable, so it has to be on the lane
+    # PATH; before the batch move these binaries lived in /opt/data/bin and were found there.
+    runtime_dirs = [str(path) for path in runtime_paths if path.is_dir()]
     cfg.update({
+        "path_entries": [*cfg.get("path_entries", []), *runtime_dirs],
         "mounts": [str(source), str(artifact), *[str(path) for path in runtime_paths], *local_helpers],
         "required_source_artifacts": [str(source), str(artifact), str(guide), *[str(path) for path in runtime_paths], *local_helpers],
         "clean_source_roots": [str(source)],

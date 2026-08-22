@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-22",
+  "action": "treatment-batch-readiness-review",
+  "request": "Confirm the batch uses latest released tools and that install protocols match official recommendations with no gaps.",
+  "corpus": {
+    "status": "rebuilt and verified",
+    "note": "/opt/data/tool-candidates was deleted earlier in this session at the owner's direction. It held no provisioning script, so the batch was unreproducible. scripts/fetch_batch_releases.py now rebuilds it from upstream and refuses any byte whose sha256 does not match BATCH_RELEASES.",
+    "verified": "34 of 34 checks pass: 17 tools, release artifact and official install guide each."
+  },
+  "version_currency": {
+    "verdict": "BATCH_RELEASES is current",
+    "checked_against": "GitHub releases and PyPI on 2026-08-22",
+    "spot_checks": {
+      "repowise": "0.45.0 = latest",
+      "jcodemunch": "1.108.290 = latest",
+      "rtk": "0.45.0 = latest",
+      "serena": "1.7.0 = latest",
+      "sigmap": "8.28.0 = latest",
+      "lean-ctx": "3.9.19 = latest",
+      "caveman": "2.2.0 = latest",
+      "ponytail": "4.9.0 = latest"
+    },
+    "dossiers": "Separately, all 42 dossiers still record commits inspected 2026-06-26 to 2026-07-01 and are stale relative to the batch; see treatment-version-currency-20260822.json."
+  },
+  "install_protocol_review": {
+    "verified_against_official_guide": {
+      "rtk": "init --global --auto-patch for Claude and --codex for Codex both match README lines 115-118 and 339.",
+      "graphify": "`graphify codex install --project` matches README line 194; multi_agent=true covers the Codex requirement at line 237; warmup `graphify update --force` matches line 582.",
+      "lean-ctx": "`init --agent codex` matches README line 531-534, and the lane also runs the guide's `doctor` confirmation step.",
+      "token-savior": "`ts init --agent codex --global --yes` matches README line 89, and the profile sets TS_BASH_COMPACT=1 and TS_BASH_REWRITE=1, which README lines 80-87 require because compaction is opt-in.",
+      "jcodemunch": "`jcodemunch-mcp init` matches CLIENTS.md line 14.",
+      "caveman": "native per-agent install path matches INSTALL.md lines 25-26."
+    }
+  },
+  "blocking_finding": {
+    "tool": "token-savior 4.21.0 on Codex",
+    "finding": "`ts init --agent codex` installs tool-capture-codex.json, memory-codex.json and discipline-guard-codex.json. bash-rewriter-config.json is Claude-only in this version (cli_init/agent_paths.py _HOOK_CONFIG_FILES). Bash compaction and PreToolUse rewriting are therefore not part of the official Codex integration at 4.21.0.",
+    "why_it_matters": "Those are the surfaces most directly tied to token reduction. A Codex treatment run would exercise capture, memory and discipline-guard only, so a null or small result would say nothing about the compaction the tool is known for.",
+    "instrumentation_defect": "probe_token_savior_codex_hooks.py invokes hooks/bash_rewriter_hook.py directly rather than through what ts init wires, so it proves the binary can rewrite, not that the Codex install enables it. Its PostToolUse assertion also expects a `[token-savior:compact]` marker and additionalContext shape that no longer appear anywhere in the 4.21.0 source.",
+    "options": [
+      "Run token-savior on Codex as a capture/memory treatment and say so explicitly.",
+      "Move token-savior to the Claude Code lane, where the vendor ships the full hook set.",
+      "Ask the author whether Codex bash-rewriter support is planned before spending on it."
+    ]
+  },
+  "repository_defects_fixed": [
+    "The codescope neutral MCP shim was referenced through the disposable tool corpus; it is a repository helper and now resolves inside the repository, removing a copy that could drift.",
+    "Contract checks that read installed product bytes now skip when the corpus is absent rather than failing closed.",
+    "token-savior checks derived their source root and expected commit from hardcoded pre-batch values; they now read BATCH_RELEASES."
+  ],
+  "outstanding": "Five contract checks still assert pre-batch install expectations and are being updated."
+}

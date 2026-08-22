@@ -91,7 +91,10 @@ def probe(source_root: Path, repo: Path, state_dir: Path, receipt: Path) -> dict
             "PostToolUse",
             repo,
             {"command": "pytest -q"},
-            {"content": pytest_output},
+            # A Bash PostToolUse response carries .stdout/.stderr, not .content: 4.21.0 hands
+            # stdout to the compactor so the two streams stay split, so a .content-shaped
+            # event would present an empty stdout and never compact.
+            {"stdout": pytest_output, "stderr": ""},
         ),
         env,
     )
