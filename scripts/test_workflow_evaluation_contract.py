@@ -1439,6 +1439,32 @@ print('ok')
         source = (ROOT / "scripts/validate_repository.py").read_text()
         self.assertNotIn('validate_required_object(session, "frozen_protocol"', source)
 
+    def test_opencode_usage_normalisation_accepts_the_derived_cost(self) -> None:
+        """weighted_token_cost is derived, so it is a number rather than a token count.
+
+        It was being validated as a non-negative integer alongside the raw counts, which rejected
+        the zero float that _empty_usage seeds. Every OpenCode session therefore failed usage
+        normalisation before recording a step, and the run reached artifact ingress with null
+        token fields -- the failure presented as missing telemetry rather than as a type error.
+        """
+        import opencode_workflow_adapter as adapter
+
+        usage = adapter._empty_usage()
+        self.assertIsInstance(usage["weighted_token_cost"], float)
+        normalised = {
+            key: (
+                adapter._cost(usage[key], key)
+                if key == "weighted_token_cost"
+                else adapter._token(usage[key], key)
+            )
+            for key in usage
+        }
+        self.assertEqual(normalised["weighted_token_cost"], 0.0)
+        self.assertEqual(adapter._cost(12.5, "weighted_token_cost"), 12.5)
+        for bad in (-1, True, "0"):
+            with self.assertRaises(ValueError):
+                adapter._cost(bad, "weighted_token_cost")
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 

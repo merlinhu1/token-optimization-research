@@ -475,6 +475,19 @@ def _token(value: object, field: str) -> int:
     return value
 
 
+def _cost(value: object, field: str) -> float:
+    """Validate a derived cost rather than a raw token count.
+
+    weighted_token_cost is fresh + 0.1*cached + 6*output, so it is a non-negative number and not
+    necessarily an integer. Running it through _token rejected the zero float that _empty_usage
+    seeds, which made every OpenCode session fail usage normalisation before it recorded a single
+    step.
+    """
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+        raise ValueError(f"OpenCode usage {field} must be a non-negative number")
+    return float(value)
+
+
 def _empty_usage() -> dict[str, int | float]:
     return {
         "fresh_input_tokens": 0,
@@ -579,7 +592,10 @@ def normalize_events(
     cumulative = existing.get("usage", _empty_usage())
     if not isinstance(cumulative, dict) or set(cumulative) != set(_empty_usage()):
         raise ValueError("OpenCode cumulative session usage shape is invalid")
-    cumulative = {key: _token(cumulative[key], key) for key in _empty_usage()}
+    cumulative = {
+        key: (_cost(cumulative[key], key) if key == "weighted_token_cost" else _token(cumulative[key], key))
+        for key in _empty_usage()
+    }
     seen = set(existing.get("seen_step_part_ids", []))
     invocation_ids: set[str] = set()
     usage_events = 0
