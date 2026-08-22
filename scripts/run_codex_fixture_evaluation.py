@@ -247,11 +247,24 @@ def _pin_batch_release(tool_id: str, release_name: str, *runtime_paths: Path) ->
     local_helpers = [path for path in cfg.get("mounts", []) if "{repository_root}" in str(path)]
     # A batch runtime directory holds the tool's own executable, so it has to be on the lane
     # PATH; before the batch move these binaries lived in /opt/data/bin and were found there.
-    runtime_dirs = [str(path) for path in runtime_paths if path.is_dir()]
+    runtime_dirs: list[str] = []
+    for path in runtime_paths:
+        if not path.is_dir():
+            continue
+        # npm puts launchers in node_modules/.bin; the runtime root holds only the tree.
+        npm_bin = path / "node_modules" / ".bin"
+        runtime_dirs.append(str(npm_bin if npm_bin.is_dir() else path))
+    # A helper passed as a runtime path is usually also named in the profile's own mounts, and
+    # Docker rejects a run outright when the same target is bound twice, so the assembled list
+    # has to be unique. dict.fromkeys keeps first-seen order.
+    def _unique(*groups: list[str]) -> list[str]:
+        return list(dict.fromkeys(value for group in groups for value in group))
+
+    runtime_texts = [str(path) for path in runtime_paths]
     cfg.update({
-        "path_entries": [*cfg.get("path_entries", []), *runtime_dirs],
-        "mounts": [str(source), str(artifact), *[str(path) for path in runtime_paths], *local_helpers],
-        "required_source_artifacts": [str(source), str(artifact), str(guide), *[str(path) for path in runtime_paths], *local_helpers],
+        "path_entries": _unique(cfg.get("path_entries", []), runtime_dirs),
+        "mounts": _unique([str(source), str(artifact)], runtime_texts, local_helpers),
+        "required_source_artifacts": _unique([str(source), str(artifact), str(guide)], runtime_texts, local_helpers),
         "clean_source_roots": [str(source)],
         "artifact_identities": [
             {"path": str(artifact), "sha256": BATCH_RELEASES[release_name][2], "kind": "official-release-artifact"},
@@ -417,11 +430,22 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "data_dir_name": "leanctx-codex-hybrid-v1",
         "mcp_command": "/opt/data/bin/lean-ctx",
         "mcp_args": [],
-        "env": {"LEAN_CTX_DATA_DIR": "{tool_data_dir}"},
+        # BASH_ENV is how the shell-hook half reaches a non-interactive shell; lean-ctx doctor
+        # names it as the container remedy verbatim. Without it this "hybrid" profile installs
+        # only the MCP half and the command-compression it is half-named for never engages.
+        "env": {"LEAN_CTX_DATA_DIR": "{tool_data_dir}", "BASH_ENV": "{tool_data_dir}/env.sh"},
         "mounts": ["/opt/data/bin"],
         "diff_exclude_paths": ["AGENTS.md", "LEAN-CTX.md"],
         "host_integration": {
-            "install_commands": [["/opt/data/bin/lean-ctx", "init", "--agent", "codex"]],
+            "install_commands": [
+                ["/opt/data/bin/lean-ctx", "init", "--agent", "codex"],
+                # `init` registers Codex but writes no shell hook and no env.sh. `setup` is the
+                # vendor's own "shell hook, agent hooks/rules, MCP registrations" step, and is
+                # the non-proxy way to get the hybrid surface: `wrap` would route the agent
+                # through lean-ctx's local proxy and sit between it and the provider, which
+                # would compromise the token telemetry this study measures.
+                ["/opt/data/bin/lean-ctx", "setup", "--non-interactive", "--yes"],
+            ],
             "verify_commands": [["/opt/data/bin/lean-ctx", "--version"]],
             "required_files": [
                 "{codex_home}/config.toml",
@@ -483,7 +507,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
                     "/bin/bash",
                     "-lc",
                     (
-                        f"printf '%s\\n' '#!/bin/sh' 'exec {NODE_TOOLCHAIN_ROOT}/bin/node {CODEGRAPH_BIN} \"$@\"' "
+                        f"printf '%s\\n' '#!/bin/sh' 'exec {CODEGRAPH_BIN} \"$@\"' "
                         "> {tool_data_dir}/bin/codegraph && chmod 755 {tool_data_dir}/bin/codegraph"
                     ),
                 ],
@@ -1636,7 +1660,8 @@ TOOL_CONFIGS["graphify-codex-skill-v1"]["host_integration"].update({
 })
 TOOL_CONFIGS["graphify-codex-skill-v1"]["warmup"]["command"] = ["{tool_data_dir}/venv/bin/graphify", "update", "{repo}", "--force"]
 
-TOOL_CONFIGS["leanctx-codex-hybrid-v1"]["host_integration"]["verify_commands"] = [[str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), "--version"], [str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), "doctor"]]
+TOOL_CONFIGS["leanctx-codex-hybrid-v1"]["host_integration"]["verify_commands"] = [[str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), "--version"]]
+TOOL_CONFIGS["leanctx-codex-hybrid-v1"]["host_integration"]["diagnostic_commands"] = [[str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), "doctor"]]
 
 _serena = TOOL_CONFIGS["serena-codex-mcp-v1"]
 _serena.update({
@@ -1661,6 +1686,9 @@ _serena.update({
 
 _sigmap = TOOL_CONFIGS["sigmap-codex-live-v1"]
 _sigmap["host_integration"] = {
+    # sigmap registers its MCP server in ~/.codex/config.yaml, so without the alias it
+    # writes into the lane HOME and Codex never reads it: an installed silent no-op.
+    "home_dot_codex_alias": True,
     "install_commands": [[str(_BATCH_RUNTIME("sigmap") / "node_modules/.bin/sigmap"), "mcp", "install", "codex"]],
     "required_files": ["{codex_home}/config.yaml"],
 }
@@ -1687,6 +1715,14 @@ _token_savior.update({
 
 _jcodemunch = TOOL_CONFIGS["jcodemunch-codex-mcp-v2"]
 _jcodemunch["mcp_config_via_host_integration"] = True
+# init resolves the server command with shutil.which and refuses to register Codex at all
+# unless it finds a real binary, because uvx's cold-start chatter poisons Codex's first
+# JSON-RPC frame -- a silent multi-hour hang rather than an error. Putting the venv on PATH
+# is what turns that refusal into a registration.
+_jcodemunch.setdefault("path_entries", []).append("{tool_data_dir}/venv/bin")
+# init appends its server block to ~/.codex/config.toml, so without the alias the entry
+# lands in the lane HOME and `codex mcp list` never sees the server.
+_jcodemunch["host_integration"]["home_dot_codex_alias"] = True
 _jcodemunch["host_integration"]["install_commands"].insert(2, ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "init", "--client", "codex", "--yes", "--minimal", "--no-backup", "--no-share-savings"])
 _jcodemunch["host_integration"]["required_files"].append("{codex_home}/config.toml")
 
@@ -2334,7 +2370,7 @@ TOOL_CONFIGS.update(
                     [
                         "/bin/bash",
                         "-lc",
-                        f"printf '%s\\n' '#!/bin/sh' 'exec {NODE_BIN} {CODEGRAPH_BIN} \"$@\"' > {{tool_data_dir}}/bin/codegraph && chmod 755 {{tool_data_dir}}/bin/codegraph",
+                        f"printf '%s\\n' '#!/bin/sh' 'exec {CODEGRAPH_BIN} \"$@\"' > {{tool_data_dir}}/bin/codegraph && chmod 755 {{tool_data_dir}}/bin/codegraph",
                     ],
                     ["{tool_data_dir}/bin/codegraph", "install", "--target", "opencode", "--location", "local", "--yes"],
                 ],
@@ -3607,9 +3643,14 @@ def docker_tool_mounts(cfg: dict[str, Any] | None = None) -> list[tuple[Path, Pa
             str(path).format(repository_root=ROOT)
             for path in cfg.get("mounts", [])
         )
+    # Docker refuses a run outright when the same target is bound twice, so a profile that
+    # names a helper in its own mounts and picks it up again as a batch local helper takes the
+    # whole lane down with exit 125 before anything installs. Dedupe by target, keeping order.
+    seen_targets = {target for _, target, _ in mounts}
     for path_text in path_texts:
         path = Path(path_text)
-        if path.exists():
+        if path.exists() and path not in seen_targets:
+            seen_targets.add(path)
             mounts.append((path, path, "ro"))
     if cfg and cfg.get("binary_mount_target") and cfg.get("executable"):
         executable = Path(str(cfg["executable"]))
@@ -4100,6 +4141,7 @@ def prepare_profile_integration(
     install_exit_codes: list[int] = []
     controller_install_exit_codes: list[int] = []
     verify_exit_codes: list[int] = []
+    diagnostic_exit_codes: list[int] = []
     host_integration_retry_exit_codes: list[int] = []
 
     for index, raw_command in enumerate(integration.get("controller_install_commands", []), start=1):
@@ -4123,6 +4165,11 @@ def prepare_profile_integration(
     backend_phases = () if any(code != 0 for code in controller_install_exit_codes) else (
         ("install", integration.get("install_commands", []), install_exit_codes),
         ("verify", integration.get("verify_commands", []), verify_exit_codes),
+        # Diagnostics run and are retained, but never gate. A vendor doctor reports on every
+        # agent and every optional extra it knows about, so its exit code answers "is this
+        # machine perfect" rather than "did this profile install" -- lean-ctx's, for one,
+        # fails a Codex lane over an unset CLAUDE_ENV_FILE.
+        ("diagnostic", integration.get("diagnostic_commands", []), diagnostic_exit_codes),
     )
     for phase, commands, exits in backend_phases:
         for index, raw_command in enumerate(commands, start=1):
@@ -4180,6 +4227,7 @@ def prepare_profile_integration(
         "controller_install_exit_codes": controller_install_exit_codes,
         "install_exit_codes": install_exit_codes,
         "verify_exit_codes": verify_exit_codes,
+        "diagnostic_exit_codes": diagnostic_exit_codes,
         "host_integration_retry_exit_codes": host_integration_retry_exit_codes,
         "missing_required_files": missing_required_files,
         "required_files": [str(path) for path in required_files],

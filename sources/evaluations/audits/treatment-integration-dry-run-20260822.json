@@ -1,0 +1,107 @@
+{
+ "schema_version": 1,
+ "date": "2026-08-22",
+ "action": "provider-free-host-integration-dry-run",
+ "request": "Dry-run the install protocols and fix any defects encountered.",
+ "method": {
+  "mode": "prepare-only-no-provider",
+  "runner": "scripts/run_codex_fixture_evaluation.py --prepare-only",
+  "covers": "install commands, required files, warmup, and the MCP handshake; stops before the provider",
+  "isolation": "each profile installs into a throwaway copy of the prepared Fastify base so one product's writes cannot leak into the next",
+  "provider_calls": 0
+ },
+ "result": {
+  "codex_lane": "15 of 15 pass",
+  "before": "8 of 16 passed on the first sweep"
+ },
+ "defects_found_and_fixed": [
+  {
+   "id": "npm-runtimes-were-not-npm-installs",
+   "tools": [
+    "tokenjuice",
+    "sigmap",
+    "swarmvault"
+   ],
+   "symptom": "install exited 127, command not found",
+   "cause": "Mine. fetch_batch_releases.py unpacked npm tarballs to runtime/package/ and wrote ad-hoc shims, but every npm-sourced profile invokes runtime/node_modules/.bin/<name>. A published pack also carries no dependencies, so even a resolvable shim would have died on its first require() -- installing swarmvault properly pulled in 20 dependency binaries that were previously absent.",
+   "fix": "npm-sourced artifacts now install with npm install --prefix, which produces node_modules and .bin as the profiles expect."
+  },
+  {
+   "id": "duplicate-bind-mounts",
+   "tools": [
+    "ponytail",
+    "jcodemunch"
+   ],
+   "symptom": "docker exit 125 before anything installed, reported as a container-runtime failure",
+   "cause": "A helper passed as a batch runtime path was also named in the profile's own mounts, so the assembled list bound the same target twice and Docker refused the run.",
+   "fix": "Deduped at assembly and again where mounts are rendered, so neither a profile nor a future batch edit can reintroduce it. Covered by a contract test over every profile."
+  },
+  {
+   "id": "installers-writing-to-home-dot-codex",
+   "tools": [
+    "sigmap",
+    "jcodemunch"
+   ],
+   "symptom": "sigmap reported 'registered MCP server in ~/.codex/config.yaml' and jcodemunch reported 'added [mcp_servers.jcodemunch]', both successfully, yet codex mcp list showed no server",
+   "cause": "Both resolve their config path from ~/.codex rather than CODEX_HOME. Without the lane's ~/.codex alias they wrote into the lane HOME, which Codex never reads.",
+   "severity": "The worst class found. The install succeeds, the required files are present, and the treatment runs as a silent no-op -- it would have produced a real token number for a tool that was never active.",
+   "fix": "Both profiles now declare home_dot_codex_alias. Covered by a contract test."
+  },
+  {
+   "id": "jcodemunch-refused-to-register",
+   "tools": [
+    "jcodemunch"
+   ],
+   "symptom": "init printed 'skipped -- Codex needs a resolved binary, not uvx' and registered nothing",
+   "cause": "init resolves the server command with shutil.which and deliberately refuses to fall back to uvx, because uvx's cold-start chatter poisons Codex's first JSON-RPC frame; the vendor documents the symptom as a silent multi-hour hang rather than an error. We invoked the binary by absolute path, so which() found nothing.",
+   "fix": "The profile venv is on the lane PATH, which turns the refusal into a registration."
+  },
+  {
+   "id": "codegraph-shim-ran-a-shell-script-through-node",
+   "tools": [
+    "codegraph"
+   ],
+   "symptom": "SyntaxError: Invalid or unexpected token, on a comment line",
+   "cause": "The shim predates the batch and wrapped codegraph.js in node. The 1.5.0 bundle ships bin/codegraph as an executable /bin/sh launcher, so node was handed a shell script.",
+   "fix": "The shim execs the bundle directly, on both the Codex and OpenCode sites."
+  },
+  {
+   "id": "leanctx-hybrid-was-installing-only-its-mcp-half",
+   "tools": [
+    "lean-ctx"
+   ],
+   "symptom": "doctor exited 1 with shell aliases, BASH_ENV and CLAUDE_ENV_FILE unset; no env.sh existed",
+   "cause": "init --agent codex registers Codex but writes no shell hook. The profile is the hybrid -- MCP for cached reads plus shell hooks for command compression -- so half the product was absent and the treatment would have under-performed for a reason that was our setup.",
+   "fix": "Added the vendor's own setup --non-interactive --yes step, which writes the shell hook and env.sh, and set BASH_ENV to it, which lean-ctx doctor names as the container remedy verbatim. doctor now reports 36/37. `wrap` was rejected deliberately: it routes the agent through lean-ctx's local proxy, which would sit between the agent and the provider and compromise the token telemetry this study measures."
+  },
+  {
+   "id": "vendor-doctor-gating-an-install",
+   "tools": [
+    "lean-ctx"
+   ],
+   "cause": "doctor's exit code answers 'is this machine perfect', not 'did this profile install'. Its one remaining failure on a Codex lane is an unset CLAUDE_ENV_FILE, which is for Claude Code.",
+   "fix": "Added a diagnostic_commands phase that runs and is retained but never gates, matching how the repo already treats codex doctor in preflight. doctor moved there; --version remains the gate."
+  }
+ ],
+ "not_fixed": [
+  {
+   "id": "swarmvault-compile-oom",
+   "tool": "swarmvault",
+   "status": "environmental, not a protocol defect",
+   "detail": "swarmvault ingest succeeds on 383 files, then swarmvault compile is SIGKILLed (exit 137). No container memory limit is set, so this is the host: 7.6 GB total with roughly 1 GB free. Nine leaked `opencode serve` daemons aged 5 to 14 days hold about 2.7 GB between them. Not killed -- they are the owner's processes. The same pressure is a risk to any paid run on this box, not only to swarmvault.",
+   "owner_action": "Reclaim the stale daemons, then re-run the smoke for this one profile."
+  },
+  {
+   "id": "headroom-strips-a-tracked-file-mode",
+   "tool": "headroom",
+   "detail": "The headroom install cleared the executable bit on the tracked scripts/run_pinned_uvx.py, which it symlinks as uvx. Restored by hand here, but a real run would do the same and trip the working-tree comparison in make check after the run.",
+   "owner_action": "Worth making the install copy rather than relink, or excluding the path; left alone because it changes a protocol the owner authored."
+  }
+ ],
+ "excluded": {
+  "repowise": "Excluded at the owner's direction; not smoked."
+ },
+ "outstanding": {
+  "opencode_and_claude_lanes": "This dry run covered the Codex lane only. The OpenCode and Claude Code profiles are driven through different launchers and have not been smoked; several fixes here are shared code and should carry over, but that is untested."
+ }
+}

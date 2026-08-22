@@ -18,6 +18,8 @@ import hashlib
 import json
 import subprocess
 import sys
+import os
+import shutil
 import tarfile
 import urllib.error
 import urllib.request
@@ -109,6 +111,9 @@ def resolve_pypi(url: str, filename: str) -> bytes | None:
     return None
 
 
+NODE_BIN = Path("/opt/data/opt/node-v24.18.0-linux-x64/bin")
+
+
 def fetch_artifact(name: str, directory: str, artifact: str, digest: str) -> bytes:
     filename = Path(artifact).name
     for url in candidate_artifact_urls(name, directory, artifact):
@@ -132,32 +137,32 @@ def materialize_runtime(artifact_path: Path, runtime: Path) -> None:
     runtime.mkdir(parents=True, exist_ok=True)
     with tarfile.open(artifact_path) as archive:
         archive.extractall(runtime, filter="data")
-    install_npm_bin_shims(runtime)
+    if (runtime / "package" / "package.json").is_file():
+        install_npm_package(artifact_path, runtime)
 
 
-def install_npm_bin_shims(runtime: Path) -> None:
-    """Create the launchers npm would have installed for a packed tarball.
+def install_npm_package(artifact_path: Path, runtime: Path) -> None:
+    """Install an npm tarball the way npm would, into runtime/node_modules.
 
-    An npm pack extracts to ``package/`` and carries its executables only as ``bin`` entries in
-    package.json; nothing on disk is runnable. Lanes put ``runtime`` itself on PATH, so without
-    these shims a profile whose install step shells out to its own CLI fails to resolve it.
+    Unpacking the tarball by hand is not enough. A published pack contains only the package's
+    own files: no dependencies, and no launchers, since npm synthesizes node_modules/.bin from
+    the manifest's bin entries at install time. A hand-rolled shim over an unpacked package
+    therefore resolves as an executable and then dies on its first require() of a dependency
+    that was never fetched. The tool configs already expect npm's layout -- every npm-sourced
+    profile invokes runtime/node_modules/.bin/<name> -- so npm is what has to produce it.
     """
-    manifest = runtime / "package" / "package.json"
-    if not manifest.is_file():
-        return
-    try:
-        bins = json.loads(manifest.read_text()).get("bin") or {}
-    except json.JSONDecodeError:
-        return
-    if isinstance(bins, str):
-        bins = {manifest.parent.name: bins}
-    for name, relative in bins.items():
-        target = runtime / "package" / relative
-        if not target.is_file():
-            continue
-        shim = runtime / name
-        shim.write_text(f'#!/bin/sh\nexec node "{target}" "$@"\n')
-        shim.chmod(0o755)
+    shutil.rmtree(runtime / "package", ignore_errors=True)
+    npm = NODE_BIN / "npm"
+    if not npm.is_file():
+        raise RuntimeError(f"npm is required to install {artifact_path.name} but is missing at {npm}")
+    result = subprocess.run(
+        [str(npm), "install", "--prefix", str(runtime), "--no-audit", "--no-fund", str(artifact_path)],
+        capture_output=True,
+        text=True,
+        env={**os.environ, "PATH": f"{NODE_BIN}:{os.environ.get('PATH', '')}"},
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"npm install failed for {artifact_path.name}: {result.stderr.strip()[-500:]}")
 
 
 def fetch_source(name: str, commit: str, destination: Path) -> None:

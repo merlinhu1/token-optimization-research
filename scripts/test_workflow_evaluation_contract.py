@@ -1310,16 +1310,61 @@ print('ok')
         leanctx_cfg = runner.fixture.active_tool_config({}, leanctx_profile)
         assert leanctx_cfg is not None
         self.assertEqual(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES[leanctx_profile], "leanctx-codex-hybrid-v1")
-        self.assertEqual(leanctx_cfg["host_integration"]["install_commands"], [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "init", "--agent", "codex"]])
+        # `init` alone leaves the shell-hook half of this hybrid uninstalled: no env.sh, so no
+        # command compression. `setup` is the vendor's own shell-hook step, and the non-proxy
+        # one -- `wrap` would route the agent through lean-ctx's proxy and sit between it and
+        # the provider, compromising the token telemetry being measured.
         self.assertEqual(
-            leanctx_cfg["host_integration"]["verify_commands"],
-            # `doctor` is the guide's own "confirm you're wired up" step, so the lane runs it.
-            [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "--version"], ["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "doctor"]],
+            leanctx_cfg["host_integration"]["install_commands"],
+            [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "init", "--agent", "codex"], ["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "setup", "--non-interactive", "--yes"]],
         )
+        self.assertEqual(leanctx_cfg["host_integration"]["verify_commands"], [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "--version"]])
+        # `doctor` is the guide's "confirm you're wired up" step and is retained, but it reports
+        # on every agent it knows about and fails a Codex lane over an unset CLAUDE_ENV_FILE,
+        # so it is a diagnostic rather than a gate.
+        self.assertEqual(
+            leanctx_cfg["host_integration"]["diagnostic_commands"], [["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "doctor"]]
+        )
+        self.assertEqual(leanctx_cfg["env"]["BASH_ENV"], "{tool_data_dir}/env.sh")
         self.assertIn("{codex_home}/hooks.json", leanctx_cfg["host_integration"]["required_files"])
         self.assertIn("{repo}/AGENTS.md", leanctx_cfg["host_integration"]["required_files"])
         self.assertTrue(leanctx_cfg["mcp_handshake"]["required"])
         self.assertEqual(leanctx_cfg["warmup"]["command"], ["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "index", "build", "{repo}"])
+
+    def test_no_profile_declares_a_duplicate_mount(self) -> None:
+        """Docker refuses the whole run when a target is bound twice.
+
+        A profile that names a helper in its own mounts and picks the same path up again as a
+        batch local helper takes its lane down with exit 125 before anything installs, which
+        reads as a container problem rather than a config one.
+        """
+        for profile_id in sorted(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES):
+            try:
+                cfg = runner.fixture.active_tool_config({}, profile_id)
+            except ValueError:
+                continue  # profiles that map to several tool ids are not single-lane configs
+            if not cfg:
+                continue
+            mounts = [str(path) for path in cfg.get("mounts", [])]
+            self.assertEqual(
+                len(mounts), len(set(mounts)), f"{profile_id} declares a duplicate mount"
+            )
+
+    def test_installers_that_write_home_dot_codex_declare_the_alias(self) -> None:
+        """Without the alias these register themselves where Codex will never look.
+
+        Both products resolve their own config path from ~/.codex rather than CODEX_HOME, so in
+        a lane that only sets CODEX_HOME they write into the lane HOME instead. The install
+        reports success, the required files are present, and the server is simply absent from
+        `codex mcp list` -- an installed treatment that silently does nothing.
+        """
+        for profile_id in ("retrieval-sigmap-codex-live-v1", "retrieval-jcodemunch-codex-mcp-v2"):
+            cfg = runner.fixture.active_tool_config({}, profile_id)
+            assert cfg is not None
+            self.assertTrue(
+                cfg["host_integration"].get("home_dot_codex_alias"),
+                f"{profile_id} writes ~/.codex and needs the lane alias",
+            )
 
     def test_codex_config_renders_all_declared_boolean_features(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
