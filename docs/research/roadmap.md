@@ -10,7 +10,7 @@ The active registry therefore contains two Fastify baseline replicates and no Be
 
 ## Archived evidence
 
-The owner-directed archive receipt is [`lifecycle-v1-fastify-beets-results-archived-20260814.json`](../../sources/evaluations/audits/lifecycle-v1-fastify-beets-results-archived-20260814.json). The archived corpus is [`lifecycle-v1-pre-corrected-prompts-20260813/`](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/).
+The archived corpus is [`lifecycle-v1-pre-corrected-prompts-20260813/`](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/).
 
 Historical papers and audit receipts remain for provenance. Their results must not be presented as current Lifecycle V2 findings or reused as controls for the rerun.
 

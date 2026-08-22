@@ -18,7 +18,6 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from scripts import run_codex_workflow_evaluation as runner
-from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition
 from scripts import workflow_model_condition_runtime as condition_runtime
 from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA
 
@@ -54,14 +53,6 @@ def registered_model_condition(condition_id: str, model: str, reasoning_effort: 
 
 def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
     global BASELINE_MODEL_CONDITION, MODEL_CONDITION_LAUNCHER
-    if condition_id == opencode_openrouter_condition.CONDITION_ID:
-        selected = opencode_openrouter_condition.registered_condition(ROOT)
-        if selected.get("model") != model or selected.get("reasoning_effort") != reasoning_effort:
-            raise ValueError(f"registered model condition does not match {condition_id}/{model}/{reasoning_effort}")
-        MODEL_CONDITION_LAUNCHER = opencode_openrouter_condition.LAUNCHER_PATH
-        opencode_openrouter_condition.configure_runner(runner)
-        BASELINE_MODEL_CONDITION = selected
-        return
     selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
     MODEL_CONDITION_LAUNCHER = {
         "opencode-cli": OPENCODE_MODEL_CONDITION_LAUNCHER,
@@ -139,12 +130,11 @@ def frozen_protocol(
         "reasoning_effort": selected_agent.get("reasoning_effort"),
         "command": command,
     }
+    # OpenCode has no baseline of its own: it runs on the Codex subscription and is compared with
+    # the bare Codex baseline, which is what makes the runtime swap the only difference.
     baseline_profile_id = (
         "baseline-claude-code-no-mcp"
         if selected_agent.get("runtime_id") == "claude-code"
-        else "baseline-opencode-openrouter-no-mcp"
-        if selected_agent.get("runtime_id") == "opencode-cli"
-        and selected_agent.get("provider") == "openrouter"
         else "baseline-bare-codex"
     )
     baseline = {
@@ -164,7 +154,6 @@ def frozen_protocol(
     comparison_baseline = dict(baseline)
     if (
         selected_agent.get("runtime_id") == "opencode-cli"
-        and selected_agent.get("provider") != "openrouter"
         and profile_id != "runtime-opencode-codex-product-v1"
     ):
         comparison_baseline = {
@@ -247,12 +236,6 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(
             "--workflow-model-condition-id, --workflow-model, and --workflow-reasoning-effort must be supplied together"
         )
-    if args.profile_id == "baseline-opencode-openrouter-no-mcp" and model_values != (
-        "opencode-openrouter-gpt-5-6-sol-medium", "gpt-5.6-sol", "medium"
-    ):
-        raise SystemExit(
-            "baseline-opencode-openrouter-no-mcp requires the exact OpenRouter GPT-5.6 Sol/medium model condition"
-        )
     runner.assert_profile_runnable(args.profile_id)
     runner.fixture.require_repowise_provider_contract(args.profile_id)
     sequence_ids = args.sequence_ids or runner.active_sequence_ids()
@@ -267,7 +250,6 @@ def main(argv: list[str] | None = None) -> int:
             standalone_opencode_control = False
             if (
                 selected_runtime not in {"claude-code"}
-                and args.profile_id != "baseline-opencode-openrouter-no-mcp"
                 and not standalone_opencode_control
             ):
                 # Validate the published Codex baseline before replacement-runtime

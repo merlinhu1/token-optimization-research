@@ -38,7 +38,9 @@ CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
 CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
 CLAUDE_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE", "/opt/data/.local/bin/claude"))
 CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
-CLAUDE_OPENROUTER_ENV_FILE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_OPENROUTER_ENV", "/opt/data/home/.config/claude-code/openrouter.env"))
+# The Codex CLI must be authenticated on the subscription this study measures. An allowlist is
+# used rather than a denylist so a provider that is merely unlisted cannot slip through.
+PERMITTED_CODEX_AUTH_PROVIDERS = {"openai", "chatgpt", ""}
 CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
@@ -124,7 +126,6 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "artifact-ponytail-codex-plugin-v1": "ponytail-codex-plugin-v1",
     "behavior-caveman-codex-skill-v1": "caveman-codex-skill-v1",
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
-    "baseline-opencode-openrouter-no-mcp": "opencode-openrouter-product-v1",
     "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
     "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
     "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
@@ -2224,33 +2225,6 @@ TOOL_CONFIGS.update(
     }
 )
 
-# A standalone provider control: shares the pinned OpenCode binary and narrow
-# compatibility adapter but must take OpenRouter's explicit model namespace.
-TOOL_CONFIGS["opencode-openrouter-product-v1"] = {
-    **TOOL_CONFIGS["opencode-codex-product-v1"],
-    "display_name": "OpenCode CLI 1.18.9 via OpenRouter",
-    "lane_name": "baseline-opencode-openrouter-no-mcp",
-    "surface": "replacement-agent-runtime/openrouter-provider-control",
-    "data_dir_name": "baseline-opencode-openrouter-no-mcp",
-    "auth_provider": "openrouter",
-    "codex_wrapper": {
-        **TOOL_CONFIGS["opencode-codex-product-v1"]["codex_wrapper"],
-        "args": [
-            *TOOL_CONFIGS["opencode-codex-product-v1"]["codex_wrapper"]["args"],
-            "--provider", "openrouter",
-            "--provider-model", "openrouter/openai/gpt-5.6-sol",
-        ],
-    },
-    "preflight_command": [
-        *TOOL_CONFIGS["opencode-codex-product-v1"]["preflight_command"][:-1],
-        "--provider", "openrouter",
-        "--provider-model", "openrouter/openai/gpt-5.6-sol",
-        "--probe",
-    ],
-    "tool_manifest_identity": "current-file-v1",
-}
-
-
 def _claude_readme_config(
     base_name: str,
     *,
@@ -2916,30 +2890,24 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
     auth_provider = str((cfg or {}).get("auth_provider", "codex"))
     auths: list[Path] = []
     auth_link_name: str | None = None
-    if auth_provider == "openrouter":
-        if not os.environ.get("OPENROUTER_API_KEY"):
-            raise FileNotFoundError(
-                "OPENROUTER_API_KEY is required for the isolated OpenCode/OpenRouter evaluation setup"
-            )
-        auth_materialization = "inherited-environment-api-key"
+    # OpenCode authenticates through the Codex subscription; there is no key-based route.
+    auths = auth_candidates(source_home)
+    if not auths:
+        raise FileNotFoundError(
+            f"No Codex auth file found under {source_home}, ~/.codex, or /opt/data/home/.codex. "
+            "Run `codex login` first, then rerun this evaluation."
+        )
+    # Host mode symlinks auth to avoid copying secrets. Container mode copies auth into
+    # the ephemeral Codex home so the container does not need the controller
+    # account home mounted. The copied file is never written into run artifacts.
+    auth_materialization = "copy-ephemeral" if copy_auth else "symlink-controller-home"
+    auth_dest = codex_home / auths[0].name
+    if copy_auth:
+        shutil.copy2(auths[0], auth_dest)
+        os.chmod(auth_dest, 0o600)
     else:
-        auths = auth_candidates(source_home)
-        if not auths:
-            raise FileNotFoundError(
-                f"No Codex auth file found under {source_home}, ~/.codex, or /opt/data/home/.codex. "
-                "Run `codex login` first, then rerun this evaluation."
-            )
-        # Host mode symlinks auth to avoid copying secrets. Container mode copies auth into
-        # the ephemeral Codex home so the container does not need the controller
-        # account home mounted. The copied file is never written into run artifacts.
-        auth_materialization = "copy-ephemeral" if copy_auth else "symlink-controller-home"
-        auth_dest = codex_home / auths[0].name
-        if copy_auth:
-            shutil.copy2(auths[0], auth_dest)
-            os.chmod(auth_dest, 0o600)
-        else:
-            os.symlink(auths[0], auth_dest)
-        auth_link_name = auths[0].name
+        os.symlink(auths[0], auth_dest)
+    auth_link_name = auths[0].name
 
     for subdir in ["home", "python-userbase", "xdg-cache", "xdg-config", "xdg-data", "tmp"]:
         (codex_home / subdir).mkdir(parents=True, exist_ok=True)
@@ -2962,7 +2930,7 @@ def prepare_codex_home(record: dict[str, Any], pid: str, run_dir: Path, source_h
         "profile_id": pid,
         "codex_home": str(codex_home),
         "auth_provider": auth_provider,
-        "source_auth_home": str(source_home) if auth_provider != "openrouter" else None,
+        "source_auth_home": str(source_home),
         "auth_link_name": auth_link_name,
         "auth_materialization": auth_materialization,
         "copied_global_instructions": False,
@@ -2991,7 +2959,7 @@ def prepare_claude_home(
     run_dir: Path,
     home_root: Path,
     *,
-    provider: str = "openrouter",
+    provider: str = "anthropic",
 ) -> Path:
     """Create isolated Claude state and copy only an explicitly supplied OAuth file."""
     claude_home = home_root / pid
@@ -3142,27 +3110,17 @@ def claude_env(
     *,
     containerized: bool = False,
     cfg: dict[str, Any] | None = None,
-    provider: str = "openrouter",
+    provider: str = "anthropic",
 ) -> dict[str, str]:
     """Create isolated Claude Code HOME/XDG/config state for one lane."""
     env = codex_env(agent_home, containerized=containerized, cfg=cfg)
-    if provider == "openrouter" and CLAUDE_OPENROUTER_ENV_FILE.is_file():
-        for line in CLAUDE_OPENROUTER_ENV_FILE.read_text(errors="replace").splitlines():
-            match = re.match(r"^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$", line)
-            if not match:
-                continue
-            key, raw = match.groups()
-            value = raw.strip()
-            if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
-                value = value[1:-1]
-            value = re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", lambda m: env.get(m.group(1), ""), value)
-            env[key] = value
-    elif provider == "anthropic":
-        # Do not let an inherited OpenRouter key or endpoint silently change the
+    if provider == "anthropic":
+        # Do not let an inherited key or endpoint silently change the
         # direct-account transport. API credentials may still be supplied by the
         # owner through ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN; the CLI uses its
         # first-party endpoint by default.
-        env.pop("OPENROUTER_API_KEY", None)
+        for key in [name for name in env if name.endswith("_API_KEY") and not name.startswith("ANTHROPIC_")]:
+            env.pop(key, None)
         env.pop("ANTHROPIC_BASE_URL", None)
     config_dir = agent_home / "claude-config"
     config_dir.mkdir(parents=True, exist_ok=True)
@@ -3260,7 +3218,6 @@ DOCKER_ENV_KEYS = [
     "ANTHROPIC_AUTH_TOKEN",
     "ANTHROPIC_API_KEY",
     "ANTHROPIC_DEFAULT_SONNET_MODEL",
-    "OPENROUTER_API_KEY",
 ]
 
 
@@ -3504,7 +3461,7 @@ def check_container_runtime(
     codex_home: Path | None = None,
     cfg: dict[str, Any] | None = None,
     agent_runtime: str = "codex-cli",
-    provider: str = "openrouter",
+    provider: str = "anthropic",
 ) -> dict[str, Any]:
     result: dict[str, Any] = {
         "execution_backend": backend,
@@ -3788,7 +3745,7 @@ def prepare_profile_integration(
             codex_home,
             containerized=integration_backend == "docker",
             cfg=cfg,
-            provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+            provider=str((record.get("agent") or {}).get("provider") or "anthropic"),
         )
         if runtime_id == "claude-code"
         else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
@@ -3955,7 +3912,7 @@ def probe_mcp_handshake(
             codex_home,
             containerized=backend == "docker",
             cfg=cfg,
-            provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+            provider=str((record.get("agent") or {}).get("provider") or "anthropic"),
         )
         if runtime_id == "claude-code"
         else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
@@ -4061,7 +4018,7 @@ def preflight_claude_code(
     cfg: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Prove the normal Claude Code control surface without making a provider request."""
-    provider = str((record.get("agent") or {}).get("provider") or "openrouter")
+    provider = str((record.get("agent") or {}).get("provider") or "anthropic")
     env = claude_env(claude_home, containerized=backend == "docker", cfg=cfg, provider=provider)
     apply_model_network_isolation(env)
     mounts = container_mounts_for_record(record, claude_home, include_repo=True, cfg=cfg)
@@ -4163,7 +4120,7 @@ def preflight_claude_code(
                 auth_probe.returncode == 0
                 and raw_status.get("loggedIn") is True
                 and str(raw_status.get("apiProvider") or "").lower()
-                not in {"openrouter", "openrouter-compatible"}
+                in PERMITTED_CODEX_AUTH_PROVIDERS
             ),
             "exit_code": auth_probe.returncode,
             "logged_in": raw_status.get("loggedIn") is True,

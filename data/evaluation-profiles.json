@@ -117,60 +117,6 @@
       "notes": "Normal Claude Code control using the direct-Anthropic Claude Opus 5/medium forward condition. The workflow project's AGENTS.md is copied exactly to CLAUDE.md for native discovery; no evaluator-authored tool treatment is installed. Provider-free qualification is required before any provider-backed reproduction."
     },
     {
-      "id": "baseline-opencode-openrouter-no-mcp",
-      "artifact_slug": "baseline-opencode-openrouter",
-      "profile_type": "control",
-      "objective_scope": "control",
-      "status": "configured-provider-free",
-      "substrate": "opencode-cli",
-      "enabled_surfaces": [
-        "opencode-native-shell-edit"
-      ],
-      "disabled_overlaps": [
-        "all MCP servers",
-        "all token-saving surfaces",
-        "global OpenCode instructions",
-        "plugins",
-        "skills",
-        "warm indexes"
-      ],
-      "components": [],
-      "native_agent_tools_allowed": [
-        "shell_command_execution",
-        "file_editing",
-        "plain_file_read_search",
-        "git",
-        "verifier_commands"
-      ],
-      "forbidden_surfaces": [
-        "lean-ctx",
-        "codegraph",
-        "serena",
-        "rtk",
-        "lowfat",
-        "tokenjuice",
-        "repomix",
-        "mex",
-        "cavemem",
-        "cartog",
-        "all unlisted retrieval/compression/memory/token-saving tools"
-      ],
-      "install": {
-        "policy": "Run normal OpenCode from a fresh lane-specific CODEX_HOME and isolated HOME/XDG state, route only through OpenRouter's openrouter/openai/gpt-5.6-sol model namespace, and inherit only the controller-provided OPENROUTER_API_KEY. Install no evaluator-authored MCP servers, plugins, skills, global instructions, memory, retrieval, compression, or other tool-treatment surfaces. Record a provider-free preflight artifact proving the pinned binary, exact provider/model route, no-MCP effective config, and denied web/subagent permissions."
-      },
-      "reset": {
-        "policy": "Delete the lane-specific OpenCode/Codex compatibility home and all run-local HOME/XDG/TMPDIR state before each run; verify no stale indexes, generated configuration, plugins, skills, or memory survive."
-      },
-      "evaluation_protocol": {
-        "tool_use_policy": "none",
-        "tool_state": "native-runtime",
-        "integration_state": "opencode-openrouter-native-mode",
-        "instruction_policy": "Normal OpenCode invocation through OpenRouter with no evaluator-installed tool treatment, MCP, plugins, skills, global instructions, memory, retrieval, or compression surfaces",
-        "assignment_proof": "provider-free pinned-binary/provider-route/model/tools/settings/isolation probe required"
-      },
-      "notes": "Normal OpenCode no-MCP control using OpenRouter's GPT-5.6 Sol/medium route. This is an independent provider/runtime condition, not a Codex control or a cross-provider token-treatment comparison. Provider-backed reproduction remains blocked until a separate owner authorization explicitly permits a bounded run."
-    },
-    {
       "id": "runtime-oh-my-pi-codex-subscription-v1",
       "artifact_slug": "oh-my-pi-codex-subscription",
       "profile_type": "replacement_runtime",
@@ -3660,7 +3606,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3700,7 +3646,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3740,7 +3686,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3780,7 +3726,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3820,7 +3766,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3860,7 +3806,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3900,7 +3846,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3940,7 +3886,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -3980,7 +3926,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -4020,7 +3966,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -4060,7 +4006,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -4100,7 +4046,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -4140,7 +4086,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -4180,7 +4126,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {
@@ -4221,7 +4167,7 @@
       "disabled_overlaps": [
         "all unlisted surfaces",
         "other token-saving tools",
-        "OpenRouter transport"
+        "direct-account transport"
       ],
       "components": [
         {

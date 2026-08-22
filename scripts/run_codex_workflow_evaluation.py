@@ -165,7 +165,6 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
     supported = {
         "baseline-bare-codex": None,
         "baseline-claude-code-no-mcp": None,
-        "baseline-opencode-openrouter-no-mcp": "opencode-openrouter-product-v1",
         **SUPPORTED_WORKFLOW_TOOL_PROFILES,
     }
     profiles: dict[str, dict[str, Any]] = {}
@@ -1660,7 +1659,6 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     control_profile = profile_id in {
         "baseline-bare-codex",
         "baseline-claude-code-no-mcp",
-        "baseline-opencode-openrouter-no-mcp",
     }
     if control_profile:
         if baseline_block.get("profile_id") != profile_id:
@@ -1794,7 +1792,6 @@ def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], prof
     fingerprint = baseline_protocol_fingerprint(seq)
     if (
         seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
-        and profile_id != "baseline-opencode-openrouter-no-mcp"
     ):
         canonical_baseline = find_canonical_baseline_record(registry, seq, replicate_index)
         frozen_pool_fingerprint = (
@@ -2574,9 +2571,7 @@ def base_record(session_id: str, seq: dict[str, Any], profile_id: str, project: 
             "runtime_id": profile_runtime_id(profile_id),
             "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
             "provider": (
-                "openrouter"
-                if DEFAULT_WORKFLOW_MODEL_CONDITION_ID.startswith("claude-code-openrouter-")
-                else "anthropic"
+                "anthropic"
                 if profile_runtime_id(profile_id) == "claude-code"
                 else "openai"
             ),
@@ -3493,7 +3488,6 @@ def workflow_session_record(
     baseline_control_profile = profile_id in {
         "baseline-bare-codex",
         "baseline-claude-code-no-mcp",
-        "baseline-opencode-openrouter-no-mcp",
     }
     if baseline_control_profile and comparison_baseline_session_id:
         raise ValueError("baseline session must not carry a comparison baseline binding")
@@ -3517,10 +3511,10 @@ def workflow_session_record(
     audit_result = json.loads(audit_path.read_text()) if audit_path.exists() else {}
     raw_agent_condition = summary.get("agent_condition")
     agent_condition: dict[str, Any] = dict(raw_agent_condition) if isinstance(raw_agent_condition, dict) else {}
-    agent_provider = str(agent_condition.get("provider") or ("openrouter" if runtime_id == "claude-code" else "openai"))
-    agent_model = str(agent_condition.get("model") or ("gpt-5.6-sol" if runtime_id == "claude-code" else DEFAULT_WORKFLOW_MODEL))
+    agent_provider = str(agent_condition.get("provider") or ("anthropic" if runtime_id == "claude-code" else "openai"))
+    agent_model = str(agent_condition.get("model") or ("claude-opus-5" if runtime_id == "claude-code" else DEFAULT_WORKFLOW_MODEL))
     agent_reasoning_effort = agent_condition.get("reasoning_effort") or (
-        "high" if runtime_id == "claude-code" else DEFAULT_WORKFLOW_REASONING_EFFORT
+        "medium" if runtime_id == "claude-code" else DEFAULT_WORKFLOW_REASONING_EFFORT
     )
     return {
         "schema_version": 2,
@@ -4044,7 +4038,6 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     baseline_control_profile = profile_id in {
         "baseline-bare-codex",
         "baseline-claude-code-no-mcp",
-        "baseline-opencode-openrouter-no-mcp",
     }
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
@@ -4133,7 +4126,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
 
     codex_home_root = run_dir / "codex-homes"
     runtime_id = profile_runtime_id(profile_id)
-    agent_provider = str((record.get("agent") or {}).get("provider") or "openrouter")
+    agent_provider = str((record.get("agent") or {}).get("provider") or "anthropic")
     codex_home = (
         fixture.prepare_claude_home(
             profile_id,

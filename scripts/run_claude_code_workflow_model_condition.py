@@ -39,8 +39,8 @@ def registered_condition(condition_id: str, model: str, reasoning_effort: str) -
 
 def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
     selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
-    if selected.get("runtime_id") != "claude-code" or selected.get("provider") not in {"anthropic", "openrouter"}:
-        raise ValueError("Claude Code launcher requires a claude-code Anthropic-compatible model condition")
+    if selected.get("runtime_id") != "claude-code" or selected.get("provider") != "anthropic":
+        raise ValueError("Claude Code launcher requires a claude-code Anthropic model condition")
     condition_runtime.configure_runner(
         runner,
         selected_condition_id=condition_id,

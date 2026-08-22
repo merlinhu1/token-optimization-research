@@ -36,7 +36,6 @@ from scripts import refresh_workflow_contracts as contract_refresh
 from scripts import run_codescope_neutral_mcp as codescope_adapter
 from scripts import run_codex_workflow_evaluation as runner
 from scripts import run_codex_workflow_model_condition as model_condition_runner
-from scripts import run_opencode_openrouter_workflow_model_condition as opencode_openrouter_condition
 from scripts import run_opencode_workflow_model_condition as opencode_condition_runner
 from scripts import run_sequential_workflow_matrix as matrix
 from scripts import validate_repository
@@ -986,52 +985,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         identity = runner.tool_adapter_identity("runtime-opencode-codex-product-v1")
         self.assertEqual(identity["source_identity"][0]["path"], adapter)
 
-    def test_opencode_openrouter_lifecycle_is_a_separate_provider_free_control(self) -> None:
-        condition = next(
-            item for item in json.loads((ROOT / "data/evaluation-agent-runtimes.json").read_text())["model_conditions"]
-            if item["id"] == "opencode-openrouter-gpt-5-6-sol-medium"
-        )
-        self.assertEqual(
-            {key: condition[key] for key in ("id", "runtime_id", "provider", "model", "reasoning_effort", "status")},
-            {
-                "id": "opencode-openrouter-gpt-5-6-sol-medium",
-                "runtime_id": "opencode-cli",
-                "provider": "openrouter",
-                "model": "gpt-5.6-sol",
-                "reasoning_effort": "medium",
-                "status": "configured-provider-free",
-            },
-        )
-        profile = runner.profile_registry_entry("baseline-opencode-openrouter-no-mcp")
-        self.assertEqual(profile["profile_type"], "control")
-        self.assertEqual(profile["status"], "configured-provider-free")
-        self.assertEqual(profile["substrate"], "opencode-cli")
-        config = runner.fixture.TOOL_CONFIGS["opencode-openrouter-product-v1"]
-        self.assertIn("--provider", config["codex_wrapper"]["args"])
-        self.assertIn("openrouter", config["codex_wrapper"]["args"])
-        self.assertIn("openrouter/openai/gpt-5.6-sol", config["codex_wrapper"]["args"])
-        selected = opencode_openrouter_condition.registered_condition(ROOT)
-        self.assertEqual(selected["provider"], "openrouter")
-
-        script = """
-from scripts import run_codex_workflow_evaluation as runner
-from scripts import run_opencode_openrouter_workflow_model_condition as launcher
-launcher.configure_runner(runner)
-seq = runner.load_sequence('fastify-lifecycle-sequence-v2')
-baseline = runner.baseline_protocol_descriptor(seq)
-execution = runner.execution_condition_descriptor(seq, 'baseline-opencode-openrouter-no-mcp')
-assert baseline['baseline_profile']['profile_id'] == 'baseline-opencode-openrouter-no-mcp'
-assert baseline['agent']['provider'] == 'openrouter'
-assert baseline['agent']['model_condition_id'] == 'opencode-openrouter-gpt-5-6-sol-medium'
-assert execution['agent_condition']['provider'] == 'openrouter'
-assert execution['model_condition_override']['launcher']['path'] == 'scripts/run_opencode_openrouter_workflow_model_condition.py'
-print('ok')
-"""
-        result = subprocess.run([sys.executable, "-c", script], cwd=ROOT, text=True, capture_output=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.strip(), "ok")
-
-
     def test_opencode_preflight_renders_repository_root_adapter_path(self) -> None:
         record = {"target": {"repository_path": str(ROOT)}, "agent": {}}
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
@@ -1199,7 +1152,7 @@ print('ok')
             run_dir.mkdir()
             home.mkdir()
             record = {
-                "agent": {"runtime_id": "claude-code", "provider": "openrouter"},
+                "agent": {"runtime_id": "claude-code", "provider": "anthropic"},
                 "target": {"repository_path": str(ROOT)},
             }
             with mock.patch.object(runner.fixture, "active_tool_config", return_value={"display_name": "broken"}):
@@ -1464,6 +1417,57 @@ print('ok')
         for bad in (-1, True, "0"):
             with self.assertRaises(ValueError):
                 adapter._cost(bad, "weighted_token_cost")
+
+    def test_each_runtime_has_exactly_one_permitted_route(self) -> None:
+        """One runtime, one provider, one model, one effort. No second route to pick by mistake.
+
+        A paid Claude Code baseline was very nearly attempted against an authorization naming the
+        retired high-effort condition on a provider the study does not use, because that condition
+        still registered. Legacy routes are not inert: they are what a run selects when something
+        resolves the wrong one.
+        """
+        expected = {
+            "codex-cli": ("openai", "gpt-5.6-sol", "medium"),
+            "opencode-cli": ("openai", "gpt-5.6-sol", "medium"),
+            "claude-code": ("anthropic", "claude-opus-5", "medium"),
+        }
+        conditions = json.loads(
+            (ROOT / "data/evaluation-agent-runtimes.json").read_text()
+        )["model_conditions"]
+        by_runtime = {}
+        for condition in conditions:
+            by_runtime.setdefault(condition["runtime_id"], []).append(condition)
+        self.assertEqual(sorted(by_runtime), sorted(expected))
+        for runtime, registered in by_runtime.items():
+            self.assertEqual(len(registered), 1, f"{runtime} has more than one registered route")
+            condition = registered[0]
+            self.assertEqual(
+                (condition.get("provider"), condition.get("model"), condition.get("reasoning_effort")),
+                expected[runtime],
+                f"{runtime} is registered on the wrong route",
+            )
+
+    def test_adapters_admit_only_the_permitted_provider(self) -> None:
+        """Stated positively so an unlisted provider is refused by default, not by denylist.
+
+        A denylist only refuses the providers someone thought to name. These allowlists refuse
+        everything else, which is why the checks are phrased this way rather than as exclusions.
+        """
+        import opencode_workflow_adapter as opencode
+
+        self.assertEqual(
+            opencode.provider_route("openai", "openai/gpt-5.6-sol"),
+            ("openai", "openai/gpt-5.6-sol"),
+        )
+        for provider in ("anthropic", "azure", "anything-else"):
+            with self.assertRaises(ValueError):
+                opencode.provider_route(provider, "openai/gpt-5.6-sol")
+        self.assertEqual(
+            runner.fixture.PERMITTED_CODEX_AUTH_PROVIDERS,
+            {"openai", "chatgpt", ""},
+        )
+        claude_launcher = (ROOT / "scripts/run_claude_code_workflow_model_condition.py").read_text()
+        self.assertIn('!= "anthropic"', claude_launcher)
 
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
@@ -3350,7 +3354,6 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             {
                 "codex-openai-gpt-5-6-sol-medium",
                 "opencode-openai-gpt-5-6-sol-medium",
-                "opencode-openrouter-gpt-5-6-sol-medium",
                 "claude-code-anthropic-opus-5-medium",
             },
         )
@@ -3750,7 +3753,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             self.assertEqual(row[0]["weighted_delta_vs_baseline_percent"], weighted_delta)
             audit_path = ROOT / "sources/evaluations/audits" / f"{panel['audit_id']}.json"
             historic = json.loads(audit_path.read_text())
-            # The independent OpenRouter condition extends the shared registry, so
+            # The independent condition extends the shared registry, so
             # its global file hash is expected to differ. Its accepted OpenAI
             # comparison evidence remains byte-for-byte historical otherwise.
             self.assertEqual(historic["source_registry"]["path"], panel["source_registry"]["path"])
@@ -3830,34 +3833,6 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                     1,
                 ),
                 treatment,
-            )
-
-    def test_openrouter_control_has_baseline_validation_role(self) -> None:
-        self.assertEqual(
-            validate_repository.expected_workflow_session_role(
-                "baseline-opencode-openrouter-no-mcp", {"profile_type": "control"}
-            ),
-            "baseline",
-        )
-
-
-    def test_openrouter_baseline_summary_retains_adapter_identity(self) -> None:
-        descriptor = {"tool_adapter": {"tool_id": "opencode-openrouter-product-v1"}}
-        self.assertEqual(
-            runner.summary_tool_adapter_identity(
-                "baseline-opencode-openrouter-no-mcp", descriptor
-            ),
-            descriptor["tool_adapter"],
-        )
-
-    def test_openrouter_control_pool_slot_does_not_require_codex_control(self) -> None:
-        sequence = {"id": "unit-sequence", "task_family_generation": "lifecycle-v2"}
-        with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="openrouter-pool"), \
-             mock.patch.object(runner, "find_canonical_baseline_record", side_effect=AssertionError("must not look up Codex")):
-            self.assertIsNone(
-                runner.find_pool_profile_record(
-                    {"sessions": []}, sequence, "baseline-opencode-openrouter-no-mcp", 0
-                )
             )
 
     def test_comparison_publication_reports_frozen_pool_path(self) -> None:
@@ -4794,32 +4769,23 @@ raise SystemExit(1)
 
 
 class ModelConditionLauncherContractTest(unittest.TestCase):
-    def test_registered_gpt55_high_condition_is_selectable(self) -> None:
-        condition = model_condition_runner.registered_condition(
-            "codex-openai-gpt-5-5-high", "gpt-5.5", "high"
-        )
-        self.assertEqual(condition["status"], "historical-inactive")
-        identity = model_condition_runner.launcher_identity()
-        self.assertRegex(identity["sha256"], r"^[a-f0-9]{64}$")
-
     def test_registered_gpt56_sol_medium_condition_is_selectable(self) -> None:
         condition = model_condition_runner.registered_condition(
             "codex-openai-gpt-5-6-sol-medium", "gpt-5.6-sol", "medium"
         )
         self.assertEqual(condition["status"], "active-default")
 
-    def test_historical_high_effort_condition_cannot_mint_or_launch(self) -> None:
-        with self.assertRaisesRegex(ValueError, "historical model condition"):
-            contract_refresh.registered_model_condition(
-                "codex-openai-gpt-5-6-sol-high", "gpt-5.6-sol", "high"
-            )
-        args = matrix.parse_args([
-            "--workflow-model-condition-id", "codex-openai-gpt-5-6-sol-high",
-            "--workflow-model", "gpt-5.6-sol",
-            "--workflow-reasoning-effort", "high",
-        ])
-        with self.assertRaisesRegex(ValueError, "historical model condition"):
-            matrix.selected_model_condition(args)
+    def test_an_unregistered_condition_cannot_mint_or_launch(self) -> None:
+        """Retired routes are deleted rather than marked historical, so they cannot resolve.
+
+        Leaving them registered-but-inactive is what made a retired condition selectable by an
+        authorization that still named it. A condition that is absent cannot be chosen at all.
+        """
+        import workflow_model_condition_runtime as condition_runtime
+
+        for condition_id in ("codex-openai-gpt-5-6-sol-high", "claude-code-anthropic-opus-5-high"):
+            with self.assertRaises(ValueError):
+                condition_runtime.resolve_condition_pair(ROOT, condition_id)
 
     def test_registered_model_condition_protocols_validate(self) -> None:
         errors: list[str] = []

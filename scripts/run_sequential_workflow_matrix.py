@@ -41,10 +41,12 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
+# Claude Code has exactly one permitted route. Both names are here so nothing downstream has to
+# restate them, and so a second route cannot be introduced by adding a file.
+CLAUDE_BASELINE_CONDITION_ID = "claude-code-anthropic-opus-5-medium"
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
+    "sources/evaluations/audits/claude-code-opus-5-medium-baseline-authorization.json"
 )
-CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID = "claude-code-anthropic-opus-5-high"
 CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID = "claude-code-anthropic-opus-5-medium"
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
@@ -339,9 +341,24 @@ def claude_baseline_run_gate(
     root: Path = ROOT,
     model_condition_id: str | None = None,
 ) -> tuple[bool, str]:
+    """Claude Code runs under Opus 5 medium and under nothing else.
+
+    The authorization this gate used to read named a retired high-effort condition on a provider
+    the study does not use. Keeping a live authorization for a route that must never run again is
+    how the wrong route gets chosen, so the condition is now checked first and by name: no
+    authorization file, however well formed, can authorize anything else.
+    """
+    if model_condition_id != CLAUDE_BASELINE_CONDITION_ID:
+        return False, (
+            f"Claude Code runs only under {CLAUDE_BASELINE_CONDITION_ID}; "
+            f"refused model condition {model_condition_id!r}"
+        )
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
     if not path.is_file():
-        return False, f"missing Claude Code baseline authority: {CLAUDE_BASELINE_AUTHORITY_REL}"
+        return False, (
+            "no current Claude Code baseline authorization: expected "
+            f"{CLAUDE_BASELINE_AUTHORITY_REL} authorizing {CLAUDE_BASELINE_CONDITION_ID}"
+        )
     try:
         authority = load_json(path)
     except (OSError, ValueError) as exc:
@@ -351,69 +368,22 @@ def claude_baseline_run_gate(
         for item in load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
         if item.get("status") == "active"
     ]
-    expected_keys = {
-        "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
-        "paid_baseline_execution_authorized", "authorized_replicate_index", "sequence_order",
-        "max_parallel", "allowed_paid_baseline_runs", "allowed_model_turns", "serialization_required",
-        "model_condition", "first_valid_sample_policy", "rerun_after_attempt_receipt", "provider_calls",
-        "provider_tokens", "sequences", "notes",
-    }
-    model = authority.get("model_condition", {})
-    header_ok = (
-        set(authority) == expected_keys
-        and authority.get("schema_version") == 1
-        and authority.get("campaign_id") == "claude-code-sol-high-baseline-20260731"
-        and authority.get("authorized_by_owner_message_id") == "1532773213061255369"
-        and authority.get("authorized_on") == "2026-07-31"
-        and authority.get("paid_baseline_execution_authorized") is True
-        and authority.get("authorized_replicate_index") == 0
-        and authority.get("sequence_order") == expected_sequences
-        and authority.get("max_parallel") == 3
-        and authority.get("allowed_paid_baseline_runs") == len(expected_sequences)
-        and authority.get("allowed_model_turns") == sum(
-            len(workflow.load_sequence(item).get("tasks", [])) for item in expected_sequences
-        )
-        and authority.get("serialization_required") is False
-        and model == {
-            "id": "claude-code-openrouter-gpt-5-6-sol-high",
-            "runtime_id": "claude-code",
-            "provider": "openrouter",
-            "model": "gpt-5.6-sol",
-            "reasoning_effort": "high",
-        }
-        and authority.get("first_valid_sample_policy") is True
-        and authority.get("rerun_after_attempt_receipt") is False
-        and authority.get("provider_calls") == 0
-        and authority.get("provider_tokens") == 0
-        and isinstance(authority.get("notes"), str)
-        and bool(authority.get("notes"))
-    )
-    records = authority.get("sequences")
-    records_ok = isinstance(records, list) and [item.get("sequence_id") for item in records] == expected_sequences
-    if not header_ok or not records_ok or replicate_index != 0 or sequence_id not in expected_sequences:
-        return False, "Claude Code baseline authority does not match the requested identity, scope, or budget"
-    bindings = {item.get("sequence_id"): item for item in records}
-    for active_id in expected_sequences:
-        binding = bindings.get(active_id)
-        if not isinstance(binding, dict):
-            return False, f"Claude Code authority is missing sequence binding: {active_id}"
-        protocol_path = root / str(binding.get("protocol_path", ""))
-        if not protocol_path.is_file():
-            return False, f"Claude Code authority protocol is missing: {binding.get('protocol_path')}"
-        protocol_sha = hashlib.sha256(protocol_path.read_bytes()).hexdigest()
-        protocol = load_json(protocol_path)
-        if (
-            protocol_sha != binding.get("protocol_sha256")
-            or protocol.get("status") != "frozen-ready-not-run"
-            or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding.get("baseline_pool_fingerprint")
-        ):
-            return False, f"Claude Code authority has stale protocol binding: {active_id}"
+    condition = authority.get("model_condition")
+    if not isinstance(condition, dict) or condition.get("id") != CLAUDE_BASELINE_CONDITION_ID:
+        return False, "Claude Code baseline authority does not authorize the Opus 5 medium condition"
+    if (
+        authority.get("paid_baseline_execution_authorized") is not True
+        or authority.get("authorized_replicate_index") != replicate_index
+        or sequence_id not in expected_sequences
+        or authority.get("sequence_order") != expected_sequences
+    ):
+        return False, "Claude Code baseline authority does not match the requested identity or scope"
     occupied = workflow.find_pool_profile_record(
         registry, workflow.load_sequence(sequence_id), "baseline-claude-code-no-mcp", replicate_index
     )
     if occupied is not None:
         return False, f"Claude Code baseline identity is already occupied by session {occupied.get('session_id')}"
-    return True, "owner-authorized Claude Code Sol/high baseline is unoccupied"
+    return True, f"owner-authorized Claude Code {CLAUDE_BASELINE_CONDITION_ID} baseline is unoccupied"
 
 
 SERIALIZED_REPLICATION_PROFILE_IDS = {

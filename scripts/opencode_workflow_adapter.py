@@ -86,24 +86,21 @@ GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "
 
 def provider_route(provider: str, model: str) -> tuple[str, str]:
     """Validate the provider-specific OpenCode model namespace without secrets."""
-    routes = {
-        "openai": "openai/gpt-5.6-sol",
-        "openrouter": "openrouter/openai/gpt-5.6-sol",
-    }
-    expected = routes.get(provider)
-    if expected is None:
-        raise ValueError(f"unsupported OpenCode provider route: {provider}")
+    # OpenCode runs on the Codex subscription and nothing else. A second route here is what let
+    # a run be pointed at a provider the study does not use, so there is only one.
+    expected = "openai/gpt-5.6-sol"
+    if provider != "openai":
+        raise ValueError(f"unsupported OpenCode provider route: {provider}; only openai is permitted")
     if model != expected:
-        provider_label = "OpenRouter" if provider == "openrouter" else "OpenAI"
         raise ValueError(
-            f"{provider_label} must use the exact OpenCode model namespace {expected}; got {model}"
+            f"OpenAI must use the exact OpenCode model namespace {expected}; got {model}"
         )
     return provider, model
 
 
 def provider_api_key_available(provider: str, env: dict[str, str]) -> bool:
     """Check only key presence; no credential value may enter an artifact."""
-    return bool(env.get("OPENROUTER_API_KEY")) if provider == "openrouter" else True
+    return True
 
 
 def verify_binary_sha256(binary: Path, expected_sha256: str) -> str:
@@ -672,7 +669,7 @@ def _runtime_env(
 ) -> tuple[dict[str, str], Path]:
     if treatment not in TREATMENT_PROFILES:
         raise ValueError(f"unsupported OpenCode treatment profile: {treatment}")
-    if provider not in {"openai", "openrouter"}:
+    if provider not in {"openai"}:
         raise ValueError(f"unsupported OpenCode provider route: {provider}")
     env = os.environ.copy()
     xdg_data = Path(env.get("XDG_DATA_HOME", codex_home / "xdg-data"))
@@ -910,10 +907,7 @@ def probe(
         provider=provider,
         directory=directory,
     )
-    if provider == "openai":
-        ensure_opencode_auth(codex_home / "auth.json", xdg_data)
-    elif not provider_api_key_available(provider, env):
-        raise ValueError("OPENROUTER_API_KEY is required for the OpenRouter evaluation route")
+    ensure_opencode_auth(codex_home / "auth.json", xdg_data)
     version = subprocess.run([str(binary), "--version"], env=env, text=True, capture_output=True, timeout=60)
     if version.returncode != 0:
         sys.stderr.write(version.stderr)
@@ -967,11 +961,7 @@ def probe(
         "effective_config_sha256": hashlib.sha256(
             env["OPENCODE_CONFIG_CONTENT"].encode()
         ).hexdigest(),
-        "auth": (
-            {"provider": "openai", "auth_type": "oauth"}
-            if provider == "openai"
-            else {"provider": "openrouter", "auth_type": "environment-api-key", "key_available": True}
-        ),
+        "auth": {"provider": "openai", "auth_type": "oauth"},
     }
     print(json.dumps(result, indent=2))
     return 0 if models.returncode == 0 and result["model_available"] else 1
@@ -1009,7 +999,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--opencode-binary", type=Path, default=DEFAULT_OPENCODE_BINARY)
     parser.add_argument("--expected-opencode-sha256", required=True)
     parser.add_argument("--treatment", choices=sorted(TREATMENT_PROFILES), default="bare")
-    parser.add_argument("--provider", choices=("openai", "openrouter"), default="openai")
+    parser.add_argument("--provider", choices=("openai",), default="openai")
     parser.add_argument("--provider-model", default="openai/gpt-5.6-sol")
     parser.add_argument("--probe", action="store_true")
     known, remaining = parser.parse_known_args(argv)
@@ -1049,10 +1039,7 @@ def main(argv: list[str] | None = None) -> int:
         provider=provider,
         directory=directory,
     )
-    if provider == "openai":
-        ensure_opencode_auth(codex_home / "auth.json", xdg_data)
-    elif not provider_api_key_available(provider, env):
-        raise ValueError("OPENROUTER_API_KEY is required for the OpenRouter evaluation route")
+    ensure_opencode_auth(codex_home / "auth.json", xdg_data)
     native_command = build_opencode_command(
         known.opencode_binary,
         parsed,

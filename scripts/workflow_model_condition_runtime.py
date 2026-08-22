@@ -78,7 +78,7 @@ def resolve_condition_pair(root: Path, selected_id: str) -> tuple[dict[str, Any]
     # OpenCode is paired with a published Codex control; Claude Code starts its
     # own bare-runtime control pool and must never borrow an incompatible one.
     if selected.get("runtime_id") == "claude-code":
-        if selected.get("provider") not in {"anthropic", "openrouter"}:
+        if selected.get("provider") not in {"anthropic"}:
             raise ValueError("Claude Code conditions must use Anthropic-compatible provider")
         return selected, selected
     if selected.get("provider") != "openai":

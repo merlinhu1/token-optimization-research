@@ -80,7 +80,7 @@ def run_task(
         claude_home,
         containerized=True,
         cfg=cfg,
-        provider=str((record.get("agent") or {}).get("provider") or "openrouter"),
+        provider=str((record.get("agent") or {}).get("provider") or "anthropic"),
     )
     fixture.apply_model_network_isolation(env, prepend_denied_shell_to_path=False)
     # Keep treatment/session identifiers out of model-visible HOME, config, and cwd.
