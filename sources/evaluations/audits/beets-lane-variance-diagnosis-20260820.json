@@ -358,5 +358,31 @@
     "why_fastify_shows_no_correlation": "Its seeds span 520 to 855 characters, a 1.6x range, against 6.4x for Beets. There is too little variation to detect a slope, and the whole Fastify range sits below the point where Beets degrades.",
     "proposed_guideline": "Cap seed size at roughly 900 characters, the top of Fastify's range. On the current Beets set that would exclude cached-attribute-error-surface at 2,701, concurrent-plugin-dispatch at 1,259 and migration-text-paths at 1,217, and retain the two tightest. This is a mechanical, checkable property of a candidate, unlike the four prose principles it replaces.",
     "limits": "Six tasks at three replicates. The correlation is with seed size, which plausibly proxies for how bounded the underlying defect is rather than causing anything by itself. It addresses per-task exploration only and says nothing about cancellation, which is the lane-level property that governs the total."
+  },
+  "repin_result_20260822": {
+    "lane": "Beets repinned to 746cecf2, six tasks with seeds 468-794 chars",
+    "pair": {
+      "r0": 614214.4,
+      "r1": 564733.2,
+      "spread_pct": 8.8
+    },
+    "comparison_at_n2": {
+      "plugin_set": 13.3,
+      "core_set": 24.3,
+      "core_repaired": 16.4,
+      "repinned_bounded_seeds": 8.8
+    },
+    "per_task_fresh_gap_pct": {
+      "unique-path-counter": 68,
+      "empty-string-field-split": 13,
+      "date-query-alternation": 51,
+      "membership-query-hashable": 1,
+      "spotify-uri-extraction": 11,
+      "lyrics-keep-synced-override": 10
+    },
+    "cancellation_ratio": 1.5,
+    "finding": "Best Beets pair so far at 8.8%, against 13.3%, 24.3% and 16.4% for the three previous task sets at the same sample size. Exploration gaps also fell: four of six tasks are at or below 13% where the previous set's best was 42%. That is the direction the seed-size bound predicted.",
+    "caveat": "Cancellation did not appear. The ratio is 1.5x against 1.1-1.4x for the earlier Beets sets and 12.4x for Fastify, and five of six deviations still point the same way. The lane improved by making per-task deviations smaller, not by making them offset, so the mechanism that distinguishes Fastify remains absent and unexplained.",
+    "status": "one pair; not a spread estimate. A third replicate is what would separate this from a lucky draw."
   }
 }
