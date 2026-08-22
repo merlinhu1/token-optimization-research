@@ -1481,6 +1481,52 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         # A broken record must not turn the diagnostic itself into the failure.
         self.assertIsInstance(runner.strict_ingress_refusal_reason({}), str)
 
+    def test_strict_ingress_retains_an_unaccepted_measurement(self) -> None:
+        """Verifier outcomes gate acceptance, never retention.
+
+        Strict ingress required run_record.accepted to be True, so a paid run whose agent
+        underperformed was refused publication and its token count discarded. AGENTS.md requires
+        the opposite -- every retained replicate is published, "including verifier failures and
+        low-quality outputs" -- and dropping them biases the corpus toward runs that succeeded.
+        """
+        import validate_repository as validator
+
+        usage = {
+            "measurement_source": "opencode-jsonl-step-finish-usage",
+            "fresh_input_tokens": 10,
+            "cached_input_tokens": 5,
+            "cache_write_tokens": 0,
+            "output_tokens": 3,
+            "reasoning_tokens": 1,
+            "total_provider_tokens": 18,
+            "weighted_token_cost": 28.5,
+            "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        }
+        session = {
+            "session_id": "s",
+            "cumulative_token_usage": dict(usage),
+            "interpretation": {"accepted_for_execution": False},
+            "agent": {},
+        }
+        run_record = {
+            "session_id": "s",
+            "token_usage": dict(usage),
+            "accepted": False,
+            "agent_condition": {},
+        }
+        self.assertTrue(
+            validator.compact_run_record_matches_session(
+                session, run_record, current_contract=True, require_accepted=False
+            )
+        )
+        self.assertFalse(
+            validator.compact_run_record_matches_session(
+                session, run_record, current_contract=True, require_accepted=True
+            )
+        )
+        source = (ROOT / "scripts/run_codex_workflow_evaluation.py").read_text()
+        self.assertIn("require_accepted=False", source)
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 

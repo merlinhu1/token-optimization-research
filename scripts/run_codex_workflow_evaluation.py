@@ -758,11 +758,17 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
         run_record = json.loads(paths["run_record"].read_text())
     except (OSError, json.JSONDecodeError):
         return False
+    # Acceptance must not gate retention. A run whose agent performed badly still produced a real
+    # token count, and AGENTS.md requires every retained replicate to be published "including
+    # verifier failures and low-quality outputs"; verifiers gate acceptance and treatment unlock,
+    # not weighted-token sample retention. Requiring acceptance here silently discarded exactly
+    # those samples, which biases the retained corpus toward runs that happened to succeed.
+    # Whether a session counts for the objective is carried by interpretation.accepted_for_objective.
     if not repository_validation.compact_run_record_matches_session(
         session,
         run_record,
         current_contract=True,
-        require_accepted=True,
+        require_accepted=False,
     ):
         return False
     usage = session.get("cumulative_token_usage", {})
