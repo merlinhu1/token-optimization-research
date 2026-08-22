@@ -41,17 +41,9 @@ CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
 CLAUDE_OPENROUTER_ENV_FILE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_OPENROUTER_ENV", "/opt/data/home/.config/claude-code/openrouter.env"))
 CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
-OPENCODE_BIN_V2 = Path("/opt/data/tool-candidates/opencode-runtime-v2/opencode.exe")
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
 OPENCODE_ADAPTER = "{repository_root}/scripts/opencode_workflow_adapter.py"
-OPENCODE_ADAPTER_V2 = Path("/opt/data/tool-candidates/opencode-adapter-v2/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V3 = Path("/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V4 = Path("/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V5 = Path("/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V6 = Path("/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V7 = Path("/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V8 = Path("/opt/data/tool-candidates/opencode-adapter-v8/opencode_workflow_adapter.py")
-OPENCODE_ADAPTER_V9 = Path("/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py")
+OPENCODE_ADAPTER_SHA256 = hashlib.sha256((ROOT / "scripts/opencode_workflow_adapter.py").read_bytes()).hexdigest()
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
     "mcp_lean_ctx",
@@ -90,8 +82,6 @@ FORBIDDEN_BASELINE_TERMS = [
 ]
 BASELINE_CODEX_NO_MCP_PROFILES = {"baseline-codex-no-mcp"}
 PROFILE_TOOL_CONFIG_OVERRIDES = {
-    "retrieval-sdl-mcp-codex-product-v1": "sdl-mcp-codex-product-v1",
-    "retrieval-sdl-mcp-opencode-product-v1": "sdl-mcp-opencode-product-v1",
     "headroom-default-codex": "headroom",
     "terminal-headroom": "headroom-proxy-only",
     "terminal-tokenjuice-codex-hook-v1": "tokenjuice-codex-hook-v1",
@@ -103,7 +93,6 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "codescope-claude-code-mcp-v1": "codescope-claude-code-mcp-v1",
     "retrieval-graphify-claude-code-skill-v1": "graphify-claude-code-skill-v1",
     "integrated-leanctx-claude-code-hybrid-v1": "leanctx-claude-code-hybrid-v1",
-    "terminal-lowfat-claude-code-hook-v1": "lowfat-claude-code-hook-v1",
     "artifact-ponytail-claude-code-plugin-v1": "ponytail",
     "retrieval-serena-claude-code-mcp-v1": "serena-claude-code-mcp-v1",
     "retrieval-sigmap-claude-code-mcp-v1": "sigmap-claude-code-mcp-v1",
@@ -111,19 +100,15 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "integrated-token-savior-claude-code-product-v1": "token-savior-claude-code-product-v1",
     "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice-claude-code-hook-v1",
     "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-claude-code-mcp-v1",
-    "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "retrieval-graphify-codex-skill-v1": "graphify-codex-skill-v1",
     "retrieval-codegraph-codex-mcp-v1": "codegraph-codex-mcp-v1",
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
-    "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
     "integrated-leanctx-opencode-hybrid-v2": "leanctx-opencode-hybrid-v1",
     "retrieval-sigmap-opencode-product-v1": "sigmap-opencode-product-v1",
     "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
     "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
-    "terminal-lowfat-opencode-plugin-v1": "lowfat-opencode-plugin-v1",
-    "context-dcp-opencode-plugin-v1": "dcp-opencode-plugin-v1",
     "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
     "codescope-codex-product-v1": "codescope-codex-product-v1",
     "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
@@ -271,103 +256,6 @@ def _pin_batch_release(tool_id: str, release_name: str, *runtime_paths: Path) ->
     })
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
-    "sdl-mcp-codex-product-v1": {
-        "display_name": "SDL-MCP 0.13.2 official Codex setup",
-        "lane_name": "retrieval-sdl-mcp-codex-product-v1",
-        "surface": "retrieval/context+mcp+codex-guidance+codex-hooks",
-        "mcp_server": "sdl-mcp",
-        "allowed_terms": ["sdl-mcp", "sdl", "runtimeExecute", "sdl.context", "sdl.retrieve", "sdl.workflow"],
-        "data_dir_name": "sdl-mcp-codex-product-v1",
-        "mcp_command": str(NODE_BIN),
-        "mcp_args": [str(SDL_MCP_MAIN), "serve", "--stdio"],
-        "env": {
-            "SDL_CONFIG": "{tool_data_dir}/sdlmcp.config.json",
-            "SDL_CONFIG_HOME": "{tool_data_dir}",
-            "SDL_GRAPH_DB_PATH": "{tool_data_dir}/sdl-mcp-graph.lbug",
-            "SDL_MCP_SKIP_SETUP_WIZARD": "1",
-        },
-        "mounts": [str(SDL_MCP_ROOT), str(SDL_MCP_INSTALL_HOME)],
-        "diff_exclude_paths": [
-            "AGENTS.md", "CODEX.md", "SDL.md", "codex-mcp-config.json", ".codex",
-        ],
-        "codex_features": {"hooks": True},
-        "host_integration": {
-            "install_commands": [
-                ["/bin/bash", "-lc", "set -euo pipefail; mkdir -p {codex_home}/home/.cache/sdl-mcp; cp -a /opt/data/tool-candidates/sdl-mcp-install-home/.cache/sdl-mcp/models {codex_home}/home/.cache/sdl-mcp/"],
-                [str(NODE_BIN), str(SDL_MCP_CLI), "init", "-y", "--repo-path", "{repo}", "--client", "codex", "--enforce-agent-tools", "--auto-index", "--config", "{tool_data_dir}/sdlmcp.config.json"],
-            ],
-            "verify_commands": [
-                [str(NODE_BIN), str(SDL_MCP_CLI), "version", "--config", "{tool_data_dir}/sdlmcp.config.json"],
-                [str(NODE_BIN), str(SDL_MCP_CLI), "doctor", "--config", "{tool_data_dir}/sdlmcp.config.json"],
-            ],
-            "required_files": [
-                str(SDL_MCP_ROOT / "package.json"), str(SDL_MCP_ROOT / "package-lock.json"),
-                str(SDL_MCP_CLI), str(SDL_MCP_MAIN), str(SDL_MCP_NATIVE), str(SDL_MCP_LADYBUG),
-                "{tool_data_dir}/sdlmcp.config.json", "{codex_home}/config.toml",
-                "{repo}/AGENTS.md", "{repo}/CODEX.md", "{repo}/SDL.md",
-                "{repo}/.codex/config.toml", "{repo}/.codex/hooks.json",
-                "{repo}/.codex/hooks/load-sdl-skill.mjs", "{repo}/.codex/hooks/force-sdl-mcp.mjs",
-            ],
-            "timeout_seconds": 1800,
-        },
-        "artifact_identities": [
-            {"path": str(SDL_MCP_ROOT / "package.json"), "sha256": "610be2ef31f79c66c330b3605aa2ceb8bce94fe9cb1e1fada1ee70f6dfd78cd1", "kind": "source-manifest"},
-            {"path": str(SDL_MCP_ROOT / "package-lock.json"), "sha256": "c74182a87adc5b7d14a9981a392410cee6eb4b782fa802e77c2e7a055dd55465", "kind": "lockfile"},
-            {"path": str(SDL_MCP_MAIN), "sha256": "ce884fc3e1f3191c9a5c8adfaa03d9dab9ea73013b893db6f8ede8355408a4c7", "kind": "compiled-server"},
-            {"path": str(SDL_MCP_CLI), "sha256": "b9e33355f5673c730c0e530de2ff7edd8d5dafbe41ea628e072a6446f35fe681", "kind": "compiled-cli"},
-            {"path": str(SDL_MCP_NATIVE), "sha256": "b1929acef9c7e2755e5f991265dc64e034b6c200034f422e309a8590bc55869e", "kind": "native-addon"},
-            {"path": str(SDL_MCP_LADYBUG), "sha256": "28a59bb37cd9c55d78bf106f8765c6122c27a3308493fc49bc7897cae8eef826", "kind": "ladybug-addon"},
-        ],
-        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 90},
-        "default_tool_state": "warm-index",
-    },
-    "sdl-mcp-opencode-product-v1": {
-        "display_name": "SDL-MCP 0.13.2 official OpenCode setup",
-        "lane_name": "retrieval-sdl-mcp-opencode-product-v1",
-        "surface": "retrieval/context+mcp+opencode-guidance+opencode-plugin",
-        "mcp_server": "sdl-mcp",
-        "allowed_terms": ["sdl-mcp", "sdl", "runtimeExecute", "sdl.context", "sdl.retrieve", "sdl.workflow"],
-        "data_dir_name": "sdl-mcp-opencode-product-v1",
-        "mcp_command": str(NODE_BIN),
-        "mcp_args": [str(SDL_MCP_MAIN), "serve", "--stdio"],
-        "env": {
-            "SDL_CONFIG": "{tool_data_dir}/sdlmcp.config.json",
-            "SDL_CONFIG_HOME": "{tool_data_dir}",
-            "SDL_GRAPH_DB_PATH": "{tool_data_dir}/sdl-mcp-graph.lbug",
-            "SDL_MCP_SKIP_SETUP_WIZARD": "1",
-        },
-        "mounts": [str(SDL_MCP_ROOT), str(SDL_MCP_INSTALL_HOME)],
-        "diff_exclude_paths": [
-            "AGENTS.md", "OPENCODE.md", "SDL.md", "opencode.json", ".opencode",
-        ],
-        "host_integration": {
-            "install_commands": [
-                ["/bin/bash", "-lc", "set -euo pipefail; mkdir -p {codex_home}/home/.cache/sdl-mcp; cp -a /opt/data/tool-candidates/sdl-mcp-install-home/.cache/sdl-mcp/models {codex_home}/home/.cache/sdl-mcp/"],
-                [str(NODE_BIN), str(SDL_MCP_CLI), "init", "-y", "--repo-path", "{repo}", "--client", "opencode", "--enforce-agent-tools", "--auto-index", "--config", "{tool_data_dir}/sdlmcp.config.json"],
-            ],
-            "verify_commands": [
-                [str(NODE_BIN), str(SDL_MCP_CLI), "version", "--config", "{tool_data_dir}/sdlmcp.config.json"],
-                [str(NODE_BIN), str(SDL_MCP_CLI), "doctor", "--config", "{tool_data_dir}/sdlmcp.config.json"],
-            ],
-            "required_files": [
-                str(SDL_MCP_ROOT / "package.json"), str(SDL_MCP_ROOT / "package-lock.json"),
-                str(SDL_MCP_CLI), str(SDL_MCP_MAIN), str(SDL_MCP_NATIVE), str(SDL_MCP_LADYBUG),
-                "{tool_data_dir}/sdlmcp.config.json", "{repo}/AGENTS.md", "{repo}/OPENCODE.md",
-                "{repo}/SDL.md", "{repo}/opencode.json", "{repo}/.opencode/plugins/enforce-sdl.ts",
-            ],
-            "timeout_seconds": 1800,
-        },
-        "artifact_identities": [
-            {"path": str(SDL_MCP_ROOT / "package.json"), "sha256": "610be2ef31f79c66c330b3605aa2ceb8bce94fe9cb1e1fada1ee70f6dfd78cd1", "kind": "source-manifest"},
-            {"path": str(SDL_MCP_ROOT / "package-lock.json"), "sha256": "c74182a87adc5b7d14a9981a392410cee6eb4b782fa802e77c2e7a055dd55465", "kind": "lockfile"},
-            {"path": str(SDL_MCP_MAIN), "sha256": "ce884fc3e1f3191c9a5c8adfaa03d9dab9ea73013b893db6f8ede8355408a4c7", "kind": "compiled-server"},
-            {"path": str(SDL_MCP_CLI), "sha256": "b9e33355f5673c730c0e530de2ff7edd8d5dafbe41ea628e072a6446f35fe681", "kind": "compiled-cli"},
-            {"path": str(SDL_MCP_NATIVE), "sha256": "b1929acef9c7e2755e5f991265dc64e034b6c200034f422e309a8590bc55869e", "kind": "native-addon"},
-            {"path": str(SDL_MCP_LADYBUG), "sha256": "28a59bb37cd9c55d78bf106f8765c6122c27a3308493fc49bc7897cae8eef826", "kind": "ladybug-addon"},
-        ],
-        "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 90},
-        "default_tool_state": "warm-index",
-    },
     "opencode-codex-product-v1": {
         "display_name": "OpenCode CLI 1.18.9",
         "lane_name": "runtime-opencode-codex-product-v1",
@@ -1750,22 +1638,6 @@ def _opencode_treatment_config(
 
 TOOL_CONFIGS.update(
     {
-        "tokenjuice-opencode-plugin-v1": _opencode_treatment_config(
-            "tokenjuice",
-            display_name="TokenJuice official OpenCode plugin v1",
-            lane_name="terminal-tokenjuice-opencode-plugin-v1",
-            surface="opencode-tool-execute-after/terminal-output-compaction",
-            allowed_terms=["tokenjuice"],
-            mounts=["/opt/data/tool-candidates/tokenjuice"],
-            path_entries=["/opt/data/tool-candidates/tokenjuice/bin"],
-            env={"TOKENJUICE_TELEMETRY": "0"},
-            host_integration={
-                "install_commands": [["tokenjuice", "install", "opencode"]],
-                "verify_commands": [["tokenjuice", "doctor", "opencode"]],
-                "required_files": ["{codex_home}/xdg-config/opencode/plugins/tokenjuice.js"],
-            },
-            default_tool_state="active-native-plugin",
-        ),
         "serena-opencode-mcp-v1": _opencode_treatment_config(
             "serena",
             display_name="Serena official OpenCode MCP v1",
@@ -1792,68 +1664,6 @@ TOOL_CONFIGS.update(
             env={"SERENA_HOME": "{tool_data_dir}"},
             mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
             default_tool_state="cold-auto-index",
-        ),
-        "snip-opencode-plugin-v1": _opencode_treatment_config(
-            "snip",
-            display_name="Snip official community OpenCode plugin v1.6.1",
-            lane_name="terminal-snip-opencode-plugin-v1",
-            surface="opencode-tool-execute-before/shell-command-rewriting",
-            allowed_terms=["snip", "opencode-snip"],
-            mounts=[
-                "/opt/data/tool-candidates/snip",
-                "/opt/data/tool-candidates/opencode-snip-v1.6.1",
-            ],
-            path_entries=["/opt/data/tool-candidates/snip"],
-            env={"SNIP_TELEMETRY": "0"},
-            host_integration={
-                "verify_commands": [
-                    ["snip", "--version"],
-                    [
-                        "python3",
-                        "-c",
-                        "from pathlib import Path; p=Path('/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts'); assert p.is_file(); assert 'SnipPlugin' in p.read_text()",
-                    ],
-                ],
-                "required_files": [
-                    "/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"
-                ],
-            },
-            default_tool_state="active-native-plugin",
-        ),
-        "cartog-opencode-product-v1": _opencode_treatment_config(
-            "cartog",
-            display_name="Cartog official OpenCode MCP product v1",
-            lane_name="retrieval-cartog-opencode-product-v1",
-            surface="opencode-mcp/structural-retrieval+live-watch",
-            allowed_terms=["cartog"],
-            mounts=["/opt/data/tool-candidates/cartog"],
-            path_entries=["/opt/data/tool-candidates/cartog/target/release"],
-            env={"CARTOG_MCP_COMPACT": "1", "CARTOG_NO_UPDATE_CHECK": "1"},
-            mcp_server="cartog",
-            mcp_command=str(CARTOG_BIN),
-            mcp_args=["serve", "--watch"],
-            host_integration={
-                "install_commands": [[str(CARTOG_BIN), "ide", "--client", "opencode", "--yes"]],
-                "verify_commands": [
-                    [
-                        "python3",
-                        "-c",
-                        "from pathlib import Path; p=Path('{codex_home}/xdg-config/opencode/opencode.json'); assert p.is_file(); assert '\"cartog\"' in p.read_text()",
-                    ]
-                ],
-                "required_files": ["{codex_home}/xdg-config/opencode/opencode.json"],
-            },
-            mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
-            warmup={
-                "kind": "official-init-and-structural-index",
-                "command": ["/bin/bash", "-lc", "set -euo pipefail; cartog init; cartog index ."],
-                "cleanup_paths": [".cartog", ".cartog.toml"],
-                "output_name": "cartog-warmup-output.txt",
-                "metadata_name": "cartog-warmup-metadata.json",
-                "timeout_seconds": 1200,
-            },
-            diff_exclude_paths=[".cartog", ".cartog.toml"],
-            default_tool_state="warm-structural-index+live-watch",
         ),
         "headroom-opencode-product-v1": _opencode_treatment_config(
             "headroom",
@@ -1933,41 +1743,6 @@ TOOL_CONFIGS.update(
     }
 )
 
-TOOL_CONFIGS["headroom-opencode-product-v2"] = {
-    **TOOL_CONFIGS["headroom-opencode-product-v1"],
-    "display_name": "Headroom official OpenCode integrated product v2",
-    "lane_name": "integrated-headroom-opencode-product-v2",
-    "data_dir_name": "integrated-headroom-opencode-product-v2",
-    "executable": str(OPENCODE_BIN_V2),
-    "binary_mount_target": str(OPENCODE_BIN_V2),
-    "mounts": [
-        str(OPENCODE_ADAPTER_V2) if value == str(OPENCODE_ADAPTER) else value
-        for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["mounts"]
-    ],
-    "codex_wrapper": {
-        **TOOL_CONFIGS["headroom-opencode-product-v1"]["codex_wrapper"],
-        "args": [
-            (
-                str(OPENCODE_ADAPTER_V2)
-                if value == str(OPENCODE_ADAPTER)
-                else str(OPENCODE_BIN_V2)
-                if value == str(OPENCODE_BIN)
-                else value
-            )
-            for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["codex_wrapper"]["args"]
-        ],
-    },
-    "preflight_command": [
-        (
-            str(OPENCODE_ADAPTER_V2)
-            if value == str(OPENCODE_ADAPTER)
-            else str(OPENCODE_BIN_V2)
-            if value == str(OPENCODE_BIN)
-            else value
-        )
-        for value in TOOL_CONFIGS["headroom-opencode-product-v1"]["preflight_command"]
-    ],
-}
 
 # Repaired OpenCode treatment generations. These use fresh profile identities so
 # deleted protocol/replicate identities can never be reopened.
@@ -1998,7 +1773,6 @@ TOOL_CONFIGS.update(
             surface="opencode-tool-execute-after/terminal-output-compaction",
             allowed_terms=["tokenjuice"],
             mounts=[str(TOKENJUICE_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V3,
             path_entries=[str(TOKENJUICE_BIN.parent)],
             env={"TOKENJUICE_TELEMETRY": "0"},
             host_integration={
@@ -2027,7 +1801,6 @@ TOOL_CONFIGS.update(
             surface="opencode-tool-execute-before/shell-command-rewriting",
             allowed_terms=["snip", "opencode-snip"],
             mounts=[str(SNIP_ROOT), "/opt/data/tool-candidates/opencode-snip-v1.6.1"],
-            adapter_path=OPENCODE_ADAPTER_V3,
             path_entries=[str(SNIP_ROOT)],
             env={"SNIP_TELEMETRY": "0"},
             host_integration={
@@ -2049,7 +1822,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp/structural-retrieval+live-watch+product-guidance",
             allowed_terms=["cartog"],
             mounts=[str(CARTOG_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V3,
             path_entries=[str(CARTOG_BIN.parent)],
             env={"CARTOG_MCP_COMPACT": "1", "CARTOG_NO_UPDATE_CHECK": "1"},
             mcp_server="cartog",
@@ -2098,7 +1870,6 @@ TOOL_CONFIGS.update(
             surface="opencode-proxy/context-compression+native-plugin+headroom-mcp+rtk+serena",
             allowed_terms=["headroom", "headroom_retrieve", "rtk", "serena"],
             mounts=[str(HEADROOM_ROOT), str(RTK_BIN.parent), str(SERENA_ROOT), str(UVX_SHIM.parent)],
-            adapter_path=OPENCODE_ADAPTER_V3,
             path_entries=[str(UVX_SHIM.parent), "{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
             env={
                 "HEADROOM_HOME": "{tool_data_dir}",
@@ -2157,7 +1928,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp/official-initialize-instructions+warm-index",
             allowed_terms=["codescope"],
             mounts=[str(CODESCOPE_BIN), str(CODESCOPE_SURREAL_BIN)],
-            adapter_path=OPENCODE_ADAPTER_V4,
             path_entries=[str(CODESCOPE_RELEASE_ROOT)],
             env={
                 "CODESCOPE_DB_PATH": "{tool_data_dir}/db",
@@ -2199,7 +1969,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(CODESCOPE_BIN), "sha256": "d6f64f7bc7bf1ab65115fdede85d794f58151c6f1414421825959eb2101165c1", "kind": "compiled-cli-mcp"},
                 {"path": str(CODESCOPE_SURREAL_BIN), "sha256": "a9a5e9e36e4f6fe922e1991a4fb0ea1ee4fe90819c5e3a8dce238a56666e8cec", "kind": "bundled-database"},
-                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             default_tool_state="warm-index+official-mcp-instructions",
@@ -2211,7 +1981,6 @@ TOOL_CONFIGS.update(
             surface="opencode-project-skill+rules+native-pretool-plugin+warm-graph",
             allowed_terms=["graphify", "graphify-mcp"],
             mounts=[str(GRAPHIFY_ROOT), str(GRAPHIFY_WHEEL)],
-            adapter_path=OPENCODE_ADAPTER_V5,
             path_entries=["{tool_data_dir}/venv/bin"],
             env={"OPENCODE_EVALUATION_DIRECTORY": "{repo}"},
             host_integration={
@@ -2240,7 +2009,7 @@ TOOL_CONFIGS.update(
             },
             artifact_identities=[
                 {"path": str(GRAPHIFY_WHEEL), "sha256": "9c3b01b3e7745ee67149fab54af91e4dbe4743ee9632fc3ab29de62830ca1802", "kind": "python-wheel"},
-                {"path": str(OPENCODE_ADAPTER_V5), "sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{repo}/.opencode/plugins/graphify.js", "sha256": "b025b1d64b905d48cf6188392d003be971f9933e8f893d22f671c5f2428ecddb", "retain_as": "graphify-installed-plugin.js"},
@@ -2258,7 +2027,6 @@ TOOL_CONFIGS.update(
             surface="opencode-native-tool-execute-before/terminal-command-rewriting",
             allowed_terms=["rtk"],
             mounts=[str(RTK_BIN.parent), str(RTK_BIN.parents[2] / "hooks/opencode/rtk.ts")],
-            adapter_path=OPENCODE_ADAPTER_V4,
             path_entries=[str(RTK_BIN.parent)],
             env={"RTK_TELEMETRY": "0"},
             host_integration={
@@ -2269,7 +2037,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(RTK_BIN), "sha256": "6a5f761863fc184217e6c1ae5336dd969868ad79f24e701a3efbd090a435f2ae", "kind": "compiled-cli"},
                 {"path": str(RTK_BIN.parents[2] / "hooks/opencode/rtk.ts"), "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb", "kind": "native-plugin-source"},
-                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{codex_home}/home/.config/opencode/plugins/rtk.ts", "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb", "retain_as": "rtk-installed-plugin.ts"},
@@ -2284,7 +2052,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+official-installer+warm-live-index",
             allowed_terms=["codegraph"],
             mounts=[str(CODEGRAPH_BIN.parent.parent.parent)],
-            adapter_path=OPENCODE_ADAPTER_V4,
             path_entries=["{tool_data_dir}/bin"],
             env={"CODEGRAPH_TELEMETRY": "0", "OPENCODE_EVALUATION_DIRECTORY": "{repo}"},
             host_integration={
@@ -2315,7 +2082,7 @@ TOOL_CONFIGS.update(
             },
             artifact_identities=[
                 {"path": str(CODEGRAPH_BIN), "sha256": "7cb7ae2a31d1c30a11d2b3190f89a7f9c2db3886ad5903affdc080bd7922755e", "kind": "compiled-cli-mcp"},
-                {"path": str(OPENCODE_ADAPTER_V4), "sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{repo}/opencode.jsonc", "sha256": "578c6965fb0902811aeb1e9607bcf4c41aa0de3e25a0fdfbe0b7a838a31496a1", "retain_as": "codegraph-installed-opencode.jsonc"},
@@ -2339,7 +2106,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+product-authored-guidance+warm-index",
             allowed_terms=["jcodemunch", "jcodemunch-mcp"],
             mounts=[str(JCODEMUNCH_ROOT), str(JCODEMUNCH_WHEEL), "{repository_root}/scripts/install_jcodemunch_opencode_guidance.py"],
-            adapter_path=OPENCODE_ADAPTER_V6,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "JCODEMUNCH_LOG_LEVEL": "ERROR"},
             path_entries=["{tool_data_dir}/venv/bin"],
             host_integration={
@@ -2360,7 +2126,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(JCODEMUNCH_WHEEL), "sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54", "kind": "python-wheel"},
                 {"path": str(JCODEMUNCH_ROOT / "AGENT_INSTALL_UNIVERSAL.md"), "sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2", "kind": "product-guidance"},
-                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md"],
@@ -2373,7 +2139,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+product-guidance+provider-backed-index",
             allowed_terms=["repowise"],
             mounts=[str(REPOWISE_ROOT), str(REPOWISE_WHEEL)],
-            adapter_path=OPENCODE_ADAPTER_V9,
             path_entries=["{tool_data_dir}/venv/bin"],
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "REPOWISE_PROVIDER": "opencode"},
             host_integration={
@@ -2399,7 +2164,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(REPOWISE_WHEEL), "sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4", "kind": "python-wheel"},
                 {"path": str(REPOWISE_ROOT / "README.md"), "sha256": "44ed3725616544a8d4eb4695c99e33c8bd28ce2bfde4c12134d1fde0e1d65a3a", "kind": "product-guidance-source"},
-                {"path": str(OPENCODE_ADAPTER_V9), "sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=[".repowise", ".mcp.json", "AGENTS.md"],
@@ -2412,7 +2177,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+instructions+shell-output-compression+warm-index",
             allowed_terms=["lean-ctx", "mcp_lean_ctx", "ctx_read", "ctx_search", "ctx_shell", "ctx_graph"],
             mounts=[str(LEANCTX_BINARY), str(LEANCTX_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V7,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "LEAN_CTX_DATA_DIR": "{tool_data_dir}/leanctx"},
             host_integration={
                 "install_commands": [
@@ -2431,7 +2195,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(LEANCTX_BINARY), "sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9", "kind": "compiled-cli-mcp"},
                 {"path": str(LEANCTX_ROOT / "README.md"), "sha256": "3511c0d1e04eda53f9e66f7528b5179138b4e3963891c07c8749fa0c3b98f5cb", "kind": "product-guidance-source"},
-                {"path": str(OPENCODE_ADAPTER_V7), "sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
                 {"path": "{codex_home}/xdg-config/opencode/AGENTS.md", "sha256": "8d52b53942d6ab1178ddaeafc8df555e74925659565bcf4bddfbba44e94d11b7", "retain_as": "leanctx-opencode-AGENTS.md"},
@@ -2448,7 +2212,6 @@ TOOL_CONFIGS.update(
             surface="opencode-mcp+product-setup+warm-context-map",
             allowed_terms=["sigmap", "gen-context"],
             mounts=[str(SIGMAP_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V6,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}", "SIGMAP_TELEMETRY": "0"},
             host_integration={
                 "install_commands": [
@@ -2466,7 +2229,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(SIGMAP_ROOT / "gen-context.js"), "sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59", "kind": "standalone-mcp-bundle"},
                 {"path": str(SIGMAP_ROOT / "package.json"), "sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963", "kind": "source-package"},
-                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=[".context", "opencode.json"],
@@ -2479,7 +2242,6 @@ TOOL_CONFIGS.update(
             surface="opencode-plugin+per-turn-rules+skills+commands",
             allowed_terms=["ponytail"],
             mounts=[str(PONYTAIL_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V6,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
             host_integration={
                 "install_commands": [["/bin/bash", "-lc", "set -e; mkdir -p {repo}/.opencode/plugins; cp /opt/data/tool-candidates/ponytail/.opencode/plugins/ponytail.mjs {repo}/.opencode/plugins/ponytail.mjs; printf '\\n\\n# Ponytail product guidance (verbatim)\\n' >> {repo}/AGENTS.md; cat /opt/data/tool-candidates/ponytail/AGENTS.md >> {repo}/AGENTS.md"]],
@@ -2491,7 +2253,7 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(PONYTAIL_ROOT / ".opencode/plugins/ponytail.mjs"), "sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853", "kind": "native-plugin"},
                 {"path": str(PONYTAIL_ROOT / "AGENTS.md"), "sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf", "kind": "product-guidance"},
-                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md", ".opencode"],
@@ -2504,7 +2266,6 @@ TOOL_CONFIGS.update(
             surface="opencode-plugin+prompt-reinforcement+skills+commands",
             allowed_terms=["caveman", "cavecrew"],
             mounts=[str(CAVEMAN_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V6,
             env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
             host_integration={
                 "install_commands": [[str(NODE_BIN), str(CAVEMAN_ROOT / "bin/install.js"), "--only", "opencode", "--with-init"]],
@@ -2516,72 +2277,11 @@ TOOL_CONFIGS.update(
             artifact_identities=[
                 {"path": str(CAVEMAN_ROOT / "src/plugins/opencode/plugin.js"), "sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7", "kind": "native-plugin-source"},
                 {"path": str(CAVEMAN_ROOT / "src/plugins/opencode/package.json"), "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274", "kind": "native-plugin-package"},
-                {"path": str(OPENCODE_ADAPTER_V6), "sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3", "kind": "runtime-adapter"},
+                {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md", ".opencode"],
             default_tool_state="active-native-plugin+per-session-guidance",
-        ),
-        "lowfat-opencode-plugin-v1": _opencode_treatment_config(
-            "lowfat",
-            display_name="LowFat official OpenCode plugin v1",
-            lane_name="terminal-lowfat-opencode-plugin-v1",
-            surface="opencode-native-tool-execute-before/terminal-command-rewriting",
-            allowed_terms=["opencode", "lowfat"],
-            mounts=[str(LOWFAT_ROOT), str(LOWFAT_BIN)],
-            adapter_path=OPENCODE_ADAPTER_V7,
-            path_entries=[str(LOWFAT_BIN.parent)],
-            env={"LOWFAT_TELEMETRY": "0"},
-            host_integration={
-                "install_commands": [[str(LOWFAT_BIN), "opencode", "install"]],
-                "verify_commands": [[str(LOWFAT_BIN), "--version"]],
-                "required_files": ["{codex_home}/xdg-config/opencode/plugins/lowfat.ts"],
-                "timeout_seconds": 300,
-            },
-            native_plugin={"required": True, "path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts"},
-            artifact_identities=[
-                {"path": str(LOWFAT_BIN), "sha256": "609e9e42d9f01b9b1c4203dc00197498c65a629453d07927cbd68cea83980558", "kind": "official-release-binary"},
-                {"path": str(LOWFAT_ROOT / "crates/lowfat/embedded/opencode/lowfat.ts"), "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed", "kind": "native-plugin-source"},
-                {"path": str(OPENCODE_ADAPTER_V7), "sha256": "e7dbe311ae1ac75ebcc0838512e84efe80282f15b7a69c2db13d7f8e92fc3a3c", "kind": "runtime-adapter"},
-            ],
-            post_install_artifacts=[
-                {"path": "{codex_home}/xdg-config/opencode/plugins/lowfat.ts", "sha256": "49a6d53d34f40a00a1d8ebdccffee5d73572db22319ee5a99959429b634bf6ed", "retain_as": "lowfat-installed-plugin.ts"},
-            ],
-            effective_host_config={"required": True, "source": "adapter-probe"},
-            default_tool_state="active-native-plugin-exact-artifact",
-        ),
-        "dcp-opencode-plugin-v1": _opencode_treatment_config(
-            "dcp",
-            display_name="Dynamic Context Pruning official OpenCode plugin v3.1.14",
-            lane_name="context-dcp-opencode-plugin-v1",
-            surface="opencode-native-context-pruning+compress-tool+automatic-cleanup",
-            allowed_terms=["opencode", "dcp", "compress"],
-            mounts=[str(DCP_ROOT)],
-            adapter_path=OPENCODE_ADAPTER_V8,
-            env={"OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"},
-            host_integration={
-                "controller_install_commands": [[str(OPENCODE_BIN), "plugin", "@tarquinen/opencode-dcp@3.1.14", "--global"]],
-                "required_files": [
-                    "{codex_home}/xdg-config/opencode/opencode.jsonc",
-                    "{codex_home}/xdg-config/opencode/tui.json",
-                    "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js",
-                ],
-                "timeout_seconds": 600,
-            },
-            native_plugin={"required": True, "path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js"},
-            artifact_identities=[
-                {"path": str(DCP_ROOT / "package.json"), "sha256": "9b7f126d0f5bbe06f1b17b583e0cbc7b2e66d556a58d646574319dc65d3d410e", "kind": "source-package"},
-                {"path": str(DCP_ROOT / "package-lock.json"), "sha256": "cae2ac00ee6abc966e7132732fb975fe0c1d5e5494c2ac48c7cf566718aa5a98", "kind": "source-lock"},
-                {"path": str(DCP_ROOT / "README.md"), "sha256": "1905a791ba86ea0f8cd8771364f7c5a8e6a3634ecb636df4eeede1614530b882", "kind": "product-guidance"},
-                {"path": str(OPENCODE_ADAPTER_V8), "sha256": "d5fcd88e033767659da3acf17486273059cd566c29475c274349d2214428545c", "kind": "runtime-adapter"},
-            ],
-            post_install_artifacts=[
-                {"path": "{codex_home}/xdg-config/opencode/opencode.jsonc", "sha256": "9b8a141b67efdf6fbcb1123f859cdc5acc41e35ab795fb8385029ff508221dd9", "retain_as": "dcp-opencode-config.jsonc"},
-                {"path": "{codex_home}/xdg-config/opencode/tui.json", "sha256": "0149ceca7dfcbed690669efd026606124f175fed423b2067dd1a8f0c0a1262c0", "retain_as": "dcp-opencode-tui.json"},
-                {"path": "{codex_home}/xdg-cache/opencode/packages/@tarquinen/opencode-dcp@3.1.14/node_modules/@tarquinen/opencode-dcp/dist/index.js", "sha256": "1e70b38527d6c604d9437bb447a67c857cd6f0cfe02f4fa69b69729e2ef57432", "retain_as": "dcp-installed-plugin.js"},
-            ],
-            effective_host_config={"required": True, "source": "adapter-probe"},
-            default_tool_state="active-native-plugin+automatic-cleanup+model-visible-compress",
         ),
     }
 )
@@ -2760,26 +2460,6 @@ TOOL_CONFIGS.update(
             diff_exclude_paths=[".lean-ctx", ".claude", "AGENTS.md", "LEAN-CTX.md", ".mcp.json"],
             claude_features={"hooks": True, "mcp": True, "skill": "lean-ctx"},
         ),
-        "lowfat-claude-code-hook-v1": _claude_readme_config(
-            "lowfat",
-            lane_name="terminal-lowfat-claude-code-hook-v1",
-            surface="claude-code-readme-pretooluse+posttooluse-hooks",
-            install_commands=[
-                [
-                    "python3",
-                    CLAUDE_README_HOOK_INSTALLER,
-                    "--tool",
-                    "lowfat",
-                    "--settings",
-                    "{codex_home}/claude-config/settings.json",
-                ],
-            ],
-            verify_commands=[[str(LOWFAT_BIN), "--version"]],
-            required_files=["{codex_home}/claude-config/settings.json"],
-            diff_exclude_paths=[".claude", "CLAUDE.md", ".mcp.json"],
-            claude_features={"hooks": True},
-            backend="host",
-        ),
         "serena-claude-code-mcp-v1": _claude_readme_config(
             "serena",
             lane_name="retrieval-serena-claude-code-mcp-v1",
@@ -2890,6 +2570,82 @@ TOOL_CONFIGS.update(
         ),
     }
 )
+
+
+# The batch migration first covered the Codex lane only, which left every OpenCode and Claude
+# Code profile pointing at the pre-batch /opt/data/tool-candidates trees that were deleted with
+# the old corpus: those lanes failed at install with 127 rather than with anything that looked
+# like a configuration error. A release is a property of the tool, not of the lane, so each
+# lane's config ids reuse the replacements their Codex sibling already carries.
+_BATCH_LANE_SIBLINGS = {
+    "cartog-codex-product-v2": ("cartog", "cartog-claude-code-product-v1", "cartog-opencode-product-v2"),
+    "caveman-codex-skill-v1": ("caveman-opencode-plugin-v1",),
+    "codegraph-codex-mcp-v1": ("codegraph", "codegraph-claude-code-mcp-v1", "codegraph-opencode-mcp-v1"),
+    "codescope-codex-product-v1": ("codescope", "codescope-claude-code-mcp-v1", "codescope-opencode-product-v1"),
+    "graphify-codex-skill-v1": ("graphify", "graphify-claude-code-skill-v1", "graphify-opencode-product-v1"),
+    "headroom": ("headroom-opencode-product-v3", "headroom-proxy-only"),
+    "jcodemunch-codex-mcp-v2": ("jcodemunch-mcp", "jcodemunch-claude-code-mcp-v1", "jcodemunch-opencode-product-v1"),
+    "leanctx-codex-hybrid-v1": ("lean-ctx", "leanctx-claude-code-hybrid-v1", "leanctx-opencode-hybrid-v1"),
+    "ponytail-codex-plugin-v1": ("ponytail", "ponytail-opencode-plugin-v1"),
+    "rtk-codex-instructions-v1": ("rtk-opencode-plugin-v1",),
+    "serena-codex-mcp-v1": ("serena", "serena-claude-code-mcp-v1", "serena-opencode-mcp-v1"),
+    "sigmap-codex-live-v1": ("sigmap", "sigmap-claude-code-mcp-v1", "sigmap-opencode-product-v1"),
+    "snip-codex-hook-v1": ("snip", "snip-claude-code-hook-v1", "snip-opencode-plugin-v2"),
+    "token-savior-codex-product-v2": ("token-savior", "token-savior-claude-code-product-v1", "token-savior-mcp-v1"),
+    "tokenjuice-codex-hook-v1": ("tokenjuice", "tokenjuice-claude-code-hook-v1", "tokenjuice-opencode-plugin-v2"),
+}
+for _codex_id, _lane_ids in _BATCH_LANE_SIBLINGS.items():
+    for _lane_id in _lane_ids:
+        if _lane_id in TOOL_CONFIGS:
+            _BATCH_REWRITES.setdefault(_lane_id, {}).update(_BATCH_REWRITES[_codex_id])
+
+# Roots only the non-Codex lanes reference, so no Codex sibling carries them.
+for _lane_id, _extra in {
+    "rtk-opencode-plugin-v1": {"/opt/data/tool-candidates/rtk": str(_BATCH_SOURCE("rtk"))},
+    "tokenjuice-opencode-plugin-v2": {
+        str(TOKENJUICE_ROOT / "dist/cli/main.js"): str(
+            _BATCH_RUNTIME("tokenjuice") / "node_modules/tokenjuice/dist/cli/main.js"
+        )
+    },
+    # The Codex mapping sends the serena root to the wheel, which is the install target there.
+    # This lane also reads the manifest, so the longer key has to reach the source tree.
+    "serena-opencode-mcp-v1": {
+        str(SERENA_ROOT / "pyproject.toml"): str(_BATCH_SOURCE("serena") / "pyproject.toml")
+    },
+}.items():
+    if _lane_id in TOOL_CONFIGS:
+        _BATCH_REWRITES.setdefault(_lane_id, {}).update(_extra)
+
+
+# Rewriting the paths is only half of it. _pin_batch_release also mounts the release trees, and
+# a lane config that names the right binary without mounting it fails inside the container with
+# "No such file or directory" on a file that plainly exists on the host.
+_BATCH_LANE_RELEASES = {
+    "cartog-codex-product-v2": "cartog", "caveman-codex-skill-v1": "caveman",
+    "codegraph-codex-mcp-v1": "codegraph", "codescope-codex-product-v1": "codescope",
+    "graphify-codex-skill-v1": "graphify", "headroom": "headroom",
+    "jcodemunch-codex-mcp-v2": "jcodemunch", "leanctx-codex-hybrid-v1": "leanctx",
+    "ponytail-codex-plugin-v1": "ponytail", "rtk-codex-instructions-v1": "rtk",
+    "serena-codex-mcp-v1": "serena", "sigmap-codex-live-v1": "sigmap",
+    "snip-codex-hook-v1": "snip", "token-savior-codex-product-v2": "token-savior",
+    "tokenjuice-codex-hook-v1": "tokenjuice",
+}
+for _codex_id, _lane_ids in _BATCH_LANE_SIBLINGS.items():
+    _release = _BATCH_LANE_RELEASES[_codex_id]
+    # Directories only. The release artifact is a single file, and mounting one the config never
+    # names adds a bind the daemon has to resolve for no benefit.
+    _trees = [str(_BATCH_SOURCE(_release)), str(_BATCH_RUNTIME(_release))]
+    for _lane_id in _lane_ids:
+        if _lane_id not in TOOL_CONFIGS or _lane_id not in _BATCH_REWRITES:
+            continue
+        _cfg = _replace_batch_paths(TOOL_CONFIGS[_lane_id], _BATCH_REWRITES[_lane_id])
+        _cfg["mounts"] = list(dict.fromkeys(
+            [*_cfg.get("mounts", []), *[tree for tree in _trees if Path(tree).exists()]]
+        ))
+        TOOL_CONFIGS[_lane_id] = _cfg
+for _lane_id in ("rtk-opencode-plugin-v1", "tokenjuice-opencode-plugin-v2"):
+    if _lane_id in TOOL_CONFIGS and _lane_id in _BATCH_REWRITES:
+        TOOL_CONFIGS[_lane_id] = _replace_batch_paths(TOOL_CONFIGS[_lane_id], _BATCH_REWRITES[_lane_id])
 
 
 def rel_or_abs(path_text: str) -> Path:
@@ -3078,6 +2834,9 @@ def prepare_claude_mcp_config(
     if not command:
         raise ValueError(f"Claude MCP profile {pid} has no server command")
     config_path = claude_home / "claude-config" / "mcp.json"
+    # This writer runs before claude_env in some orderings, and claude_env is what usually
+    # creates the lane-private config directory. Own the directory rather than assume it.
+    config_path.parent.mkdir(parents=True, exist_ok=True)
     config_path.write_text(json.dumps({
         "mcpServers": {
             server: {

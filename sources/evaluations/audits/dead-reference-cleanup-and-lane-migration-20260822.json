@@ -1,0 +1,67 @@
+{
+ "schema_version": 1,
+ "date": "2026-08-22",
+ "action": "dead-reference-cleanup-and-batch-lane-migration",
+ "direction": "Owner, 2026-08-22: remove every reference to dead protocols and adapters; make the tool treatment profiles work on Codex, Claude Code, and OpenCode-with-Codex.",
+ "removed_tools": {
+  "tools": [
+   "lowfat",
+   "dcp",
+   "sdl-mcp"
+  ],
+  "reason": "No batch release exists for any of them, so there was no current artifact to point at. Six profiles and nine tool configs removed across all three lanes.",
+  "kept": "terminal-lowfat stays: it is a historical-profile evidence identity, and retained baselines record lowfat in their frozen forbidden_surfaces."
+ },
+ "removed_superseded": {
+  "profiles": [
+   "integrated-headroom-opencode-product-v2",
+   "integrated-leanctx-opencode-hybrid-v1",
+   "retrieval-cartog-opencode-product-v1",
+   "terminal-snip-opencode-plugin-v1",
+   "terminal-tokenjuice-opencode-plugin-v1"
+  ],
+  "reason": "Already excluded or invalid in the registry while still wired into the runners."
+ },
+ "dead_adapters": {
+  "removed": "OPENCODE_ADAPTER_V2 through V9 and OPENCODE_BIN_V2 -- pinned snapshots of this repository's own adapter, under /opt/data/tool-candidates paths deleted with the old corpus.",
+  "now": "Every profile uses the live scripts/opencode_workflow_adapter.py. Its artifact identity is computed from the file at import rather than restated, since a hardcoded digest of a repository script goes stale on the next edit; the protocol descriptor already fixes repository state."
+ },
+ "batch_lane_migration": {
+  "before": "30 live profiles referenced paths that no longer existed.",
+  "after": "9, of which 7 are inert PATH entries that the passing Codex profiles also carry.",
+  "how": "A release is a property of the tool, not the lane, so each lane config reuses its Codex sibling's path replacements, and the release trees it needs are mounted as well -- a config that names the right binary without mounting it fails inside the container with 'No such file or directory' on a file that plainly exists on the host."
+ },
+ "lane_results": {
+  "codex": "15 of 15 (unchanged).",
+  "claude_code": "7 of 14, up from 1. Two more regressed to a blocker described below.",
+  "opencode": "0 of 16, but no longer on missing paths."
+ },
+ "fixed_this_round": [
+  "The Claude MCP config writer assumed claude_env had already created the lane-private config directory; it now creates its own.",
+  "The smoke harness declares the lane runtime in its record, which is what selects claude_env over codex_env. Without it the Claude lane got no lane-private ~/.claude and no mounted entrypoint -- a harness gap, not a protocol defect."
+ ],
+ "open_blockers": [
+  {
+   "lane": "opencode",
+   "finding": "Lane configs still carry artifact_identities pinned to pre-batch digests. serena-opencode is the clearest case: the path now resolves to the 1.7.0 pyproject.toml while the expected sha256 is the old checkout's, so host integration is skipped before any install runs. The fix is the same shape as the path migration -- carry the release identities across, as _pin_batch_release already does for Codex.",
+   "status": "diagnosed, not fixed"
+  },
+  {
+   "lane": "claude-code",
+   "finding": "Any profile whose install or verify shells out to `claude` fails with 'Permission denied' on the mounted /opt/data/claude-entry/claude. ponytail and caveman passed earlier in the same session and then stopped; the Claude Code install on this host was replaced at 13:40 mid-session, which is the most likely cause. Not root-caused, and not obviously ours: rtk-claude, which does not invoke the claude CLI, passes.",
+   "status": "diagnosed, not root-caused"
+  },
+  {
+   "profile": "integrated-headroom-opencode-product-v3",
+   "finding": "Needs plugins/opencode/dist, which the 0.36.3 source tarball does not ship -- the plugin is built, not published. Would need a build step in the install or exclusion."
+  },
+  {
+   "profile": "terminal-snip-opencode-plugin-v2",
+   "finding": "Points at opencode-snip-v1.6.1, a separate download with no batch release and no equivalent in snip's own source tree. Same class as lowfat/dcp/sdl-mcp and probably belongs with them."
+  }
+ ],
+ "not_touched": {
+  "FORBIDDEN_BASELINE_TERMS": "Left intact although it names removed tools. It is the baseline contract, not a dead adapter reference: the retained r0/r1/r2 baselines were measured against exactly this list and record it in their frozen forbidden_surfaces. Trimming it would change what a new baseline forbids and break comparability with them.",
+  "opencode_openrouter_conditions": "Left registered. The owner uses OpenCode with the Codex subscription, so the openrouter route is unused, but it is registry state rather than a dead reference and removing it is a separate call."
+ }
+}

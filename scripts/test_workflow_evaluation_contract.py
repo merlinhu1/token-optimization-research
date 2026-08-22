@@ -926,7 +926,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "{repository_root}/scripts/run_codescope_neutral_mcp.py",
         )
         self.assertTrue(runner.fixture.CODESCOPE_NEUTRAL_MCP_SOURCE.is_file())
-        self.assertTrue({str(runner.fixture.CODESCOPE_BIN), str(runner.fixture.CODESCOPE_SURREAL_BIN)}.issubset(codescope["mounts"]))
+        # Both binaries are still mounted individually; the batch pin only moved them, so the
+        # expectation is derived from the release runtime rather than from the pre-batch constants.
+        runtime = runner.fixture._BATCH_RUNTIME("codescope")
+        for binary in ("codescope", "surreal"):
+            self.assertIn(str(runtime / binary), codescope["mounts"])
+            self.assertTrue((runtime / binary).is_file(), f"{binary} missing from {runtime}")
         self.assertEqual(codescope["diff_exclude_paths"], [".fastembed_cache", ".codescope"])
         self.assertEqual(
             runner.treatment_diff_exclude_paths(codescope),
@@ -1162,7 +1167,7 @@ print('ok')
         # The expected commit is read from the batch pin rather than restated, so migrating a
         # profile to a newer release does not require editing the assertion to agree with it.
         for profile, plugin, commit in [
-            ("artifact-ponytail-claude-code-plugin-v1", "ponytail", "40e50d9e03242aa5dd53ac771950f9127362b25f"),
+            ("artifact-ponytail-claude-code-plugin-v1", "ponytail", runner.fixture.BATCH_RELEASES["ponytail"][5]),
             ("behavior-caveman-claude-code-skill-v1", "caveman", runner.fixture.BATCH_RELEASES["caveman"][5]),
         ]:
             cfg = runner.fixture.active_tool_config({}, profile)
@@ -1391,9 +1396,11 @@ print('ok')
         self.assertIn("--agents", opencode["host_integration"]["install_commands"][-1])
         self.assertEqual(opencode["mcp_server"], "repowise")
         self.assertTrue(opencode["mcp_handshake"]["required"])
+        # The adapter identity tracks the live scripts/opencode_workflow_adapter.py rather than a
+        # deleted pinned snapshot, so the expected digest is read from it rather than restated.
         self.assertEqual(
             opencode["artifact_identities"][-1]["sha256"],
-            "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
+            runner.fixture.OPENCODE_ADAPTER_SHA256,
         )
 
     def test_repowise_provider_free_generation_is_deleted_and_not_runnable(self) -> None:

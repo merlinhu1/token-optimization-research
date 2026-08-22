@@ -63,8 +63,6 @@ PROJECT_META: dict[str, dict[str, str]] = {
 }
 
 SUPPORTED_WORKFLOW_TOOL_PROFILES = {
-    "retrieval-sdl-mcp-codex-product-v1": "sdl-mcp-codex-product-v1",
-    "retrieval-sdl-mcp-opencode-product-v1": "sdl-mcp-opencode-product-v1",
     "retrieval-leanctx": "lean-ctx",
     "integrated-leanctx-codex-hybrid-v1": "leanctx-codex-hybrid-v1",
     "retrieval-codegraph": "codegraph",
@@ -98,7 +96,6 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "codescope-claude-code-mcp-v1": "codescope",
     "retrieval-graphify-claude-code-skill-v1": "graphify",
     "integrated-leanctx-claude-code-hybrid-v1": "lean-ctx",
-    "terminal-lowfat-claude-code-hook-v1": "lowfat",
     "artifact-ponytail-claude-code-plugin-v1": "ponytail",
     "retrieval-serena-claude-code-mcp-v1": "serena",
     "retrieval-sigmap-claude-code-mcp-v1": "sigmap",
@@ -106,7 +103,6 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "integrated-token-savior-claude-code-product-v1": "token-savior",
     "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice",
     "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-mcp",
-    "retrieval-sdl-mcp-claude-code-product-v1": "sdl-mcp-codex-product-v1",
     "terminal-snip": "snip",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "terminal-lowfat": "lowfat",
@@ -118,11 +114,7 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "runtime-opencode-codex-product-v1": "opencode-codex-product-v1",
     # Historical OpenCode treatment IDs remain reconstructable for immutable protocols,
     # but their profile registry status prevents rerun after deletion.
-    "terminal-tokenjuice-opencode-plugin-v1": "tokenjuice-opencode-plugin-v1",
-    "terminal-snip-opencode-plugin-v1": "snip-opencode-plugin-v1",
-    "retrieval-cartog-opencode-product-v1": "cartog-opencode-product-v1",
     "integrated-headroom-opencode-product-v1": "headroom-opencode-product-v1",
-    "integrated-headroom-opencode-product-v2": "headroom-opencode-product-v2",
     "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
     "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
     "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
@@ -134,13 +126,10 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "retrieval-codegraph-opencode-mcp-v1": "codegraph-opencode-mcp-v1",
     "retrieval-repowise-opencode-product-v2": "repowise-opencode-product-v2",
     "retrieval-jcodemunch-opencode-product-v1": "jcodemunch-opencode-product-v1",
-    "integrated-leanctx-opencode-hybrid-v1": "leanctx-opencode-hybrid-v1",
     "integrated-leanctx-opencode-hybrid-v2": "leanctx-opencode-hybrid-v1",
     "retrieval-sigmap-opencode-product-v1": "sigmap-opencode-product-v1",
     "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
     "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
-    "terminal-lowfat-opencode-plugin-v1": "lowfat-opencode-plugin-v1",
-    "context-dcp-opencode-plugin-v1": "dcp-opencode-plugin-v1",
 }
 
 # Existing profile protocols were qualified against this runner manifest. The
@@ -163,10 +152,8 @@ FIXED_CURRENT_TOOL_MANIFEST_SHA256 = {
     "retrieval-codegraph-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
     "retrieval-graphify-claude-code-skill-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
     "retrieval-jcodemunch-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
-    "retrieval-sdl-mcp-claude-code-product-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
     "retrieval-serena-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
     "retrieval-sigmap-claude-code-mcp-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
-    "terminal-lowfat-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
     "terminal-rtk-claude-code-hook-v1": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
     "terminal-snip-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
     "terminal-tokenjuice-claude-code-hook-v1": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
