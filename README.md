@@ -16,7 +16,7 @@ The active registry contains 5 accepted provider-backed sessions: 5 baselines. B
 
 Weighted token cost decomposes as agent steps times weighted cost per step. `c86863838e8b` holds 3 replicates (64, 64, 63 agent steps, spread 1.6%); weighted cost per step spread 8.8%; `dc16afea3ad5` holds 2 replicates (69, 73 agent steps, spread 5.8%); weighted cost per step spread 10.0%.
 
-Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions); `lifecycle-v2-beets-plugin-tasks-20260820` (3 sessions); `lifecycle-v2-beets-repin-20260822` (3 sessions); `lifecycle-v2-pre-prompt-repair-20260821` (5 sessions).
+Archived generations: `lifecycle-v1-pre-capped-suite-20260815` (2 sessions); `lifecycle-v1-pre-corrected-prompts-20260813` (103 sessions); `lifecycle-v1-pre-targeted-tests-20260816` (4 sessions).
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
