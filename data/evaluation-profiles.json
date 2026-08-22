@@ -1868,7 +1868,7 @@
       "artifact_slug": "swarmvault",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "excluded",
       "enabled_surfaces": [
         "broad-context-owner",
         "mcp",
@@ -1897,7 +1897,8 @@
         "integration_state": "official-codex-rules-hook-mcp",
         "assignment_proof": "provider-free initialize plus tools/list handshake required"
       },
-      "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven."
+      "notes": "Excluded 2026-08-22 by experiment-owner direction: resource cost out of proportion to the measurement. `swarmvault compile` is SIGKILLed on the evaluation host after ingesting the fixture, and the policy is not to carry tools whose setup needs resources on that scale.",
+      "blocked_reason": "excessive-setup-resource-cost"
     },
     {
       "id": "retrieval-serena-codex-mcp-v1",
@@ -2888,7 +2889,7 @@
     {
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "disabled_overlaps": [
         "all unlisted surfaces"
@@ -2939,7 +2940,8 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
       },
-      "notes": "Successive OpenCode screen selected from the live compatible shortlist; all official OpenCode surfaces are active. Corrected before accepted execution to enable only the assigned project skill in the isolated OpenCode permission map; the prior skill-disabled generation was deleted as invalid."
+      "notes": "Excluded 2026-08-22 by experiment-owner direction: resource cost out of proportion to the measurement. `swarmvault compile` is SIGKILLed on the evaluation host after ingesting the fixture, and the policy is not to carry tools whose setup needs resources on that scale.",
+      "blocked_reason": "excessive-setup-resource-cost"
     },
     {
       "profile_type": "individual_tool",
@@ -3644,7 +3646,7 @@
       "notes": "The adapter keeps OpenCode project-config loading disabled to prevent the generated npx/latest binding from bypassing the pinned source; it injects an equivalent source-pinned MCP block and loads the product-generated enforce-sdl plugin explicitly. This is a recorded compatibility deviation, not a claim of byte-identical installer behavior."
     },
     {
-    "id": "retrieval-cartog-claude-code-product-v1",
+      "id": "retrieval-cartog-claude-code-product-v1",
       "artifact_slug": "retrieval-cartog-claude-code-product",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3684,7 +3686,7 @@
       "notes": "Claude Code preparation profile for Cartog; source profile retrieval-cartog-codex-product-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "behavior-caveman-claude-code-skill-v1",
+      "id": "behavior-caveman-claude-code-skill-v1",
       "artifact_slug": "behavior-caveman-claude-code-skill",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3724,7 +3726,7 @@
       "notes": "Claude Code preparation profile for Caveman; source profile behavior-caveman-codex-skill-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "retrieval-codegraph-claude-code-mcp-v1",
+      "id": "retrieval-codegraph-claude-code-mcp-v1",
       "artifact_slug": "retrieval-codegraph-claude-code-mcp",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3764,7 +3766,7 @@
       "notes": "Claude Code preparation profile for CodeGraph; source profile retrieval-codegraph-codex-mcp-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "codescope-claude-code-mcp-v1",
+      "id": "codescope-claude-code-mcp-v1",
       "artifact_slug": "codescope-claude-code-mcp",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3804,7 +3806,7 @@
       "notes": "Claude Code preparation profile for CodeScope; source profile codescope-codex-product-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "retrieval-graphify-claude-code-skill-v1",
+      "id": "retrieval-graphify-claude-code-skill-v1",
       "artifact_slug": "retrieval-graphify-claude-code-skill",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3844,7 +3846,7 @@
       "notes": "Claude Code preparation profile for Graphify; source profile retrieval-graphify-codex-skill-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "integrated-leanctx-claude-code-hybrid-v1",
+      "id": "integrated-leanctx-claude-code-hybrid-v1",
       "artifact_slug": "integrated-leanctx-claude-code-hybrid",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3884,7 +3886,7 @@
       "notes": "Claude Code preparation profile for LeanCTX; source profile integrated-leanctx-codex-hybrid-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "terminal-lowfat-claude-code-hook-v1",
+      "id": "terminal-lowfat-claude-code-hook-v1",
       "artifact_slug": "terminal-lowfat-claude-code-hook",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3924,7 +3926,7 @@
       "notes": "Claude Code preparation profile for LowFat; source profile terminal-lowfat-opencode-plugin-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "artifact-ponytail-claude-code-plugin-v1",
+      "id": "artifact-ponytail-claude-code-plugin-v1",
       "artifact_slug": "artifact-ponytail-claude-code-plugin",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -3964,7 +3966,7 @@
       "notes": "Claude Code preparation profile for Ponytail; source profile artifact-ponytail-codex-plugin-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "retrieval-serena-claude-code-mcp-v1",
+      "id": "retrieval-serena-claude-code-mcp-v1",
       "artifact_slug": "retrieval-serena-claude-code-mcp",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -4004,7 +4006,7 @@
       "notes": "Claude Code preparation profile for Serena; source profile retrieval-serena-codex-mcp-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "retrieval-sigmap-claude-code-mcp-v1",
+      "id": "retrieval-sigmap-claude-code-mcp-v1",
       "artifact_slug": "retrieval-sigmap-claude-code-mcp",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -4044,7 +4046,7 @@
       "notes": "Claude Code preparation profile for SigMap; source profile retrieval-sigmap-codex-live-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "terminal-snip-claude-code-hook-v1",
+      "id": "terminal-snip-claude-code-hook-v1",
       "artifact_slug": "terminal-snip-claude-code-hook",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -4084,7 +4086,7 @@
       "notes": "Claude Code preparation profile for Snip; source profile terminal-snip-codex-hook-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "integrated-token-savior-claude-code-product-v1",
+      "id": "integrated-token-savior-claude-code-product-v1",
       "artifact_slug": "integrated-token-savior-claude-code-product",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -4124,7 +4126,7 @@
       "notes": "Claude Code preparation profile for Token Savior; source profile integrated-token-savior-codex-product-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "terminal-tokenjuice-claude-code-hook-v1",
+      "id": "terminal-tokenjuice-claude-code-hook-v1",
       "artifact_slug": "terminal-tokenjuice-claude-code-hook",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -4164,7 +4166,7 @@
       "notes": "Claude Code preparation profile for TokenJuice; source profile terminal-tokenjuice-codex-hook-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "retrieval-jcodemunch-claude-code-mcp-v1",
+      "id": "retrieval-jcodemunch-claude-code-mcp-v1",
       "artifact_slug": "retrieval-jcodemunch-claude-code-mcp",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
@@ -4204,7 +4206,7 @@
       "notes": "Claude Code preparation profile for jCodeMunch; source profile retrieval-jcodemunch-codex-mcp-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
     },
     {
-    "id": "retrieval-sdl-mcp-claude-code-product-v1",
+      "id": "retrieval-sdl-mcp-claude-code-product-v1",
       "artifact_slug": "retrieval-sdl-mcp-claude-code-product",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",

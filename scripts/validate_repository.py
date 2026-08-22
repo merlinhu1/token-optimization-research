@@ -1315,7 +1315,7 @@ def current_candidate_profile_launch_readiness_errors(root: Path = ROOT) -> list
     sequence_doc = json.loads((root / "data/workflow-task-sequences.json").read_text())
     workflow_sessions_doc = json.loads((root / "data/workflow-sessions.json").read_text())
     parity_doc = json.loads(
-        (root / "sources/evaluations/audits/official-integration-parity-20260718.json").read_text()
+        (root / "sources/evaluations/audits/official-integration-parity-20260822.json").read_text()
     )
     qualification_docs = [
         json.loads(path.read_text())
@@ -3110,7 +3110,7 @@ def main() -> int:
     medium_candidates_doc = load_json("data/medium-project-candidates.json")
     fixtures_doc = load_json("data/repository-fixtures.json")
     backlog_doc = load_json("data/tool-analysis-backlog.json")
-    parity_doc = load_json("sources/evaluations/audits/official-integration-parity-20260718.json")
+    parity_doc = load_json("sources/evaluations/audits/official-integration-parity-20260822.json")
     qualification_docs = [
         json.loads(path.read_text())
         for path in sorted(

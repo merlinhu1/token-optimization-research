@@ -1,0 +1,36 @@
+{
+ "schema_version": 1,
+ "date": "2026-08-22",
+ "action": "owner-authorized-candidate-exclusion",
+ "tool": "swarmclawai/swarmvault",
+ "disposition": "excluded-excessive-setup-resource-cost",
+ "direction": "Experiment-owner direction, 2026-08-22: remove SwarmVault from the candidate set and delete its release copy. Stated policy: tools whose setup demands resources on this scale are not carried.",
+ "evidence": {
+  "observed": "In the provider-free host-integration dry run, `swarmvault init --lite` and `swarmvault ingest` completed on the prepared Fastify base (383 files imported, 2 secrets redacted), then `swarmvault compile` was SIGKILLed with exit 137 after about 71 seconds.",
+  "cause": "Host memory. No container memory limit is set for the lane, so the kill came from the evaluation host: 7.6 GB total with roughly 1 GB free.",
+  "note": "This was reproducible across two dry-run rounds and is a property of the tool's compile step on a fixture of this size, not of a single loaded moment. Recorded so the exclusion is not later mistaken for a token result: SwarmVault produced no weighted-token measurement and none is claimed."
+ },
+ "profiles_excluded": [
+  "swarmvault-codex-product-v1",
+  "swarmvault-opencode-product-v1"
+ ],
+ "retained_sessions": 0,
+ "retained_identities": {
+  "swarmvault-owner": "Left in place. It is a historical-profile evidence identity that frozen audits still refer to, so its config and registry record are preserved unchanged; only the two active candidate profiles were excluded."
+ },
+ "surfaces_updated": [
+  "data/evaluation-profiles.json: both candidate profiles set to status excluded with blocked_reason excessive-setup-resource-cost",
+  "data/repository-fixtures.json: removed from candidate_profiles and future_evaluation_lanes",
+  "scripts/run_codex_fixture_evaluation.py: candidate tool configs, batch release pin and batch rewrites removed; the swarmvault-owner config kept",
+  "scripts/run_codex_workflow_evaluation.py and scripts/opencode_workflow_adapter.py: candidate profile mappings and the OpenCode treatment branch removed",
+  "scripts/fetch_batch_releases.py: removed from the provisioning table, so the corpus no longer expects the deleted artifact",
+  "sources/evaluations/audits/official-integration-parity-20260822.json: supersedes the 2026-07-18 parity record, carrying the approved set forward from 17 profiles to 16",
+  "docs/evaluations/operations/runbook.md: regenerated"
+ ],
+ "disk": {
+  "path": "/opt/data/tool-candidates/releases/swarmvault-3.20.0",
+  "freed": "634M",
+  "deleted": true
+ },
+ "corpus_after": "16 tools, 32 of 32 artifact and guide digests verify."
+}

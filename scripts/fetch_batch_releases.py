@@ -38,7 +38,6 @@ REPOS = {
     "leanctx": "yvgude/lean-ctx",
     "cartog": "jrollin/cartog",
     "codescope": "onur-gokyildiz-bhi/codescope",
-    "swarmvault": "swarmclawai/swarmvault",
     "serena": "oraios/serena",
     "sigmap": "manojmallick/sigmap",
     "token-savior": "Mibayy/token-savior",
@@ -88,7 +87,6 @@ def candidate_artifact_urls(name: str, directory: str, artifact: str) -> list[st
         package = filename[: -len(f"-{version}.tgz")]
         urls.append(f"https://registry.npmjs.org/{package}/-/{filename}")
         # A scoped package is pinned under a flattened filename, and npm serves its tarball
-        # under the bare name: swarmvaultai-cli-3.20.0.tgz is @swarmvaultai/cli's cli-3.20.0.tgz.
         if "-" in package:
             scope, _, bare = package.partition("-")
             urls.append(

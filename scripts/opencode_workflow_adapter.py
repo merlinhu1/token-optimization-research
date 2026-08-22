@@ -46,7 +46,6 @@ NODE_BINARY = Path("/opt/data/opt/node-v24.18.0-linux-x64/bin/node")
 SDL_MCP_ROOT = Path("/opt/data/tool-candidates/sdl-mcp")
 SDL_MCP_MAIN = SDL_MCP_ROOT / "dist" / "main.js"
 CODESCOPE_BINARY = Path("/opt/data/tool-candidates/codescope-release-v0.8.12/codescope")
-SWARMVAULT_CLI = Path("/opt/data/tool-candidates/swarmvault/packages/cli/dist/index.js")
 CODEGRAPH_BINARY = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 JCODEMUNCH_ROOT = Path("/opt/data/tool-candidates/jcodemunch-mcp")
 LEANCTX_BINARY = Path("/opt/data/bin/lean-ctx")
@@ -66,7 +65,6 @@ TREATMENT_PROFILES = {
     "cartog",
     "headroom",
     "codescope",
-    "swarmvault",
     "graphify",
     "rtk",
     "codegraph",
@@ -80,7 +78,7 @@ TREATMENT_PROFILES = {
     "sdl-mcp",
 }
 PLUGIN_TREATMENTS = {
-    "tokenjuice", "snip", "headroom", "swarmvault", "graphify", "rtk",
+    "tokenjuice", "snip", "headroom", "graphify", "rtk",
     "ponytail", "caveman", "lowfat", "dcp",
 }
 GUIDED_TREATMENTS = {"jcodemunch", "leanctx", "sigmap", "ponytail", "caveman", "sdl-mcp"}
@@ -675,7 +673,7 @@ def _runtime_env(
             "webfetch": "deny",
             "websearch": "deny",
             "task": "deny",
-            "skill": "allow" if treatment in {"swarmvault", "graphify"} else "deny",
+            "skill": "allow" if treatment == "graphify" else "deny",
             "lsp": "deny",
             "question": "deny",
             "external_directory": "deny",
@@ -797,22 +795,6 @@ def _runtime_env(
                 "enabled": True,
             }
         }
-    elif treatment == "swarmvault":
-        if directory is None:
-            raise ValueError("SwarmVault treatment requires an evaluation directory")
-        plugin = directory / ".opencode" / "plugins" / "swarmvault-graph-first.js"
-        config["plugin"] = [plugin.as_uri()]
-        config["mcp"] = {
-            "swarmvault": {
-                "type": "local",
-                "command": [str(NODE_BINARY), str(SWARMVAULT_CLI), "mcp"],
-                "environment": {
-                    "SWARMVAULT_OUT": str(xdg_state / "swarmvault" / "vault"),
-                    "SWARMVAULT_NO_NOTICES": "1",
-                },
-                "enabled": True,
-            }
-        }
     elif treatment == "graphify":
         if directory is None:
             raise ValueError("Graphify treatment requires an evaluation directory")
@@ -882,7 +864,7 @@ def _runtime_env(
             "OPENCODE_DISABLE_AUTOUPDATE": "1",
             "OPENCODE_DISABLE_MODELS_FETCH": "1",
             "OPENCODE_DISABLE_PROJECT_CONFIG": "1",
-            "OPENCODE_DISABLE_EXTERNAL_SKILLS": "0" if treatment in {"swarmvault", "graphify", *GUIDED_TREATMENTS} else "1",
+            "OPENCODE_DISABLE_EXTERNAL_SKILLS": "0" if treatment in {"graphify", *GUIDED_TREATMENTS} else "1",
             "OPENCODE_DISABLE_LSP_DOWNLOAD": "1",
             "OPENCODE_DISABLE_CLAUDE_CODE": "1",
             "OPENCODE_TREATMENT_PROFILE": treatment,
@@ -938,7 +920,6 @@ def probe(
             "tokenjuice": "tokenjuice.js",
             "snip": "opencode-snip-v1.6.1",
             "headroom": "entry.opencode.js",
-            "swarmvault": "swarmvault-graph-first.js",
             "graphify": "graphify.js",
             "rtk": "rtk.ts",
             "ponytail": "ponytail.mjs",
@@ -962,7 +943,7 @@ def probe(
         "model_available": provider_model in available,
         "project_config_disabled": True,
         "external_plugins_disabled_by_pure_flag": treatment not in PLUGIN_TREATMENTS,
-        "external_skills_disabled": treatment not in {"swarmvault", "graphify", *GUIDED_TREATMENTS},
+        "external_skills_disabled": treatment not in {"graphify", *GUIDED_TREATMENTS},
         "web_tools_permission": "deny",
         "subagents_permission": "deny",
         "plugin_assignment": plugin_proof,

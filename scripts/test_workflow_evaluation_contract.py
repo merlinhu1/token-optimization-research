@@ -825,7 +825,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "integrated-leanctx-codex-hybrid-v1",
             "retrieval-cartog-codex-product-v2",
             "codescope-codex-product-v1",
-            "swarmvault-codex-product-v1",
             "retrieval-serena-codex-mcp-v1",
             "retrieval-sigmap-codex-live-v1",
             "integrated-token-savior-codex-product-v2",
@@ -1599,7 +1598,6 @@ print('ok')
         expected = {
             "retrieval-cartog-codex-product-v2": "cartog-codex-product-v2",
             "codescope-codex-product-v1": "codescope-codex-product-v1",
-            "swarmvault-codex-product-v1": "swarmvault-codex-product-v1",
             "retrieval-serena-codex-mcp-v1": "serena-codex-mcp-v1",
             "retrieval-sigmap-codex-live-v1": "sigmap-codex-live-v1",
             "integrated-token-savior-mcp-v1": "token-savior-mcp-v1",
@@ -1619,12 +1617,6 @@ print('ok')
         self.assertEqual(codescope["mcp_command"], "/bin/bash")
         self.assertIn("codescope mcp", codescope["mcp_args"][-1])
         self.assertIn("codescope stop", codescope["mcp_args"][-1])
-
-        swarmvault = runner.fixture.active_tool_config({}, "swarmvault-codex-product-v1")
-        assert swarmvault is not None
-        swarmvault_warmup = " ".join(swarmvault["warmup"]["command"][-1:])
-        self.assertIn(" install --agent codex --hook", swarmvault_warmup)
-        self.assertTrue(swarmvault["codex_features"]["hooks"])
 
         serena = runner.fixture.active_tool_config({}, "retrieval-serena-codex-mcp-v1")
         assert serena is not None
