@@ -423,5 +423,31 @@
       "usability": "At 8.8% over three replicates the lane can resolve treatment effects of roughly 15% and above. That is inside the range context-reduction tools claim, so Beets is usable for screening and for large effects, and remains too coarse for small ones.",
       "caveat": "Three replicates. The seed-size correlation that motivated the bound was six tasks at three replicates, and this is one lane confirming it once."
     }
+  },
+  "fastify_regression_20260822": {
+    "observation": {
+      "fastify_pre_repair": {
+        "n3_spread_pct": 1.7,
+        "cancellation": 12.4
+      },
+      "fastify_post_repair": {
+        "n3_spread_pct": 13.0,
+        "cancellation": 1.2,
+        "weighted": [
+          756955.8,
+          727939.0,
+          822708.8
+        ]
+      },
+      "beets_post_repin": {
+        "n3_spread_pct": 8.8,
+        "cancellation": 2.3
+      }
+    },
+    "finding": "The lanes have swapped again. Fastify, the lane whose 1.7% reproducibility justified treating it as the precision arm, now spreads 13.0% at the same sample size, and its cancellation ratio has collapsed from 12.4x to 1.2x. Beets is now the tighter lane at 8.8% with 2.3x. Per-task variability is almost identical between them -- 115,209 against 115,694 in summed ranges -- so the entire difference is again whether deviations offset.",
+    "leading_suspect": "The prompt repair of 2026-08-21, which rewrote two of Fastify's six prompts. It is the only deliberate change to that lane between the two measurements. The repair was recommended and executed on the basis that exploration variance tracked prompt precision; on this evidence it removed the property that made the lane usable.",
+    "confounds": "Not established as causal. The measurement also crossed a new qualification and protocol identity and eleven days of provider drift, and each figure is a single n=3 observation rather than an estimate. Fastify's own history already shows 21.9%, 1.7%, 4.0% and 13.0% across generations.",
+    "consequence": "The study currently has no precision lane. Both lanes sit at 9-13%, so a treatment effect below roughly 15% is unresolvable in either. Every earlier plan that treated Fastify as the sensitive arm and Beets as the coarse one is inverted.",
+    "what_would_settle_it": "Restore the two pre-repair Fastify prompts on a separate protocol identity and run three replicates. That isolates the prompt repair from protocol identity and drift, and is the only cheap test that distinguishes a caused regression from lane noise."
   }
 }
