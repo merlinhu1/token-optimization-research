@@ -1,6 +1,9 @@
-# Lifecycle V1 accepted-replicate pairing
+# Accepted-replicate pairing
 
-## Read this before comparing V1 OpenCode and Codex results
+## Read this before comparing results across runtimes
+
+The worked example below is drawn from a retired generation whose evidence has been deleted. The
+rule it illustrates is generation-independent and still in force.
 
 `rN` in a workflow session ID is a **runtime-local immutable attempt label**. It is not, by itself, a cross-runtime comparison label.
 

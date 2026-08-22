@@ -2336,7 +2336,7 @@ def validate_workflow_session_contract(
         # Every Lifecycle family conceals its acceptance assets. Inferring this from a
         # "-v1" suffix inverted the rule for V2 and would have demanded visible
         # acceptance tests from a family that injects none.
-        lifecycle_v1 = any(
+        conceals_acceptance_assets = any(
             str(sequence.get("sequence_id", "")).endswith(design["sequence_suffix"])
             for design in TASK_FAMILY_DESIGN.values()
         )
@@ -2348,7 +2348,7 @@ def validate_workflow_session_contract(
                     and isinstance(leakage_controls.get("model_visible_acceptance_asset_paths"), list)
                     and (
                         not leakage_controls.get("model_visible_acceptance_asset_paths")
-                        if lifecycle_v1
+                        if conceals_acceptance_assets
                         else bool(leakage_controls.get("model_visible_acceptance_asset_paths"))
                     )
                 )
@@ -2405,7 +2405,7 @@ def validate_workflow_session_contract(
         # Every Lifecycle family conceals its acceptance assets. Inferring this from a
         # "-v1" suffix inverted the rule for V2 and would have demanded visible
         # acceptance tests from a family that injects none.
-        lifecycle_v1 = any(
+        conceals_acceptance_assets = any(
             str(sequence.get("sequence_id", "")).endswith(design["sequence_suffix"])
             for design in TASK_FAMILY_DESIGN.values()
         )
@@ -2415,7 +2415,7 @@ def validate_workflow_session_contract(
                 and isinstance(leakage_controls.get("model_visible_acceptance_asset_paths"), list)
                 and (
                     not leakage_controls.get("model_visible_acceptance_asset_paths")
-                    if lifecycle_v1
+                    if conceals_acceptance_assets
                     else bool(leakage_controls.get("model_visible_acceptance_asset_paths"))
                 )
             )

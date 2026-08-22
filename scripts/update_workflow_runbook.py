@@ -18,12 +18,9 @@ FIXTURES = ROOT / "data" / "repository-fixtures.json"
 SESSIONS = ROOT / "data" / "workflow-sessions.json"
 PROFILES = ROOT / "data" / "evaluation-profiles.json"
 AGENT_RUNTIMES = ROOT / "data" / "evaluation-agent-runtimes.json"
-CLAUDE_DIRECT_CAMPAIGNS = (
-    (
-        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-medium-lifecycle-v1-protocol-preparation.json",
-        ROOT / "sources" / "evaluations" / "audits" / "claude-code-anthropic-opus-5-medium-lifecycle-v1-baseline-authorization.json",
-    ),
-)
+CLAUDE_DIRECT_CAMPAIGNS: tuple[tuple[Path, Path], ...] = ()
+"""Empty: the direct-Anthropic campaign receipts belonged to the retired corpus."""
+
 OPENCODE_TREATMENT_SCREEN_AUDIT = (
     "sources/evaluations/audits/"
     "opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json"
@@ -41,9 +38,9 @@ def load_json(path: Path) -> dict[str, Any]:
 def claude_direct_preparation_text() -> str:
     if not load_json(SESSIONS).get("sessions"):
         return (
-            "No provider-backed Fastify/Beets sessions are active. The pre-correction corpus is archived "
-            "under `sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/`; fresh provider "
-            "execution under the corrected prompt/configuration generation is required before any treatment readiness claim."
+            "No provider-backed Fastify/Beets sessions are active. Evidence from retired task families was "
+            "deleted with those families; fresh provider execution under the current contract is required "
+            "before any treatment readiness claim."
         )
     sections = []
     for preparation_path, authorization_path in CLAUDE_DIRECT_CAMPAIGNS:
@@ -313,7 +310,7 @@ def render() -> str:
             chunks.append(
                 screen_label
                 + f"{completed_profile_text}. Each profile has one accepted r0 session on every "
-                "active lifecycle-v0 sequence and is occupied evidence, not a runnable replacement "
+                "sequence active at the time and is occupied evidence, not a runnable replacement "
                 "for the active-default Codex profiles. See "
                 f"`{screen_audit}`."
             )
@@ -420,7 +417,7 @@ def render() -> str:
             chunks.append(
                 "Cross-runtime comparison names use accepted-replicate ordinal, not matching raw "
                 "runtime-local `rN` labels. Current explicit pairs are "
-                f"{pair_names}. See `docs/evaluations/design/lifecycle-v1-accepted-replicate-pairing.md`."
+                f"{pair_names}. See `docs/evaluations/design/accepted-replicate-pairing.md`."
             )
         chunks.append(
             "Run as many replicates per protocol as the work warrants; there is no registered N. All retained replicates are published, and a single replicate is a screen rather than an effect estimate. The point estimate is the median weighted token cost with its observed spread; no raw-token result is reported. Replace only replicates that failed before the provider boundary; verifier and review outcomes are diagnostic and never a reason to drop a sample."

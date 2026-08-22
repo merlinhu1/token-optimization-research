@@ -576,7 +576,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         # The pilot gate was removed on 2026-08-15, so nothing machine-blocks treatments.
         self.assertNotIn("machine-blocked", runbook)
         # The retained-historical-pool line is emitted only when a superseded generation still
-        # has baseline pools. None remain after the 2026-08-14 lifecycle-v0 sweep.
+        # has baseline pools. None remain after the retired-generation sweep.
         self.assertNotIn("Earlier active-default baseline pools are retained", runbook)
 
     @requires_populated_registry
@@ -1617,7 +1617,7 @@ print('ok')
         self.assertEqual(bounded["status"], "screening-ablation")
         self.assertEqual(bounded["superseded_by"], profile_id)
 
-        # The 2026-07-19 qualification receipt this test used to verify bound three lifecycle-v0
+        # The 2026-07-19 qualification receipt this test used to verify bound three retired
         # lanes; those protocols were deleted with the v0 sweep. The profile and host-integration
         # contract above is generation-independent and remains covered.
 
@@ -5976,7 +5976,7 @@ class LifecycleV1AcceptanceContractTest(unittest.TestCase):
             descriptor["profile_guidance_sha256"],
             hashlib.sha256(b"").hexdigest(),
         )
-        # This assertion used to contrast against lifecycle-v0, whose guidance did name the
+        # This assertion used to contrast against a retired generation, whose guidance did name the
         # profile. V0 was retired on 2026-08-14, so the invariant is now absolute: no active
         # generation may put profile or lane identity in front of the model.
         self.assertEqual(runner.model_facing_profile_guidance(sequence, "baseline-bare-codex"), "")
@@ -6199,7 +6199,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             checkout = temp / "checkout"
             lane_dir = temp / "lane"
             lane_dir.mkdir()
-            session_id = "lifecycle-v1-rejected-unit"
+            session_id = "rejected-unit"
             source = checkout / matrix.WORKFLOW_ARTIFACT_ROOT / session_id
             source.mkdir(parents=True)
             original = {

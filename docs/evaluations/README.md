@@ -20,7 +20,7 @@ Start with the generated [operator runbook](operations/runbook.md).
 - [Persistent workflow model](design/workflow-model.md) — why tasks run in one resumed session
 - [Result schema](design/result-schema.md) — cumulative result structure
 - [Fixture design](design/fixture-design.md) — fixture and verifier contract
-- [Lifecycle V1 accepted-replicate pairing](design/lifecycle-v1-accepted-replicate-pairing.md) — cross-runtime pair-naming rules, worked on the archived V1 pairs
+- [Accepted-replicate pairing](design/accepted-replicate-pairing.md) — cross-runtime pair-naming rules, worked on the archived V1 pairs
 - [Token and quality policy](design/token-and-quality-policy.md) — provider accounting and diagnostic quality
 - [Tool isolation policy](design/tool-isolation-policy.md) — treatment isolation requirements
 
