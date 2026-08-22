@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-22",
+  "action": "treatment-candidate-version-currency-audit",
+  "question": "Do the dossiers and treatment profiles reference the latest released version of each tool?",
+  "answer": "No. 14 of 17 distinct shortlist tools are behind upstream HEAD, and all three profiles that pin an explicit version pin an outdated one.",
+  "method": "git ls-remote HEAD per dossier upstream, plus GitHub releases/tags and PyPI where published, on 2026-08-22.",
+  "shortlist_profiles": 18,
+  "distinct_tools": 17,
+  "stale_against_head": 14,
+  "current_against_head": 3,
+  "explicit_version_pins_outdated": {
+    "retrieval-repowise-codex-product-v2": {
+      "profile_pins": "repowise 0.39.0",
+      "latest_release": "0.45.0"
+    },
+    "retrieval-jcodemunch-codex-mcp-v2": {
+      "profile_pins": "jcodemunch 1.108.114",
+      "latest_release": "1.108.290"
+    },
+    "terminal-rtk-claude-code-hook-v1": {
+      "profile_pins": "rtk 0.42.4",
+      "latest_release": "0.45.0"
+    }
+  },
+  "tools": {
+    "chopratejas-headroom": {
+      "dossier_pin": "715ed7d200cb",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "5d25abd356a8",
+      "latest_release": null,
+      "current": false
+    },
+    "cognitx-leyton-codegraph": {
+      "dossier_pin": "ba5e0039b24d",
+      "dossier_pin_date": "2026-06-29",
+      "upstream_head": "ba5e0039b24d",
+      "latest_release": "v0.2.0 2026-04-17",
+      "current": true
+    },
+    "dietrichgebert-ponytail": {
+      "dossier_pin": "c4d1925ae9b7",
+      "dossier_pin_date": "2026-06-26",
+      "upstream_head": "2ed6c52c9d7e",
+      "latest_release": "v4.9.0 2026-08-07",
+      "current": false
+    },
+    "edouard-claude-snip": {
+      "dossier_pin": "82b741b3ba50",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "366c82d3072c",
+      "latest_release": "v0.24.1 2026-07-28",
+      "current": false
+    },
+    "jgravelle-jcodemunch-mcp": {
+      "dossier_pin": "bdebb6399f07",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "5e3b3ca7f474",
+      "latest_release": "v1.108.290 2026-08-21",
+      "current": false
+    },
+    "jrollin-cartog": {
+      "dossier_pin": "890d15b66b52",
+      "dossier_pin_date": "2026-06-29",
+      "upstream_head": "2eeb61a3eb57",
+      "latest_release": "v0.32.2 2026-08-05",
+      "current": false
+    },
+    "juliusbrussee-caveman": {
+      "dossier_pin": "25d22f864ad6",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "2f49f0e1a352",
+      "latest_release": "v2.2.0 2026-08-20",
+      "current": false
+    },
+    "manojmallick-sigmap": {
+      "dossier_pin": "569320994751",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "3313c3a4e887",
+      "latest_release": "v8.28.0 2026-08-18",
+      "current": false
+    },
+    "mibayy-token-savior": {
+      "dossier_pin": "ff42ef14cc97",
+      "dossier_pin_date": "2026-06-26",
+      "upstream_head": "73e9c7f56fd7",
+      "latest_release": "v4.21.0 2026-07-28",
+      "current": false
+    },
+    "onur-gokyildiz-bhi-codescope": {
+      "dossier_pin": "d8e58d83e920",
+      "dossier_pin_date": null,
+      "upstream_head": "d8e58d83e920",
+      "latest_release": "v0.8.12 2026-04-24",
+      "current": true
+    },
+    "oraios-serena": {
+      "dossier_pin": "103a17072e9b",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "7fcbca7e6255",
+      "latest_release": "v1.7.0 2026-08-09",
+      "current": false
+    },
+    "repowise-dev-repowise": {
+      "dossier_pin": "a3b6714c5523",
+      "dossier_pin_date": null,
+      "upstream_head": "624047878a27",
+      "latest_release": "v0.45.0 2026-08-21",
+      "current": false
+    },
+    "rtk-ai-rtk": {
+      "dossier_pin": "23aae98c5b29",
+      "dossier_pin_date": "2026-06-26",
+      "upstream_head": "29f9bb716177",
+      "latest_release": "v0.45.0 2026-08-07",
+      "current": false
+    },
+    "safishamsi-graphify": {
+      "dossier_pin": "199061207f66",
+      "dossier_pin_date": "2026-06-29",
+      "upstream_head": "b2cd36267456",
+      "latest_release": null,
+      "current": false
+    },
+    "swarmclawai-swarmvault": {
+      "dossier_pin": "4ce0c7cb545c",
+      "dossier_pin_date": "2026-06-29",
+      "upstream_head": "815412d24298",
+      "latest_release": "v3.20.0 2026-06-12",
+      "current": false
+    },
+    "vincentkoc-tokenjuice": {
+      "dossier_pin": "49bdcf175583",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "49bdcf175583",
+      "latest_release": "v0.8.1 2026-06-18",
+      "current": true
+    },
+    "yvgude-lean-ctx": {
+      "dossier_pin": "adc4e8b2e401",
+      "dossier_pin_date": "2026-07-01",
+      "upstream_head": "da0ed5540d7b",
+      "latest_release": "v3.9.19 2026-08-18",
+      "current": false
+    }
+  },
+  "notes": "Every dossier was inspected between 2026-06-26 and 2026-07-01, so the corpus is seven to eight weeks old. headroom and graphify publish no releases and are installed from source, so HEAD is their only currency signal. codescope, codegraph and tokenjuice are unchanged upstream since inspection and are genuinely current.",
+  "not_yet_checked": "Whether each install policy still matches the tool's official installation recommendation."
+}

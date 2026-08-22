@@ -952,8 +952,10 @@ def default_study_id(profile_id: str) -> str:
     return "phase-2-sequential-workflow-v1"
 
 
-def path_identity(path_text: str) -> dict[str, Any]:
+def path_identity(path_text: str, *, required: bool = False, clean_git: bool = False) -> dict[str, Any]:
     path = Path(path_text)
+    if required and not path.exists():
+        raise FileNotFoundError(f"required treatment source artifact does not exist: {path}")
     identity: dict[str, Any] = {"path": path_text, "exists": path.exists()}
     if path.is_file():
         identity.update({"kind": "file", "sha256": _protocol_file_hash(path)})
@@ -962,6 +964,19 @@ def path_identity(path_text: str) -> dict[str, Any]:
         git_head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=path, text=True, capture_output=True, check=False)
         if git_head.returncode == 0:
             identity["git_head"] = git_head.stdout.strip()
+            if clean_git:
+                status = subprocess.run(
+                    ["git", "status", "--porcelain", "--untracked-files=all"],
+                    cwd=path,
+                    text=True,
+                    capture_output=True,
+                    check=True,
+                ).stdout.strip()
+                if status:
+                    raise ValueError(f"dirty treatment source artifact: {path}\n{status}")
+                identity["git_clean"] = True
+        elif clean_git:
+            raise ValueError(f"treatment source artifact is not a Git checkout: {path}")
         package = path / "package.json"
         if package.is_file():
             identity["package_json_sha256"] = _protocol_file_hash(package)
@@ -1130,11 +1145,17 @@ def tool_adapter_identity(profile_id: str, root: Path = ROOT) -> dict[str, Any]:
     command_spec = _tool_command_spec(cfg)
     if command_spec is None:
         raise ValueError(f"treatment tool {tool_id} has no executable command to identify")
-    source_paths = sorted({str(path) for path in cfg.get("mounts", []) if str(path)})
+    required_paths = {str(path) for path in cfg.get("required_source_artifacts", []) if str(path)}
+    clean_paths = {str(path) for path in cfg.get("clean_source_roots", []) if str(path)}
+    source_paths = sorted({str(path) for path in [*cfg.get("mounts", []), *required_paths] if str(path)})
     source_identity = []
     for path_text in source_paths:
         rendered_path = path_text.format(repository_root=root)
-        identity = path_identity(rendered_path)
+        identity = path_identity(
+            rendered_path,
+            required=path_text in required_paths,
+            clean_git=path_text in clean_paths,
+        )
         if "{repository_root}" in path_text:
             identity["path"] = path_text
         source_identity.append(identity)

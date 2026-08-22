@@ -208,6 +208,53 @@ PONYTAIL_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_codex_
 CLAUDE_MARKETPLACE_PREPARER = "{repository_root}/scripts/prepare_pinned_claude_marketplace.py"
 CODEX_PLUGIN_HOOK_TRUSTER = "{repository_root}/scripts/trust_codex_plugin_hooks.py"
 CLAUDE_README_HOOK_INSTALLER = "{repository_root}/scripts/install_claude_readme_hooks.py"
+SERENA_CODEX_HOOK_INSTALLER = "{repository_root}/scripts/install_serena_codex_hooks.py"
+PINNED_UVX_RUNNER = "{repository_root}/scripts/run_pinned_uvx.py"
+
+# Exact releases selected for the 2026-08-22 treatment batch. Tuple fields are:
+# directory, release artifact, artifact sha256, official guide, guide sha256, commit.
+BATCH_RELEASE_ROOT = Path("/opt/data/tool-candidates/releases")
+BATCH_RELEASES = {
+    "headroom": ("headroom-0.36.3", "artifacts/headroom_ai-0.36.3-cp310-abi3-manylinux_2_28_x86_64.whl", "a3fb71716b62da07f0900b0a2d82c1141063da8727fcbc91b3a9fd7c3baba1e8", "source/README.md", "fee6ad17c8df5d697c3b153193d6655a18c450e48d9fedb7ba9c1d4765884893", "87e71dd10057ff3cbe826bde617682971339e4f8"),
+    "tokenjuice": ("tokenjuice-0.8.1", "artifacts/tokenjuice-0.8.1.tgz", "73ab34ce0d5c0bf3abf1e3b0d2702d762811806bdd573623fdfd26e3d4830c81", "source/README.md", "e5c9807e8b6ac3cc2a6e864c89af468dd9b28ea4096d641a5a223d1b0daf798d", "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e"),
+    "rtk": ("rtk-0.45.0", "artifacts/rtk-x86_64-unknown-linux-musl.tar.gz", "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4", "source/README.md", "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a", "b34be37caf3796b69a50952a28e60e32b5daad43"),
+    "snip": ("snip-0.24.1", "artifacts/snip_0.24.1_linux_amd64.tar.gz", "6f230ab6d66885b73f7de4fd32399cb6a60f64de92133dc25532cccbfb930985", "source/README.md", "710e49a20580910a7d0e0123b389f64c1f4ceaec574df1e6870386fc4101a087", "18a57bc9dc4499f1a00b9c8ff799e982ba25ceba"),
+    "graphify": ("graphify-0.9.48", "artifacts/graphifyy-0.9.48-py3-none-any.whl", "4f745d72d6c5165ef7132bf8b2819ef59707aa70cd99efd3a4fbc8c4ba43b4b9", "source/README.md", "49db070139e8ffcdf78efcf2fe5b213cc6a9c5c91e37e33960cf2d22df1b76a4", "b2cd36267456c166788c95be6e68574064a92a42"),
+    "leanctx": ("lean-ctx-3.9.19", "artifacts/lean-ctx-x86_64-unknown-linux-gnu.tar.gz", "f2fce32af52c2b7b2681ce8b14de9e67f55e1daf08e1513f47ff8dbb01eb0e58", "source/README.md", "0e53184df357ed64b789301c27e718b3494cc15bd2b3fc8c81eba709cacb02e4", "8a3d23b317c98b39704543c9acb8b7cc8992c63d"),
+    "cartog": ("cartog-0.32.2", "artifacts/cartog-x86_64-unknown-linux-gnu.tar.gz", "c6f330b51488cd8fb87dffa4e561b2b90b00f8fb07d53373310a09c1940c45e9", "source/README.md", "e2155e82d421dc1cedbfb7ce4c268218b2c70a3e708cfa0f0612f052010bcccf", "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"),
+    "codescope": ("codescope-0.8.12", "artifacts/codescope-v0.8.12-x86_64-unknown-linux-gnu.tar.gz", "ee353ad91cd23c089545dba0e1277e4f0fc6d21ca78fae1d7e639677f33fd8bc", "source/README.md", "3540e5e7c23735b5fb273d2f369a2fe73d5df86715e819f2d79f920886a95e1b", "d8e58d83e920c46a27e8b2e72c1e85a16c6af3fd"),
+    "swarmvault": ("swarmvault-3.20.0", "artifacts/swarmvaultai-cli-3.20.0.tgz", "aa1ba3fe8b8d61ea5b76c33a25290b361ed31a589cf67cbe3251166258b5546f", "source/README.md", "b7085a208f7d62cbb044d5f7d38cc57205a4a13406957700759bc8646be50989", "4ce0c7cb545c669f3cd35fc6d0300c6b088a52ea"),
+    "serena": ("serena-1.7.0", "artifacts/serena_agent-1.7.0-py3-none-any.whl", "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891", "source/docs/02-usage/030_clients.md", "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e", "949a27ef1e5fda1a6e7b561e777bcece345c6ffd"),
+    "sigmap": ("sigmap-8.28.0", "artifacts/sigmap-8.28.0.tgz", "9cd40a02c852ea76cd24575561a416d6b965bf737d8af1af4f20030e7f8e719d", "source/README.md", "5c6d0392b5dcbaddf9b2b5d5717c6ed218237aff8c837ba60bab0e7d54c3fe82", "3313c3a4e88722e134e5747663c02d5db5ad3032"),
+    "token-savior": ("token-savior-4.21.0", "artifacts/token_savior_recall-4.21.0-py3-none-any.whl", "36529b132d658225ad6df7c9ec4ca0cbcf0fb48ebb0054099a0284c793fc9363", "source/README.md", "e78f621c63cf9795537cd8e76f7ea155af1752c7d0b408621e411e848f141f30", "1e5984b452c5b98e6376a7250b3213f5c3500626"),
+    "ponytail": ("ponytail-4.9.0", "artifacts/ponytail-v4.9.0-source.tar.gz", "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256", "source/README.md", "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf", "0a4dd63ad4541f4f655c4108a295916f3c1d8fda"),
+    "caveman": ("caveman-2.2.0", "artifacts/caveman-v2.2.0-source.tar.gz", "3081846d48315a6b864eb0c6d578b516c2c47cf8ca0cd927d9e0d7875f5d89aa", "source/INSTALL.md", "3eac1c3f79c09a8424669aca1b44211350b2567fd2504957081dfe55893bd9ce", "9aa63945a349bef17206540650db48c30fafbdf2"),
+    "codegraph": ("codegraph-1.5.0", "artifacts/codegraph-linux-x64.tar.gz", "2ba65e87a1210b706bb1e67d5e48b5fc4a1935e43dbb3fb5f31c5597840d2e58", "source/README.md", "ef12f20aa127d8a508a41433f47a67c9efebaff18ac645acc6d851a8fe3809fa", "ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6"),
+    "jcodemunch": ("jcodemunch-mcp-1.108.290", "artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl", "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c", "source/CLIENTS.md", "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d", "9e76d6320c017b774d54bb31d79dd4b8a5876aff"),
+    "repowise": ("repowise-0.45.0", "artifacts/repowise-0.45.0-py3-none-any.whl", "c86ec4a505b16dfe0a6df5366aae9908a0a3ef6fabb204c883a6faf94a62492a", "source/docs/agent/CODEX.md", "09829e1ebfe734235296f633a44b59a235bee2c75bdafd9b50dab67671ecf416", "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3"),
+}
+
+
+def _batch_path(name: str, field: int) -> Path:
+    return BATCH_RELEASE_ROOT / BATCH_RELEASES[name][0] / BATCH_RELEASES[name][field]
+
+
+def _pin_batch_release(tool_id: str, release_name: str, *runtime_paths: Path) -> None:
+    cfg = TOOL_CONFIGS[tool_id]
+    source = BATCH_RELEASE_ROOT / BATCH_RELEASES[release_name][0] / "source"
+    artifact = _batch_path(release_name, 1)
+    guide = _batch_path(release_name, 3)
+    local_helpers = [path for path in cfg.get("mounts", []) if "{repository_root}" in str(path)]
+    cfg.update({
+        "mounts": [str(source), str(artifact), *[str(path) for path in runtime_paths], *local_helpers],
+        "required_source_artifacts": [str(source), str(artifact), str(guide), *[str(path) for path in runtime_paths], *local_helpers],
+        "clean_source_roots": [str(source)],
+        "artifact_identities": [
+            {"path": str(artifact), "sha256": BATCH_RELEASES[release_name][2], "kind": "official-release-artifact"},
+            {"path": str(guide), "sha256": BATCH_RELEASES[release_name][4], "kind": "official-install-guide"},
+        ],
+        "tool_manifest_identity": "current-file-v1",
+    })
 
 TOOL_CONFIGS: dict[str, dict[str, Any]] = {
     "sdl-mcp-codex-product-v1": {
@@ -1493,6 +1540,151 @@ TOOL_CONFIGS.update({
         "mcp_handshake": {"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 120},
     },
 })
+
+
+def _replace_batch_paths(value: Any, replacements: dict[str, str]) -> Any:
+    if isinstance(value, str):
+        for old, new in sorted(replacements.items(), key=lambda item: len(item[0]), reverse=True):
+            value = value.replace(old, new)
+        return value
+    if isinstance(value, list):
+        return [_replace_batch_paths(item, replacements) for item in value]
+    if isinstance(value, dict):
+        return {key: _replace_batch_paths(item, replacements) for key, item in value.items()}
+    return value
+
+
+_BATCH_SOURCE = lambda name: BATCH_RELEASE_ROOT / BATCH_RELEASES[name][0] / "source"
+_BATCH_ARTIFACT = lambda name: _batch_path(name, 1)
+_BATCH_RUNTIME = lambda name: BATCH_RELEASE_ROOT / BATCH_RELEASES[name][0] / "runtime"
+
+_BATCH_REWRITES = {
+    "headroom": {str(HEADROOM_WHEEL): str(_BATCH_ARTIFACT("headroom")), str(HEADROOM_ROOT): str(_BATCH_SOURCE("headroom"))},
+    "tokenjuice-codex-hook-v1": {str(TOKENJUICE_BIN): str(_BATCH_RUNTIME("tokenjuice") / "node_modules/.bin/tokenjuice"), str(TOKENJUICE_ROOT): str(_BATCH_SOURCE("tokenjuice"))},
+    "rtk-codex-instructions-v1": {str(RTK_BIN): str(_BATCH_RUNTIME("rtk") / "rtk")},
+    "rtk-claude-code-hook-v1": {str(RTK_BIN): str(_BATCH_RUNTIME("rtk") / "rtk")},
+    "snip-codex-hook-v1": {str(SNIP_BIN): str(_BATCH_RUNTIME("snip") / "snip"), str(SNIP_ROOT): str(_BATCH_SOURCE("snip"))},
+    "graphify-codex-skill-v1": {str(GRAPHIFY_WHEEL): str(_BATCH_ARTIFACT("graphify")), str(GRAPHIFY_ROOT): str(_BATCH_SOURCE("graphify"))},
+    "leanctx-codex-hybrid-v1": {str(LEANCTX_BINARY): str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), str(LEANCTX_ROOT): str(_BATCH_SOURCE("leanctx"))},
+    "cartog-codex-product-v2": {str(CARTOG_BIN): str(_BATCH_RUNTIME("cartog") / "cartog"), str(CARTOG_ROOT): str(_BATCH_SOURCE("cartog")), CARTOG_COMMIT: BATCH_RELEASES["cartog"][5]},
+    "codescope-codex-product-v1": {str(CODESCOPE_RELEASE_ROOT): str(_BATCH_RUNTIME("codescope"))},
+    "swarmvault-codex-product-v1": {str(SWARMVAULT_CLI): str(_BATCH_RUNTIME("swarmvault") / "node_modules/.bin/swarmvault"), str(SWARMVAULT_ROOT): str(_BATCH_SOURCE("swarmvault"))},
+    "serena-codex-mcp-v1": {str(SERENA_ROOT): str(_BATCH_ARTIFACT("serena"))},
+    "sigmap-codex-live-v1": {str(SIGMAP_ROOT): str(_BATCH_RUNTIME("sigmap") / "node_modules/sigmap")},
+    "token-savior-codex-product-v2": {str(TOKEN_SAVIOR_WHEEL): str(_BATCH_ARTIFACT("token-savior")), str(TOKEN_SAVIOR_ROOT): str(_BATCH_SOURCE("token-savior")), "ff42ef14cc972dad5470e0ca8101e4501e00600f": BATCH_RELEASES["token-savior"][5]},
+    "ponytail-codex-plugin-v1": {str(PONYTAIL_ROOT): str(_BATCH_SOURCE("ponytail")), PONYTAIL_COMMIT: BATCH_RELEASES["ponytail"][5], "/4.8.4/": "/4.9.0/"},
+    "caveman-codex-skill-v1": {str(CAVEMAN_ROOT): str(_BATCH_SOURCE("caveman")), CAVEMAN_COMMIT: BATCH_RELEASES["caveman"][5]},
+    "codegraph-codex-mcp-v1": {str(CODEGRAPH_BIN): str(_BATCH_RUNTIME("codegraph") / "codegraph-linux-x64/bin/codegraph"), "/opt/data/tool-candidates/codegraph": str(_BATCH_SOURCE("codegraph"))},
+    "jcodemunch-codex-mcp-v2": {str(JCODEMUNCH_WHEEL): str(_BATCH_ARTIFACT("jcodemunch")), str(JCODEMUNCH_ROOT): str(_BATCH_SOURCE("jcodemunch")), JCODEMUNCH_COMMIT: BATCH_RELEASES["jcodemunch"][5]},
+    "repowise-codex-product-v2": {str(REPOWISE_WHEEL): str(_BATCH_ARTIFACT("repowise")), str(REPOWISE_ROOT): str(_BATCH_SOURCE("repowise"))},
+}
+for _tool_id, _replacements in _BATCH_REWRITES.items():
+    TOOL_CONFIGS[_tool_id] = _replace_batch_paths(TOOL_CONFIGS[_tool_id], _replacements)
+
+for _tool_id, _release, _runtime in (
+    ("headroom", "headroom", (PINNED_UVX_RUNNER,)),
+    ("tokenjuice-codex-hook-v1", "tokenjuice", (str(_BATCH_RUNTIME("tokenjuice")),)),
+    ("rtk-codex-instructions-v1", "rtk", (str(_BATCH_RUNTIME("rtk")),)),
+    ("rtk-claude-code-hook-v1", "rtk", (str(_BATCH_RUNTIME("rtk")),)),
+    ("snip-codex-hook-v1", "snip", (str(_BATCH_RUNTIME("snip")),)),
+    ("graphify-codex-skill-v1", "graphify", ()),
+    ("leanctx-codex-hybrid-v1", "leanctx", (str(_BATCH_RUNTIME("leanctx")),)),
+    ("cartog-codex-product-v2", "cartog", (str(_BATCH_RUNTIME("cartog")),)),
+    ("codescope-codex-product-v1", "codescope", (str(_BATCH_RUNTIME("codescope")),)),
+    ("swarmvault-codex-product-v1", "swarmvault", (str(_BATCH_RUNTIME("swarmvault")),)),
+    ("serena-codex-mcp-v1", "serena", (SERENA_CODEX_HOOK_INSTALLER,)),
+    ("sigmap-codex-live-v1", "sigmap", (str(_BATCH_RUNTIME("sigmap")),)),
+    ("token-savior-codex-product-v2", "token-savior", ()),
+    ("ponytail-codex-plugin-v1", "ponytail", (PONYTAIL_MARKETPLACE_PREPARER, CODEX_PLUGIN_HOOK_TRUSTER)),
+    ("caveman-codex-skill-v1", "caveman", ()),
+    ("codegraph-codex-mcp-v1", "codegraph", (str(_BATCH_RUNTIME("codegraph")),)),
+    ("jcodemunch-codex-mcp-v2", "jcodemunch", (JCODEMUNCH_GUIDANCE_INSTALLER,)),
+    ("repowise-codex-product-v2", "repowise", ()),
+):
+    _pin_batch_release(_tool_id, _release, *(Path(path) for path in _runtime))
+
+_headroom_wheel = str(_BATCH_ARTIFACT("headroom")) + "[all]"
+TOOL_CONFIGS["headroom"].update({
+    "display_name": "Headroom 0.36.3 official Codex wrapper",
+    "allowed_terms": ["headroom", "headroom_retrieve", "serena"],
+    "path_entries": ["{tool_data_dir}/bin", "{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
+    "env": {**TOOL_CONFIGS["headroom"]["env"], "PINNED_SERENA_WHEEL": str(_BATCH_ARTIFACT("serena"))},
+    "host_integration": {
+        "install_commands": [["mkdir", "-p", "{tool_data_dir}/bin"], ["ln", "-sf", PINNED_UVX_RUNNER, "{tool_data_dir}/bin/uvx"]],
+        "required_files": ["{tool_data_dir}/bin/uvx"],
+    },
+    "codex_wrapper": {"command": str(UV_BIN), "args": ["tool", "run", "--from", _headroom_wheel, "headroom", "wrap", "codex", "--port", "{tool_port}", "--verbose", "--"]},
+    "preflight_command": [str(UV_BIN), "tool", "run", "--from", _headroom_wheel, "headroom", "--version"],
+})
+TOOL_CONFIGS["headroom"]["mounts"].extend([str(_BATCH_SOURCE("serena")), str(_BATCH_ARTIFACT("serena"))])
+TOOL_CONFIGS["headroom"]["clean_source_roots"].append(str(_BATCH_SOURCE("serena")))
+
+TOOL_CONFIGS["graphify-codex-skill-v1"]["host_integration"].update({
+    "install_commands": [
+        [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+        [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(_BATCH_ARTIFACT("graphify"))],
+        ["{tool_data_dir}/venv/bin/graphify", "codex", "install", "--project"],
+    ],
+    "required_files": ["{tool_data_dir}/venv/bin/graphify", "{repo}/.codex/hooks.json", "{repo}/.codex/skills/graphify/SKILL.md", "{repo}/AGENTS.md"],
+})
+TOOL_CONFIGS["graphify-codex-skill-v1"]["warmup"]["command"] = ["{tool_data_dir}/venv/bin/graphify", "update", "{repo}", "--force"]
+
+TOOL_CONFIGS["leanctx-codex-hybrid-v1"]["host_integration"]["verify_commands"] = [[str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), "--version"], [str(_BATCH_RUNTIME("leanctx") / "lean-ctx"), "doctor"]]
+
+_serena = TOOL_CONFIGS["serena-codex-mcp-v1"]
+_serena.update({
+    "display_name": "Serena 1.7.0 official Codex MCP and lifecycle hooks",
+    "mcp_config_via_host_integration": True,
+    "mcp_command": "{tool_data_dir}/venv/bin/serena",
+    "mcp_args": ["start-mcp-server", "--project-from-cwd", "--context=codex", "--enable-web-dashboard", "false", "--open-web-dashboard", "false"],
+    "path_entries": ["{tool_data_dir}/venv/bin"],
+    "codex_features": {"hooks": True},
+    "host_integration": {
+        "install_commands": [
+            [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+            [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(_BATCH_ARTIFACT("serena"))],
+            ["{tool_data_dir}/venv/bin/serena", "setup", "codex"],
+            ["python3", SERENA_CODEX_HOOK_INSTALLER, "--codex-home", "{codex_home}"],
+        ],
+        "verify_commands": [["{tool_data_dir}/venv/bin/serena", "--version"]],
+        "required_files": ["{tool_data_dir}/venv/bin/serena", "{tool_data_dir}/venv/bin/serena-hooks", "{codex_home}/config.toml", "{codex_home}/hooks.json"],
+        "timeout_seconds": 600,
+    },
+})
+
+_sigmap = TOOL_CONFIGS["sigmap-codex-live-v1"]
+_sigmap["host_integration"] = {
+    "install_commands": [[str(_BATCH_RUNTIME("sigmap") / "node_modules/.bin/sigmap"), "mcp", "install", "codex"]],
+    "required_files": ["{codex_home}/config.yaml"],
+}
+_sigmap["compatibility_deviation"] = "SigMap 8.28.0's official Codex installer is run and retained, but it still writes obsolete config.yaml; the controller also writes the equivalent current config.toml registration."
+
+_token_savior = TOOL_CONFIGS["token-savior-codex-product-v2"]
+_token_savior.update({
+    "display_name": "Token Savior 4.21.0 native Codex product integration",
+    "mcp_command": "{tool_data_dir}/venv/bin/token-savior",
+    "mcp_args": [],
+    "path_entries": ["{tool_data_dir}/venv/bin"],
+    "host_integration": {
+        "install_commands": [
+            [str(UV_BIN), "venv", "{tool_data_dir}/venv", "--python", "python3"],
+            [str(UV_BIN), "pip", "install", "--python", "{tool_data_dir}/venv/bin/python", str(_BATCH_ARTIFACT("token-savior")) + "[mcp]"],
+            ["{tool_data_dir}/venv/bin/ts", "init", "--agent", "codex", "--global", "--yes"],
+        ],
+        "verify_commands": [["{tool_data_dir}/venv/bin/ts", "init", "--agent", "codex", "--global", "--dry-run"]],
+        "required_files": ["{tool_data_dir}/venv/bin/token-savior", "{tool_data_dir}/venv/bin/ts", "{codex_home}/hooks.json"],
+        "timeout_seconds": 600,
+    },
+    "compatibility_deviation": None,
+})
+
+_jcodemunch = TOOL_CONFIGS["jcodemunch-codex-mcp-v2"]
+_jcodemunch["mcp_config_via_host_integration"] = True
+_jcodemunch["host_integration"]["install_commands"].insert(2, ["{tool_data_dir}/venv/bin/jcodemunch-mcp", "init", "--client", "codex", "--yes", "--minimal", "--no-backup", "--no-share-savings"])
+_jcodemunch["host_integration"]["required_files"].append("{codex_home}/config.toml")
+
+_caveman_skills = ("cavecrew", "caveman", "caveman-commit", "caveman-compress", "caveman-discover", "caveman-evidence-review", "caveman-explore", "caveman-help", "caveman-learn", "caveman-manage", "caveman-optimize", "caveman-review", "caveman-setup", "caveman-stats", "investigate-first", "lean-build", "migration", "safe-refactor", "surgical-patch", "verify-and-stop")
+TOOL_CONFIGS["caveman-codex-skill-v1"]["host_integration"]["required_files"] = [f"{{repo}}/.agents/skills/{name}/SKILL.md" for name in _caveman_skills]
 
 
 def _opencode_treatment_config(

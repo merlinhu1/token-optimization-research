@@ -1534,6 +1534,7 @@ print('ok')
         )
         self.assertNotIn(str(ROOT), source["version"]["environment_path"])
 
+    @requires_tool_corpus
     def test_codegraph_binary_identity_is_generated_by_host_integration(self) -> None:
         identity = runner.tool_adapter_identity("retrieval-codegraph-codex-mcp-v1")
         self.assertEqual(identity["binary_identity"]["kind"], "generated-by-host-integration")
