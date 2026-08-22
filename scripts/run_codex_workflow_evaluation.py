@@ -1242,7 +1242,10 @@ def execution_condition_descriptor(
             "lockfiles": dependency_lock_identities(seq, root),
         },
         "agent_condition": {
-            "runtime_id": "codex-cli",
+            # The runtime is a property of the profile, not of the model condition. A replacement-runtime
+            # profile executes under a different CLI while holding provider, model and effort
+            # constant, and the descriptor has to say which CLI actually ran.
+            "runtime_id": profile_runtime_id(profile_id, root),
             "provider": "openai",
             "model": DEFAULT_WORKFLOW_MODEL,
             "model_condition_id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,

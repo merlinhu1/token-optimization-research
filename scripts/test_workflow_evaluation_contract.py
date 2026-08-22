@@ -1527,6 +1527,51 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         source = (ROOT / "scripts/run_codex_workflow_evaluation.py").read_text()
         self.assertIn("require_accepted=False", source)
 
+    def test_descriptor_records_the_runtime_that_actually_ran(self) -> None:
+        """The runtime belongs to the profile, not to the model condition.
+
+        The descriptor hardcoded codex-cli, so a replacement-runtime profile recorded that Codex
+        ran when OpenCode had. Strict ingress then refused the session for disagreeing with its
+        own run record, which discarded a completed paid measurement.
+        """
+        sequence = runner.load_sequence(SEQUENCE_ID)
+        baseline = runner.execution_condition_descriptor(sequence, "baseline-bare-codex")
+        self.assertEqual(baseline["agent_condition"]["runtime_id"], "codex-cli")
+        replacement = runner.execution_condition_descriptor(
+            sequence, "runtime-opencode-codex-product-v1"
+        )
+        self.assertEqual(replacement["agent_condition"]["runtime_id"], "opencode-cli")
+
+    def test_a_runtime_swap_is_the_treatment_not_apparatus_drift(self) -> None:
+        """Provider, model and effort must match across arms; the CLI is what the treatment changes."""
+        import validate_repository as validator
+
+        def arm(runtime):
+            return {
+                "selected_execution": {
+                    "descriptor": {
+                        "version": "execution-condition-v1",
+                        "sequence_id": "seq",
+                        "agent_condition": {
+                            "runtime_id": runtime,
+                            "provider": "openai",
+                            "model": "gpt-5.6-sol",
+                            "reasoning_effort": "medium",
+                        },
+                    }
+                }
+            }
+
+        self.assertEqual(
+            validator.comparison_apparatus_divergences(arm("opencode-cli"), arm("codex-cli")), []
+        )
+        drifted = arm("opencode-cli")
+        drifted["selected_execution"]["descriptor"]["agent_condition"]["model"] = "other"
+        self.assertIn(
+            "agent_condition",
+            validator.comparison_apparatus_divergences(drifted, arm("codex-cli")),
+        )
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 

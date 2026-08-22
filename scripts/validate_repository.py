@@ -2561,9 +2561,18 @@ def comparison_apparatus_divergences(
     if not isinstance(left, dict) or not isinstance(right, dict) or not left or not right:
         return ["selected_execution.descriptor"]
     divergences = []
-    for key in ("version", "sequence_id", "model_facing_prompts", "agent_condition", "dependencies", "isolation"):
+    for key in ("version", "sequence_id", "model_facing_prompts", "dependencies", "isolation"):
         if left.get(key) != right.get(key):
             divergences.append(key)
+    # agent_condition is compared without runtime_id. Provider, model, condition and effort are
+    # the measurement conditions and must match; the CLI is what a replacement-runtime treatment
+    # deliberately changes, so treating it as drift would refuse the comparison it exists to make.
+    left_agent = dict(left.get("agent_condition") or {})
+    right_agent = dict(right.get("agent_condition") or {})
+    left_agent.pop("runtime_id", None)
+    right_agent.pop("runtime_id", None)
+    if left_agent != right_agent:
+        divergences.append("agent_condition")
     left_runtime = left.get("runtime") or {}
     right_runtime = right.get("runtime") or {}
     for key in _APPARATUS_RUNTIME_KEYS:
