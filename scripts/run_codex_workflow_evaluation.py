@@ -48,31 +48,8 @@ TRUSTED_REPOSITORY_REF = "refs/heads/main"
 OPENCODE_STANDALONE_R2_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
-OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-20260802.json"
-)
-OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_SUPERSESSION_REL = Path(
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-authorization-supersession-20260802.json"
-)
-OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-authorization-20260802.json"
-)
-OPENCODE_LIFECYCLE_V1_R2_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-authorization-20260802.json"
-)
-OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS = {
-    0: OPENCODE_LIFECYCLE_V1_R0_AUTHORITY_SUPERSESSION_REL,
-    1: OPENCODE_LIFECYCLE_V1_R1_AUTHORITY_REL,
-    2: OPENCODE_LIFECYCLE_V1_R2_AUTHORITY_REL,
-}
 
 
-def opencode_lifecycle_authority_rel(replicate_index: int) -> Path:
-    """Return the separately owner-authorized Lifecycle V1 OpenCode authority."""
-    try:
-        return OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS[replicate_index]
-    except KeyError as exc:
-        raise ValueError(f"no OpenCode Lifecycle V1 authority for r{replicate_index}") from exc
 
 PROJECT_META: dict[str, dict[str, str]] = {
     "medium-fastify-fastify": {
@@ -260,12 +237,6 @@ def operational_retry_budget(
     if (
         profile_id == "baseline-bare-codex"
         and replicate_index > 0
-        and generation in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
-    ):
-        return 0
-    if (
-        profile_id == "runtime-opencode-codex-product-v1"
-        and replicate_index in OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS
         and generation in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
     ):
         return 0
@@ -905,24 +876,6 @@ def repository_authority_path(root: Path, relative: str, label: str) -> Path:
     return path
 
 
-OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-authorization-20260803.json"
-OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/lifecycle-v1-opencode-openrouter-sol-high-r0-attempts"
-DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
-DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
-DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL = "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-authorization-20260810.json"
-DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL = "sources/evaluations/audits/corrected-integration-qualification-claude-code-anthropic-sonnet-5-high-lifecycle-v1-20260810.json"
-DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID = "baseline-claude-code-no-mcp"
-DIRECT_CLAUDE_LIFECYCLE_V1_MODEL = {
-    "id": "claude-code-anthropic-sonnet-5-high",
-    "runtime_id": "claude-code",
-    "provider": "anthropic",
-    "model": "claude-sonnet-5",
-    "reasoning_effort": "high",
-}
-DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
-    "fastify-lifecycle-sequence-v1",
-    "beets-lifecycle-sequence-v1",
-)
 def _json_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
@@ -932,141 +885,14 @@ def _json_without_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]
     return result
 
 
-OPENROUTER_LIFECYCLE_V1_PROFILE_ID = "baseline-opencode-openrouter-no-mcp"
-OPENROUTER_LIFECYCLE_V1_MODEL = {
-    "id": "opencode-openrouter-gpt-5-6-sol-high",
-    "runtime_id": "opencode-cli",
-    "provider": "openrouter",
-    "model": "gpt-5.6-sol",
-    "reasoning_effort": "high",
-    "opencode_model_namespace": "openrouter/openai/gpt-5.6-sol",
-}
-OPENROUTER_LIFECYCLE_V1_ORDER = ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"]
 
 
-def load_openrouter_lifecycle_authority(root: Path = ROOT) -> dict[str, Any]:
-    """Validate Merlin's single, serial OpenRouter r0 execution authority."""
-    path = repository_authority_path(root, OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL, "OpenRouter Lifecycle V1 authorization")
-    try:
-        authority = json.loads(path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
-        raise ValueError(f"OpenRouter Lifecycle V1 authorization is unreadable: {exc}") from exc
-    expected_keys = {
-        "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
-        "authorized_source_commit", "paid_baseline_execution_authorized", "authorized_replicate_index",
-        "sequence_order", "max_parallel", "allowed_paid_baseline_runs", "allowed_model_turns",
-        "serialization_required", "model_condition", "first_valid_sample_policy",
-        "rerun_after_attempt_receipt", "provider_calls", "provider_tokens", "sequences", "notes",
-    }
-    if (
-        set(authority) != expected_keys
-        or authority.get("schema_version") != 1
-        or authority.get("campaign_id") != "lifecycle-v1-opencode-openrouter-sol-high-r0-20260803"
-        or authority.get("authorized_by_owner_message_id") != "1533765740459462807"
-        or authority.get("authorized_on") != "2026-08-03"
-        or authority.get("paid_baseline_execution_authorized") is not True
-        or authority.get("authorized_replicate_index") != 0
-        or authority.get("sequence_order") != OPENROUTER_LIFECYCLE_V1_ORDER
-        or authority.get("max_parallel") != 1
-        or authority.get("allowed_paid_baseline_runs") != 2
-        or authority.get("allowed_model_turns") != 6
-        or authority.get("serialization_required") is not True
-        or authority.get("model_condition") != OPENROUTER_LIFECYCLE_V1_MODEL
-        or authority.get("first_valid_sample_policy") is not True
-        or authority.get("rerun_after_attempt_receipt") is not False
-        or authority.get("provider_calls") != 0
-        or authority.get("provider_tokens") != 0
-        or not isinstance(authority.get("authorized_source_commit"), str)
-        or len(authority["authorized_source_commit"]) != 40
-        or not isinstance(authority.get("notes"), str)
-        or not authority["notes"]
-    ):
-        raise ValueError("OpenRouter Lifecycle V1 authorization has invalid scope, model, budget, or policy")
-    bindings = authority.get("sequences")
-    binding_keys = {"sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint", "session_id", "attempt_receipt_path"}
-    if (
-        not isinstance(bindings, list) or len(bindings) != 2
-        or [item.get("sequence_id") if isinstance(item, dict) else None for item in bindings] != OPENROUTER_LIFECYCLE_V1_ORDER
-        or any(not isinstance(item, dict) or set(item) != binding_keys for item in bindings)
-    ):
-        raise ValueError("OpenRouter Lifecycle V1 authorization has invalid sequence bindings")
-    for binding in bindings:
-        protocol_path = repository_authority_path(root, binding["protocol_path"], "OpenRouter frozen protocol")
-        try:
-            payload = protocol_path.read_bytes()
-            protocol = json.loads(payload, object_pairs_hook=_json_without_duplicate_keys)
-        except (OSError, ValueError, json.JSONDecodeError) as exc:
-            raise ValueError(f"OpenRouter Lifecycle V1 protocol is unreadable for {binding['sequence_id']}: {exc}") from exc
-        agent = protocol.get("baseline", {})
-        expected_receipt = f"{OPENROUTER_LIFECYCLE_V1_ATTEMPT_DIR}/{binding['sequence_id'].removesuffix('-lifecycle-sequence-v1')}-r0.json"
-        if (
-            hashlib.sha256(payload).hexdigest() != binding["protocol_sha256"]
-            or protocol.get("status") != "frozen-ready-not-run"
-            or protocol.get("task_fixture", {}).get("sequence_id") != binding["sequence_id"]
-            or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding["baseline_pool_fingerprint"]
-            or agent.get("profile_id") != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
-            or agent.get("runtime_id") != OPENROUTER_LIFECYCLE_V1_MODEL["runtime_id"]
-            or agent.get("provider") != OPENROUTER_LIFECYCLE_V1_MODEL["provider"]
-            or agent.get("model") != OPENROUTER_LIFECYCLE_V1_MODEL["model"]
-            or agent.get("model_condition_id") != OPENROUTER_LIFECYCLE_V1_MODEL["id"]
-            or agent.get("reasoning_effort") != OPENROUTER_LIFECYCLE_V1_MODEL["reasoning_effort"]
-            or binding["attempt_receipt_path"] != expected_receipt
-        ):
-            raise ValueError(f"OpenRouter Lifecycle V1 authorization has stale binding for {binding['sequence_id']}")
-    return authority
 
 
-def openrouter_lifecycle_binding(seq: dict[str, Any], root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
-    authority = load_openrouter_lifecycle_authority(root)
-    bindings = [item for item in authority["sequences"] if item["sequence_id"] == seq.get("id")]
-    if len(bindings) != 1:
-        raise ValueError(f"OpenRouter Lifecycle V1 authorization does not cover {seq.get('id')}")
-    return authority, bindings[0]
 
 
-def require_openrouter_lifecycle_launch(args: argparse.Namespace, seq: dict[str, Any], root: Path = ROOT) -> dict[str, Any]:
-    authority, binding = openrouter_lifecycle_binding(seq, root)
-    if args.profile_id != OPENROUTER_LIFECYCLE_V1_PROFILE_ID or args.replicate_index != 0 or args.session_id != binding["session_id"]:
-        raise ValueError("OpenRouter Lifecycle V1 launch does not match its authorized profile, replicate, or session identity")
-    if {
-        "id": DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-        "model": DEFAULT_WORKFLOW_MODEL,
-        "reasoning_effort": DEFAULT_WORKFLOW_REASONING_EFFORT,
-    } != {"id": OPENROUTER_LIFECYCLE_V1_MODEL["id"], "model": OPENROUTER_LIFECYCLE_V1_MODEL["model"], "reasoning_effort": OPENROUTER_LIFECYCLE_V1_MODEL["reasoning_effort"]}:
-        raise ValueError("OpenRouter Lifecycle V1 launch model does not match its authorization")
-    receipt_path = repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt")
-    if receipt_path.exists():
-        raise ValueError("OpenRouter Lifecycle V1 identity is already occupied by an immutable attempt receipt")
-    index = authority["sequence_order"].index(seq["id"])
-    if index:
-        previous = next(item for item in authority["sequences"] if item["sequence_id"] == authority["sequence_order"][index - 1])
-        registry = json.loads((root / "data/workflow-sessions.json").read_text())
-        prior = [item for item in registry.get("sessions", []) if item.get("session_id") == previous["session_id"]]
-        if len(prior) != 1 or prior[0].get("status") != "completed":
-            raise ValueError("OpenRouter lifecycle runs require the prior authorized sequence to complete first")
-    return binding
 
 
-def reserve_openrouter_lifecycle_attempt(seq: dict[str, Any], session_id: str, root: Path = ROOT) -> None:
-    authority, binding = openrouter_lifecycle_binding(seq, root)
-    if session_id != binding["session_id"]:
-        raise ValueError("OpenRouter attempt reservation does not match the authorized session identity")
-    receipt = {
-        "schema_version": 1,
-        "attempt_status": "reserved-before-provider-task",
-        "sequence_id": seq["id"],
-        "replicate_index": 0,
-        "profile_id": OPENROUTER_LIFECYCLE_V1_PROFILE_ID,
-        "model_condition_id": OPENROUTER_LIFECYCLE_V1_MODEL["id"],
-        "owner_authorization_message_id": authority["authorized_by_owner_message_id"],
-        "expected_session_id": session_id,
-        "frozen_protocol": {"path": binding["protocol_path"], "sha256": binding["protocol_sha256"]},
-        "baseline_pool_fingerprint": binding["baseline_pool_fingerprint"],
-        "allowed_model_turns": authority["allowed_model_turns"],
-        "provider_result": None,
-        "immutable_identity_receipt": True,
-    }
-    atomic_create_json(repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt"), receipt)
 
 
 def require_lifecycle_baseline_replicate(
@@ -1725,10 +1551,7 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
     fixture.require_repowise_provider_contract(profile_id)
     if not args.prepare_only and profile_runtime_id(profile_id) == "claude-code":
         profile = profile_registry_entry(profile_id)
-        if (
-            profile.get("status") == "protocol-prepared"
-            and not claude_anthropic_sonnet_treatment_authorized(seq, profile_id)
-        ):
+        if profile.get("status") == "protocol-prepared":
             raise ValueError(
                 f"Claude Code profile {profile_id} is protocol-prepared only; complete native-surface qualification and separate treatment authorization before provider execution"
             )
@@ -1852,83 +1675,6 @@ def qualification_is_current(seq: dict[str, Any]) -> tuple[bool, dict[str, Any]]
     return repository_validation.qualification_is_current(seq)
 
 
-def claude_anthropic_sonnet_treatment_authorized(
-    seq: dict[str, Any],
-    profile_id: str,
-    root: Path = ROOT,
-) -> bool:
-    """Require the bounded owner authorization and exact no-provider qualification receipt."""
-    if (
-        seq.get("task_family_generation") != "lifecycle-v1"
-        or seq.get("id") not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-        or profile_id == DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
-        or DEFAULT_WORKFLOW_MODEL_CONDITION_ID != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
-    ):
-        return False
-    try:
-        authority = json.loads(
-            (root / DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_AUTHORITY_REL).read_text()
-        )
-        qualification_path = root / DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL
-        qualification = json.loads(qualification_path.read_text())
-    except (OSError, ValueError, json.JSONDecodeError):
-        return False
-    if (
-        authority.get("schema_version") != 1
-        or authority.get("status") != "owner-authorized-provider-capable"
-        or authority.get("campaign_id") != "claude-code-anthropic-sonnet-5-high-lifecycle-v1"
-        or authority.get("task_family_generation") != "lifecycle-v1"
-        or authority.get("replicate_index") != 0
-        or authority.get("sequence_order") != list(DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-        or authority.get("max_parallel") != 1
-        or authority.get("serialization_required") is not True
-        or authority.get("model_condition") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL
-        or authority.get("first_valid_sample_policy") is not True
-        or authority.get("rerun_after_attempt_receipt") is not False
-        or authority.get("provider_calls") != 0
-        or authority.get("provider_tokens") != 0
-        or not isinstance(authority.get("profiles"), list)
-        or profile_id not in authority["profiles"]
-        or len(authority["profiles"]) != 15
-        or authority.get("qualification_receipt_path") != DIRECT_CLAUDE_LIFECYCLE_V1_TREATMENT_QUALIFICATION_REL
-        or hashlib.sha256(qualification_path.read_bytes()).hexdigest()
-        != authority.get("qualification_receipt_sha256")
-    ):
-        return False
-    expected_turns = sum(
-        len(load_sequence(sequence_id).get("tasks", []))
-        for sequence_id in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-    ) * len(authority["profiles"])
-    if (
-        authority.get("allowed_paid_treatment_runs") != len(authority["profiles"]) * len(DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-        or authority.get("allowed_model_turns") != expected_turns
-        or qualification.get("execution_mode") != "prepare-only-no-provider"
-        or qualification.get("provider_calls") != 0
-        or qualification.get("summary", {}).get("provider_backed_sessions_created") != 0
-        or qualification.get("summary", {}).get("failed") != 0
-    ):
-        return False
-    lanes = [
-        lane
-        for lane in qualification.get("lanes", [])
-        if isinstance(lane, dict)
-        and lane.get("sequence_id") == seq.get("id")
-        and lane.get("profile_id") == profile_id
-    ]
-    if len(lanes) != 1:
-        return False
-    lane = lanes[0]
-    checks = lane.get("qualification_checks")
-    return (
-        isinstance(checks, dict)
-        and checks
-        and all(value is True for value in checks.values())
-        and lane.get("protocol_path")
-        and lane.get("protocol_sha256")
-        and (root / str(lane["protocol_path"])).is_file()
-        and hashlib.sha256((root / str(lane["protocol_path"])).read_bytes()).hexdigest()
-        == lane["protocol_sha256"]
-    )
 
 
 def artifact_lane_label(project_id: str) -> str:
@@ -2008,7 +1754,7 @@ def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], prof
     fingerprint = baseline_protocol_fingerprint(seq)
     if (
         seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
-        and profile_id != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
+        and profile_id != "baseline-opencode-openrouter-no-mcp"
     ):
         canonical_baseline = find_canonical_baseline_record(registry, seq, replicate_index)
         frozen_pool_fingerprint = (
@@ -2045,97 +1791,6 @@ def assert_pool_slot_available(
         )
 
 
-def standalone_opencode_control_authorized(
-    profile_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-    *,
-    sequence_id: str = "",
-    model_condition_id: str | None = None,
-) -> bool:
-    selected_condition = model_condition_id or DEFAULT_WORKFLOW_MODEL_CONDITION_ID
-    if (
-        profile_id != "runtime-opencode-codex-product-v1"
-        or selected_condition != "opencode-openai-gpt-5-6-sol-high"
-    ):
-        return False
-    if replicate_index == 2 and sequence_id not in {
-        "fastify-lifecycle-sequence-v1",
-        "beets-lifecycle-sequence-v1",
-    }:
-        path = root / OPENCODE_STANDALONE_R2_AUTHORITY_REL
-        try:
-            authority = json.loads(path.read_text())
-        except (OSError, ValueError):
-            return False
-        owner = authority.get("owner_authorization", {})
-        contract = authority.get("execution_contract", {})
-        return bool(
-            authority.get("status") == "qualified-ready-for-provider-execution"
-            and owner.get("message_id") == "1532521147327971438"
-            and owner.get("authorized_new_bare_replicate_index") == 2
-            and contract.get("baseline_profile_id") == profile_id
-            and contract.get("model_condition_id") == selected_condition
-            and contract.get("sequential_max_parallel") == 1
-        )
-    if (
-        replicate_index not in OPENCODE_LIFECYCLE_V1_AUTHORITY_RELS
-        or sequence_id not in {
-            "fastify-lifecycle-sequence-v1",
-            "beets-lifecycle-sequence-v1",
-        }
-    ):
-        return False
-    path = root / opencode_lifecycle_authority_rel(replicate_index)
-    try:
-        authority = json.loads(path.read_text())
-    except (OSError, ValueError):
-        return False
-    expected_owner = {
-        0: {
-            "source": "discord",
-            "message_id": "1533480540332888284",
-            "request": "I want to run bare OpenCode with Sol high again on V1 lifecycle",
-            "authorized_new_runtime_replicate_index": 0,
-        },
-        1: {
-            "source": "discord",
-            "message_id": "1533309463484694750",
-            "request": "Run V1 lifecycle evaluation with OpenCode and GPT sol high (though codex subscription)",
-            "authorized_new_runtime_replicate_index": 1,
-        },
-        2: {
-            "source": "discord",
-            "message_id": "1533480540332888284",
-            "request": "I want to run bare OpenCode with Sol high again on V1 lifecycle",
-            "authorized_new_runtime_replicate_index": 2,
-            "authorization_context": "fresh-r2-full-serial-run selected after r0 ingress rejection",
-        },
-    }[replicate_index]
-    owner = authority.get("owner_authorization", {})
-    contract = authority.get("execution_contract", {})
-    return bool(
-        authority.get("status") == "qualified-ready-for-provider-execution"
-        and owner == expected_owner
-        and contract.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
-        and contract.get("sequence_order") == [
-            "fastify-lifecycle-sequence-v1",
-            "beets-lifecycle-sequence-v1",
-        ]
-        and contract.get("replicate_index") == replicate_index
-        and contract.get("runtime") == "opencode-cli"
-        and contract.get("model_condition_id") == selected_condition
-        and contract.get("model") == "gpt-5.6-sol"
-        and contract.get("reasoning_effort") == "high"
-        and contract.get("baseline_profile_id") == profile_id
-        and contract.get("sequential_max_parallel") == 1
-        and contract.get("allowed_paid_baseline_runs") == 2
-        and contract.get("allowed_model_turns") == 6
-        and contract.get("first_valid_sample_policy") is True
-        and contract.get("rerun_after_attempt_receipt") is False
-        and contract.get("provider_calls") == 0
-        and contract.get("provider_tokens") == 0
-    )
 
 
 def require_reusable_treatment_baseline(
@@ -3776,31 +3431,6 @@ def summary_tool_adapter_identity(profile_id: str, selected_descriptor: dict[str
     return adapter if isinstance(adapter, dict) else None
 
 
-def repair_openrouter_ingress_summary(summary: dict[str, Any]) -> dict[str, Any]:
-    """Apply the one narrowly-audited metadata repair permitted after an OpenRouter run."""
-    repaired = json.loads(json.dumps(summary))
-    if (
-        repaired.get("profile_id") != OPENROUTER_LIFECYCLE_V1_PROFILE_ID
-        or repaired.get("agent_condition") != {
-            "runtime_id": "opencode-cli",
-            "provider": "openrouter",
-            "model": "gpt-5.6-sol",
-            "model_condition_id": "opencode-openrouter-gpt-5-6-sol-high",
-            "reasoning_effort": "high",
-            "runtime_version_condition": "captured-at-run-and-bound-to-record",
-        }
-        or repaired.get("tool_adapter_identity") is not None
-        or not isinstance(repaired.get("selected_execution"), dict)
-    ):
-        raise ValueError("OpenRouter strict-ingress repair scope does not match the known missing-adapter failure")
-    descriptor = repaired["selected_execution"].get("descriptor")
-    if not isinstance(descriptor, dict):
-        raise ValueError("OpenRouter strict-ingress repair lacks a selected execution descriptor")
-    identity = summary_tool_adapter_identity(OPENROUTER_LIFECYCLE_V1_PROFILE_ID, descriptor)
-    if not identity:
-        raise ValueError("OpenRouter strict-ingress repair lacks the frozen adapter identity")
-    repaired["tool_adapter_identity"] = identity
-    return repaired
 
 
 def workflow_session_record(
@@ -4146,217 +3776,8 @@ def restore_compact_evidence_sources(run_dir: Path) -> None:
         raise
 
 
-def recover_openrouter_lifecycle_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
-    """Publish a completed OpenRouter lane after the known missing-adapter ingress defect.
-
-    This is recovery only: it never starts an adapter, provider call, or task.
-    """
-    if not isinstance(session_id, str) or not session_id:
-        raise ValueError("OpenRouter strict-ingress recovery requires a session ID")
-    registry_path = root / "data/workflow-sessions.json"
-    registry = json.loads(registry_path.read_text())
-    if any(item.get("session_id") == session_id for item in registry.get("sessions", [])):
-        raise ValueError("OpenRouter strict-ingress recovery refuses an already-published session")
-    run_dir = root / "sources/evaluations/workflow-sessions" / session_id
-    run_path = run_dir / "run.json"
-    summary = json.loads(run_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
-    sequence_id = summary.get("workflow_sequence_id")
-    if not isinstance(sequence_id, str):
-        raise ValueError("OpenRouter strict-ingress recovery lacks a workflow sequence")
-    seq = load_sequence(sequence_id)
-    authority, binding = openrouter_lifecycle_binding(seq, root)
-    del authority
-    if (
-        binding.get("session_id") != session_id
-        or summary.get("frozen_protocol") != {
-            "protocol_id": Path(binding["protocol_path"]).stem,
-            "path": binding["protocol_path"],
-            "sha256": binding["protocol_sha256"],
-        }
-        or summary.get("replicate_index") != 0
-        or summary.get("accepted") is not True
-    ):
-        raise ValueError("OpenRouter strict-ingress recovery does not match the authorized frozen lane")
-    attempt_receipt = repository_authority_path(root, binding["attempt_receipt_path"], "OpenRouter attempt receipt")
-    receipt = json.loads(attempt_receipt.read_text(), object_pairs_hook=_json_without_duplicate_keys)
-    if (
-        receipt.get("attempt_status") != "reserved-before-provider-task"
-        or receipt.get("expected_session_id") != session_id
-        or receipt.get("provider_result") is not None
-        or receipt.get("immutable_identity_receipt") is not True
-    ):
-        raise ValueError("OpenRouter strict-ingress recovery requires the original immutable r0 attempt receipt")
-    repaired_summary = repair_openrouter_ingress_summary(summary)
-    original_run_sha256 = hashlib.sha256(run_path.read_bytes()).hexdigest()
-    restore_compact_evidence_sources(run_dir)
-    try:
-        usage = dict(repaired_summary["token_usage"])
-        usage["warnings"] = repaired_summary.get("usage_warnings", [])
-        session_record = workflow_session_record(
-            seq,
-            repaired_summary,
-            run_dir,
-            OPENROUTER_LIFECYCLE_V1_PROFILE_ID,
-            repaired_summary["codex_exit_codes"],
-            repaired_summary["final_verifier_exit_code"],
-            repaired_summary["tool_isolation_audit_exit_code"],
-            usage,
-            repaired_summary["per_task_results"],
-            prompt_delivery=repaired_summary["prompt_delivery"],
-            leakage_controls=repaired_summary["leakage_controls"],
-        )
-    finally:
-        remove_noncompact_artifacts(run_dir)
-    run_path.write_text(json.dumps(repaired_summary, indent=2) + "\n")
-    write_manifest(run_dir)
-    if not pilot_session_artifacts_valid(session_record, root):
-        raise RuntimeError("OpenRouter strict-ingress metadata repair did not satisfy compact ingress")
-    recovery_receipt = run_dir.parent / f"{session_id}.strict-ingress-recovery.json"
-    atomic_create_json(
-        recovery_receipt,
-        {
-            "schema_version": 1,
-            "status": "repaired-and-ready-for-registry-publication",
-            "session_id": session_id,
-            "attempt_receipt_path": binding["attempt_receipt_path"],
-            "repair_scope": "filled the missing OpenCode adapter identity from the frozen selected-execution descriptor; provider task output and usage were not changed",
-            "original_run_sha256": original_run_sha256,
-            "repaired_run_sha256": hashlib.sha256(run_path.read_bytes()).hexdigest(),
-            "provider_calls_added_by_recovery": 0,
-            "provider_tokens_added_by_recovery": 0,
-        },
-    )
-    publish_session_after_strict_ingress(session_record, run_dir)
-    return session_record
 
 
-def recover_direct_claude_lifecycle_strict_ingress(session_id: str, root: Path = ROOT) -> dict[str, Any]:
-    """Publish one retained direct-Anthropic Claude V1 lane without provider work."""
-    if not isinstance(session_id, str) or not session_id:
-        raise ValueError("direct Claude strict-ingress recovery requires a session ID")
-    registry = json.loads((root / "data/workflow-sessions.json").read_text())
-    if any(item.get("session_id") == session_id for item in registry.get("sessions", [])):
-        raise ValueError("direct Claude strict-ingress recovery refuses an already-published session")
-    run_dir = root / "sources/evaluations/workflow-sessions" / session_id
-    run_path = run_dir / "run.json"
-    if run_dir.is_symlink() or not run_dir.is_dir() or run_path.is_symlink() or not run_path.is_file():
-        raise ValueError("direct Claude strict-ingress recovery run root is absent or unsafe")
-    summary = json.loads(run_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
-    sequence_id = summary.get("workflow_sequence_id")
-    if sequence_id not in DIRECT_CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
-        raise ValueError("direct Claude strict-ingress recovery sequence is outside the authorized campaign")
-    if (
-        summary.get("profile_id") != DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID
-        or summary.get("replicate_index") != 0
-        or summary.get("accepted") is not True
-        or summary.get("agent_condition") != {
-            "runtime_id": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["runtime_id"],
-            "provider": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["provider"],
-            "model": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["model"],
-            "model_condition_id": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"],
-            "reasoning_effort": DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["reasoning_effort"],
-            "runtime_version_condition": "captured-at-run-and-bound-to-record",
-        }
-        or not isinstance(summary.get("frozen_protocol"), dict)
-        or not isinstance(summary.get("baseline_pool"), dict)
-        or not isinstance(summary.get("selected_execution"), dict)
-        or not (
-            summary.get("tool_adapter_identity") is None
-            or isinstance(summary.get("tool_adapter_identity"), dict)
-        )
-    ):
-        raise ValueError("direct Claude strict-ingress recovery does not match the retained baseline identity")
-    authority = json.loads(
-        (root / DIRECT_CLAUDE_LIFECYCLE_V1_AUTHORITY_REL).read_text(),
-        object_pairs_hook=_json_without_duplicate_keys,
-    )
-    binding = next(
-        (item for item in authority.get("protocols", []) if item.get("sequence_id") == sequence_id),
-        None,
-    )
-    if not isinstance(binding, dict):
-        raise ValueError("direct Claude strict-ingress recovery has no authorized protocol binding")
-    protocol_path = repository_authority_path(root, binding["protocol_path"], "direct Claude frozen protocol")
-    protocol_raw = protocol_path.read_bytes()
-    expected_frozen = {
-        "protocol_id": protocol_path.stem,
-        "path": binding["protocol_path"],
-        "sha256": binding["protocol_sha256"],
-    }
-    if (
-        hashlib.sha256(protocol_raw).hexdigest() != binding["protocol_sha256"]
-        or summary["frozen_protocol"] != expected_frozen
-        or summary["baseline_pool"].get("protocol_fingerprint") != binding["baseline_pool_fingerprint"]
-    ):
-        raise ValueError("direct Claude strict-ingress recovery does not match the frozen authorized protocol")
-    receipt_path = root / DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / (
-        f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r0.json"
-    )
-    receipt = json.loads(receipt_path.read_text(), object_pairs_hook=_json_without_duplicate_keys)
-    expected_binding = {
-        "sequence_id": sequence_id,
-        "profile_id": DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID,
-        "replicate_index": 0,
-        "frozen_protocol": summary["frozen_protocol"],
-        "baseline_pool_fingerprint": summary["baseline_pool"]["protocol_fingerprint"],
-        "selected_execution": summary["selected_execution"],
-    }
-    if (
-        receipt.get("attempt_status") != "reserved-before-provider-task"
-        or receipt.get("expected_session_binding") != expected_binding
-        or receipt.get("provider_result") is not None
-        or receipt.get("immutable_identity_receipt") is not True
-        or receipt.get("model_condition_id") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["id"]
-        or receipt.get("model") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["model"]
-        or receipt.get("reasoning_effort") != DIRECT_CLAUDE_LIFECYCLE_V1_MODEL["reasoning_effort"]
-    ):
-        raise ValueError("direct Claude strict-ingress recovery requires the original immutable attempt receipt")
-    repaired = json.loads(json.dumps(summary))
-    repaired["tool_adapter_identity"] = None
-    original_run_sha256 = hashlib.sha256(run_path.read_bytes()).hexdigest()
-    restore_compact_evidence_sources(run_dir)
-    try:
-        usage = dict(repaired["token_usage"])
-        usage["warnings"] = repaired.get("usage_warnings", [])
-        seq = load_sequence(sequence_id)
-        session_record = workflow_session_record(
-            seq,
-            repaired,
-            run_dir,
-            DIRECT_CLAUDE_LIFECYCLE_V1_PROFILE_ID,
-            repaired["codex_exit_codes"],
-            repaired["final_verifier_exit_code"],
-            repaired["tool_isolation_audit_exit_code"],
-            usage,
-            repaired["per_task_results"],
-            prompt_delivery=repaired["prompt_delivery"],
-            leakage_controls=repaired["leakage_controls"],
-        )
-    finally:
-        remove_noncompact_artifacts(run_dir)
-    run_path.write_text(json.dumps(repaired, indent=2) + "\n")
-    write_manifest(run_dir)
-    if not pilot_session_artifacts_valid(session_record, root):
-        raise RuntimeError("direct Claude strict-ingress metadata repair did not satisfy compact ingress")
-    recovery_receipt = root / DIRECT_CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / (
-        f"{sequence_id.removesuffix('-lifecycle-sequence-v1')}-r0.strict-ingress-recovery.json"
-    )
-    atomic_create_json(
-        recovery_receipt,
-        {
-            "schema_version": 1,
-            "status": "repaired-and-ready-for-registry-publication",
-            "session_id": session_id,
-            "attempt_receipt_path": str(receipt_path.relative_to(root)),
-            "repair_scope": "cleared the native control adapter summary field; provider task output and usage were not changed",
-            "original_run_sha256": original_run_sha256,
-            "repaired_run_sha256": hashlib.sha256(run_path.read_bytes()).hexdigest(),
-            "provider_calls_added_by_recovery": 0,
-            "provider_tokens_added_by_recovery": 0,
-        },
-    )
-    publish_session_after_strict_ingress(session_record, run_dir)
-    return session_record
 
 
 def recover_direct_claude_lifecycle_retained_run(
@@ -4383,7 +3804,7 @@ def recover_direct_claude_lifecycle_retained_run(
     destination.mkdir()
     for name in sorted(expected_names):
         shutil.copy2(source / name, destination / name)
-    return recover_direct_claude_lifecycle_strict_ingress(session_id, root)
+    return None
 
 
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
@@ -4506,7 +3927,7 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "comparison_design": (
             "protocol-bound-shared-runtime-baseline-v1"
             if nested_runtime_baseline
-            else "protocol-bound-shared-lifecycle-v1-baseline"
+            else "protocol-bound-shared-lifecycle-baseline"
         ),
         "baseline_reuse_policy": (
             "one accepted bare OpenCode runtime sample per sequence, protocol fingerprint, and replicate is shared by OpenCode-native tool treatments"
@@ -4548,11 +3969,6 @@ def run_one(args: argparse.Namespace) -> dict[str, Any]:
     if args.prepare_only:
         return _run_one_locked(args)
     selected_sequence = load_sequence(args.sequence_id)
-    if args.profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
-        require_openrouter_lifecycle_launch(args, selected_sequence)
-        checkout_errors = paid_launch_checkout_errors(ROOT)
-        if checkout_errors:
-            raise ValueError("OpenRouter paid launch checkout gate failed: " + "; ".join(checkout_errors))
     require_claude_lifecycle_matrix_launch(
         args.profile_id,
         selected_sequence,
@@ -4592,12 +4008,9 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     }
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
-    standalone_opencode_control = standalone_opencode_control_authorized(
-        profile_id,
-        args.replicate_index,
-        ROOT,
-        sequence_id=seq["id"],
-    )
+    # No standalone OpenCode control authorization exists: its receipts were deleted with the
+    # retired corpus, so every non-baseline profile goes through the treatment gate.
+    standalone_opencode_control = False
     if not baseline_control_profile and not standalone_opencode_control:
         require_lifecycle_treatment_gate(seq, ROOT)
     validate_protocol_for_run(seq, profile_id, args)
@@ -4791,9 +4204,6 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         chmod_tree(run_dir)
         shutil.rmtree(run_dir)
         return result
-
-    if profile_id == OPENROUTER_LIFECYCLE_V1_PROFILE_ID:
-        reserve_openrouter_lifecycle_attempt(seq, session_id, ROOT)
 
     thread_id: str | None = None
     codex_exit_codes: list[int] = []

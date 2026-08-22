@@ -42,8 +42,8 @@ Start with [`docs/README.md`](docs/README.md). The main destinations are:
 - `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated V2 qualification evidence.
 - `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
 - `docs/evaluations/operations/runbook.md` — generated operator runbook.
-- `docs/papers/opencode-four-tool-lifecycle-v1-screen-20260808.md` — archived pre-correction OpenCode Lifecycle V1 screen.
-- `docs/papers/phase-2-lifecycle-v1-natural-use-screening.md` — archived pre-correction Lifecycle V1 screening report.
+- `docs/papers/opencode-four-tool-screen-20260808.md` — archived pre-correction OpenCode Lifecycle V1 screen.
+- `docs/papers/phase-2-natural-use-screening.md` — archived pre-correction Lifecycle V1 screening report.
 - `sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json` — Lifecycle V0 retirement adjudication.
 
 ## Validation

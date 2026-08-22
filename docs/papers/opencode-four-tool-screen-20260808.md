@@ -1,5 +1,7 @@
 # OpenCode four-tool Lifecycle V1 screen — 2026-08-08
 
+> **Evidence status (2026-08-22).** The sessions and protocols behind this report were part of the Lifecycle V1 corpus, deleted at the experiment owner's direction when V1 was retired. The numbers here are no longer reproducible from this repository. The report is retained because negative findings and exclusions are part of the research record ([ADR 0003](../architecture/decision-records/0003-methodology-and-reporting.md)); it must not be read as a current finding.
+
 ## Scope
 
 This is a single-replicate, provider-backed OpenCode screening run across the active Lifecycle V1 Fastify and Beets workflows. Cartog was explicitly excluded before provider execution because its pinned native binary could not reproduce the frozen artifact identity; it has no result in this screen.

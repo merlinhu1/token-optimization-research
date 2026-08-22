@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-22",
+  "action": "framework-retirement-and-corpus-deletion",
+  "scope": "lifecycle-v1 and residual lifecycle-v0 material",
+  "authorized_by": "experiment owner, explicit direction in session",
+  "adjudication": "Lifecycle V1 was superseded by Lifecycle V2 on 2026-08-16 and V0 retired on 2026-08-14. Both still held evidence, task definitions, registry records and validator machinery. The owner directed deletion of all of it, retaining only documents that record what was learned, and required that no functioning code reference either generation.",
+  "deleted": {
+    "archives": [
+      "lifecycle-v1-pre-corrected-prompts-20260813 (770 files, 103 provider-backed sessions)",
+      "lifecycle-v1-pre-capped-suite-20260815",
+      "lifecycle-v1-pre-targeted-tests-20260816",
+      "lifecycle-v1-compile-only-contracts-20260815",
+      "lifecycle-v1-high-effort-contracts-20260815",
+      "lifecycle-v1-raw-metric-protocols-20260815",
+      "lifecycle-v2-pre-prepared-base-20260818",
+      "lifecycle-v2-beets-plugin-tasks-20260820",
+      "lifecycle-v2-pre-prompt-repair-20260821",
+      "lifecycle-v2-beets-repin-20260822"
+    ],
+    "fixture_material": [
+      "task-generations/lifecycle-v1 in both fixtures",
+      "retired V0 task directories in both fixtures",
+      "nine V0 and six V1 qualification files",
+      "one dead alternative-repairs diff"
+    ],
+    "registry": [
+      "fastify-lifecycle-sequence-v1",
+      "beets-lifecycle-sequence-v1"
+    ],
+    "code": "Authorization machinery for three retired provider campaigns -- OpenCode sol-high, Claude sonnet-5-high and Claude opus-5-high/medium -- comprising 60 definitions across the workflow runner and the serial matrix, plus their call sites and the contract tests that exercised them. Every audit path those definitions referenced was already absent from disk."
+  },
+  "retained": {
+    "documents": [
+      "docs/papers/*, annotated where their evidence was deleted",
+      "docs/architecture/decision-records/*",
+      "sources/evaluations/audits/* other than the deleted corpus",
+      "docs/evaluations/design/accepted-replicate-pairing.md, renamed to drop the generation"
+    ],
+    "rationale": "ADR 0003 retains reports of superseded work rather than withdrawing them, because negative findings and exclusions are part of the research record. Two papers now carry an explicit note that their numbers are no longer reproducible from this repository."
+  },
+  "defects_found_during_removal": [
+    {
+      "defect": "require_opencode_lifecycle_matrix_launch gated the serial matrix on task_family_generation == 'lifecycle-v1' where its Claude twin read SUPPORTED_TASK_FAMILY_GENERATIONS",
+      "consequence": "paid OpenCode runs on the active family were not held behind the production lock"
+    },
+    {
+      "defect": "comparison_replicate_binding_matches accepted cross-index pairing only for one named retired campaign",
+      "consequence": "the rule is now stated generally: an accepted-ordinal map plus identical prompt bytes"
+    },
+    {
+      "defect": "the fixture tasks/README requirement outlived the directory it documented",
+      "consequence": "removed, and setup.sh no longer creates that directory"
+    }
+  ],
+  "recoverability": "All deleted bytes remain in git history at c3aee112 and its ancestors.",
+  "active_state_after": {
+    "generations": [
+      "lifecycle-v2"
+    ],
+    "sequences": [
+      "fastify-lifecycle-sequence-v2",
+      "beets-lifecycle-sequence-v2"
+    ],
+    "retained_sessions": 5,
+    "treatments_run": 0
+  }
+}

@@ -41,86 +41,11 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
-OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS = {
-    0: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r0-attempts"),
-    1: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts"),
-    2: Path("sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts"),
-}
-OPENCODE_LIFECYCLE_V1_R1_ATTEMPT_DIR = OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[1]
-OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL = (
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-fastify-no-provider-recovery-authorization-20260802.json"
-)
-OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL = (
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-beets-retry-authorization-20260802.json"
-)
-OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL = (
-    "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2-retry-1.json"
-)
 CLAUDE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/claude-code-sol-high-normal-baseline-authorization-20260731.json"
 )
-CLAUDE_LIFECYCLE_V1_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/claude-code-lifecycle-v1-sol-high-r0-authorization-20260802.json"
-)
-CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR = Path(
-    "sources/evaluations/audits/claude-code-lifecycle-v1-sol-high-r0-attempts"
-)
-CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER = (
-    "fastify-lifecycle-sequence-v1",
-    "beets-lifecycle-sequence-v1",
-)
-CLAUDE_LIFECYCLE_V1_MODEL_CONDITION = {
-    "id": "claude-code-openrouter-gpt-5-6-sol-high",
-    "runtime_id": "claude-code",
-    "provider": "openrouter",
-    "model": "gpt-5.6-sol",
-    "reasoning_effort": "high",
-}
-CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID = "claude-code-anthropic-sonnet-5-high"
-CLAUDE_ANTHROPIC_PREPARATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-protocol-preparation-20260808.json"
-)
-CLAUDE_ANTHROPIC_AUTHORIZATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810.json"
-)
-CLAUDE_ANTHROPIC_ATTEMPT_DIR = Path(
-    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-attempts"
-)
-CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE = {
-    0: Path(
-        "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260808.json"
-    ),
-    1: CLAUDE_ANTHROPIC_AUTHORIZATION_REL,
-    2: Path(
-        "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-baseline-authorization-20260810-r2.json"
-    ),
-}
-CLAUDE_ANTHROPIC_SONNET_R1_RECOVERY_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-r1-fastify-no-provider-recovery-authorization-20260811.json"
-)
-CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR = Path(
-    "sources/evaluations/audits/claude-code-anthropic-sonnet-5-high-lifecycle-v1-treatment-attempts"
-)
 CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID = "claude-code-anthropic-opus-5-high"
-CLAUDE_ANTHROPIC_OPUS_PREPARATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-protocol-preparation-20260808.json"
-)
-CLAUDE_ANTHROPIC_OPUS_AUTHORIZATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-baseline-authorization-20260808.json"
-)
-CLAUDE_ANTHROPIC_OPUS_ATTEMPT_DIR = Path(
-    "sources/evaluations/audits/claude-code-anthropic-opus-5-high-lifecycle-v1-attempts"
-)
 CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID = "claude-code-anthropic-opus-5-medium"
-CLAUDE_ANTHROPIC_OPUS_MEDIUM_PREPARATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-opus-5-medium-lifecycle-v1-protocol-preparation.json"
-)
-CLAUDE_ANTHROPIC_OPUS_MEDIUM_AUTHORIZATION_REL = Path(
-    "sources/evaluations/audits/claude-code-anthropic-opus-5-medium-lifecycle-v1-baseline-authorization.json"
-)
-CLAUDE_ANTHROPIC_OPUS_MEDIUM_ATTEMPT_DIR = Path(
-    "sources/evaluations/audits/claude-code-anthropic-opus-5-medium-lifecycle-v1-attempts"
-)
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
 
@@ -133,55 +58,6 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text())
 
 
-def direct_anthropic_campaign(
-    model_condition_id: str | None,
-    replicate_index: int = 0,
-) -> dict[str, Any] | None:
-    campaigns = {
-        CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID: {
-            "preparation": CLAUDE_ANTHROPIC_PREPARATION_REL,
-            "authorization": CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE.get(
-                replicate_index,
-                Path(f"sources/evaluations/audits/unsupported-anthropic-replicate-{replicate_index}.json"),
-            ),
-            "attempt_dir": CLAUDE_ANTHROPIC_ATTEMPT_DIR,
-            "campaign_id": "claude-code-anthropic-sonnet-5-high-lifecycle-v1",
-            "model_condition": {
-                "id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
-                "runtime_id": "claude-code",
-                "provider": "anthropic",
-                "model": "claude-sonnet-5",
-                "reasoning_effort": "high",
-            },
-        },
-        CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID: {
-            "preparation": CLAUDE_ANTHROPIC_OPUS_PREPARATION_REL,
-            "authorization": CLAUDE_ANTHROPIC_OPUS_AUTHORIZATION_REL,
-            "attempt_dir": CLAUDE_ANTHROPIC_OPUS_ATTEMPT_DIR,
-            "campaign_id": "claude-code-anthropic-opus-5-high-lifecycle-v1",
-            "model_condition": {
-                "id": CLAUDE_ANTHROPIC_OPUS_5_HIGH_CONDITION_ID,
-                "runtime_id": "claude-code",
-                "provider": "anthropic",
-                "model": "claude-opus-5",
-                "reasoning_effort": "high",
-            },
-        },
-        CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID: {
-            "preparation": CLAUDE_ANTHROPIC_OPUS_MEDIUM_PREPARATION_REL,
-            "authorization": CLAUDE_ANTHROPIC_OPUS_MEDIUM_AUTHORIZATION_REL,
-            "attempt_dir": CLAUDE_ANTHROPIC_OPUS_MEDIUM_ATTEMPT_DIR,
-            "campaign_id": "claude-code-anthropic-opus-5-medium-lifecycle-v1",
-            "model_condition": {
-                "id": CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID,
-                "runtime_id": "claude-code",
-                "provider": "anthropic",
-                "model": "claude-opus-5",
-                "reasoning_effort": "medium",
-            },
-        },
-    }
-    return campaigns.get(model_condition_id)
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -427,267 +303,12 @@ def find_protocol(
     return matches[0]
 
 
-def claude_lifecycle_attempt_path(
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-    attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
-) -> Path:
-    if sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER or type(replicate_index) is not int or replicate_index < 0:
-        raise ValueError("Claude Code Lifecycle V1 attempt identity is not authorized")
-    lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-    return root / attempt_dir / f"{lane}-r{replicate_index}.json"
 
 
-def claude_lifecycle_run_gate(
-    registry: dict[str, Any],
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-) -> tuple[bool, str]:
-    """Validate the owner-bound Claude Code Lifecycle V1 provider authority."""
-    path = root / CLAUDE_LIFECYCLE_V1_AUTHORITY_REL
-    if not path.is_file():
-        return False, f"missing Claude Code Lifecycle V1 authority: {CLAUDE_LIFECYCLE_V1_AUTHORITY_REL}"
-    try:
-        authority = load_json(path)
-    except (OSError, ValueError) as exc:
-        return False, f"unreadable Claude Code Lifecycle V1 authority: {exc}"
-    expected_keys = {
-        "schema_version", "campaign_id", "authorized_by_owner_message_id", "authorized_on",
-        "authorized_source_commit", "paid_baseline_execution_authorized", "authorized_replicate_index",
-        "sequence_order", "max_parallel", "allowed_paid_baseline_runs", "allowed_model_turns",
-        "serialization_required", "model_condition", "first_valid_sample_policy",
-        "rerun_after_attempt_receipt", "provider_calls", "provider_tokens", "sequences", "notes",
-    }
-    records = authority.get("sequences")
-    header_ok = (
-        isinstance(authority, dict)
-        and set(authority) == expected_keys
-        and authority.get("schema_version") == 1
-        and authority.get("campaign_id") == "claude-code-lifecycle-v1-sol-high-r0-20260802"
-        and authority.get("authorized_by_owner_message_id") == "1533397324384964609"
-        and authority.get("authorized_on") == "2026-08-02"
-        and isinstance(authority.get("authorized_source_commit"), str)
-        and len(authority["authorized_source_commit"]) == 40
-        and authority.get("paid_baseline_execution_authorized") is True
-        and authority.get("authorized_replicate_index") == 0
-        and authority.get("sequence_order") == list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-        and authority.get("max_parallel") == 1
-        and authority.get("allowed_paid_baseline_runs") == len(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-        and authority.get("allowed_model_turns") == sum(
-            len(workflow.load_sequence(item).get("tasks", []))
-            for item in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-        )
-        and authority.get("serialization_required") is True
-        and authority.get("model_condition") == CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
-        and authority.get("first_valid_sample_policy") is True
-        and authority.get("rerun_after_attempt_receipt") is False
-        and type(authority.get("provider_calls")) is int
-        and authority.get("provider_calls") == 0
-        and type(authority.get("provider_tokens")) is int
-        and authority.get("provider_tokens") == 0
-        and isinstance(authority.get("notes"), str)
-        and bool(authority.get("notes"))
-    )
-    binding_keys = {
-        "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint",
-    }
-    records_ok = (
-        isinstance(records, list)
-        and len(records) == len(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-        and all(isinstance(item, dict) and set(item) == binding_keys for item in records)
-        and [item.get("sequence_id") for item in records] == list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-    )
-    if (
-        not header_ok
-        or not records_ok
-        or replicate_index != 0
-        or sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-    ):
-        return False, "Claude Code Lifecycle V1 authority does not match the requested identity, scope, or budget"
-    bindings = {item["sequence_id"]: item for item in records}
-    for active_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
-        binding = bindings[active_id]
-        protocol_path = root / str(binding["protocol_path"])
-        try:
-            protocol_raw = protocol_path.read_bytes()
-            protocol = json.loads(protocol_raw)
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-            return False, f"Claude Code Lifecycle V1 authority protocol is unreadable: {active_id}: {exc}"
-        descriptor = protocol.get("selected_execution", {}).get("descriptor", {})
-        agent = descriptor.get("agent_condition", {}) if isinstance(descriptor, dict) else {}
-        if (
-            hashlib.sha256(protocol_raw).hexdigest() != binding["protocol_sha256"]
-            or protocol.get("status") != "frozen-ready-not-run"
-            or protocol.get("task_fixture", {}).get("sequence_id") != active_id
-            or protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-            != binding["baseline_pool_fingerprint"]
-            or descriptor.get("selected_profile", {}).get("profile_id") != "baseline-claude-code-no-mcp"
-            or agent != {
-                "runtime_id": "claude-code",
-                "provider": "openrouter",
-                "model": "gpt-5.6-sol",
-                "model_condition_id": "claude-code-openrouter-gpt-5-6-sol-high",
-                "reasoning_effort": "high",
-                "runtime_version_condition": "captured-at-run-and-bound-to-record",
-            }
-        ):
-            return False, f"Claude Code Lifecycle V1 authority has stale protocol binding: {active_id}"
-    try:
-        receipt = claude_lifecycle_attempt_path(sequence_id, replicate_index, root)
-    except ValueError as exc:
-        return False, str(exc)
-    if receipt.exists():
-        return False, f"Claude Code Lifecycle V1 identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
-    occupied = workflow.find_pool_profile_record(
-        registry,
-        workflow.load_sequence(sequence_id),
-        "baseline-claude-code-no-mcp",
-        replicate_index,
-    )
-    if occupied is not None:
-        return False, f"Claude Code Lifecycle V1 identity is already occupied by session {occupied.get('session_id')}"
-    return True, "owner-authorized Claude Code Lifecycle V1 Sol/high baseline is unoccupied"
 
 
-def reserve_claude_lifecycle_attempt(
-    *,
-    sequence_id: str,
-    replicate_index: int,
-    expected_session_binding: dict[str, Any],
-    run_root: Path,
-    root: Path = ROOT,
-    model_condition: dict[str, str] | None = None,
-    authority_rel: Path = CLAUDE_LIFECYCLE_V1_AUTHORITY_REL,
-    attempt_dir: Path = CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR,
-    owner_authorization_message_id: str = "1533397324384964609",
-    allow_existing_recovery: bool = False,
-) -> Path:
-    """Reserve one immutable Claude Code Lifecycle V1 identity before a lane clone."""
-    if (
-        expected_session_binding.get("sequence_id") != sequence_id
-        or expected_session_binding.get("profile_id") != "baseline-claude-code-no-mcp"
-        or expected_session_binding.get("replicate_index") != replicate_index
-        or not isinstance(expected_session_binding.get("frozen_protocol"), dict)
-        or not isinstance(expected_session_binding.get("selected_execution"), dict)
-    ):
-        raise ValueError("Claude Code Lifecycle V1 receipt binding does not match the requested identity")
-    condition = model_condition or CLAUDE_LIFECYCLE_V1_MODEL_CONDITION
-    path = claude_lifecycle_attempt_path(sequence_id, replicate_index, root, attempt_dir)
-    if path.exists():
-        if not (
-            allow_existing_recovery
-            and claude_anthropic_sonnet_r1_recovery_authorized(
-                sequence_id,
-                replicate_index,
-                root,
-            )
-        ):
-            raise FileExistsError(f"immutable Claude Code Lifecycle V1 attempt receipt already exists: {path}")
-        return path
-    payload = {
-        "schema_version": 1,
-        "attempt_status": "reserved-before-provider-task",
-        "task_family_generation": "lifecycle-v1",
-        "sequence_id": sequence_id,
-        "replicate_index": replicate_index,
-        "profile_id": "baseline-claude-code-no-mcp",
-        "model_condition_id": condition["id"],
-        "model": condition["model"],
-        "reasoning_effort": condition["reasoning_effort"],
-        "owner_authorization_message_id": owner_authorization_message_id,
-        "authority_path": str(authority_rel),
-        "orchestrator": str(run_root),
-        "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
-        "expected_session_binding": expected_session_binding,
-        "provider_result": None,
-        "immutable_identity_receipt": True,
-    }
-    workflow.atomic_create_json(path, payload)
-    return path
 
 
-def claude_anthropic_sonnet_r1_recovery_authorized(
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-) -> bool:
-    """Authorize only the owner-directed recovery of the invalid Fastify r1 reservation."""
-    if sequence_id != "fastify-lifecycle-sequence-v1" or replicate_index != 1:
-        return False
-    receipt_rel = (
-        CLAUDE_ANTHROPIC_ATTEMPT_DIR
-        / "fastify-r1.json"
-    ).as_posix()
-    receipt_path = root / receipt_rel
-    recovery_path = root / CLAUDE_ANTHROPIC_SONNET_R1_RECOVERY_AUTHORITY_REL
-    original_authority_path = root / CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE[1]
-    try:
-        receipt_raw = receipt_path.read_bytes()
-        receipt = json.loads(receipt_raw)
-        recovery = load_json(recovery_path)
-        original_authority = load_json(original_authority_path)
-        registry = load_json(root / "data/workflow-sessions.json")
-    except (OSError, UnicodeDecodeError, ValueError, json.JSONDecodeError):
-        return False
-    matching_sessions = [
-        session
-        for session in registry.get("sessions", [])
-        if (
-            session.get("task_sequence", {}).get("sequence_id") == sequence_id
-            and session.get("replicate_index") == replicate_index
-            and session.get("profile", {}).get("profile_id") == "baseline-claude-code-no-mcp"
-            and session.get("agent", {}).get("model_condition_id")
-            == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
-        )
-    ]
-    expected_owner = {
-        "source": "discord",
-        "message_id": "1536722705674666125",
-        "request": "We will rerun r1. clear the invalid occupant, prepare for claude code r1 run. once done, run it",
-        "authorized_action": "one serialized Claude Code Sonnet/high Lifecycle V1 r1 Fastify+Beets recovery run",
-    }
-    expected_contract = {
-        "sequence_id": sequence_id,
-        "replicate_index": 1,
-        "profile_id": "baseline-claude-code-no-mcp",
-        "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
-        "model": "claude-sonnet-5",
-        "reasoning_effort": "high",
-        "original_attempt_receipt_path": receipt_rel,
-        "original_attempt_receipt_sha256": hashlib.sha256(receipt_raw).hexdigest(),
-        "provider_execution_disposition": "reservation-only-no-canonical-session-or-usage-evidence",
-        "authorized_provider_run_count": 1,
-        "same_replicate_recovery": True,
-    }
-    expected_receipt = {
-        "attempt_status": "reserved-before-provider-task",
-        "task_family_generation": "lifecycle-v1",
-        "sequence_id": sequence_id,
-        "replicate_index": 1,
-        "profile_id": "baseline-claude-code-no-mcp",
-        "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
-        "model": "claude-sonnet-5",
-        "reasoning_effort": "high",
-        "provider_result": None,
-        "immutable_identity_receipt": True,
-    }
-    return bool(
-        isinstance(receipt, dict)
-        and all(receipt.get(key) == value for key, value in expected_receipt.items())
-        and receipt.get("authority_path") == str(CLAUDE_ANTHROPIC_AUTHORIZATION_BY_REPLICATE[1])
-        and recovery.get("schema_version") == 1
-        and recovery.get("status") == "owner-authorized-no-provider-recovery"
-        and recovery.get("owner_recovery_authorization") == expected_owner
-        and recovery.get("recovery_contract") == expected_contract
-        and original_authority.get("status") == "owner-authorized-provider-run"
-        and original_authority.get("authorized_replicate_index") == 1
-        and original_authority.get("provider_calls") == 0
-        and original_authority.get("provider_tokens") == 0
-        and original_authority.get("completed_sequences") == []
-        and not matching_sessions
-    )
 
 
 def claude_baseline_run_gate(
@@ -697,130 +318,6 @@ def claude_baseline_run_gate(
     root: Path = ROOT,
     model_condition_id: str | None = None,
 ) -> tuple[bool, str]:
-    campaign = direct_anthropic_campaign(model_condition_id, replicate_index)
-    if campaign is not None:
-        expected_model = campaign["model_condition"]
-        preparation_rel = campaign["preparation"]
-        authorization_rel = campaign["authorization"]
-        attempt_dir = campaign["attempt_dir"]
-        preparation_path = root / preparation_rel
-        if not preparation_path.is_file():
-            return False, f"missing direct-Anthropic Claude Code preparation authority: {preparation_rel}"
-        try:
-            preparation = load_json(preparation_path)
-        except (OSError, ValueError) as exc:
-            return False, f"unreadable direct-Anthropic Claude Code preparation authority: {exc}"
-        condition = preparation.get("model_condition", {})
-        if (
-            preparation.get("status") not in {
-                "frozen-provider-free-protocols-account-pending",
-                "repaired-provider-free-protocols-account-pending",
-            }
-            or condition != {**expected_model, "runtime_version": "2.1.220"}
-        ):
-            return False, "direct-Anthropic Claude Code preparation authority does not match the frozen model identity"
-        authorization_path = root / authorization_rel
-        if not authorization_path.is_file():
-            return False, f"missing direct-Anthropic Claude Code baseline authorization: {authorization_rel}"
-        try:
-            authorization = load_json(authorization_path)
-        except (OSError, ValueError) as exc:
-            return False, f"unreadable direct-Anthropic Claude Code baseline authorization: {exc}"
-        account_home = os.environ.get("TOKEN_EVAL_CLAUDE_ACCOUNT_HOME")
-        if not account_home or not Path(account_home).is_dir():
-            return False, "direct-Anthropic Claude Code account home is not supplied through TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
-        expected_protocols = {
-            item.get("sequence_id"): item
-            for item in authorization.get("protocols", [])
-            if isinstance(item, dict)
-        }
-        expected_agent = {
-            "runtime_id": expected_model["runtime_id"],
-            "provider": expected_model["provider"],
-            "model": expected_model["model"],
-            "model_condition_id": expected_model["id"],
-            "reasoning_effort": expected_model["reasoning_effort"],
-            "runtime_version_condition": "captured-at-run-and-bound-to-record",
-        }
-        expected_order = list(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER)
-        header_ok = (
-            authorization.get("schema_version") == 1
-            and authorization.get("status") == "owner-authorized-provider-run"
-            and authorization.get("campaign_id") == campaign["campaign_id"]
-            and authorization.get("task_family_generation") == "lifecycle-v1"
-            and authorization.get("authorized_replicate_index") == replicate_index
-            and authorization.get("sequence_order") == expected_order
-            and authorization.get("max_parallel") == 1
-            and authorization.get("allowed_paid_baseline_runs") == 2
-            and authorization.get("allowed_model_turns") == 6
-            and authorization.get("serialization_required") is True
-            and authorization.get("model_condition") == expected_model
-            and authorization.get("first_valid_sample_policy") is True
-            and authorization.get("rerun_after_attempt_receipt") is False
-            and type(authorization.get("provider_calls")) is int
-            and 0 <= authorization.get("provider_calls") <= authorization.get("allowed_model_turns")
-            and type(authorization.get("provider_tokens")) is int
-            and authorization.get("provider_tokens") >= 0
-            and isinstance(authorization.get("notes"), str)
-            and bool(authorization.get("notes"))
-            and [item.get("sequence_id") for item in authorization.get("protocols", []) if isinstance(item, dict)] == expected_order
-        )
-        if not header_ok or set(expected_protocols) != set(CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER):
-            return False, "direct-Anthropic Claude Code baseline authorization does not match the bounded identity, scope, or budget"
-        for active_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
-            binding = expected_protocols[active_id]
-            protocol_path = root / str(binding.get("protocol_path", ""))
-            try:
-                protocol_raw = protocol_path.read_bytes()
-                protocol = json.loads(protocol_raw)
-            except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-                return False, f"direct-Anthropic baseline protocol is unreadable: {active_id}: {exc}"
-            descriptor = protocol.get("selected_execution", {}).get("descriptor", {})
-            agent = descriptor.get("agent_condition", {}) if isinstance(descriptor, dict) else {}
-            if (
-                hashlib.sha256(protocol_raw).hexdigest() != binding.get("protocol_sha256")
-                or protocol.get("status") != "frozen-ready-not-run"
-                or protocol.get("task_fixture", {}).get("sequence_id") != active_id
-                or protocol.get("baseline_pool", {}).get("protocol_fingerprint") != binding.get("baseline_pool_fingerprint")
-                or descriptor.get("selected_profile", {}).get("profile_id") != "baseline-claude-code-no-mcp"
-                or agent != expected_agent
-            ):
-                return False, f"direct-Anthropic baseline authorization has stale protocol binding: {active_id}"
-        try:
-            receipt = claude_lifecycle_attempt_path(
-                sequence_id,
-                replicate_index,
-                root,
-                attempt_dir,
-            )
-        except ValueError as exc:
-            return False, str(exc)
-        if receipt.exists():
-            if not claude_anthropic_sonnet_r1_recovery_authorized(
-                sequence_id,
-                replicate_index,
-                root,
-            ):
-                return False, f"direct-Anthropic Claude Code identity is occupied by immutable attempt receipt: {receipt.relative_to(root)}"
-            recovery_reason = "; owner-authorized same-replicate recovery cleared reservation-only Fastify r1 occupant"
-        else:
-            recovery_reason = ""
-        occupied = next(
-            (
-                session
-                for session in registry.get("sessions", [])
-                if session.get("task_sequence", {}).get("sequence_id") == sequence_id
-                and session.get("replicate_index") == replicate_index
-                and session.get("profile", {}).get("profile_id") == "baseline-claude-code-no-mcp"
-                and session.get("agent", {}).get("model_condition_id") == expected_model["id"]
-            ),
-            None,
-        )
-        if occupied is not None:
-            return False, f"direct-Anthropic Claude Code identity is already occupied by session {occupied.get('session_id')}"
-        return True, f"owner-authorized direct-Anthropic Claude Code {expected_model['model']}/{expected_model['reasoning_effort']} baseline is unoccupied{recovery_reason}"
-    if sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER:
-        return claude_lifecycle_run_gate(registry, sequence_id, replicate_index, root)
     path = root / CLAUDE_BASELINE_AUTHORITY_REL
     if not path.is_file():
         return False, f"missing Claude Code baseline authority: {CLAUDE_BASELINE_AUTHORITY_REL}"
@@ -994,162 +491,13 @@ def plan_workflow_jobs(
     return jobs
 
 
-def opencode_baseline_attempt_path(
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-) -> Path:
-    if sequence_id.endswith("-lifecycle-sequence-v1"):
-        try:
-            attempt_dir = OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[replicate_index]
-        except KeyError as exc:
-            raise ValueError(f"no OpenCode Lifecycle V1 attempt identity for r{replicate_index}") from exc
-        lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-        return root / attempt_dir / f"{lane}-r{replicate_index}.json"
-    lane = sequence_id.removesuffix("-lifecycle-sequence-v0")
-    return root / OPENCODE_BASELINE_ATTEMPT_DIR / f"{lane}-r{replicate_index}.json"
-
-
-def opencode_lifecycle_r1_no_provider_recovery_authorized(
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-) -> bool:
-    """Allow exactly the owner-authorized Fastify r1 retry after local no-provider proof."""
-    if sequence_id != "fastify-lifecycle-sequence-v1" or replicate_index != 1:
-        return False
-    receipt_rel = (
-        "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r1-attempts/fastify-r1.json"
-    )
-    receipt_path = root / receipt_rel
-    authority_path = root / OPENCODE_LIFECYCLE_V1_R1_RECOVERY_AUTHORITY_REL
-    try:
-        receipt_raw = receipt_path.read_bytes()
-        receipt = json.loads(receipt_raw)
-        authority = json.loads(authority_path.read_text())
-    except (OSError, ValueError, json.JSONDecodeError):
-        return False
-    expected_receipt = {
-        "attempt_status": "reserved-before-provider-task",
-        "sequence_id": sequence_id,
-        "replicate_index": 1,
-        "profile_id": "runtime-opencode-codex-product-v1",
-        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-        "provider_result": None,
-    }
-    contract = authority.get("recovery_contract")
-    return bool(
-        isinstance(receipt, dict)
-        and all(receipt.get(key) == value for key, value in expected_receipt.items())
-        and authority.get("schema_version") == 1
-        and authority.get("status") == "owner-authorized-no-provider-recovery"
-        and authority.get("owner_recovery_authorization") == {
-            "source": "discord",
-            "authorization_prompt_message_id": "1533351879592120481",
-            "message_id": "1533353885559816214",
-            "selection": "2",
-        }
-        and isinstance(contract, dict)
-        and contract == {
-            "sequence_id": sequence_id,
-            "replicate_index": 1,
-            "profile_id": "runtime-opencode-codex-product-v1",
-            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-            "original_attempt_receipt_path": receipt_rel,
-            "original_attempt_receipt_sha256": hashlib.sha256(receipt_raw).hexdigest(),
-            "provider_execution_disposition": "locally-proven-no-provider-subprocess",
-            "authorized_provider_run_count": 1,
-            "same_replicate_recovery": True,
-        }
-    )
 
 
 
-def opencode_lifecycle_r2_beets_retry_authorized(root: Path = ROOT) -> bool:
-    """Authorize one distinct r2 Beets retry without reusing its failed receipt."""
-    sequence_id = "beets-lifecycle-sequence-v1"
-    original_receipt_rel = (
-        "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2.json"
-    )
-    rejection_rel = (
-        "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-beets-ingress-rejection-20260802.json"
-    )
-    fastify_session_id = "opencode-fastify-20260802-p-72ac148f730b-r2"
-    try:
-        original_receipt = (root / original_receipt_rel).read_bytes()
-        rejection = (root / rejection_rel).read_bytes()
-        authority = load_json(root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
-        registry = load_json(root / "data/workflow-sessions.json")
-    except (OSError, ValueError, json.JSONDecodeError):
-        return False
-    original = json.loads(original_receipt)
-    fastify = next(
-        (session for session in registry.get("sessions", []) if session.get("session_id") == fastify_session_id),
-        None,
-    )
-    contract = authority.get("retry_contract")
-    bindings = authority.get("frozen_protocols")
-    if not (
-        isinstance(original, dict)
-        and original.get("attempt_status") == "reserved-before-provider-task"
-        and original.get("sequence_id") == sequence_id
-        and original.get("replicate_index") == 2
-        and original.get("profile_id") == "runtime-opencode-codex-product-v1"
-        and original.get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
-        and isinstance(fastify, dict)
-        and fastify.get("interpretation", {}).get("accepted_for_objective") is True
-        and workflow.pilot_session_artifacts_valid(fastify, root)
-        and authority.get("schema_version") == 1
-        and authority.get("status") == "qualified-ready-for-provider-execution"
-        and authority.get("owner_authorization") == {
-            "source": "discord",
-            "message_id": "1533506744347656284",
-            "request": "I want you to fix the R2 beets and not create R3. Re run the fixed R2 beets",
-            "authorized_action": "one-r2-beets-retry-1-only",
-        }
-        and contract == {
-            "sequence_id": sequence_id,
-            "replicate_index": 2,
-            "profile_id": "runtime-opencode-codex-product-v1",
-            "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-            "model": "gpt-5.6-sol",
-            "reasoning_effort": "high",
-            "serial_predecessor_session_id": fastify_session_id,
-            "original_attempt_receipt_path": original_receipt_rel,
-            "original_attempt_receipt_sha256": hashlib.sha256(original_receipt).hexdigest(),
-            "original_rejection_audit_path": rejection_rel,
-            "original_rejection_audit_sha256": hashlib.sha256(rejection).hexdigest(),
-            "retry_attempt_receipt_path": str(OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL),
-            "authorized_provider_lane_runs": 1,
-            "authorized_model_turns": 3,
-            "same_replicate_lane_completion": True,
-            "new_replicate_index": None,
-            "rerun_after_attempt_receipt": False,
-        }
-        and isinstance(bindings, list)
-        and len(bindings) == 1
-        and isinstance(bindings[0], dict)
-        and set(bindings[0]) == {
-            "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint"
-        }
-        and bindings[0].get("sequence_id") == sequence_id
-    ):
-        return False
-    binding = bindings[0]
-    try:
-        protocol_raw = (root / str(binding["protocol_path"])).read_bytes()
-        protocol = json.loads(protocol_raw)
-    except (OSError, ValueError, json.JSONDecodeError):
-        return False
-    return bool(
-        hashlib.sha256(protocol_raw).hexdigest() == binding.get("protocol_sha256")
-        and protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-        == binding.get("baseline_pool_fingerprint")
-    )
 
 
-def opencode_lifecycle_r2_beets_retry_attempt_path(root: Path = ROOT) -> Path:
-    return root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_ATTEMPT_REL
+
+
 
 
 def opencode_baseline_run_gate(
@@ -1160,160 +508,9 @@ def opencode_baseline_run_gate(
     *,
     r2_beets_retry: bool = False,
 ) -> tuple[bool, str]:
-    if r2_beets_retry:
-        if (
-            sequence_id != "beets-lifecycle-sequence-v1"
-            or replicate_index != 2
-            or not opencode_lifecycle_r2_beets_retry_authorized(root)
-        ):
-            return False, "r2 Beets retry does not match its exact owner authorization"
-        authority = load_json(root / OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
-        ready_reason = "owner-authorized distinct r2 Beets retry-1 is unoccupied"
-    elif sequence_id.endswith("-lifecycle-sequence-v1"):
-        if not workflow.standalone_opencode_control_authorized(
-            "runtime-opencode-codex-product-v1",
-            replicate_index,
-            root,
-            sequence_id=sequence_id,
-            model_condition_id="opencode-openai-gpt-5-6-sol-high",
-        ):
-            return False, "Lifecycle V1 OpenCode authority does not match the requested identity"
-        try:
-            authority = load_json(root / workflow.opencode_lifecycle_authority_rel(replicate_index))
-        except (OSError, ValueError) as exc:
-            return False, f"unreadable Lifecycle V1 OpenCode authority: {exc}"
-        ready_reason = f"owner-authorized Lifecycle V1 OpenCode r{replicate_index} baseline is unoccupied"
-    else:
-        authority_path = root / OPENCODE_BASELINE_AUTHORITY_REL
-        if not authority_path.is_file():
-            return False, f"missing OpenCode baseline authority: {OPENCODE_BASELINE_AUTHORITY_REL}"
-        try:
-            authority = load_json(authority_path)
-        except (OSError, ValueError) as exc:
-            return False, f"unreadable OpenCode baseline authority: {exc}"
-        owner = authority.get("owner_authorization", {})
-        contract = authority.get("execution_contract", {})
-        if not (
-            authority.get("status") == "qualified-ready-for-provider-execution"
-            and owner.get("message_id") == "1532521147327971438"
-            and owner.get("authorized_new_bare_replicate_index") == replicate_index == 2
-            and contract.get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
-            and contract.get("baseline_profile_id") == "runtime-opencode-codex-product-v1"
-            and contract.get("sequential_max_parallel") == 1
-        ):
-            return False, "OpenCode baseline authority does not match the requested identity"
-        ready_reason = "owner-authorized OpenCode r2 baseline is unoccupied"
-
-    if sequence_id.endswith("-lifecycle-sequence-v1"):
-        matches = [
-            item
-            for item in authority.get("frozen_protocols", [])
-            if isinstance(item, dict) and item.get("sequence_id") == sequence_id
-        ]
-        if len(matches) != 1 or set(matches[0]) != {
-            "sequence_id", "protocol_path", "protocol_sha256", "baseline_pool_fingerprint"
-        }:
-            return False, "Lifecycle V1 OpenCode authority does not bind exactly one frozen protocol"
-        frozen = matches[0]
-        try:
-            protocol_raw = (root / str(frozen["protocol_path"])).read_bytes()
-            protocol = json.loads(protocol_raw)
-        except (OSError, ValueError) as exc:
-            return False, f"unreadable authorized Lifecycle V1 OpenCode protocol: {exc}"
-        if (
-            hashlib.sha256(protocol_raw).hexdigest() != frozen["protocol_sha256"]
-            or protocol.get("baseline_pool", {}).get("protocol_fingerprint")
-            != frozen["baseline_pool_fingerprint"]
-        ):
-            return False, "Lifecycle V1 OpenCode protocol hash or baseline pool drifted from authority"
-
-    receipt = (
-        opencode_lifecycle_r2_beets_retry_attempt_path(root)
-        if r2_beets_retry
-        else opencode_baseline_attempt_path(sequence_id, replicate_index, root)
-    )
-    if receipt.exists():
-        if not r2_beets_retry and opencode_lifecycle_r1_no_provider_recovery_authorized(
-            sequence_id, replicate_index, root
-        ):
-            ready_reason = "owner-authorized same-r1 recovery after locally proven no-provider subprocess boundary"
-        else:
-            return False, (
-                "OpenCode baseline identity is occupied by immutable attempt receipt: "
-                f"{receipt.relative_to(root)}"
-            )
-    sequence = workflow.load_sequence(sequence_id)
-    occupied = workflow.find_pool_profile_record(
-        registry,
-        sequence,
-        "runtime-opencode-codex-product-v1",
-        replicate_index,
-    )
-    if occupied is not None:
-        return False, f"OpenCode baseline identity is occupied by session {occupied.get('session_id')}"
-    return True, ready_reason
-
-
-def reserve_opencode_baseline_attempt(
-    *,
-    sequence_id: str,
-    replicate_index: int,
-    expected_session_binding: dict[str, Any],
-    run_root: Path,
-    r2_beets_retry: bool = False,
-) -> Path:
-    lifecycle_v1 = sequence_id.endswith("-lifecycle-sequence-v1")
-    if r2_beets_retry:
-        if (
-            sequence_id != "beets-lifecycle-sequence-v1"
-            or replicate_index != 2
-            or not opencode_lifecycle_r2_beets_retry_authorized(ROOT)
-        ):
-            raise ValueError("r2 Beets retry reservation does not match its exact authority")
-        path = opencode_lifecycle_r2_beets_retry_attempt_path(ROOT)
-    else:
-        path = opencode_baseline_attempt_path(sequence_id, replicate_index, ROOT)
-    if path.exists():
-        if lifecycle_v1 and opencode_lifecycle_r1_no_provider_recovery_authorized(
-            sequence_id, replicate_index, ROOT
-        ):
-            return path
-        raise FileExistsError(f"immutable OpenCode baseline attempt receipt already exists: {path}")
-    authority_rel: Path | None = None
-    owner_authorization_message_id = "1532521147327971438"
-    if lifecycle_v1:
-        authority_rel = (
-            Path(OPENCODE_LIFECYCLE_V1_R2_BEETS_RETRY_AUTHORITY_REL)
-            if r2_beets_retry
-            else workflow.opencode_lifecycle_authority_rel(replicate_index)
-        )
-        authority = load_json(ROOT / authority_rel)
-        owner = authority.get("owner_authorization", {})
-        owner_authorization_message_id = owner.get("message_id") if isinstance(owner, dict) else ""
-        if not isinstance(owner_authorization_message_id, str) or not owner_authorization_message_id:
-            raise ValueError("Lifecycle V1 OpenCode authority lacks an owner message ID")
-    payload = {
-        "schema_version": 1,
-        "attempt_status": "reserved-before-provider-task",
-        "sequence_id": sequence_id,
-        "replicate_index": replicate_index,
-        "profile_id": "runtime-opencode-codex-product-v1",
-        "model_condition_id": "opencode-openai-gpt-5-6-sol-high",
-        "owner_authorization_message_id": owner_authorization_message_id,
-        "orchestrator": str(run_root),
-        "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
-        "expected_session_binding": expected_session_binding,
-        "provider_result": None,
-        "immutable_identity_receipt": True,
-    }
-    if lifecycle_v1:
-        payload["task_family_generation"] = "lifecycle-v1"
-        payload["authority_path"] = str(authority_rel)
-    if r2_beets_retry:
-        payload["retry_attempt_of"] = "sources/evaluations/audits/lifecycle-v1-opencode-sol-high-r2-attempts/beets-r2.json"
-        payload["retry_attempt_number"] = 1
-    workflow.atomic_create_json(path, payload)
-    return path
+    # Both authorised OpenCode baseline paths belonged to the retired high-effort campaign,
+    # whose receipts were deleted with that corpus. No standalone OpenCode baseline remains.
+    return False, "no current OpenCode baseline authorization"
 
 
 def workflow_lane_command(
@@ -1381,63 +578,8 @@ def expected_session_binding_for_protocol(
     }
 
 
-def claude_anthropic_sonnet_treatment_attempt_path(
-    sequence_id: str,
-    profile_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-) -> Path:
-    if (
-        sequence_id not in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-        or not profile_id
-        or profile_id == "baseline-claude-code-no-mcp"
-        or type(replicate_index) is not int
-        or replicate_index < 0
-    ):
-        raise ValueError("direct-Anthropic Sonnet treatment identity is not authorized")
-    lane = sequence_id.removesuffix("-lifecycle-sequence-v1")
-    return root / CLAUDE_ANTHROPIC_SONNET_TREATMENT_ATTEMPT_DIR / (
-        f"{safe_name(lane)}-{safe_name(profile_id)}-r{replicate_index}.json"
-    )
 
 
-def reserve_claude_anthropic_sonnet_treatment_attempt(
-    *,
-    sequence_id: str,
-    profile_id: str,
-    replicate_index: int,
-    expected_session_binding: dict[str, Any],
-    run_root: Path,
-    root: Path = ROOT,
-) -> Path:
-    """Occupy a paid Sonnet treatment slot before any provider task starts."""
-    path = claude_anthropic_sonnet_treatment_attempt_path(
-        sequence_id, profile_id, replicate_index, root
-    )
-    if expected_session_binding.get("sequence_id") != sequence_id or expected_session_binding.get("profile_id") != profile_id:
-        raise ValueError("Sonnet treatment receipt binding does not match the requested identity")
-    if path.exists():
-        raise FileExistsError(f"immutable Sonnet treatment attempt receipt already exists: {path}")
-    atomic_write_json(
-        path,
-        {
-            "schema_version": 1,
-            "attempt_status": "reserved-before-provider-task",
-            "task_family_generation": "lifecycle-v1",
-            "sequence_id": sequence_id,
-            "replicate_index": replicate_index,
-            "profile_id": profile_id,
-            "model_condition_id": CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID,
-            "model": "claude-sonnet-5",
-            "reasoning_effort": "high",
-            "orchestrator": f"workflow-matrix:{run_root.name}",
-            "reserved_at": dt.datetime.now(dt.UTC).isoformat(),
-            "expected_session_binding": expected_session_binding,
-            "provider_result": None,
-            "immutable_identity_receipt": True,
-        },
-    )
-    return path
 
 
 def run_flow_lane(
@@ -1461,136 +603,17 @@ def run_flow_lane(
     logs.mkdir(parents=True, exist_ok=True)
     tmp.mkdir(parents=True, exist_ok=True)
     provider_capable = "--no-provider" not in runner_args
-    if r2_beets_retry and (
-        sequence_id != "beets-lifecycle-sequence-v1"
-        or treatment_profile != "runtime-opencode-codex-product-v1"
-        or replicate_index != 2
-    ):
-        raise ValueError("r2 Beets retry mode permits only bare OpenCode Beets r2")
     if provider_capable and not published_launch_commit:
         raise ValueError("provider-capable lane requires a certified published launch commit")
+    # The OpenCode and direct-Anthropic baseline reservations belonged to retired campaigns
+    # whose authority receipts were deleted with their corpus. Nothing reserves a parent
+    # receipt now; the lane runs against its frozen protocol alone.
     parent_claude_receipt_binding: dict[str, Any] | None = None
-    parent_claude_treatment_receipt: Path | None = None
     parent_opencode_receipt_binding: dict[str, Any] | None = None
-    if (
-        provider_capable
-        and treatment_profile == "runtime-opencode-codex-product-v1"
-        and sequence_id.endswith("-lifecycle-sequence-v1")
-    ):
-        parent_protocol = find_protocol(
-            ROOT,
-            sequence_id,
-            treatment_profile,
-            model_condition_override=model_condition,
-        )
-        parent_opencode_receipt_binding = expected_session_binding_for_protocol(
-            sequence_id=sequence_id,
-            profile_id=treatment_profile,
-            replicate_index=replicate_index,
-            protocol_path=parent_protocol,
-            root=ROOT,
-        )
-        reserve_opencode_baseline_attempt(
-            sequence_id=sequence_id,
-            replicate_index=replicate_index,
-            expected_session_binding=parent_opencode_receipt_binding,
-            run_root=lane_root,
-            r2_beets_retry=r2_beets_retry,
-        )
-    if (
-        provider_capable
-        and treatment_profile == "baseline-claude-code-no-mcp"
-        and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-    ):
-        parent_protocol = find_protocol(
-            ROOT,
-            sequence_id,
-            treatment_profile,
-            model_condition_override=model_condition,
-        )
-        parent_claude_receipt_binding = expected_session_binding_for_protocol(
-            sequence_id=sequence_id,
-            profile_id=treatment_profile,
-            replicate_index=replicate_index,
-            protocol_path=parent_protocol,
-            root=ROOT,
-        )
-        direct_campaign = (
-            direct_anthropic_campaign(model_condition.get("id"), replicate_index)
-            if isinstance(model_condition, dict)
-            else None
-        )
-        reserve_claude_lifecycle_attempt(
-            sequence_id=sequence_id,
-            replicate_index=replicate_index,
-            expected_session_binding=parent_claude_receipt_binding,
-            run_root=lane_root,
-            root=ROOT,
-            model_condition=(
-                model_condition
-                if direct_campaign is not None
-                else None
-            ),
-            authority_rel=(
-                direct_campaign["authorization"]
-                if direct_campaign is not None
-                else CLAUDE_LIFECYCLE_V1_AUTHORITY_REL
-            ),
-            attempt_dir=(
-                direct_campaign["attempt_dir"]
-                if direct_campaign is not None
-                else CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR
-            ),
-            owner_authorization_message_id=(
-                "user-request-current-session"
-                if direct_campaign is not None
-                else "1533397324384964609"
-            ),
-            allow_existing_recovery=(
-                direct_campaign is not None
-                and claude_anthropic_sonnet_r1_recovery_authorized(
-                    sequence_id,
-                    replicate_index,
-                    ROOT,
-                )
-            ),
-        )
-    if (
-        provider_capable
-        and isinstance(model_condition, dict)
-        and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
-        and treatment_profile != "baseline-claude-code-no-mcp"
-        and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-    ):
-        parent_protocol = find_protocol(
-            ROOT,
-            sequence_id,
-            treatment_profile,
-            model_condition_override=model_condition,
-        )
-        parent_binding = expected_session_binding_for_protocol(
-            sequence_id=sequence_id,
-            profile_id=treatment_profile,
-            replicate_index=replicate_index,
-            protocol_path=parent_protocol,
-            root=ROOT,
-        )
-        parent_claude_treatment_receipt = reserve_claude_anthropic_sonnet_treatment_attempt(
-            sequence_id=sequence_id,
-            profile_id=treatment_profile,
-            replicate_index=replicate_index,
-            expected_session_binding=parent_binding,
-            run_root=lane_root,
-            root=ROOT,
-        )
     if provider_capable:
         clone_published_checkout(checkout, published_launch_commit)
     else:
         rsync_checkout(ROOT, checkout)
-    if parent_claude_treatment_receipt is not None:
-        child_receipt = checkout / parent_claude_treatment_receipt.relative_to(ROOT)
-        child_receipt.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(parent_claude_treatment_receipt, child_receipt)
     before_session_ids = {
         str(session.get("session_id"))
         for session in load_json(checkout / "data/workflow-sessions.json").get("sessions", [])
@@ -1626,13 +649,8 @@ def run_flow_lane(
         cmd.extend(["--session-id", f"prepare-{lane_id}"])
     if source_codex_home is not None:
         cmd.extend(["--source-codex-home", str(source_codex_home)])
-    env = workflow_lane_environment(
-        tmp,
-        allow_auth_sync=(
-            isinstance(model_condition, dict)
-            and direct_anthropic_campaign(model_condition.get("id"), replicate_index) is not None
-        ),
-    )
+    # Credential sync existed for the direct-Anthropic campaigns, which are retired.
+    env = workflow_lane_environment(tmp)
     pass_fds: tuple[int, ...] = ()
     if production_lock_fd is not None:
         env[workflow.PRODUCTION_LOCK_FD_ENV] = str(production_lock_fd)
@@ -2884,10 +1902,9 @@ def main(argv: list[str] | None = None) -> int:
     if (
         isinstance(model_condition, dict)
         and model_condition.get("runtime_id") == "claude-code"
-        and any(sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER for sequence_id in sequences)
         and args.max_parallel != 1
     ):
-        raise SystemExit("owner-authorized Claude Code lifecycle runs require --max-parallel 1")
+        raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     if args.lane_root.exists() and not nonsymlink_directory_ancestry(args.lane_root):
         raise ValueError("lane root contains a symlink or non-directory ancestor")
 
@@ -2906,25 +1923,7 @@ def main(argv: list[str] | None = None) -> int:
         else "baseline-bare-codex"
     )
     if args.r2_beets_retry:
-        if (
-            sequences != ["beets-lifecycle-sequence-v1"]
-            or args.replicate_index != 2
-            or args.max_parallel != 1
-            or treatment_profiles
-            or not isinstance(model_condition, dict)
-            or model_condition != {
-                "id": "opencode-openai-gpt-5-6-sol-high",
-                "runtime_id": "opencode-cli",
-                "launcher": "scripts/run_opencode_workflow_model_condition.py",
-                "model": "gpt-5.6-sol",
-                "reasoning_effort": "high",
-            }
-            or not opencode_lifecycle_r2_beets_retry_authorized(ROOT)
-        ):
-            raise SystemExit(
-                "--r2-beets-retry requires exactly Beets r2, bare OpenCode Sol/high, --max-parallel 1, "
-                "no treatment profile, and its exact owner authorization"
-            )
+        raise SystemExit("--r2-beets-retry belonged to a retired campaign and has no authorization")
 
     def baseline_state(sequence_id: str) -> str:
         if args.prepare_only:
@@ -2953,16 +1952,6 @@ def main(argv: list[str] | None = None) -> int:
         state = workflow.reviewed_session_reuse_state(session, ROOT)
         if state == "reusable":
             return state
-        if (
-            isinstance(model_condition, dict)
-            and model_condition.get("id") == CLAUDE_ANTHROPIC_SONNET_5_HIGH_CONDITION_ID
-            and sequence_id in CLAUDE_LIFECYCLE_V1_SEQUENCE_ORDER
-        ):
-            attempt = claude_anthropic_sonnet_treatment_attempt_path(
-                sequence_id, profile_id, args.replicate_index, ROOT
-            )
-            if attempt.exists():
-                return "occupied"
         return state
 
     def treatment_gate(sequence_id: str) -> tuple[bool, str]:

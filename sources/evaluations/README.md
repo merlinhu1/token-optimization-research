@@ -5,9 +5,8 @@ This directory contains Lifecycle V2 fixture implementations, frozen execution c
 - `fixtures/` — Fastify and Beets Lifecycle V2 fixtures; their generated qualification evidence is active for the future rerun.
 - `protocols/` — the two bare-Codex no-result contracts eligible for the future rerun.
 - `workflow-sessions/` — active provider-backed compact workflow evidence. It is currently empty because the prior corpus was archived before rerun.
-- `archive/lifecycle-v1-pre-corrected-prompts-20260813/` — immutable pre-correction sessions, comparisons, protocols, campaign audits, and archive-only registry metadata.
-- `archive/lifecycle-v1-raw-metric-protocols-20260815/` — two unexecuted protocols superseded when weighted token cost became the sole metric.
-- `audits/` — current qualification, invalidation, archive, installation-parity, and general research receipts.
+- `archive/` — superseded generations, retained only while they remain compatible controls.
+- `audits/` — current qualification, invalidation, retirement, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
 The active registry contains 5 accepted provider-backed sessions: 5 baselines. By sequence: 3 `beets-lifecycle-sequence-v2`, 2 `fastify-lifecycle-sequence-v2`. By runtime: Codex CLI 5.

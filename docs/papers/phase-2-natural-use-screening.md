@@ -1,5 +1,7 @@
 # Phase 2: Lifecycle V1 natural-use screening of token-saving integrations
 
+> **Evidence status (2026-08-22).** The sessions and protocols behind this report were part of the Lifecycle V1 corpus, deleted at the experiment owner's direction when V1 was retired. The numbers here are no longer reproducible from this repository. The report is retained because negative findings and exclusions are part of the research record ([ADR 0003](../architecture/decision-records/0003-methodology-and-reporting.md)); it must not be read as a current finding.
+
 > **Archived pre-correction evidence.** This report describes the exact prompt and protocol bytes executed before the 2026-08-13 task-family correction. Its 103-session corpus, protocols, and campaign audits are preserved in the [pre-correction archive](../../sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/), but they are not current findings or reusable controls. Fresh execution is required under the corrected Lifecycle V1 contract.
 
 > **Metric authority:** every token value in this report is weighted token cost

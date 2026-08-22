@@ -263,13 +263,8 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"cannot freeze a non-active sequence: {sequence_id}")
         if args.profile_id != "baseline-bare-codex":
             selected_runtime = runner.profile_runtime_id(args.profile_id)
-            standalone_opencode_control = runner.standalone_opencode_control_authorized(
-                args.profile_id,
-                args.replicate_index,
-                ROOT,
-                sequence_id=sequence_id,
-                model_condition_id=args.workflow_model_condition_id,
-            )
+            # No standalone OpenCode control authorization survives the retired corpus.
+            standalone_opencode_control = False
             if (
                 selected_runtime not in {"claude-code"}
                 and args.profile_id != "baseline-opencode-openrouter-no-mcp"

@@ -998,17 +998,6 @@ print('ok')
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "ok")
 
-    def test_openrouter_provider_execution_requires_a_bound_authority(self) -> None:
-        args = argparse.Namespace(
-            profile_id="baseline-opencode-openrouter-no-mcp",
-            prepare_only=False,
-            sequence_id="fastify-lifecycle-sequence-v2",
-            replicate_index=0,
-            session_id="baseline-opencode-openrouter-fastify-20260803-p-f85684d4777d-r0",
-        )
-        with mock.patch.object(runner, "OPENROUTER_LIFECYCLE_V1_AUTHORITY_REL", "missing.json"):
-            with self.assertRaisesRegex(ValueError, "OpenRouter Lifecycle V1 authorization"):
-                runner.run_one(args)
 
     def test_opencode_preflight_renders_repository_root_adapter_path(self) -> None:
         record = {"target": {"repository_path": str(ROOT)}, "agent": {}}
@@ -3601,26 +3590,6 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             "baseline",
         )
 
-    def test_openrouter_ingress_repair_only_fills_missing_adapter_identity(self) -> None:
-        summary = {
-            "profile_id": "baseline-opencode-openrouter-no-mcp",
-            "agent_condition": {
-                "runtime_id": "opencode-cli",
-                "provider": "openrouter",
-                "model": "gpt-5.6-sol",
-                "model_condition_id": "opencode-openrouter-gpt-5-6-sol-high",
-                "reasoning_effort": "high",
-                "runtime_version_condition": "captured-at-run-and-bound-to-record",
-            },
-            "tool_adapter_identity": None,
-            "selected_execution": {"descriptor": {"tool_adapter": {"tool_id": "opencode-openrouter-product-v1"}}},
-        }
-        repaired = runner.repair_openrouter_ingress_summary(summary)
-        self.assertIsNone(summary["tool_adapter_identity"])
-        self.assertEqual(
-            repaired["tool_adapter_identity"],
-            summary["selected_execution"]["descriptor"]["tool_adapter"],
-        )
 
     def test_openrouter_baseline_summary_retains_adapter_identity(self) -> None:
         descriptor = {"tool_adapter": {"tool_id": "opencode-openrouter-product-v1"}}
@@ -4691,122 +4660,8 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             0,
         )
 
-    def test_claude_lifecycle_attempt_receipt_is_immutable_before_provider_work(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            binding = {
-                "sequence_id": "fastify-lifecycle-sequence-v1",
-                "profile_id": "baseline-claude-code-no-mcp",
-                "replicate_index": 0,
-                "frozen_protocol": {
-                    "protocol_id": "protocol",
-                    "path": "sources/evaluations/protocols/protocol.json",
-                    "sha256": "a" * 64,
-                },
-                "baseline_pool_fingerprint": "pool",
-                "selected_execution": {"descriptor_sha256": "b" * 64},
-            }
-            first = matrix.reserve_claude_lifecycle_attempt(
-                sequence_id="fastify-lifecycle-sequence-v1",
-                replicate_index=0,
-                expected_session_binding=binding,
-                run_root=root / "run",
-                root=root,
-            )
-            receipt = json.loads(first.read_text())
-            self.assertEqual(receipt["attempt_status"], "reserved-before-provider-task")
-            self.assertEqual(receipt["expected_session_binding"], binding)
-            with self.assertRaises(FileExistsError):
-                matrix.reserve_claude_lifecycle_attempt(
-                    sequence_id="fastify-lifecycle-sequence-v1",
-                    replicate_index=0,
-                    expected_session_binding=binding,
-                    run_root=root / "run",
-                    root=root,
-                )
 
-    def test_claude_lifecycle_parent_reserves_before_clone(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            run_root = root / "matrix"
-            protocol = {
-                "protocol_id": "unit-protocol",
-                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
-                "selected_execution": {"descriptor_sha256": "d" * 64},
-            }
-            (root / "protocol.json").write_text(json.dumps(protocol))
-            receipt = root / matrix.CLAUDE_LIFECYCLE_V1_ATTEMPT_DIR / "fastify-r0.json"
 
-            def clone(destination: Path, _commit: str) -> None:
-                self.assertTrue(receipt.is_file())
-                (destination / "data").mkdir(parents=True)
-                (destination / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
-                (destination / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
-                (destination / "protocol.json").write_text(json.dumps(protocol))
-
-            with (
-                mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_args, **_kwargs: checkout / "protocol.json"),
-                mock.patch.object(matrix, "clone_published_checkout", side_effect=clone),
-                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
-                mock.patch.object(matrix.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)),
-            ):
-                result = matrix.run_flow_lane(
-                    sequence_id="fastify-lifecycle-sequence-v1",
-                    treatment_profile="baseline-claude-code-no-mcp",
-                    lane_root=run_root,
-                    replicate_index=0,
-                    runner_args=[],
-                    source_codex_home=None,
-                    production_lock_fd=123,
-                    published_launch_commit="unit-published",
-                )
-            self.assertEqual(result["exit_code"], 1)
-            self.assertTrue(receipt.is_file())
-
-    def test_opencode_lifecycle_parent_reserves_before_clone(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            run_root = root / "matrix"
-            protocol = {
-                "protocol_id": "unit-protocol",
-                "baseline_pool": {"protocol_fingerprint": "unit-pool"},
-                "selected_execution": {"descriptor_sha256": "d" * 64},
-            }
-            (root / "protocol.json").write_text(json.dumps(protocol))
-            authority_path = root / runner.opencode_lifecycle_authority_rel(0)
-            authority_path.parent.mkdir(parents=True)
-            authority_path.write_text(json.dumps({
-                "owner_authorization": {"message_id": "1533480540332888284"},
-            }))
-            receipt = root / matrix.OPENCODE_LIFECYCLE_V1_ATTEMPT_DIRS[0] / "fastify-r0.json"
-
-            def clone(destination: Path, _commit: str) -> None:
-                self.assertTrue(receipt.is_file())
-                (destination / "data").mkdir(parents=True)
-                (destination / "data/workflow-sessions.json").write_text('{"sessions": []}\n')
-                (destination / matrix.WORKFLOW_ARTIFACT_ROOT).mkdir(parents=True)
-                (destination / "protocol.json").write_text(json.dumps(protocol))
-
-            with (
-                mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_args, **_kwargs: checkout / "protocol.json"),
-                mock.patch.object(matrix, "clone_published_checkout", side_effect=clone),
-                mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
-                mock.patch.object(matrix.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)),
-            ):
-                result = matrix.run_flow_lane(
-                    sequence_id="fastify-lifecycle-sequence-v1",
-                    treatment_profile="runtime-opencode-codex-product-v1",
-                    lane_root=run_root,
-                    replicate_index=0,
-                    runner_args=[],
-                    source_codex_home=None,
-                    production_lock_fd=123,
-                    published_launch_commit="unit-published",
-                )
-            self.assertEqual(result["exit_code"], 1)
-            self.assertTrue(receipt.is_file())
 
     def test_claude_lifecycle_direct_provider_launch_is_rejected_without_matrix_lock(self) -> None:
         with mock.patch.object(runner, "inherited_provider_production_lock_fd", return_value=None):
