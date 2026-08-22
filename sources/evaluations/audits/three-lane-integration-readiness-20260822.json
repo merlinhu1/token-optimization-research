@@ -1,0 +1,96 @@
+{
+ "schema_version": 1,
+ "date": "2026-08-22",
+ "action": "provider-free-host-integration-readiness",
+ "objective": "Make the Codex, Claude Code and OpenCode-with-Codex lanes ready for paid treatment runs.",
+ "method": "Every live treatment profile run through the runner's prepare-only path -- install, required files, warmup and MCP handshake -- against a throwaway copy of the prepared Fastify base. Zero provider calls.",
+ "result": {
+  "codex": "15 of 15",
+  "opencode": "14 of 14",
+  "claude_code": "13 of 14",
+  "before_this_round": "codex 15 of 15, opencode 0 of 16, claude 1 of 14"
+ },
+ "defects_fixed": [
+  {
+   "id": "stale-artifact-identity-digests",
+   "lanes": [
+    "opencode",
+    "claude-code"
+   ],
+   "finding": "Lane configs carried artifact_identities whose paths migrated to the batch releases while their sha256 values still described the pre-batch checkout. A stale digest does not fail loudly: verify_artifact_identities marks the profile skipped, so host integration never runs and the lane reports nothing installed at all.",
+   "fix": "Digests are recomputed against the pinned release at config build time. The provenance chain is unchanged -- the release artifact's own sha256 is still verified before anything installs."
+  },
+  {
+   "id": "adapter-sibling-module-not-mounted",
+   "lane": "opencode",
+   "finding": "Repointing profiles from the deleted pinned adapter snapshots to the live scripts/opencode_workflow_adapter.py mounted the file alone, so its `from token_metrics import weighted_token_cost` was unimportable and every OpenCode preflight died. The retired snapshots were whole directories and carried the sibling implicitly.",
+   "fix": "token_metrics.py is mounted wherever the adapter is."
+  },
+  {
+   "id": "release-runtime-missing-from-lane-path",
+   "lanes": [
+    "opencode",
+    "claude-code"
+   ],
+   "finding": "Warmups shell out to the tool by bare name. Lane configs got the rewritten paths but not the PATH entry, so `cartog init` and friends failed with command not found.",
+   "fix": "The release runtime, or its node_modules/.bin when npm produced one, joins the lane PATH as _pin_batch_release already does for Codex."
+  },
+  {
+   "id": "artifacts-directory-not-mounted",
+   "lane": "opencode",
+   "finding": "Installs that take a wheel by path could not see it; headroom reported 'Distribution not found' for a wheel that was present on the host.",
+   "fix": "The release artifacts directory is mounted. A directory bind also survives the nested Docker path translation more reliably than a single file."
+  },
+  {
+   "id": "stale-post-install-digests",
+   "lane": "opencode",
+   "finding": "graphify's installed plugin and skill, and lean-ctx's AGENTS.md and config, were pinned to the previous release's output.",
+   "fix": "Re-pinned to what the current release installs."
+  },
+  {
+   "id": "codegraph-launched-under-node",
+   "lane": "opencode",
+   "finding": "Same defect already fixed on Codex: 1.5.0 ships bin/codegraph as an executable /bin/sh launcher, so running it under node meant the MCP server never emitted its initialize.",
+   "fix": "The bundle is launched directly."
+  },
+  {
+   "id": "cartog-claude-launcher-was-malformed",
+   "lane": "claude-code",
+   "finding": "Pre-existing and previously invisible. The profile overrode mcp_args to ['serve'] while inheriting mcp_command '/bin/bash' from its base, so the server was started as `/bin/bash serve` and never responded. It only surfaced once the handshake actually ran.",
+   "fix": "The override is gone; the profile inherits the base launcher."
+  },
+  {
+   "id": "headroom-could-not-detect-opencode",
+   "lane": "opencode",
+   "finding": "`headroom wrap opencode` skipped every wiring step because the opencode binary was not on the lane PATH, and the profile's bundled rtk and serena roots still pointed at deleted trees.",
+   "fix": "Both roots migrated and the binary's directory joins the PATH. The binary itself is already bound through binary_mount_target, and the final binary mount is now deduped so adding it twice cannot take the lane down with Docker exit 125."
+  },
+  {
+   "id": "claude-mcp-config-directory",
+   "lane": "claude-code",
+   "finding": "The MCP config writer assumed claude_env had already created the lane-private directory.",
+   "fix": "It creates its own."
+  }
+ ],
+ "profiles_excluded": [
+  {
+   "id": "integrated-headroom-opencode-product-v3",
+   "reason": "Pins plugins/opencode/dist, which headroom 0.36.3 does not publish -- the tarball ships src only. Reproducing it would mean shipping an artifact the author never released. integrated-headroom-opencode-product-v1 covers Headroom on OpenCode and passes."
+  },
+  {
+   "id": "terminal-snip-opencode-plugin-v2",
+   "reason": "Pins opencode-snip-v1.6.1, which has no batch release and no equivalent in snip 0.24.1's source. Same class as lowfat, dcp and sdl-mcp."
+  }
+ ],
+ "outstanding": [
+  {
+   "profile": "codescope-claude-code-mcp-v1",
+   "lane": "claude-code",
+   "finding": "codescope's daemon never reaches `running` inside this lane's container: `codescope start` logs 'Server on port 8077 unhealthy; restarting' and the health probe times out, so the MCP handshake gets no initialize response.",
+   "not_a_config_error": "The same binary and the same release start cleanly on the Codex and OpenCode lanes, which both pass, and the neutral MCP shim this profile uses returns a valid initialize when run directly on the host. Ruled out: stale lane state, a leftover container holding the port, the shim's --repo and --auto-index flags, and the start exit code being treated as fatal.",
+   "shim_improvements_kept": "The shim now waits for the daemon to report running rather than trusting the start exit code, and retains the server's stderr, so the next attempt has evidence instead of 'initialize response missing'.",
+   "impact": "One profile of 43. Codescope remains measurable on two of the three lanes."
+  }
+ ],
+ "regression_cover": "A contract test now asserts that no live profile references a /opt/data/tool-candidates path that does not exist, excluding declared PATH entries. That invariant is what the whole class of failures violated, and it held silently because the symptom was exit 127 or a skipped profile rather than anything resembling a configuration error."
+}

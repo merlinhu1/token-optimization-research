@@ -2670,7 +2670,7 @@
       "artifact_slug": "snip-opencode-v2",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "opencode-tool-execute-before",
@@ -2716,9 +2716,10 @@
         "cli_repository": "edouard-claude/snip",
         "cli_commit": "82b741b3ba504a22b609f3ac8122ade94306f6ec"
       },
-      "notes": "Fresh successor condition. Product command-rewriting failures count as degradation; evaluator identity/setup failures do not.",
+      "notes": "Excluded 2026-08-22: pins opencode-snip-v1.6.1, a separate download with no batch release and no equivalent anywhere in snip 0.24.1's own source tree. Same class as lowfat, dcp and sdl-mcp: there is no current artifact to point at.",
       "name": "Snip OpenCode plugin V2 repaired",
-      "supersedes": "terminal-snip-opencode-plugin-v1"
+      "supersedes": "terminal-snip-opencode-plugin-v1",
+      "blocked_reason": "no-published-artifact-in-current-release"
     },
     {
       "id": "retrieval-cartog-opencode-product-v2",
@@ -2780,7 +2781,7 @@
       "artifact_slug": "headroom-opencode-v3",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "headroom-proxy-context-compression",
@@ -2828,9 +2829,10 @@
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
         "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
       },
-      "notes": "Fresh full-product successor. The official Headroom MCP is attempted without evaluator dependency pinning; its declared dependency incompatibility counts as degradation. Provider execution still fails closed when proxy traffic, effective config, native plugin, or Serena MCP activation is unproven.",
+      "notes": "Excluded 2026-08-22: pins plugins/opencode/dist/entry.opencode.js and its chunk, which headroom 0.36.3 does not publish -- the source tarball ships plugins/opencode/src only, and the dist is built. Reproducing it would mean shipping an artifact the author never released. integrated-headroom-opencode-product-v1 covers Headroom on OpenCode and passes host integration.",
       "name": "Headroom OpenCode integrated product V3 repaired",
-      "supersedes": "integrated-headroom-opencode-product-v2"
+      "supersedes": "integrated-headroom-opencode-product-v2",
+      "blocked_reason": "no-published-artifact-in-current-release"
     },
     {
       "profile_type": "individual_tool",

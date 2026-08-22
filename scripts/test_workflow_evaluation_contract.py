@@ -974,7 +974,12 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         opencode = runner.fixture.TOOL_CONFIGS["opencode-codex-product-v1"]
         adapter = "{repository_root}/scripts/opencode_workflow_adapter.py"
         self.assertEqual(opencode["executable"], "/opt/data/.local/bin/opencode")
-        self.assertEqual(opencode["mounts"], [adapter])
+        # The adapter's sibling module travels with it: mounting the adapter file alone leaves
+        # its weighted_token_cost import unresolvable inside the lane.
+        self.assertEqual(
+            opencode["mounts"],
+            [runner.fixture.OPENCODE_ADAPTER_SUPPORT, adapter],
+        )
         self.assertEqual(opencode["binary_mount_target"], "/opt/data/.local/bin/opencode")
         self.assertEqual(opencode["codex_wrapper"]["args"][0], adapter)
         self.assertEqual(opencode["preflight_command"][1], adapter)
@@ -1336,6 +1341,46 @@ print('ok')
         self.assertIn("{repo}/AGENTS.md", leanctx_cfg["host_integration"]["required_files"])
         self.assertTrue(leanctx_cfg["mcp_handshake"]["required"])
         self.assertEqual(leanctx_cfg["warmup"]["command"], ["/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx", "index", "build", "{repo}"])
+
+    @requires_tool_corpus
+    def test_live_profiles_do_not_reference_a_missing_tool_path(self) -> None:
+        """A profile pointing at a path that no longer exists fails as exit 127 or as a skip.
+
+        Neither reads as a configuration problem, which is how the OpenCode and Claude Code lanes
+        stayed entirely unrunnable after the batch migration covered only Codex. Executables and
+        install artifacts are asserted; PATH entries are not, because a tool may legitimately
+        declare a bin directory it never creates.
+        """
+        live = {
+            "screening-shortlist", "screening-ablation", "integration-qualified-provider-free",
+            "configured-provider-free", "active-control", "ablation-profile",
+        }
+        statuses = {
+            profile["id"]: profile.get("status")
+            for profile in json.loads((ROOT / "data/evaluation-profiles.json").read_text())["profiles"]
+        }
+        offenders = {}
+        for profile_id in sorted(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES):
+            if statuses.get(profile_id) not in live:
+                continue
+            try:
+                cfg = runner.fixture.active_tool_config({}, profile_id)
+            except ValueError:
+                continue
+            if not cfg:
+                continue
+            path_entries = {str(entry) for entry in cfg.get("path_entries", [])}
+            missing = sorted(
+                candidate
+                for candidate in set(
+                    re.findall(r"/opt/data/tool-candidates/[A-Za-z0-9_.@/-]+", json.dumps(cfg))
+                )
+                if candidate.rstrip("/.") not in path_entries
+                and not Path(candidate.rstrip("/.")).exists()
+            )
+            if missing:
+                offenders[profile_id] = missing[:3]
+        self.assertEqual(offenders, {}, f"profiles reference paths that do not exist: {offenders}")
 
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.

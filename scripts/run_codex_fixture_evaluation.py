@@ -43,6 +43,10 @@ CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
 OPENCODE_ADAPTER = "{repository_root}/scripts/opencode_workflow_adapter.py"
+# The adapter imports weighted_token_cost from its sibling, so mounting the adapter file alone
+# leaves it unimportable in the lane. The retired pinned snapshots were whole directories and
+# carried it implicitly; the live file has to name it.
+OPENCODE_ADAPTER_SUPPORT = "{repository_root}/scripts/token_metrics.py"
 OPENCODE_ADAPTER_SHA256 = hashlib.sha256((ROOT / "scripts/opencode_workflow_adapter.py").read_bytes()).hexdigest()
 FORBIDDEN_BASELINE_TERMS = [
     "lean-ctx",
@@ -123,9 +127,7 @@ PROFILE_TOOL_CONFIG_OVERRIDES = {
     "baseline-opencode-openrouter-no-mcp": "opencode-openrouter-product-v1",
     "terminal-tokenjuice-opencode-plugin-v2": "tokenjuice-opencode-plugin-v2",
     "retrieval-serena-opencode-mcp-v1": "serena-opencode-mcp-v1",
-    "terminal-snip-opencode-plugin-v2": "snip-opencode-plugin-v2",
     "retrieval-cartog-opencode-product-v2": "cartog-opencode-product-v2",
-    "integrated-headroom-opencode-product-v3": "headroom-opencode-product-v3",
     "codescope-opencode-product-v1": "codescope-opencode-product-v1",
     "retrieval-graphify-opencode-product-v1": "graphify-opencode-product-v1",
     "terminal-rtk-opencode-plugin-v1": "rtk-opencode-plugin-v1",
@@ -262,7 +264,7 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
         "surface": "replacement-agent-runtime",
         "allowed_terms": ["opencode"],
         "data_dir_name": "opencode-runtime",
-        "mounts": [str(OPENCODE_ADAPTER)],
+        "mounts": [OPENCODE_ADAPTER_SUPPORT, str(OPENCODE_ADAPTER)],
         "executable": str(OPENCODE_BIN),
         "expected_executable_sha256": OPENCODE_BIN_SHA256,
         "binary_mount_target": str(OPENCODE_BIN),
@@ -1441,6 +1443,10 @@ TOOL_CONFIGS.update({
 })
 
 
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def _replace_batch_paths(value: Any, replacements: dict[str, str]) -> Any:
     if isinstance(value, str):
         for old, new in sorted(replacements.items(), key=lambda item: len(item[0]), reverse=True):
@@ -1624,7 +1630,7 @@ def _opencode_treatment_config(
         "surface": surface,
         "allowed_terms": ["opencode", *allowed_terms],
         "data_dir_name": lane_name,
-        "mounts": [str(adapter_path), *mounts],
+        "mounts": [str(adapter_path), OPENCODE_ADAPTER_SUPPORT, *mounts],
         "executable": str(OPENCODE_BIN),
         "expected_executable_sha256": OPENCODE_BIN_SHA256,
         "binary_mount_target": str(OPENCODE_BIN),
@@ -1794,27 +1800,6 @@ TOOL_CONFIGS.update(
             effective_host_config={"required": True, "source": "adapter-probe"},
             default_tool_state="active-native-plugin-exact-artifact",
         ),
-        "snip-opencode-plugin-v2": _opencode_treatment_config(
-            "snip",
-            display_name="Snip official community OpenCode plugin v1.6.1 repaired",
-            lane_name="terminal-snip-opencode-plugin-v2",
-            surface="opencode-tool-execute-before/shell-command-rewriting",
-            allowed_terms=["snip", "opencode-snip"],
-            mounts=[str(SNIP_ROOT), "/opt/data/tool-candidates/opencode-snip-v1.6.1"],
-            path_entries=[str(SNIP_ROOT)],
-            env={"SNIP_TELEMETRY": "0"},
-            host_integration={
-                "verify_commands": [["snip", "--version"]],
-                "required_files": ["/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts"],
-            },
-            artifact_identities=[
-                {"path": str(SNIP_BIN), "sha256": "546b4e735818637f42aabcc79b357d529223385b84b28a19f28002d15d99ea5b", "kind": "compiled-cli"},
-                {"path": "/opt/data/tool-candidates/opencode-snip-v1.6.1/.opencode/plugins/index.ts", "sha256": "e7b04e51dccbbeb088ebe49b34abef2d7847b0f9e2b1a933e88d59853ca2b9d0", "kind": "plugin-entry"},
-                {"path": "/opt/data/tool-candidates/opencode-snip-v1.6.1/src/index.ts", "sha256": "0f4e69958c753d36ed42810c439bb1c9716d702f53213677acef7728d6463973", "kind": "plugin-source"},
-            ],
-            effective_host_config={"required": True, "source": "adapter-probe"},
-            default_tool_state="active-native-plugin-exact-artifact",
-        ),
         "cartog-opencode-product-v2": _opencode_treatment_config(
             "cartog",
             display_name="Cartog official OpenCode MCP product v2 repaired",
@@ -1862,55 +1847,6 @@ TOOL_CONFIGS.update(
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=[".cartog", ".cartog.toml", "AGENTS.md"],
             default_tool_state="warm-structural-index+live-watch",
-        ),
-        "headroom-opencode-product-v3": _opencode_treatment_config(
-            "headroom",
-            display_name="Headroom official OpenCode integrated product v3 repaired",
-            lane_name="integrated-headroom-opencode-product-v3",
-            surface="opencode-proxy/context-compression+native-plugin+headroom-mcp+rtk+serena",
-            allowed_terms=["headroom", "headroom_retrieve", "rtk", "serena"],
-            mounts=[str(HEADROOM_ROOT), str(RTK_BIN.parent), str(SERENA_ROOT), str(UVX_SHIM.parent)],
-            path_entries=[str(UVX_SHIM.parent), "{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
-            env={
-                "HEADROOM_HOME": "{tool_data_dir}",
-                "HEADROOM_CACHE_DIR": "{tool_data_dir}/cache",
-                "HEADROOM_DISABLE_DASHBOARD": "1",
-                "HEADROOM_TELEMETRY": "0",
-                "HEADROOM_PROJECT": "{repo_slug}",
-                "HEADROOM_OPENCODE_PLUGIN_PATH": str(HEADROOM_OPENCODE_PLUGIN),
-                "OPENCODE_HOME": "{codex_home}/xdg-config/opencode",
-            },
-            host_integration=TOOL_CONFIGS["headroom-opencode-product-v1"]["host_integration"],
-            mcp_server="headroom",
-            mcp_command=str(UV_BIN),
-            mcp_args=["tool", "run", "--from", str(HEADROOM_WHEEL), "--with", "mcp", "headroom", "mcp", "serve"],
-            mcp_handshake={
-                "attempt_required": True,
-                "required": False,
-                "failure_counts_as_degradation": True,
-                "known_failure": "headroom 0.28.0 mcp serve is incompatible with its declared mcp>=1.0.0 dependency (Server.list_tools missing)",
-                "method": "initialize-and-tools-list",
-                "timeout_seconds": 120,
-            },
-            secondary_mcp_handshakes=[
-                {
-                    "server": "serena",
-                    "command": str(UV_BIN),
-                    "args": ["tool", "run", "--from", str(SERENA_ROOT), "serena", "start-mcp-server", "--project-from-cwd", "--context=ide", "--enable-web-dashboard", "false", "--open-web-dashboard", "false"],
-                    "timeout_seconds": 120,
-                }
-            ],
-            artifact_identities=[
-                {"path": str(HEADROOM_WHEEL), "sha256": "7d4b753d8a0a33aa3222178a92aede5f43c9bc7d3642397c190854d6abbfb560", "kind": "python-wheel"},
-                {"path": str(HEADROOM_OPENCODE_PLUGIN), "sha256": "957164fc98be5c7b543a249769d926b87bb0b96367ec9aaf2aee909f7d5e6d5e", "kind": "native-plugin-entry"},
-                {"path": str(HEADROOM_OPENCODE_PLUGIN_CHUNK), "sha256": "ffa23c1c62a7ddfad1e71f00afb9aac7c8a249e05ff979e930c61de2650a053f", "kind": "native-plugin-bundle"},
-                {"path": str(UVX_SHIM), "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35", "kind": "uvx-runtime"},
-            ],
-            effective_host_config={"required": True, "source": "adapter-runtime-merged-receipt"},
-            proxy_runtime_receipt={"required": True, "provider": "openai", "model": "gpt-5.6-sol"},
-            native_plugin={"required": True, "path": str(HEADROOM_OPENCODE_PLUGIN)},
-            diff_exclude_paths=["AGENTS.md", ".headroom", ".serena"],
-            default_tool_state="active-official-integrated-wrapper-exact-artifacts",
         ),
     }
 )
@@ -2012,8 +1948,8 @@ TOOL_CONFIGS.update(
                 {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
-                {"path": "{repo}/.opencode/plugins/graphify.js", "sha256": "b025b1d64b905d48cf6188392d003be971f9933e8f893d22f671c5f2428ecddb", "retain_as": "graphify-installed-plugin.js"},
-                {"path": "{repo}/.opencode/skills/graphify/SKILL.md", "sha256": "f404e0adab83af433af2c807ffe27966231b0bdbb7a7ab9d6e15efadf5cd3314", "retain_as": "graphify-installed-skill.md"},
+                {"path": "{repo}/.opencode/plugins/graphify.js", "sha256": "ca230c9bcd12dce7cba5107e5ec751023bd1c3a34e920b348bf2c7f9d79f0ccd", "retain_as": "graphify-installed-plugin.js"},
+                {"path": "{repo}/.opencode/skills/graphify/SKILL.md", "sha256": "8664d0684e7fa14c47c8cce312a964c1669e44f8c8eea89a5b4fdb593f62ed66", "retain_as": "graphify-installed-skill.md"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             preflight_requires_project=True,
@@ -2068,8 +2004,10 @@ TOOL_CONFIGS.update(
                 "required_files": ["{tool_data_dir}/bin/codegraph", "{repo}/opencode.jsonc", "{repo}/AGENTS.md"],
             },
             mcp_server="codegraph",
-            mcp_command=str(NODE_BIN),
-            mcp_args=[str(CODEGRAPH_BIN), "serve", "--mcp"],
+            # 1.5.0 ships bin/codegraph as an executable /bin/sh launcher, so running it under
+            # node feeds a shell script to node and the MCP server never emits its initialize.
+            mcp_command=str(CODEGRAPH_BIN),
+            mcp_args=["serve", "--mcp"],
             mcp_handshake={"required": True, "method": "initialize-and-tools-list", "timeout_seconds": 180},
             warmup={
                 "kind": "official-codegraph-index",
@@ -2198,8 +2136,8 @@ TOOL_CONFIGS.update(
                 {"path": OPENCODE_ADAPTER, "sha256": OPENCODE_ADAPTER_SHA256, "kind": "runtime-adapter"},
             ],
             post_install_artifacts=[
-                {"path": "{codex_home}/xdg-config/opencode/AGENTS.md", "sha256": "8d52b53942d6ab1178ddaeafc8df555e74925659565bcf4bddfbba44e94d11b7", "retain_as": "leanctx-opencode-AGENTS.md"},
-                {"path": "{codex_home}/xdg-config/opencode/opencode.json", "sha256": "c429860c056e9469335ef48d4f66cb54886b8e45db8486dabcb1afa433de9d5c", "retain_as": "leanctx-opencode-config.json"},
+                {"path": "{codex_home}/xdg-config/opencode/AGENTS.md", "sha256": "442667d64fb702dcd2c9c5eff59c7fa105d70ecedc3a507275d20fd06efebb09", "retain_as": "leanctx-opencode-AGENTS.md"},
+                {"path": "{codex_home}/xdg-config/opencode/opencode.json", "sha256": "c0ab02e2bdc8798f9f7f34585f242c7e701661ba4c66aa7d505f68b0915e45a6", "retain_as": "leanctx-opencode-config.json"},
             ],
             effective_host_config={"required": True, "source": "adapter-probe"},
             diff_exclude_paths=["AGENTS.md", "LEAN-CTX.md", ".lean-ctx"],
@@ -2384,7 +2322,9 @@ TOOL_CONFIGS.update(
             ],
             diff_exclude_paths=[".cartog", ".cartog.toml", ".mcp.json", ".claude", "CLAUDE.md"],
             timeout_seconds=1200,
-            mcp_args=["serve"],
+            # No mcp_args override: the base config launches cartog through `bash -lc ... exec`,
+            # so replacing the args alone left mcp_command as /bin/bash and the server was being
+            # started as `/bin/bash serve`, which never emits an initialize response.
             claude_features={"mcp": True},
         ),
         "codegraph-claude-code-mcp-v1": _claude_readme_config(
@@ -2583,10 +2523,11 @@ _BATCH_LANE_SIBLINGS = {
     "codegraph-codex-mcp-v1": ("codegraph", "codegraph-claude-code-mcp-v1", "codegraph-opencode-mcp-v1"),
     "codescope-codex-product-v1": ("codescope", "codescope-claude-code-mcp-v1", "codescope-opencode-product-v1"),
     "graphify-codex-skill-v1": ("graphify", "graphify-claude-code-skill-v1", "graphify-opencode-product-v1"),
-    "headroom": ("headroom-opencode-product-v3", "headroom-proxy-only"),
+    "headroom": ("headroom-opencode-product-v1", "headroom-opencode-product-v3", "headroom-proxy-only"),
     "jcodemunch-codex-mcp-v2": ("jcodemunch-mcp", "jcodemunch-claude-code-mcp-v1", "jcodemunch-opencode-product-v1"),
     "leanctx-codex-hybrid-v1": ("lean-ctx", "leanctx-claude-code-hybrid-v1", "leanctx-opencode-hybrid-v1"),
     "ponytail-codex-plugin-v1": ("ponytail", "ponytail-opencode-plugin-v1"),
+    "repowise-codex-product-v2": ("repowise-opencode-product-v2",),
     "rtk-codex-instructions-v1": ("rtk-opencode-plugin-v1",),
     "serena-codex-mcp-v1": ("serena", "serena-claude-code-mcp-v1", "serena-opencode-mcp-v1"),
     "sigmap-codex-live-v1": ("sigmap", "sigmap-claude-code-mcp-v1", "sigmap-opencode-product-v1"),
@@ -2601,6 +2542,12 @@ for _codex_id, _lane_ids in _BATCH_LANE_SIBLINGS.items():
 
 # Roots only the non-Codex lanes reference, so no Codex sibling carries them.
 for _lane_id, _extra in {
+    # The integrated headroom profiles bundle rtk and serena alongside headroom, so they carry
+    # those roots too, and `headroom wrap opencode` only wires OpenCode when it can find it.
+    "headroom-opencode-product-v1": {
+        "/opt/data/tool-candidates/rtk": str(_BATCH_SOURCE("rtk")),
+        "/opt/data/tool-candidates/serena": str(_BATCH_SOURCE("serena")),
+    },
     "rtk-opencode-plugin-v1": {"/opt/data/tool-candidates/rtk": str(_BATCH_SOURCE("rtk"))},
     "tokenjuice-opencode-plugin-v2": {
         str(TOKENJUICE_ROOT / "dist/cli/main.js"): str(
@@ -2625,16 +2572,19 @@ _BATCH_LANE_RELEASES = {
     "codegraph-codex-mcp-v1": "codegraph", "codescope-codex-product-v1": "codescope",
     "graphify-codex-skill-v1": "graphify", "headroom": "headroom",
     "jcodemunch-codex-mcp-v2": "jcodemunch", "leanctx-codex-hybrid-v1": "leanctx",
-    "ponytail-codex-plugin-v1": "ponytail", "rtk-codex-instructions-v1": "rtk",
+    "ponytail-codex-plugin-v1": "ponytail", "repowise-codex-product-v2": "repowise",
+    "rtk-codex-instructions-v1": "rtk",
     "serena-codex-mcp-v1": "serena", "sigmap-codex-live-v1": "sigmap",
     "snip-codex-hook-v1": "snip", "token-savior-codex-product-v2": "token-savior",
     "tokenjuice-codex-hook-v1": "tokenjuice",
 }
 for _codex_id, _lane_ids in _BATCH_LANE_SIBLINGS.items():
     _release = _BATCH_LANE_RELEASES[_codex_id]
-    # Directories only. The release artifact is a single file, and mounting one the config never
-    # names adds a bind the daemon has to resolve for no benefit.
-    _trees = [str(_BATCH_SOURCE(_release)), str(_BATCH_RUNTIME(_release))]
+    # Directories, including the artifacts directory rather than the artifact file: installs that
+    # take a wheel by path need it visible in the lane, and a directory bind survives the nested
+    # Docker path translation more reliably than a single file.
+    _release_root = BATCH_RELEASE_ROOT / BATCH_RELEASES[_release][0]
+    _trees = [str(_BATCH_SOURCE(_release)), str(_BATCH_RUNTIME(_release)), str(_release_root / "artifacts")]
     for _lane_id in _lane_ids:
         if _lane_id not in TOOL_CONFIGS or _lane_id not in _BATCH_REWRITES:
             continue
@@ -2642,10 +2592,34 @@ for _codex_id, _lane_ids in _BATCH_LANE_SIBLINGS.items():
         _cfg["mounts"] = list(dict.fromkeys(
             [*_cfg.get("mounts", []), *[tree for tree in _trees if Path(tree).exists()]]
         ))
+        # And the executable has to resolve: warmups shell out to the tool by bare name, so the
+        # release runtime belongs on the lane PATH exactly as _pin_batch_release puts it there.
+        _runtime = _BATCH_RUNTIME(_release)
+        _npm_bin = _runtime / "node_modules" / ".bin"
+        _bin_dir = _npm_bin if _npm_bin.is_dir() else _runtime
+        if _bin_dir.is_dir():
+            _cfg["path_entries"] = list(dict.fromkeys([*_cfg.get("path_entries", []), str(_bin_dir)]))
+        # The identity paths migrate with everything else, but their digests were taken from the
+        # pre-batch checkout. A stale digest does not fail loudly: verify_artifact_identities
+        # marks the profile skipped, so host integration never runs and the lane reports nothing
+        # installed. Recompute against the pinned release so the check survives the move.
+        _cfg["artifact_identities"] = [
+            {**_identity, "sha256": _sha256_file(Path(str(_identity["path"])))}
+            if Path(str(_identity.get("path", ""))).is_file()
+            else _identity
+            for _identity in _cfg.get("artifact_identities", [])
+        ]
         TOOL_CONFIGS[_lane_id] = _cfg
 for _lane_id in ("rtk-opencode-plugin-v1", "tokenjuice-opencode-plugin-v2"):
     if _lane_id in TOOL_CONFIGS and _lane_id in _BATCH_REWRITES:
         TOOL_CONFIGS[_lane_id] = _replace_batch_paths(TOOL_CONFIGS[_lane_id], _BATCH_REWRITES[_lane_id])
+
+for _lane_id in ("headroom-opencode-product-v1", "headroom-opencode-product-v3"):
+    if _lane_id in TOOL_CONFIGS:
+        _cfg = TOOL_CONFIGS[_lane_id]
+        # The binary itself is already bound through binary_mount_target; only the directory
+        # needs to join the lane PATH so `headroom wrap opencode` can find it by name.
+        _cfg["path_entries"] = list(dict.fromkeys([*_cfg.get("path_entries", []), str(OPENCODE_BIN.parent)]))
 
 
 def rel_or_abs(path_text: str) -> Path:
@@ -3336,8 +3310,10 @@ def docker_tool_mounts(cfg: dict[str, Any] | None = None) -> list[tuple[Path, Pa
             mounts.append((path, path, "ro"))
     if cfg and cfg.get("binary_mount_target") and cfg.get("executable"):
         executable = Path(str(cfg["executable"]))
-        if executable.exists():
-            mounts.append((executable, Path(str(cfg["binary_mount_target"])), "ro"))
+        target = Path(str(cfg["binary_mount_target"]))
+        if executable.exists() and target not in seen_targets:
+            seen_targets.add(target)
+            mounts.append((executable, target, "ro"))
     return mounts
 
 

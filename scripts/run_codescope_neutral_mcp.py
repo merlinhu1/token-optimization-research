@@ -16,6 +16,7 @@ from pathlib import Path
 import selectors
 import signal
 import subprocess
+import time
 import sys
 
 
@@ -92,14 +93,41 @@ def main() -> int:
         env=env,
         check=False,
     )
-    if start.returncode:
-        raise SystemExit(f"codescope start exited {start.returncode}; see {start_log.name}")
+    # A non-zero `start` is not decisive on its own: codescope reports an unhealthy port and
+    # restarts the server itself, so the exit code can be non-zero while the daemon comes up
+    # fine a moment later. Health is what the server has to satisfy, so gate on that instead.
 
+    # `codescope start` returns before the server is serving, and can report the port unhealthy
+    # and restart it. Handing stdio to `codescope mcp` in that window loses the initialize
+    # response, so wait for the daemon the same way the Codex lane's launcher does.
+    for _ in range(50):
+        status = subprocess.run(
+            [str(binary), "status"],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            env=env,
+            check=False,
+        )
+        if status.stdout.startswith("running"):
+            break
+        time.sleep(0.2)
+    else:
+        # Not fatal: serving anyway preserves the previous behaviour, and the handshake is the
+        # gate. The wait is here so a slow start is not mistaken for a broken server.
+        raise SystemExit(
+            f"codescope start exited {start.returncode} and never reported running; "
+            f"see {start_log.name}"
+        )
+
+    # Retain the server's stderr next to the start log. A failed handshake otherwise reports
+    # only "initialize response missing", with the reason discarded along with the stream.
+    serve_log = (state_dir / "evaluation-mcp-stderr.log").open("ab")
     child = subprocess.Popen(
         [str(binary), "mcp", str(repo), "--repo", repo_name, "--auto-index"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
-        stderr=sys.stderr.buffer,
+        stderr=serve_log,
         env=env,
     )
 
