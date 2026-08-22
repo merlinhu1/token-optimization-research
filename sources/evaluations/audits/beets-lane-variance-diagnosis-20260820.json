@@ -449,5 +449,12 @@
     "confounds": "Not established as causal. The measurement also crossed a new qualification and protocol identity and eleven days of provider drift, and each figure is a single n=3 observation rather than an estimate. Fastify's own history already shows 21.9%, 1.7%, 4.0% and 13.0% across generations.",
     "consequence": "The study currently has no precision lane. Both lanes sit at 9-13%, so a treatment effect below roughly 15% is unresolvable in either. Every earlier plan that treated Fastify as the sensitive arm and Beets as the coarse one is inverted.",
     "what_would_settle_it": "Restore the two pre-repair Fastify prompts on a separate protocol identity and run three replicates. That isolates the prompt repair from protocol identity and drift, and is the only cheap test that distinguishes a caused regression from lane noise."
+  },
+  "reframing_20260822": {
+    "correction": "The previous entry called Fastify's move from 1.7% to 13.0% a regression and named the prompt repair as its cause. Set against every n=3 measurement in the study, that reading is wrong. Cancellation ratios are 1.1, 1.2, 1.4, 2.3 and 12.4; the 12.4x that justified calling Fastify a precision lane occurred once and never recurred. Lane spreads are 1.7, 8.8, 13.0, 21.9, 22.2 and 31.3%, median 17.4%. On that distribution 1.7% is the outlier and 13.0% is unremarkable, so the more defensible reading is regression to the mean rather than damage caused by the repair.",
+    "consequence_for_the_diagnosis": "Several turns of this investigation treated 'why does Fastify cancel?' as the central question. It was built on a single observation. Cancellation is not a property to design for or to preserve, and the search for a mechanism behind it was chasing one lucky draw.",
+    "current_state": "The two active lanes at 8.8% and 13.0% are the tightest and third-tightest of the six generation-level measurements taken. They are the best lanes this study has had, excluding the single outlier.",
+    "sufficiency": "The owner's threshold of interest is a 15% or larger effect. Both lanes resolve that: a treatment median falling below a baseline range of 9-13% is distinguishable at n=3. Effects near 15% sit at the detection boundary and would need extra replicates on that candidate alone; effects below it are out of scope by decision, not by limitation.",
+    "retained_caution": "Spread here is a three-point range, not a dispersion estimate. It understates at n=2 and is noisy at n=3."
   }
 }
