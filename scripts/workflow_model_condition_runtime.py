@@ -200,7 +200,17 @@ def configure_runner(
 
     def execution_descriptor(*args: Any, **kwargs: Any) -> dict[str, Any]:
         descriptor = original_execution_descriptor(*args, **kwargs)
+        # A replacement-runtime profile executes under a different CLI than the model condition
+        # names, and the descriptor has already recorded which. Letting the condition overwrite it
+        # made the descriptor claim Codex had run when OpenCode had, which strict ingress then
+        # refused as a disagreement with the run record.
+        profile_runtime = (descriptor.get("agent_condition") or {}).get("runtime_id")
         apply_agent_condition(descriptor["agent_condition"], selected)
+        if profile_runtime and profile_runtime != selected["runtime_id"]:
+            agent = descriptor["agent_condition"]
+            agent.pop(_version_key(str(selected["runtime_id"])), None)
+            agent["runtime_id"] = profile_runtime
+            agent[_version_key(str(profile_runtime))] = "captured-at-run-and-bound-to-record"
         runtime = descriptor["runtime"]
         runtime["agent_runtime_id"] = selected["runtime_id"]
         runtime["model_condition"] = {

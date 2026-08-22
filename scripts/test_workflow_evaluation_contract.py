@@ -1542,6 +1542,23 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         )
         self.assertEqual(replacement["agent_condition"]["runtime_id"], "opencode-cli")
 
+        # And the model condition must not overwrite it when the runner is configured. That
+        # override is what made the descriptor claim Codex ran when OpenCode had.
+        import workflow_model_condition_runtime as condition_runtime
+
+        agent = {"runtime_id": "opencode-cli"}
+        condition = {
+            "id": "codex-openai-gpt-5-6-sol-medium",
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+        }
+        condition_runtime.apply_agent_condition(agent, condition)
+        self.assertEqual(agent["runtime_id"], "codex-cli")
+        wrapper_source = (ROOT / "scripts/workflow_model_condition_runtime.py").read_text()
+        self.assertIn("profile_runtime != selected", wrapper_source)
+
     def test_a_runtime_swap_is_the_treatment_not_apparatus_drift(self) -> None:
         """Provider, model and effort must match across arms; the CLI is what the treatment changes."""
         import validate_repository as validator
