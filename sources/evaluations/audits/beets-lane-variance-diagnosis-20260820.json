@@ -383,6 +383,45 @@
     "cancellation_ratio": 1.5,
     "finding": "Best Beets pair so far at 8.8%, against 13.3%, 24.3% and 16.4% for the three previous task sets at the same sample size. Exploration gaps also fell: four of six tasks are at or below 13% where the previous set's best was 42%. That is the direction the seed-size bound predicted.",
     "caveat": "Cancellation did not appear. The ratio is 1.5x against 1.1-1.4x for the earlier Beets sets and 12.4x for Fastify, and five of six deviations still point the same way. The lane improved by making per-task deviations smaller, not by making them offset, so the mechanism that distinguishes Fastify remains absent and unexplained.",
-    "status": "one pair; not a spread estimate. A third replicate is what would separate this from a lucky draw."
+    "status": "one pair; not a spread estimate. A third replicate is what would separate this from a lucky draw.",
+    "n3_verdict": {
+      "weighted": [
+        614214.4,
+        564733.2,
+        589696.0
+      ],
+      "median": 589696.0,
+      "spread_pct": 8.8,
+      "spread_by_sample_size": {
+        "plugin_set": {
+          "n2": 13.3,
+          "n3": 31.3
+        },
+        "core_set": {
+          "n2": 24.3
+        },
+        "core_repaired": {
+          "n2": 16.4,
+          "n3": 22.2
+        },
+        "repinned_bounded": {
+          "n2": 8.8,
+          "n3": 8.8
+        }
+      },
+      "cancellation_ratio_n3": 2.3,
+      "per_task_weighted_range_pct": {
+        "unique-path-counter": 32,
+        "empty-string-field-split": 9,
+        "date-query-alternation": 18,
+        "membership-query-hashable": 14,
+        "spotify-uri-extraction": 24,
+        "lyrics-keep-synced-override": 31
+      },
+      "finding": "The first Beets lane whose spread did not grow with a third replicate: 8.8% at n=2 and 8.8% at n=3, where the plugin set went 13.3 to 31.3% and the repaired core set 16.4 to 22.2%. r2 landed between the first two rather than outside them. Bounding seed size is the first of four interventions to move the lane's reproducibility.",
+      "mechanism": "Still not cancellation. The ratio rose from 1.4x to 2.3x, well short of Fastify's 12.4x, so the lane reproduces because its per-task deviations are small rather than because they offset. Largest per-task weighted range is 32%, against 60% in the plugin set. Fastify remains the only lane where deviations cancel, and that is still unexplained.",
+      "usability": "At 8.8% over three replicates the lane can resolve treatment effects of roughly 15% and above. That is inside the range context-reduction tools claim, so Beets is usable for screening and for large effects, and remains too coarse for small ones.",
+      "caveat": "Three replicates. The seed-size correlation that motivated the bound was six tasks at three replicates, and this is one lane confirming it once."
+    }
   }
 }
