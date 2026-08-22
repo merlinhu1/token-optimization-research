@@ -1159,9 +1159,11 @@ print('ok')
         )
 
     def test_claude_native_plugin_profiles_bind_pinned_marketplace_install(self) -> None:
+        # The expected commit is read from the batch pin rather than restated, so migrating a
+        # profile to a newer release does not require editing the assertion to agree with it.
         for profile, plugin, commit in [
             ("artifact-ponytail-claude-code-plugin-v1", "ponytail", "40e50d9e03242aa5dd53ac771950f9127362b25f"),
-            ("behavior-caveman-claude-code-skill-v1", "caveman", "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"),
+            ("behavior-caveman-claude-code-skill-v1", "caveman", runner.fixture.BATCH_RELEASES["caveman"][5]),
         ]:
             cfg = runner.fixture.active_tool_config({}, profile)
             assert cfg is not None

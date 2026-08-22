@@ -1,0 +1,46 @@
+{
+ "schema_version": 1,
+ "date": "2026-08-22",
+ "action": "provider-free-host-integration-dry-run",
+ "scope": "OpenCode and Claude Code treatment lanes",
+ "request": "Test the OpenCode and Claude Code lanes as the Codex lane was tested.",
+ "headline": "Neither lane is runnable. Every live profile in both fails at host integration, and they share one root cause.",
+ "root_cause": {
+  "finding": "The batch migration covered the Codex lane only. _BATCH_REWRITES maps 17 profiles, of which 16 are Codex and one is Claude (rtk). Every other OpenCode and Claude Code profile still points at the pre-batch /opt/data/tool-candidates/<tool> trees, and those were deleted when the corpus was reset: only releases/ survives.",
+  "static_scan": "17 of 19 live OpenCode profiles and 14 of 15 live Claude Code profiles reference at least one path that does not exist. Failures present as exit 127 or as missing required files, not as anything resembling a config error.",
+  "codex_lane_note": "Five Codex profiles also carry dangling references, but they are inert PATH entries rather than executables, and that lane smokes 15 of 15."
+ },
+ "runtime_confirmation": {
+  "profiles_smoked": [
+   "codescope-opencode-product-v1",
+   "codescope-claude-code-mcp-v1",
+   "behavior-caveman-opencode-plugin-v1",
+   "retrieval-serena-opencode-mcp-v1",
+   "terminal-snip-opencode-plugin-v2",
+   "behavior-caveman-claude-code-skill-v1",
+   "retrieval-serena-claude-code-mcp-v1",
+   "terminal-snip-claude-code-hook-v1"
+  ],
+  "result": "0 of 8 passed, every one consistent with the path breakage."
+ },
+ "migration_probed": {
+  "profile": "behavior-caveman-claude-code-skill-v1",
+  "change": "Pinned to the caveman 2.2.0 batch source, exactly as the Codex profile already was.",
+  "outcome": "Controller install and install both exit 0 where they previously failed outright, so the path migration is mechanical and does work.",
+  "but": "A second defect sits behind it: the verify command runs `claude plugin list` through `bash -lc`, and claude is not resolvable there. The lane injects the Claude entrypoint onto PATH, but a login shell re-reads the profile files and can discard it. Not yet diagnosed further.",
+  "conclusion": "Path migration unblocks these lanes; it does not finish them. Expect per-profile defects behind it, as the Codex lane needed seven fixes once its paths resolved."
+ },
+ "not_migratable_without_a_decision": {
+  "tools_absent_from_the_batch": [
+   "lowfat",
+   "dcp",
+   "sdl-mcp"
+  ],
+  "detail": "These have no batch release, so there is no path to rewrite to. They need pinning and fetching, or exclusion.",
+  "pinned_adapter_snapshots": "Several OpenCode profiles pin /opt/data/tool-candidates/opencode-adapter-v3, -v4, -v6 and -v8 -- deleted snapshots of this repository's own scripts/opencode_workflow_adapter.py. Repointing them at the live adapter changes what those profiles pinned, which is a protocol-identity decision rather than a path fix."
+ },
+ "state": "Only the caveman Claude profile was migrated, as a probe. The remaining 30 are untouched and both lanes remain non-runnable.",
+ "excluded": {
+  "repowise": "Not smoked, per owner direction."
+ }
+}
