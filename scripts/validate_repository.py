@@ -3056,6 +3056,20 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
 
     active_paths = set((ROOT / "sources/evaluations/protocols").glob("*.json"))
     expected_paths: set[Path] = set()
+    # A protocol cited by a retained session is that session's immutable receipt, not clutter.
+    # Requiring the directory to hold only the current baselines predates treatments running at
+    # all, and would delete the record a merged treatment session points at.
+    try:
+        sessions = load_json(ROOT / "data/workflow-sessions.json").get("sessions", [])
+    except (OSError, ValueError):
+        sessions = []
+    for session in sessions:
+        if not isinstance(session, dict):
+            continue
+        frozen = session.get("frozen_protocol")
+        cited = frozen.get("path") if isinstance(frozen, dict) else None
+        if isinstance(cited, str) and cited:
+            expected_paths.add(ROOT / cited)
     for sequence_id in runner.active_sequence_ids():
         sequence = runner.load_sequence(sequence_id)
         try:
@@ -3087,7 +3101,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             errors.append(f"active protocol {path.name} does not match its contract")
     if active_paths != expected_paths:
         unexpected = sorted(str(path.relative_to(ROOT)) for path in active_paths ^ expected_paths)
-        errors.append(f"active protocol directory must contain only the two current baselines: {unexpected}")
+        errors.append(
+            "active protocol directory must contain exactly the current baselines and the "
+            f"protocols retained sessions cite: {unexpected}"
+        )
 
 
 def validate_document_lifecycle(
