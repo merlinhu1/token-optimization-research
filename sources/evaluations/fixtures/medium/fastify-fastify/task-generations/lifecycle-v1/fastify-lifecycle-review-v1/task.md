@@ -1,9 +1,0 @@
-# Correct the max-parameter-length error response
-
-Review and correct the proposed max-route-parameter-length error change already present in the working tree. An overlong route parameter represents a URI that is too long and must produce HTTP 414 consistently in both the generated Fastify error and the direct response path.
-
-Make the correction in code rather than only describing the review finding, and keep default and custom framework-error handling consistent.
-
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Choose the smallest coherent repair, run relevant existing tests and checks when practical, and preserve earlier task work in the persistent checkout.
-
-Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

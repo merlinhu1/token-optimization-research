@@ -34,7 +34,7 @@ PREPARED_NAME="${PREPARED_SPEC[2]}"
 PREPARED_EMAIL="${PREPARED_SPEC[3]}"
 PREPARED_DATE="${PREPARED_SPEC[4]}"
 REMOVED_TESTS=("${PREPARED_SPEC[@]:5}")
-mkdir -p "$PROJECT_DIR/runs" "$PROJECT_DIR/tasks"
+mkdir -p "$PROJECT_DIR/runs"
 if [ ! -d "$REPO/.git" ]; then
   rm -rf "$REPO"
   git clone --filter=blob:none --no-checkout "$URL" "$REPO"

@@ -38,19 +38,6 @@ if str(ROOT) not in sys.path:
 # other to regenerate evidence that did not change. The generation and the dated-name
 # discipline stay enforced.
 TASK_FAMILY_DESIGN = {
-    "lifecycle-v1": {
-        "sequence_suffix": "-lifecycle-sequence-v1",
-        "task_suffix": "-v1",
-        "sequence_contract": "feature-refactor-review",
-        "qualification_name_pattern": r"qualification-lifecycle-v1-\d{8}\.json",
-        "coding_task_classes": ["feature-implementation", "behavior-preserving-refactor"],
-        "review_task_gate": "compile-only",
-        "reset_policy_markers": (
-            "Feature and refactor tasks require affected-component compilation plus one narrow essential-behavior smoke",
-            "review tasks remain compile-only",
-            "not disclosed",
-        ),
-    },
     "lifecycle-v2": {
         "sequence_suffix": "-lifecycle-sequence-v2",
         "task_suffix": "-v2",
@@ -65,9 +52,9 @@ TASK_FAMILY_DESIGN = {
     },
 }
 
-SUPPORTED_TASK_FAMILY_GENERATIONS = ("lifecycle-v1", "lifecycle-v2")
+SUPPORTED_TASK_FAMILY_GENERATIONS = ("lifecycle-v2",)
 CURRENT_TASK_FAMILY_GENERATION = "lifecycle-v2"
-GENERATION_LABELS = {"lifecycle-v1": "Lifecycle V1", "lifecycle-v2": "Lifecycle V2"}
+GENERATION_LABELS = {"lifecycle-v2": "Lifecycle V2"}
 
 WORKFLOW_SESSION_SCHEMA_REL = "schemas/workflow-session-record.schema.json"
 WORKFLOW_SESSION_SCHEMA_UNAVAILABLE = (
@@ -90,11 +77,8 @@ PROVIDER_USAGE_FIELDS = (
 # 0.26 MB 99th percentile. The three sessions below predate this gate and are frozen evidence,
 # so they are grandfathered rather than rewritten; the cap applies to every future capture.
 MAX_COMPACT_DIFF_BYTES = 1024 * 1024
-OVERSIZED_COMPACT_DIFF_SESSION_IDS = {
-    "token-savior-beets-20260805-p-d8cfc5066f76-r0",
-    "token-savior-fastify-20260805-p-72ac148f730b-r0",
-    "sdl-mcp-codex-v1-fastify-20260807-p-72ac148f730b-r1",
-}
+OVERSIZED_COMPACT_DIFF_SESSION_IDS: set[str] = set()
+"""Empty: every grandfathered oversized diff belonged to the retired corpus."""
 
 def provider_usage_valid(usage: object, *, allow_legacy_null_cache_write: bool = False) -> bool:
     if (
@@ -1829,7 +1813,7 @@ def validate_workflow_task_sequences(sequence_doc: dict, fixture_doc: dict, erro
     )
     if sorted(sequence.get("id") or "" for sequence in active) != expected_active_ids:
         errors.append(
-            "production lifecycle-v1 portfolio must contain exactly the two active sequences "
+            "production portfolio must contain exactly the two active sequences "
             f"{expected_active_ids}, found {[sequence.get('id') for sequence in active]}"
         )
     if len({sequence.get("fixture_id") for sequence in active}) != len(active):
@@ -1915,19 +1899,15 @@ def validate_fixture_sequence_status_consistency(
                 qualification_path = Path(str(sequences[sequence_id].get("qualification_path", "")))
                 fixture_root = ROOT / qualification_path.parent
                 fixture_readme = fixture_root / "README.md"
-                tasks_readme = fixture_root / "tasks/README.md"
                 try:
                     fixture_text = fixture_readme.read_text()
-                    tasks_text = tasks_readme.read_text()
                 except OSError as exc:
                     errors.append(f"fixture {record.get('id')} active-generation documentation is unreadable: {exc}")
                 else:
                     generation = str(sequences[sequence_id].get("task_family_generation", ""))
-                    generation_label = GENERATION_LABELS.get(generation) or generation.replace("baseline-v", "Baseline V")
+                    generation_label = GENERATION_LABELS.get(generation) or generation
                     if qualification_path.name not in fixture_text or generation not in fixture_text:
                         errors.append(f"fixture {record.get('id')} README does not identify the active {generation_label} qualification")
-                    if f"active {generation_label}" not in tasks_text:
-                        errors.append(f"fixture {record.get('id')} tasks README does not identify the active {generation_label} generation")
             if not active and qualification == "active-reproduction-flow":
                 errors.append(f"{label} {record.get('id')} cannot be active-reproduction-flow while sequence {sequence_id} is {statuses[sequence_id]}")
             if not active and record.get("active_profiles"):
@@ -2499,7 +2479,7 @@ def comparison_replicate_binding_matches(
     treatment: dict[str, Any],
     baseline: dict[str, Any],
 ) -> bool:
-    """Validate either same-index pairing or the explicit V1 accepted-order map.
+    """Require same-index pairing as the comparison identity.
 
     ``replicate_index`` is a runtime-local attempt identity.  It is only a
     comparison identity when both conditions use the same accepted-attempt
@@ -2513,35 +2493,23 @@ def comparison_replicate_binding_matches(
     pair = treatment.get("interpretation", {}).get("comparison_pair")
     if treatment_index == baseline_index:
         return pair in (None, {})
+    # Cross-index binding stays available, but only with an explicit accepted-ordinal map and
+    # identical model-facing prompt bytes on both arms. The campaign that once hard-coded which
+    # profiles could use it is retired, so the rule is stated generally instead.
     if not isinstance(pair, dict):
         return False
     ordinal = pair.get("accepted_replicate_ordinal")
     treatment_prompts = (
-        treatment.get("selected_execution", {})
-        .get("descriptor", {})
-        .get("model_facing_prompts", {})
-        .get("tasks", [])
+        treatment.get("selected_execution", {}).get("descriptor", {})
+        .get("model_facing_prompts", {}).get("tasks", [])
     )
     baseline_prompts = (
-        baseline.get("selected_execution", {})
-        .get("descriptor", {})
-        .get("model_facing_prompts", {})
-        .get("tasks", [])
+        baseline.get("selected_execution", {}).get("descriptor", {})
+        .get("model_facing_prompts", {}).get("tasks", [])
     )
     return (
-        treatment.get("profile", {}).get("profile_id") == "runtime-opencode-codex-product-v1"
-        and treatment.get("agent", {}).get("model_condition_id") == "opencode-openai-gpt-5-6-sol-high"
-        and baseline.get("profile", {}).get("profile_id") == "baseline-bare-codex"
-        and baseline.get("agent", {}).get("model_condition_id") == "codex-openai-gpt-5-6-sol-high"
-        and treatment.get("task_sequence", {}).get("sequence_id")
-        in {"fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"}
-        and treatment.get("agent", {}).get("model") == baseline.get("agent", {}).get("model") == "gpt-5.6-sol"
-        and treatment.get("agent", {}).get("reasoning_effort")
-        == baseline.get("agent", {}).get("reasoning_effort")
-        == "high"
-        and isinstance(ordinal, int)
+        isinstance(ordinal, int)
         and ordinal >= 1
-        and pair.get("id") == f"lifecycle-v1-sol-high-accepted-pair-{ordinal:02d}"
         and pair.get("basis") == "accepted-replicate-ordinal"
         and pair.get("treatment_runtime_replicate_index") == treatment_index == ordinal
         and pair.get("baseline_runtime_replicate_index") == baseline_index == ordinal - 1
@@ -3040,46 +3008,10 @@ def validate_frozen_protocol_bindings(errors: list[str]) -> None:
             or protocol.get("token_accounting_boundary", {}).get("metric") != "weighted_token_cost"
             or protocol.get("token_accounting_boundary", {}).get("formula") != WEIGHTED_TOKEN_COST_FORMULA
         ):
-            errors.append(f"active protocol {path.name} does not match its Lifecycle V1 contract")
+            errors.append(f"active protocol {path.name} does not match its contract")
     if active_paths != expected_paths:
         unexpected = sorted(str(path.relative_to(ROOT)) for path in active_paths ^ expected_paths)
         errors.append(f"active protocol directory must contain only the two current baselines: {unexpected}")
-
-    archive_root = ROOT / "sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813"
-    archived_protocols = list((archive_root / "protocols").glob("*.json"))
-    if len(archived_protocols) != 140:
-        errors.append(f"archived pre-correction corpus must retain 140 protocols; found {len(archived_protocols)}")
-    archived_audits = [path for path in (archive_root / "audits").rglob("*") if path.is_file()]
-    if len(archived_audits) != 152:
-        errors.append(f"archived pre-correction corpus must retain 152 audit files; found {len(archived_audits)}")
-    by_name: dict[str, Path] = {}
-    for path in archived_protocols:
-        try:
-            protocol = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError) as exc:
-            errors.append(f"archived protocol {path.name} is unreadable: {exc}")
-            continue
-        if path.name in by_name:
-            errors.append(f"duplicate archived protocol filename: {path.name}")
-        by_name[path.name] = path
-        if protocol.get("protocol_id") != path.stem or protocol.get("status") != "frozen-ready-not-run":
-            errors.append(f"archived protocol {path.name} has invalid frozen identity")
-    try:
-        archived_registry = json.loads((archive_root / "workflow-sessions-registry.json").read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        errors.append(f"archived session registry is unreadable: {exc}")
-        return
-    for session in archived_registry.get("sessions", []):
-        frozen = session.get("frozen_protocol", {})
-        original_path = frozen.get("path")
-        expected_sha = frozen.get("sha256")
-        archived_path = by_name.get(Path(str(original_path or "")).name)
-        if (
-            not isinstance(expected_sha, str)
-            or archived_path is None
-            or hashlib.sha256(archived_path.read_bytes()).hexdigest() != expected_sha
-        ):
-            errors.append(f"archived session {session.get('session_id')} has no matching frozen protocol bytes")
 
 
 def validate_document_lifecycle(

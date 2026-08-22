@@ -4015,7 +4015,7 @@ def require_claude_lifecycle_matrix_launch(
     *,
     prepare_only: bool,
 ) -> None:
-    """Keep paid Claude Code Lifecycle V1 execution behind the matrix authority boundary."""
+    """Keep paid Claude Code provider execution behind the matrix authority boundary."""
     if (
         not prepare_only
         and profile_id == "baseline-claude-code-no-mcp"
@@ -4023,7 +4023,7 @@ def require_claude_lifecycle_matrix_launch(
         and inherited_provider_production_lock_fd() is None
     ):
         raise ValueError(
-            "Claude Code Lifecycle V1 provider execution must be launched through the serial matrix"
+            "Claude Code provider execution must be launched through the serial matrix"
         )
 
 
@@ -4033,15 +4033,15 @@ def require_opencode_lifecycle_matrix_launch(
     *,
     prepare_only: bool,
 ) -> None:
-    """Keep paid bare-OpenCode Lifecycle V1 execution behind the serial matrix."""
+    """Keep paid bare-OpenCode provider execution behind the serial matrix."""
     if (
         not prepare_only
         and profile_id == "runtime-opencode-codex-product-v1"
-        and sequence.get("task_family_generation") == "lifecycle-v1"
+        and sequence.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
         and inherited_provider_production_lock_fd() is None
     ):
         raise ValueError(
-            "OpenCode Lifecycle V1 provider execution must be launched through the serial matrix"
+            "OpenCode provider execution must be launched through the serial matrix"
         )
 
 

@@ -1,9 +1,0 @@
-# Restore function-template argument splitting
-
-Function-template calls must split arguments at unescaped commas. An escaped comma must remain literal text within its argument, and commas outside function arguments must remain ordinary text.
-
-Preserve nested function calls and the existing handling of other escapable template characters.
-
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
-
-Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

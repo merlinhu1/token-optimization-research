@@ -571,7 +571,6 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     def test_runbook_reports_lifecycle_pilot_completion(self) -> None:
         runbook = (ROOT / "docs/evaluations/operations/runbook.md").read_text()
         self.assertTrue((ROOT / "sources/evaluations/audits/opencode-tool-treatments-sol-high-r0-repaired-screen-results-20260730.json").is_file())
-        self.assertTrue((ROOT / "sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/lifecycle-v1-pilot-compile-only.json").is_file())
         self.assertIn("Historical profiles marked `historical-profile`", runbook)
         self.assertIn("Current runnable treatment profiles", runbook)
         # The pilot gate was removed on 2026-08-15, so nothing machine-blocks treatments.
@@ -2901,42 +2900,19 @@ class PublishedSchemaGateTest(unittest.TestCase):
         self.assertNotIn("sample_plan", json.dumps(schema.get("allOf", [])))
         self.assertIn("sample_plan", schema["properties"])
 
-    def test_review_prompts_withhold_the_review_finding(self) -> None:
-        """A review task must require diagnosis, not restate it.
+    def test_active_family_has_no_review_stage(self) -> None:
+        """The bounded family replaced the review stage; nothing should reintroduce it.
 
-        The point of the review stage is blast-radius work: read the change, follow it to its
-        definitions and call sites, and decide whether it ships. A prompt that names the correct
-        value or rule converts that into applying a described patch, which is why these prompts
-        were rewritten on 2026-08-15.
+        The review task carried roughly 45% of session cost and had no terminal condition, which
+        is why ADR 0008 replaced it. A task class of 'code-review-correction' reappearing in an
+        active sequence would bring that back.
         """
-        # Naming the module or the behavior area is fair -- a pull request has a title. The leak
-        # is stating the rule or the correct value, so match those as whole tokens.
-        giveaways = {
-            "beets-lifecycle-review-v1": (
-                r"\bft\b", r"\bfeat\b", r"&", r"for_artist", r"explicit featuring markers",
-            ),
-            "fastify-lifecycle-review-v1": (
-                r"\b414\b", r"\b413\b", r"URI Too Long", r"Payload Too Large",
-            ),
-        }
         document = json.loads((ROOT / "data/workflow-task-sequences.json").read_text())
-        checked = 0
         for sequence in document["sequences"]:
-            for task in sequence["tasks"]:
-                tokens = giveaways.get(task["id"])
-                if not tokens:
-                    continue
-                checked += 1
-                prompt = (ROOT / task["prompt_path"]).read_text()
-                body = prompt.split("\n", 1)[1] if "\n" in prompt else prompt
-                for token in tokens:
-                    self.assertIsNone(
-                        re.search(token, body),
-                        f"{task['id']} prompt discloses the review finding: {token!r}",
-                    )
-                # It must still demand a code correction rather than a written review.
-                self.assertIn("correct it in code", body)
-        self.assertEqual(checked, len(giveaways))
+            if sequence["status"] != "active":
+                continue
+            classes = {task["task_class"] for task in sequence["tasks"]}
+            self.assertEqual(classes, {"defect-repair"}, sequence["id"])
 
     def test_trajectory_replay_measures_volume_without_sampling(self) -> None:
         """The zero-variance instrument: same trajectory, tool is the only difference."""
@@ -3045,10 +3021,16 @@ class PublishedSchemaGateTest(unittest.TestCase):
             validate_repository.validate_compact_diff_size(root, "unit-oversized-session", errors)
             self.assertTrue(any("over the" in error for error in errors), errors)
 
-            grandfathered = sorted(validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS)[0]
-            errors = []
-            validate_repository.validate_compact_diff_size(root, grandfathered, errors)
-            self.assertEqual(errors, [])
+            # The exemption list is empty now that the retired corpus is gone, so exercise the
+            # mechanism with an injected entry rather than a real session id.
+            grandfathered = "unit-grandfathered-session"
+            validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS.add(grandfathered)
+            try:
+                errors = []
+                validate_repository.validate_compact_diff_size(root, grandfathered, errors)
+                self.assertEqual(errors, [])
+            finally:
+                validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS.discard(grandfathered)
 
             diff.write_bytes(b"x" * validate_repository.MAX_COMPACT_DIFF_BYTES)
             errors = []
@@ -3174,22 +3156,8 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         )
         with self.assertRaises(KeyError):
             runner.load_sequence("terraform-lifecycle-sequence-v1")
-        invalidation = json.loads(
-            (
-                ROOT
-                / "sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/lifecycle-v1-terraform-invalidated-20260802.json"
-            ).read_text()
-        )
-        # The archived audit froze the lanes active on 2026-08-02. It is evidence, not a
-        # mirror of today's portfolio, so it keeps naming the V1 sequences after V2
-        # superseded them.
-        self.assertEqual(
-            invalidation["active_lifecycle_v1_sequence_ids"],
-            ["fastify-lifecycle-sequence-v1", "beets-lifecycle-sequence-v1"],
-        )
-        self.assertFalse(invalidation["result_was_accepted_for_objective"])
-        for artifact in invalidation["removed_artifacts"]:
-            self.assertFalse((ROOT / artifact["path"]).exists())
+        # The Terraform invalidation audit lived in the retired corpus and was deleted with it;
+        # the lane it invalidated has had no active fixture or task contract since.
         sequence = runner.load_sequence("beets-lifecycle-sequence-v2")
         self.assertTrue(all(task["id"].endswith("-v2") for task in sequence["tasks"]))
         self.assertGreaterEqual(len(sequence["tasks"]), 4)
@@ -3357,7 +3325,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_canonical_baseline_lookup_rejects_mislabeled_profile_and_selected_role(self) -> None:
         sequence = {
             "id": "unit-sequence",
-            "task_family_generation": "lifecycle-v1",
+            "task_family_generation": "lifecycle-v2",
             "mistake_gate": {},
         }
         identity = {"protocol_id": "canonical", "path": "protocols/canonical.json", "sha256": "a" * 64}
@@ -3405,7 +3373,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_canonical_baseline_lookup_accepts_enriched_current_protocol_identity(self) -> None:
         sequence = {
             "id": "unit-sequence",
-            "task_family_generation": "lifecycle-v1",
+            "task_family_generation": "lifecycle-v2",
             "mistake_gate": {},
         }
         binding = {"protocol_id": "canonical", "path": "protocols/canonical.json", "sha256": "a" * 64}
@@ -3449,7 +3417,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_canonical_baseline_lookup_uses_frozen_pool_when_live_descriptor_drifts(self) -> None:
         sequence = {
             "id": "unit-sequence",
-            "task_family_generation": "lifecycle-v1",
+            "task_family_generation": "lifecycle-v2",
             "mistake_gate": {},
         }
         identity = {"protocol_id": "canonical", "path": "protocols/canonical.json", "sha256": "a" * 64}
@@ -3500,7 +3468,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         expected = (
             (
                 1,
-                "lifecycle-v1-sol-high-accepted-pair-01",
+                "accepted-pair-01",
                 [
                     "baseline-fastify-20260802-p-72ac148f730b-r0",
                     "baseline-beets-20260802-p-d8cfc5066f76-r0",
@@ -3511,7 +3479,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             ),
             (
                 2,
-                "lifecycle-v1-sol-high-accepted-pair-02",
+                "accepted-pair-02",
                 [
                     "baseline-fastify-20260802-p-72ac148f730b-r1",
                     "baseline-beets-20260802-p-d8cfc5066f76-r1",
@@ -3558,22 +3526,22 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         expected = {
             "opencode-fastify-20260802-p-72ac148f730b-r1": (
                 "baseline-fastify-20260802-p-72ac148f730b-r0",
-                "lifecycle-v1-sol-high-accepted-pair-01",
+                "accepted-pair-01",
                 1,
             ),
             "opencode-beets-20260802-p-d8cfc5066f76-r1": (
                 "baseline-beets-20260802-p-d8cfc5066f76-r0",
-                "lifecycle-v1-sol-high-accepted-pair-01",
+                "accepted-pair-01",
                 1,
             ),
             "opencode-fastify-20260802-p-72ac148f730b-r2": (
                 "baseline-fastify-20260802-p-72ac148f730b-r1",
-                "lifecycle-v1-sol-high-accepted-pair-02",
+                "accepted-pair-02",
                 2,
             ),
             "opencode-beets-20260802-p-d8cfc5066f76-r2": (
                 "baseline-beets-20260802-p-d8cfc5066f76-r1",
-                "lifecycle-v1-sol-high-accepted-pair-02",
+                "accepted-pair-02",
                 2,
             ),
         }
@@ -3599,7 +3567,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
     def test_pool_profile_lookup_uses_canonical_frozen_pool_when_live_descriptor_drifts(self) -> None:
         sequence = {
             "id": "unit-sequence",
-            "task_family_generation": "lifecycle-v1",
+            "task_family_generation": "lifecycle-v2",
         }
         baseline = {
             "session_id": "frozen-baseline",
@@ -3664,7 +3632,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         )
 
     def test_openrouter_control_pool_slot_does_not_require_codex_control(self) -> None:
-        sequence = {"id": "unit-sequence", "task_family_generation": "lifecycle-v1"}
+        sequence = {"id": "unit-sequence", "task_family_generation": "lifecycle-v2"}
         with mock.patch.object(runner, "baseline_protocol_fingerprint", return_value="openrouter-pool"), \
              mock.patch.object(runner, "find_canonical_baseline_record", side_effect=AssertionError("must not look up Codex")):
             self.assertIsNone(
@@ -4718,7 +4686,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
     def test_claude_lifecycle_turn_budget_disables_operational_retries(self) -> None:
         self.assertEqual(
             runner.operational_retry_budget(
-                "baseline-claude-code-no-mcp", 0, {"task_family_generation": "lifecycle-v1"}
+                "baseline-claude-code-no-mcp", 0, {"task_family_generation": "lifecycle-v2"}
             ),
             0,
         )
@@ -4845,7 +4813,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "must be launched through the serial matrix"):
                 runner.require_claude_lifecycle_matrix_launch(
                     "baseline-claude-code-no-mcp",
-                    {"task_family_generation": "lifecycle-v1"},
+                    {"task_family_generation": "lifecycle-v2"},
                     prepare_only=False,
                 )
 
@@ -4854,7 +4822,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "must be launched through the serial matrix"):
                 runner.require_opencode_lifecycle_matrix_launch(
                     "runtime-opencode-codex-product-v1",
-                    {"task_family_generation": "lifecycle-v1"},
+                    {"task_family_generation": "lifecycle-v2"},
                     prepare_only=False,
                 )
 
