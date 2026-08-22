@@ -3862,14 +3862,18 @@ def strict_ingress_refusal_reason(record: dict[str, Any], root: Path = ROOT) -> 
         # Patched or wrapped: there is no source to point at, and a diagnostic must never be the
         # reason a refusal fails to report itself.
         return "diagnostic unavailable: predicate is not a plain function"
-    visited: list[int] = []
+    # Follow nested frames through our own modules. The predicate delegates most of its work, so
+    # tracing only its own code object reports the call site rather than the check that refused.
+    scripts_dir = str(Path(__file__).resolve().parent)
+    visited: list[tuple[str, int]] = []
 
     def tracer(frame, event, arg):  # pragma: no cover - diagnostic path
-        if frame.f_code is code:
-            if event == "line":
-                visited.append(frame.f_lineno)
-            return tracer
-        return None
+        filename = frame.f_code.co_filename
+        if not filename.startswith(scripts_dir):
+            return None
+        if event == "line":
+            visited.append((filename, frame.f_lineno))
+        return tracer
 
     previous = sys.gettrace()
     try:
@@ -3881,13 +3885,54 @@ def strict_ingress_refusal_reason(record: dict[str, Any], root: Path = ROOT) -> 
         sys.settrace(previous)
     if not visited:
         return "diagnostic unavailable: predicate did not execute"
+    filename, lineno = visited[-1]
     try:
-        source = inspect.getsource(pilot_session_artifacts_valid).splitlines()
-        offset = visited[-1] - code.co_firstlineno
-        statement = source[offset].strip() if 0 <= offset < len(source) else "<unknown>"
-    except OSError:
+        statement = Path(filename).read_text().splitlines()[lineno - 1].strip()
+    except (OSError, IndexError):
         statement = "<source unavailable>"
-    return f"refused at {code.co_filename}:{visited[-1]}: {statement}"
+    detail = f"refused at {Path(filename).name}:{lineno}: {statement}"
+    divergent = _session_run_record_divergences(record, root)
+    if divergent:
+        detail = f"{detail}; session and run record differ on: {', '.join(divergent)}"
+    return detail
+
+
+def _session_run_record_divergences(record: dict[str, Any], root: Path) -> list[str]:
+    """Name the fields where the session and its run.json disagree.
+
+    The equality block that compares them refuses on any one of eleven fields without saying
+    which, and the two documents spell some of the same values differently, so the answer is
+    rarely guessable from either one alone.
+    """
+    artifacts = record.get("artifacts")
+    if not isinstance(artifacts, dict):
+        return []
+    run_record_rel = artifacts.get("run_record")
+    if not isinstance(run_record_rel, str):
+        return []
+    try:
+        run_record = json.loads((root / run_record_rel).read_text())
+    except (OSError, ValueError):
+        return []
+    if not isinstance(run_record, dict):
+        return []
+    interpretation = record.get("interpretation")
+    integrity = record.get("execution_integrity")
+    compared = {
+        "session_id": record.get("session_id"),
+        "replicate_index": record.get("replicate_index"),
+        "workflow_sequence_id": (record.get("task_sequence") or {}).get("sequence_id"),
+        "profile_id": (record.get("profile") or {}).get("profile_id"),
+        "frozen_protocol": record.get("frozen_protocol"),
+        "baseline_pool": record.get("baseline_pool"),
+        "selected_execution": record.get("selected_execution"),
+        "docker_image_identity": record.get("docker_image_identity"),
+        "tool_adapter_identity": record.get("tool_adapter_identity"),
+        "per_task_results": record.get("per_task_results"),
+        "verifier_integrity_passed": (integrity or {}).get("verifier_integrity_passed"),
+        "accepted": (interpretation or {}).get("accepted_for_execution"),
+    }
+    return [key for key, value in compared.items() if run_record.get(key) != value]
 
 
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
@@ -3903,6 +3948,7 @@ def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) 
                 "artifact_root": record.get("artifacts", {}).get("root"),
                 "reason": "strict compact artifact ingress validation failed",
                 "refusal_detail": strict_ingress_refusal_reason(record),
+                "session_record": record,
                 "source_evidence_retained": str(run_dir),
             },
         )
