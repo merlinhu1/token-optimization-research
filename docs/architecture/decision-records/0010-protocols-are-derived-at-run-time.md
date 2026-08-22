@@ -63,8 +63,10 @@ was a command run because the runner demanded it, not a moment where anyone deci
   always resolves to the same protocol and a changed apparatus resolves to a new one. Minting at
   run time cannot produce a protocol that disagrees with the run it describes, which removes the
   ordering trap rather than documenting it.
-- Decision (2026-08-22): **Provider-free runs require no protocol.** A run that never reaches the
-  provider produces no measurement for a protocol to make comparable.
+- Decision (2026-08-22): **Provider-free runs derive a protocol like any other run.** They do not
+  require a prepared one, which is what blocked readiness checks; but they are not exempt from
+  having one, because the session record is assembled from the protocol document and a run without
+  one has no descriptor to record. In a lane the mint lands in that lane's checkout.
 - Decision (2026-08-22): `frozen_protocol` is optional on a session record. The configuration a run
   executed under is recorded inline as `selected_execution.descriptor` — a self-contained receipt
   rather than a pointer to a separate file. Records that carry a protocol are still checked against

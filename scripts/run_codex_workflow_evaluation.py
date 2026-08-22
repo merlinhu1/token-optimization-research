@@ -1564,12 +1564,20 @@ def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT)
     path = root / "sources/evaluations/protocols" / f"{protocol_id}.json"
     if path.is_file():
         return str(path)
+    # Delegate to the sanctioned minting entrypoint rather than reimplementing part of it. It
+    # applies the model condition and runs the profile gates before writing, and reusing it is
+    # what keeps a run-time mint byte-identical to one an operator would have produced by hand.
     import refresh_workflow_contracts as contracts
 
-    qualification_path = root / seq["qualification_path"]
-    document = contracts.frozen_protocol(seq, profile_id, qualification_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    contracts.write_json(path, document)
+    contracts.main([
+        "--sequence-id", seq["id"],
+        "--profile-id", profile_id,
+        "--workflow-model-condition-id", DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
+        "--workflow-model", DEFAULT_WORKFLOW_MODEL,
+        "--workflow-reasoning-effort", DEFAULT_WORKFLOW_REASONING_EFFORT,
+    ])
+    if not path.is_file():
+        raise ValueError(f"protocol mint did not produce {path}")
     print(f"minted run protocol {protocol_id}", file=sys.stderr)
     return str(path)
 
@@ -1590,13 +1598,10 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
                 "provider launch readiness gate failed: " + "; ".join(readiness_errors)
             )
     if not args.protocol:
-        if args.prepare_only:
-            # A provider-free run produces no measurement, so there is nothing for a protocol to
-            # make comparable. Requiring one here only blocked the readiness checks that should
-            # be the cheapest thing in the repository to run.
-            return None
-        # Otherwise mint it from the same live state the run is about to use. Demanding it in
-        # advance moved work onto the operator without adding a guarantee.
+        # Derived from the same live state the run is about to use, provider-free runs included:
+        # the session record is built from the protocol document, so skipping it entirely would
+        # leave a run with no descriptor to record. What goes away is the manual step, not the
+        # protocol. In a lane the mint lands in that lane's checkout, not the source tree.
         args.protocol = ensure_run_protocol(seq, profile_id)
     protocol_path, protocol = load_protocol(args.protocol)
     if protocol.get("protocol_schema_version") != 3:

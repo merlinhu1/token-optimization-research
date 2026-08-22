@@ -3419,14 +3419,21 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
         mint.assert_called_once()
         self.assertEqual(args.protocol, str(minted))
 
-    def test_provider_free_prepare_only_needs_no_protocol(self) -> None:
-        """A run that never reaches the provider produces nothing for a protocol to make
-        comparable, so requiring one only taxed the cheapest check in the repository."""
+    def test_provider_free_run_derives_a_protocol_instead_of_demanding_one(self) -> None:
+        """Provider-free runs mint like any other run rather than requiring a prepared protocol.
+
+        Requiring a pre-existing one is what blocked readiness checks, the cheapest work in the
+        repository. Skipping the protocol altogether is not the answer either: the session record
+        is built from the protocol document, so a run without one has no descriptor to record.
+        """
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(protocol=None, prepare_only=True, no_provider=True)
-        with mock.patch.object(runner, "ensure_run_protocol") as mint:
-            self.assertIsNone(runner.validate_protocol_for_run(seq, "baseline-bare-codex", args))
-        mint.assert_not_called()
+        minted = ROOT / "sources/evaluations/protocols" / "minted-by-test.json"
+        with mock.patch.object(runner, "ensure_run_protocol", return_value=str(minted)) as mint:
+            with self.assertRaises(Exception):
+                runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
+        mint.assert_called_once()
+        self.assertEqual(args.protocol, str(minted))
 
     @requires_retained_sequence(SEQUENCE_ID)
     def test_protocol_timeout_mismatch_rejects(self) -> None:
