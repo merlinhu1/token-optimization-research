@@ -3,7 +3,7 @@ set -euo pipefail
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$PROJECT_DIR/repo"
 URL="https://github.com/beetbox/beets.git"
-COMMIT="9acb1ecff6c7ee0a1e83e3b983c94792345712c5"
+COMMIT="746cecf204a48667dcce8a303272ff2b79dae8a3"
 mkdir -p "$PROJECT_DIR/runs" "$PROJECT_DIR/tasks"
 if [ ! -d "$REPO/.git" ]; then
   rm -rf "$REPO"

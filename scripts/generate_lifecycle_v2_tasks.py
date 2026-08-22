@@ -108,80 +108,76 @@ FIXTURES: dict[str, dict[str, Any]] = {
 TASKS: dict[str, list[dict[str, Any]]] = {
     "beets": [
         {
-            "slug": "library-file-error-message",
-            "commit": "6e6fee93bf",
-            "title": "Report the file and the reason when a read or write fails",
+            "slug": "unique-path-counter",
+            "commit": "a8439e2d07",
+            "title": "Continue a unique-name counter past nine",
             "symptom": (
-                "A failed media-file read or write reports a message of the form 'error reading' followed by the "
-                "internal representation of an object, where the path and the underlying reason should be. The "
-                "base error type already composes a message carrying both. The two error types that prefix it "
-                "with the failed operation embed their parent itself rather than the message their parent "
-                "produces, so placeholder text replaces the detail."
+                "When a destination file already exists, a numeric suffix is appended and incremented until the "
+                "name is free. Once the existing suffix reaches two or more digits the counter restarts near zero "
+                "instead of continuing, because the pattern that reads the existing suffix captures only its "
+                "final digit. Single-digit suffixes already behave correctly."
             ),
-            "done": "a failed read or write reports the operation, the file path, and the underlying reason in one message",
+            "done": "an existing numeric suffix of any length is read whole, so the next free name continues from it",
         },
         {
-            "slug": "migration-text-paths",
-            "commit": "2e3ca0a018",
-            "title": "Complete the relative-path conversion on a hand-edited database",
+            "slug": "empty-string-field-split",
+            "commit": "7b59604c54",
+            "title": "Do not split an empty single-value field into a list",
             "symptom": (
-                "Converting a library to store paths relative to its root aborts when a stored path is text "
-                "rather than bytes, which is what a user gets after editing the database directly with sqlite. "
-                "The conversion assumes bytes. The same pass first collects the rows it intends to convert, and "
-                "that collection includes rows holding no path at all, which cannot be converted and must be "
-                "excluded before the conversion runs."
+                "Reading a single-value field that is empty and deriving its list counterpart searches the empty "
+                "text for a separator, finds none, and takes a fallback path intended for text that simply has no "
+                "separator in it. An empty value has nothing to split and should be left alone rather than routed "
+                "through the splitting logic at all."
             ),
-            "done": "the relative-path conversion excludes rows with no stored path and succeeds on rows whose path was stored as text",
+            "done": "an empty single-value field yields no list entries instead of being split",
         },
         {
-            "slug": "subcommand-help-alignment",
-            "commit": "9e3f22b8be",
-            "title": "Keep a short subcommand and its description on one line",
+            "slug": "date-query-alternation",
+            "commit": "4a1e9164a1",
+            "title": "Reject a malformed relative date instead of crashing",
             "symptom": (
-                "In the listing of available subcommands, a name short enough to fit the column reserved for "
-                "names is followed by a line break, so its description begins on the following line and the "
-                "reserved column is left empty beside it. A name too long for that column is handled by a "
-                "separate branch that is correct and must stay that way."
+                "A date query written with a stray pipe, as a user might type expecting it to mean 'or', crashes "
+                "with an uncaught lookup error rather than the documented parse error. The pattern that "
+                "recognises a relative date encloses its sign and its unit in character classes that also list a "
+                "pipe, so the pipe is accepted as a valid unit and then fails when that unit is looked up."
             ),
-            "done": "a subcommand whose name fits the reserved column is followed by its description on the same line",
+            "done": "a date query containing a stray pipe raises the documented parse error instead of an uncaught lookup failure",
         },
         {
-            "slug": "concurrent-plugin-dispatch",
-            "commit": "ca36df2d00",
-            "title": "Dispatch each metadata plugin to its own concurrent call",
+            "slug": "membership-query-hashable",
+            "commit": "eb7c832fc9",
+            "title": "Make a membership query hashable when its pattern is a sequence",
             "symptom": (
-                "Querying metadata sources concurrently returns the results of one source repeated "
-                "instead of the results of each. The work submitted for every source closes over "
-                "the loop variable rather than binding the source it was created for, so by the "
-                "time the submitted work runs the variable holds whichever source was last in the "
-                "sequence and every call targets that one."
+                "Hashing a query that tests membership in a collection raises an unhashable-type error whenever "
+                "the collection is a list, which breaks any caller that puts such a query in a set or dictionary. "
+                "The inherited hashing hashes the pattern directly, and a sequence pattern cannot be hashed "
+                "as-is."
             ),
-            "done": "each metadata source contributes its own results when sources are queried concurrently",
+            "done": "a membership query hashes successfully whether its pattern is a list or another sequence",
         },
         {
-            "slug": "cached-attribute-error-surface",
-            "commit": "8a1f9d916a",
-            "title": "Report the error raised inside a lazily computed attribute",
+            "slug": "spotify-uri-extraction",
+            "commit": "6a051f9699",
+            "title": "Extract a Spotify identifier from a native URI",
             "symptom": (
-                "When the body of a lazily computed attribute raises a missing-attribute error, the lookup "
-                "machinery reads that as the attribute itself being absent and falls back to ordinary key lookup, "
-                "so the reported failure names the outer attribute and the line that actually failed is lost. It "
-                "has to surface as a failure the fallback does not intercept, still pointing at the original "
-                "line, and reported once rather than as a chained pair of tracebacks."
+                "Pasting a native Spotify URI of the form used by the desktop application, rather than a web "
+                "link, yields no identifier at all. The pattern that recognises Spotify identifiers accepts a "
+                "bare identifier and a web URL, but has no branch for the URI form, so extraction returns "
+                "nothing. The two forms already recognised must keep working."
             ),
-            "done": "an error raised inside a lazily computed attribute is reported once, against the line that raised it, instead of being masked by the attribute fallback",
+            "done": "a native Spotify URI yields the same identifier as the equivalent web link",
         },
         {
-            "slug": "zero-penalty-display",
-            "commit": "a734b9bce1",
-            "title": "List only the penalties that actually applied",
+            "slug": "lyrics-keep-synced-override",
+            "commit": "d9a1bde1c9",
+            "title": "Allow a run to override the keep-synced setting",
             "symptom": (
-                "The summary of why a match was penalised lists every penalty the comparison can "
-                "produce, including those that scored nothing. A penalty that contributed no "
-                "distance is not a reason the match was downgraded and should not appear among the "
-                "reasons shown."
+                "The switch that skips items already holding synced lyrics can only be turned on from the command "
+                "line. When the configuration enables it there is no way to turn it off for a single run, so a "
+                "manual fetch cannot be forced to reprocess those items. Its help text also describes "
+                "re-downloading rather than skipping, which is the opposite of what it does."
             ),
-            "done": "the listed penalties include only those with a non-zero contribution",
+            "done": "the keep-synced behaviour can be switched off for one run from the command line, and its help text describes what it does",
         },
     ],
     "fastify": [

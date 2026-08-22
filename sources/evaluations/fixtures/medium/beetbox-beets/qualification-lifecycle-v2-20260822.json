@@ -1,0 +1,317 @@
+{
+  "schema_version": 6,
+  "task_family_generation": "lifecycle-v2",
+  "controller_hidden_sha256": null,
+  "qualified_on": "2026-08-22",
+  "snapshot": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+  "prepared_removals": null,
+  "observed_source": {
+    "head": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+    "tree": "3b6508f680ca0a84cc44abab7af406090c22a734",
+    "remotes": [
+      "origin\tgit@github.com:beetbox/beets.git (fetch) [blob:none]",
+      "origin\tgit@github.com:beetbox/beets.git (push)"
+    ],
+    "expected_upstream": "https://github.com/beetbox/beets.git",
+    "clean": true
+  },
+  "tool_versions": {
+    "git": "git version 2.47.3",
+    "qualification_dependency_command": "uv sync --group test --frozen"
+  },
+  "ordered_task_ids": [
+    "beets-unique-path-counter-v2",
+    "beets-empty-string-field-split-v2",
+    "beets-date-query-alternation-v2",
+    "beets-membership-query-hashable-v2",
+    "beets-spotify-uri-extraction-v2",
+    "beets-lyrics-keep-synced-override-v2"
+  ],
+  "model_concealed_paths": [],
+  "fixed_snapshot_concealed_path_collisions": [],
+  "fixed_snapshot_model_concealed_paths_absent": true,
+  "fixed_snapshot_model_concealed_paths_safe": true,
+  "fixed_snapshot_concealed_path_collision_audit": [],
+  "tasks": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "seed_patch_sha256": "389887a516de22d73c74e6e7343926b8a03265145931dce078ef151efa2081f9",
+      "verifier_sha256": "8b71484d47416d050d7603f5245abeab9b8dc438a9cd3e8c9e071ac71044bb56",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/util/__init__.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_util.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/util/__init__.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "0338f9af2e63a4807949125a93016b8be5ad6cb088c983e5ba1dfa139eea1053",
+      "task_directory_sha256": "6d0e03dde01e96c1fe23f894601dfdd62e1729b40ff0997b9459aa78c729fc51"
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "seed_patch_sha256": "c043f380ac2a9bf55daaa87d942dc38ad512f748aa60a6129cddf789ff04938e",
+      "verifier_sha256": "62f73de90085a7cc77d85dd77597aca50db00d55b1a40b9af8173a624c055c33",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/hooks.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/autotag/hooks.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "eeea034bc7ce0374de1f09af4b5371ce6228f6d2d78d0f7aade55bcc7e5653a6",
+      "task_directory_sha256": "f9312d90229bb9eb05858862d65fb239c0d45045d314d7ac033397d5a46d18d0"
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "seed_patch_sha256": "f513faa82863d106df17b31c7598a9ff4353a192f8b716d19fd320fb071cb4af",
+      "verifier_sha256": "2b8fdb3443268e96db976aa95ad345115aebd86986fedab2cc09c933841be184",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_datequery.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/dbcore/query.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "a4bff3579e9e1c44b6a5f8c59491b08589b06f02aeafc413b6f4b989a5bb9dbf",
+      "task_directory_sha256": "d315bf58c5fc6ac1c95fbd56570c36bb33c2932ab0ae6da0d319c6731acad788"
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "seed_patch_sha256": "ae732cba3535faefacbf756c2fcbdaa8b7b2f17d68d116057c51553804a65d19",
+      "verifier_sha256": "7f3a21db5310007ded0580124ad357a84626adde932e12e06cd9e4aef0a9c948",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_query.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/dbcore/query.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "cd6002b41853aaca802dab6ef8d2a202d2ca351d1cb6e97798b80847f319a0f6",
+      "task_directory_sha256": "e01f9cff9b0519cb000258d96213a1e63678483cddbd9c26a511964fc446a6e9"
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "seed_patch_sha256": "a099d9854485494c8967f80bf9a29ec1cef7946c5248124cd474982eeb1b39e1",
+      "verifier_sha256": "7e6c0c5dc76ab9537c75cc1109d2302d2ba51f380cd5d2c7dfed8696c5930a53",
+      "compile_command": "uv run --offline --frozen python -m py_compile beets/util/id_extractors.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_id_extractors.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beets/util/id_extractors.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "c878c706b7aa2da8fea308156f07911c7cfcf84644561cc0371c9636ffe9490c",
+      "task_directory_sha256": "0ddb02943c564c3ad6b576829d75dbbf4195d887a8cb75768f71f07e8538a57f"
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "seed_patch_sha256": "aafbf8f90a56275c87da43d9790dc73d54a159e3068ab9862667815d8676b06d",
+      "verifier_sha256": "e58464136109a44b20ef71f6b1e64c02c11d827de80371f437c2a635ff6eae34",
+      "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/lyrics.py",
+      "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_lyrics.py",
+      "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+      "controller_visible_acceptance_assets": [],
+      "model_visible_acceptance_asset_paths": [],
+      "production_files": [
+        "beetsplug/lyrics.py"
+      ],
+      "production_file_count": 1,
+      "expected_model_concealed_paths": [],
+      "model_concealed_paths": [],
+      "omitted_expected_model_concealed_paths": [],
+      "declared_concealment_matches_expected": true,
+      "model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_absent": true,
+      "fixed_snapshot_model_concealed_safe": true,
+      "fixed_snapshot_concealed_path_collision_audit": [],
+      "agent_prompt_sha256": "77cd8cf5b1d6cbff3a5be16f6d7ac512a8d04bf7f073a20dafd68641f570531b",
+      "task_directory_sha256": "c63a9944474848a1b8c34cd96e6574281035c705bee29b8abc378caf7f147e36"
+    }
+  ],
+  "cumulative_boundaries": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-unique-path-counter-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-unique-path-counter-v2": 0,
+        "beets-empty-string-field-split-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-unique-path-counter-v2": 0,
+        "beets-empty-string-field-split-v2": 0,
+        "beets-date-query-alternation-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-unique-path-counter-v2": 0,
+        "beets-empty-string-field-split-v2": 0,
+        "beets-date-query-alternation-v2": 0,
+        "beets-membership-query-hashable-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-unique-path-counter-v2": 0,
+        "beets-empty-string-field-split-v2": 0,
+        "beets-date-query-alternation-v2": 0,
+        "beets-membership-query-hashable-v2": 0,
+        "beets-spotify-uri-extraction-v2": 0
+      }
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "seed_apply_check_exit": 0,
+      "seed_apply_exit": 0,
+      "seeded_verifier_exit": 1,
+      "repair_apply_check_exit": 0,
+      "repair_apply_exit": 0,
+      "retained_verifier_exits": {
+        "beets-unique-path-counter-v2": 0,
+        "beets-empty-string-field-split-v2": 0,
+        "beets-date-query-alternation-v2": 0,
+        "beets-membership-query-hashable-v2": 0,
+        "beets-spotify-uri-extraction-v2": 0,
+        "beets-lyrics-keep-synced-override-v2": 0
+      }
+    }
+  ],
+  "composite_seed_merge_zero": true,
+  "composite_seeded_verifiers_nonzero": true,
+  "composite_seeded_verifiers_zero": false,
+  "composite_seed_verifier_outcomes_valid": true,
+  "composite_seed_verifier_exits": {
+    "beets-unique-path-counter-v2": 1,
+    "beets-empty-string-field-split-v2": 1,
+    "beets-date-query-alternation-v2": 1,
+    "beets-membership-query-hashable-v2": 1,
+    "beets-spotify-uri-extraction-v2": 1,
+    "beets-lyrics-keep-synced-override-v2": 1
+  },
+  "composite_seed_diff_sha256": "12410306720d2d9671f1c746f70643f6e6db0f5ce16a9b9b0441fef793e3a297",
+  "composite_seed_error": "",
+  "seeded_verifier_nonzero": true,
+  "seeded_verifiers_zero": false,
+  "seeded_verifier_outcomes_valid": true,
+  "fixed_verifier_zero": true,
+  "full_fixed_cumulative_verifier_zero": true,
+  "aggregate_verifier_exit": 0,
+  "aggregate_verifier_task_exits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "aggregate_verifier_environment_passed": true,
+  "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+  "project_compile_passed": true,
+  "no_unmerged_paths": true,
+  "no_model_visible_acceptance_assets": true,
+  "no_model_concealed_acceptance_assets": true,
+  "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+  "controller_acceptance_policy_not_model_facing": true,
+  "all_acceptance_behavior_model_visible": false,
+  "model_visible_acceptance_assets_match_verifier_copies": true,
+  "expected_model_visible_acceptance_asset_count": 0,
+  "all_expected_model_concealment_declared": true,
+  "fixture_id": "medium-beetbox-beets",
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "task_binding": {
+    "algorithm": "sha256(path\\0bytes\\0; lexical recursive task directory order)",
+    "task_directories": {
+      "beets-unique-path-counter-v2": "6d0e03dde01e96c1fe23f894601dfdd62e1729b40ff0997b9459aa78c729fc51",
+      "beets-empty-string-field-split-v2": "f9312d90229bb9eb05858862d65fb239c0d45045d314d7ac033397d5a46d18d0",
+      "beets-date-query-alternation-v2": "d315bf58c5fc6ac1c95fbd56570c36bb33c2932ab0ae6da0d319c6731acad788",
+      "beets-membership-query-hashable-v2": "e01f9cff9b0519cb000258d96213a1e63678483cddbd9c26a511964fc446a6e9",
+      "beets-spotify-uri-extraction-v2": "0ddb02943c564c3ad6b576829d75dbbf4195d887a8cb75768f71f07e8538a57f",
+      "beets-lyrics-keep-synced-override-v2": "c63a9944474848a1b8c34cd96e6574281035c705bee29b8abc378caf7f147e36"
+    }
+  }
+}

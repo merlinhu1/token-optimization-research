@@ -1,0 +1,9 @@
+# Do not split an empty single-value field into a list
+
+Reading a single-value field that is empty and deriving its list counterpart searches the empty text for a separator, finds none, and takes a fallback path intended for text that simply has no separator in it. An empty value has nothing to split and should be left alone rather than routed through the splitting logic at all.
+
+The task is complete when an empty single-value field yields no list entries instead of being split.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

@@ -1,9 +1,0 @@
-# Report the error raised inside a lazily computed attribute
-
-When the body of a lazily computed attribute raises a missing-attribute error, the lookup machinery reads that as the attribute itself being absent and falls back to ordinary key lookup, so the reported failure names the outer attribute and the line that actually failed is lost. It has to surface as a failure the fallback does not intercept, still pointing at the original line, and reported once rather than as a chained pair of tracebacks.
-
-The task is complete when an error raised inside a lazily computed attribute is reported once, against the line that raised it, instead of being masked by the attribute fallback.
-
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
-
-Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

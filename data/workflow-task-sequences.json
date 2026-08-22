@@ -440,14 +440,14 @@
       "primary_metric": "weighted_token_cost",
       "reset_policy": "Each task reset reverses only its own semantic production regression. No acceptance tests are injected. Every task requires affected-component compilation plus one narrow essential-behavior smoke drawn from the upstream tests that cover the restored behavior. Controller acceptance details are not disclosed as the agent task objective.",
       "seed_patch_policy": "All 7 generation-local semantic production regressions are applied as one composite start before task 1; prompts remain bounded and final controller verification runs once after the final prompt. Future task regressions remain visible from the start. Model-facing prompts describe the software objective, permit normal repository search and relevant checks, and expect a complete correct implementation; controller acceptance and broader diagnostic treatment are not disclosed.",
-      "protocol_freeze_date": "2026-08-21",
+      "protocol_freeze_date": "2026-08-22",
       "production_lane": "current-production-lifecycle-v2",
-      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260821.json",
-      "qualification_date": "2026-08-21",
+      "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+      "qualification_date": "2026-08-22",
       "fixture_id": "medium-beetbox-beets",
       "fixture_scale": "medium-project",
       "initial_snapshot": {
-        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
         "upstream": "https://github.com/beetbox/beets.git",
         "dependency_lockfiles": [
           {
@@ -458,83 +458,29 @@
       },
       "tasks": [
         {
-          "id": "beets-library-file-error-message-v2",
+          "id": "beets-unique-path-counter-v2",
           "order": 1,
           "task_class": "defect-repair",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-library-file-error-message-v2/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-library-file-error-message-v2/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "beets/library/exceptions.py"
+            "beets/util/__init__.py"
           ],
           "model_visible_validation_anchors": [],
           "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/library/exceptions.py",
-          "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_library.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/__init__.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_util.py"
         },
         {
-          "id": "beets-migration-text-paths-v2",
+          "id": "beets-empty-string-field-split-v2",
           "order": 2,
           "task_class": "defect-repair",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-migration-text-paths-v2/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-migration-text-paths-v2/verify.sh",
-          "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [],
-          "model_concealed_paths": [],
-          "expected_changed_paths": [
-            "beets/library/migrations.py"
-          ],
-          "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
-          "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/library/migrations.py",
-          "essential_smoke_command": "uv run --offline --frozen pytest -q test/library/test_migrations.py"
-        },
-        {
-          "id": "beets-subcommand-help-alignment-v2",
-          "order": 3,
-          "task_class": "defect-repair",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-subcommand-help-alignment-v2/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-subcommand-help-alignment-v2/verify.sh",
-          "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [],
-          "model_concealed_paths": [],
-          "expected_changed_paths": [
-            "beets/ui/__init__.py"
-          ],
-          "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
-          "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/ui/__init__.py",
-          "essential_smoke_command": "uv run --offline --frozen pytest -q test/ui/test_ui.py"
-        },
-        {
-          "id": "beets-concurrent-plugin-dispatch-v2",
-          "order": 4,
-          "task_class": "defect-repair",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-concurrent-plugin-dispatch-v2/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-concurrent-plugin-dispatch-v2/verify.sh",
-          "upstream_test_paths": [],
-          "compatibility_rebased_test_paths": [],
-          "model_concealed_paths": [],
-          "expected_changed_paths": [
-            "beets/metadata_plugins.py"
-          ],
-          "model_visible_validation_anchors": [],
-          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
-          "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/metadata_plugins.py",
-          "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_metadata_plugins.py"
-        },
-        {
-          "id": "beets-cached-attribute-error-surface-v2",
-          "order": 5,
-          "task_class": "defect-repair",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-cached-attribute-error-surface-v2/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-cached-attribute-error-surface-v2/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
@@ -548,25 +494,79 @@
           "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py"
         },
         {
-          "id": "beets-zero-penalty-display-v2",
-          "order": 6,
+          "id": "beets-date-query-alternation-v2",
+          "order": 3,
           "task_class": "defect-repair",
-          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-zero-penalty-display-v2/agent-prompt.txt",
-          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-zero-penalty-display-v2/verify.sh",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/verify.sh",
           "upstream_test_paths": [],
           "compatibility_rebased_test_paths": [],
           "model_concealed_paths": [],
           "expected_changed_paths": [
-            "beets/autotag/distance.py"
+            "beets/dbcore/query.py"
           ],
           "model_visible_validation_anchors": [],
           "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
           "model_visible_acceptance_asset_paths": [],
-          "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/distance.py",
-          "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_distance.py"
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_datequery.py"
+        },
+        {
+          "id": "beets-membership-query-hashable-v2",
+          "order": 4,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_query.py"
+        },
+        {
+          "id": "beets-spotify-uri-extraction-v2",
+          "order": 5,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "beets/util/id_extractors.py"
+          ],
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/id_extractors.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_id_extractors.py"
+        },
+        {
+          "id": "beets-lyrics-keep-synced-override-v2",
+          "order": 6,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/agent-prompt.txt",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/verify.sh",
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "model_concealed_paths": [],
+          "expected_changed_paths": [
+            "beetsplug/lyrics.py"
+          ],
+          "model_visible_validation_anchors": [],
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "model_visible_acceptance_asset_paths": [],
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/lyrics.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_lyrics.py"
         }
       ],
-      "conversion_note": "Lifecycle V2 replaces three unbounded tasks with a series of comparably sized bounded defect repairs. The Beets task set was rebuilt on 2026-08-20 to draw every task from the beets/ core package instead of seven independent beetsplug modules. Baselines of the plugin set reproduced to 31.3% at three replicates against 1.7% for Fastify, and the diagnosis in sources/evaluations/audits/beets-lane-variance-diagnosis-20260820.json attributes that to accumulated context never re-converging when consecutive tasks share no code.",
+      "conversion_note": "Beets was repinned on 2026-08-22 from 9acb1ecf to 746cecf2, 54 commits behind upstream head so the mining window stays refreshable. Repinning was the fix for candidate scarcity: a seed is reversed against the pinned tree, so usable commits are the ones close to the pin, and at the old pin 22 of 26 near-miss candidates failed to apply. Scanning 320 commits at the new pin yielded six validated tasks against four from 2,500 at the old one. Seeds span 468 to 794 characters, below Fastify's 855, because seed size and between-replicate exploration variance rank-correlated at +1.00 across the previous task set.",
       "complexity_note": "Prompts state the observable symptom and never name the file, function, or test involved, so locating the defect remains real retrieval work -- the work the tools under study are meant to make cheaper. Seeds were proven by execution before registration: the seeded state must fail the covering upstream tests and the repaired state must pass them, per scripts/mine_bounded_task_candidates.py.",
       "complexity_bar": "Model-facing tasks must state the complete software objective without exposing evaluator scoring. Controller acceptance requires affected-component compilation and one implementation-independent essential-behavior smoke for every task, plus project-wide compilation after the workflow. Broader quality evidence remains diagnostic.",
       "task_family_generation": "lifecycle-v2",

@@ -1,0 +1,20 @@
+diff --git a/beetsplug/lyrics.py b/beetsplug/lyrics.py
+index 1a9a3a81..65c99a0b 100644
+--- a/beetsplug/lyrics.py
++++ b/beetsplug/lyrics.py
+@@ -1088,14 +1088,7 @@ class LyricsPlugin(LyricsRequestHandler, plugins.BeetsPlugin):
+             "--keep-synced",
+             action="store_true",
+             default=self.config["keep_synced"].get(),
+-            help="skip items that already have synced lyrics",
+-        )
+-        cmd.parser.add_option(
+-            "--no-keep-synced",
+-            action="store_false",
+-            dest="keep_synced",
+-            default=self.config["keep_synced"].get(),
+-            help="do not skip items that already have synced lyrics",
++            help="re-download only unsynced lyrics",
+         )
+         cmd.parser.add_option(
+             "-l",

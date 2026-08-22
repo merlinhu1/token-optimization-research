@@ -26,7 +26,7 @@ _No direct-Anthropic Claude Code preparation authority is present._
 | Sequence | Fixture | Scale | Snapshot | Tasks |
 |---|---|---|---|---:|
 | `fastify-lifecycle-sequence-v2` | `medium-fastify-fastify` | medium-project | [`94bcbcc6e2ef`](https://github.com/fastify/fastify.git) | 6 |
-| `beets-lifecycle-sequence-v2` | `medium-beetbox-beets` | medium-project | [`9acb1ecff6c7`](https://github.com/beetbox/beets.git) | 6 |
+| `beets-lifecycle-sequence-v2` | `medium-beetbox-beets` | medium-project | [`746cecf204a4`](https://github.com/beetbox/beets.git) | 6 |
 
 ## Planned candidates and blockers
 
@@ -60,25 +60,26 @@ python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --max-parallel 
 
 Current runnable treatment profiles: `artifact-ponytail-codex-plugin-v1`, `behavior-caveman-codex-skill-v1`, `codescope-codex-product-v1`, `headroom-default-codex`, `integrated-leanctx-codex-hybrid-v1`, `integrated-token-savior-codex-product-v2`, `retrieval-cartog-codex-product-v2`, `retrieval-codegraph-codex-mcp-v1`, `retrieval-graphify-codex-skill-v1`, `retrieval-jcodemunch-codex-mcp-v2`, `retrieval-repowise-codex-product-v2`, `retrieval-serena-codex-mcp-v1`, `retrieval-sigmap-codex-live-v1`, `swarmvault-codex-product-v1`, `terminal-rtk-claude-code-hook-v1`, `terminal-rtk-codex-instructions-v1`, `terminal-snip-codex-hook-v1`, `terminal-tokenjuice-codex-hook-v1`. Historical profiles marked `historical-profile` are occupied evidence identities and cannot be rerun in place.
 
+Provider-free preparation remains available for lanes without a reusable operational baseline; paid commands are listed only for unoccupied pilot identities:
+
+```bash
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py beets-lifecycle-sequence-v2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+```
+
 Owner-authorized current-control replication is serialized. Commands are listed only for unoccupied identities; each paid command reserves its immutable receipts before provider work:
 
 ```bash
 python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
 python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 2 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 beets-lifecycle-sequence-v2 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
-python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 beets-lifecycle-sequence-v2 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --prepare-only
+python3 scripts/run_sequential_workflow_matrix.py fastify-lifecycle-sequence-v2 --replicate-index 3 --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 ```
 
-Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v2` (r0, r1), `beets-lifecycle-sequence-v2` (r0, r1, r2). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
+Reusable, zero-incident-audited baselines exist for `fastify-lifecycle-sequence-v2` (r0, r1). No current active-default treatment protocol is frozen, so no paid treatment command is published. Choose one compatible profile, freeze and validate its protocol provider-free, certify the resulting exact tree, and then execute the rendered dry-run verbatim before requesting paid execution:
 
 ```bash
 SEQUENCE_ID=fastify-lifecycle-sequence-v2
-PROFILE_ID=replace-with-compatible-profile-id
-python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
-python3 scripts/validate_repository.py
-python3 scripts/run_sequential_workflow_matrix.py "$SEQUENCE_ID" --treatment-profile "$PROFILE_ID" --max-parallel 1 --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --dry-run
-
-SEQUENCE_ID=beets-lifecycle-sequence-v2
 PROFILE_ID=replace-with-compatible-profile-id
 python3 scripts/refresh_workflow_contracts.py --sequence-id "$SEQUENCE_ID" --profile-id "$PROFILE_ID" --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium
 python3 scripts/validate_repository.py
@@ -114,12 +115,12 @@ Run as many replicates per protocol as the work warrants; there is no registered
 
 | Order | Task | Prompt | Verifier |
 |---:|---|---|---|
-| 1 | `beets-library-file-error-message-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-library-file-error-message-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-library-file-error-message-v2/verify.sh` |
-| 2 | `beets-migration-text-paths-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-migration-text-paths-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-migration-text-paths-v2/verify.sh` |
-| 3 | `beets-subcommand-help-alignment-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-subcommand-help-alignment-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-subcommand-help-alignment-v2/verify.sh` |
-| 4 | `beets-concurrent-plugin-dispatch-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-concurrent-plugin-dispatch-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-concurrent-plugin-dispatch-v2/verify.sh` |
-| 5 | `beets-cached-attribute-error-surface-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-cached-attribute-error-surface-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-cached-attribute-error-surface-v2/verify.sh` |
-| 6 | `beets-zero-penalty-display-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-zero-penalty-display-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-zero-penalty-display-v2/verify.sh` |
+| 1 | `beets-unique-path-counter-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/verify.sh` |
+| 2 | `beets-empty-string-field-split-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/verify.sh` |
+| 3 | `beets-date-query-alternation-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/verify.sh` |
+| 4 | `beets-membership-query-hashable-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/verify.sh` |
+| 5 | `beets-spotify-uri-extraction-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/verify.sh` |
+| 6 | `beets-lyrics-keep-synced-override-v2` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/agent-prompt.txt` | `sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/verify.sh` |
 
 ## Artifact contract
 

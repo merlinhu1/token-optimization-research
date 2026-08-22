@@ -1,0 +1,9 @@
+# Make a membership query hashable when its pattern is a sequence
+
+Hashing a query that tests membership in a collection raises an unhashable-type error whenever the collection is a list, which breaks any caller that puts such a query in a set or dictionary. The inherited hashing hashes the pattern directly, and a sequence pattern cannot be hashed as-is.
+
+The task is complete when a membership query hashes successfully whether its pattern is a list or another sequence.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

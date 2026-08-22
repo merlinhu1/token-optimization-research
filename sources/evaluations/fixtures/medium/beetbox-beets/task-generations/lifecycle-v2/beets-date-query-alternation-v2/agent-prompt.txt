@@ -1,0 +1,9 @@
+# Reject a malformed relative date instead of crashing
+
+A date query written with a stray pipe, as a user might type expecting it to mean 'or', crashes with an uncaught lookup error rather than the documented parse error. The pattern that recognises a relative date encloses its sign and its unit in character classes that also list a pipe, so the pipe is accepted as a valid unit and then fails when that unit is looked up.
+
+The task is complete when a date query containing a stray pipe raises the documented parse error instead of an uncaught lookup failure.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

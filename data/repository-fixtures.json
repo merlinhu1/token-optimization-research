@@ -288,9 +288,9 @@
         "path": "sources/evaluations/fixtures/medium/beetbox-beets/repo"
       },
       "snapshot": {
-        "commit": "9acb1ecff6c7ee0a1e83e3b983c94792345712c5",
+        "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
         "branch": "detached",
-        "snapshot_policy": "Pinned Lifecycle V2 fixed snapshot; all six bounded semantic regressions are controller-injected as one composite start before sequential prompt disclosure. Every task is drawn from the beets/ core package so consecutive tasks share the code an agent reads."
+        "snapshot_policy": "Pinned Lifecycle V2 fixed snapshot, repinned 2026-08-22 to sit 54 commits behind upstream head so the mining window stays refreshable; all six bounded semantic regressions are controller-injected as one composite start before sequential prompt disclosure."
       },
       "task_classes": [
         "defect-repair"
@@ -339,19 +339,19 @@
       "caveats": [
         "Task acceptance does not gate weighted-token sample retention; broader tests and source review remain diagnostic.",
         "Earlier compile-only sessions and protocols remain historical evidence and are not compatible controls for the active acceptance contract.",
-        "Baselines of the pre-repair prompt bytes are archived under sources/evaluations/archive/lifecycle-v2-pre-prompt-repair-20260821/ and are not compatible controls for the repaired prompts."
+        "Baselines against the previous snapshot 9acb1ecf are archived under sources/evaluations/archive/lifecycle-v2-beets-repin-20260822/ and are not compatible controls."
       ],
       "tasks": [
-        "beets-library-file-error-message-v2",
-        "beets-migration-text-paths-v2",
-        "beets-subcommand-help-alignment-v2",
-        "beets-concurrent-plugin-dispatch-v2",
-        "beets-cached-attribute-error-surface-v2",
-        "beets-zero-penalty-display-v2"
+        "beets-unique-path-counter-v2",
+        "beets-empty-string-field-split-v2",
+        "beets-date-query-alternation-v2",
+        "beets-membership-query-hashable-v2",
+        "beets-spotify-uri-extraction-v2",
+        "beets-lyrics-keep-synced-override-v2"
       ],
       "qualification_status": "active-reproduction-flow",
       "workflow_sequence_id": "beets-lifecycle-sequence-v2",
-      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260821.json",
+      "qualification_evidence": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
       "active_profiles": [
         "baseline-bare-codex"
       ],

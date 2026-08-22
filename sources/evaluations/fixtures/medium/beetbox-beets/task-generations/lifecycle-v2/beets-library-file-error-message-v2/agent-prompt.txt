@@ -1,9 +1,0 @@
-# Report the file and the reason when a read or write fails
-
-A failed media-file read or write reports a message of the form 'error reading' followed by the internal representation of an object, where the path and the underlying reason should be. The base error type already composes a message carrying both. The two error types that prefix it with the failed operation embed their parent itself rather than the message their parent produces, so placeholder text replaces the detail.
-
-The task is complete when a failed read or write reports the operation, the file path, and the underlying reason in one message.
-
-Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
-
-Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

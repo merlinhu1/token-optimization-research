@@ -1,0 +1,9 @@
+# Extract a Spotify identifier from a native URI
+
+Pasting a native Spotify URI of the form used by the desktop application, rather than a web link, yields no identifier at all. The pattern that recognises Spotify identifiers accepts a bare identifier and a web URL, but has no branch for the URI form, so extraction returns nothing. The two forms already recognised must keep working.
+
+The task is complete when a native Spotify URI yields the same identifier as the equivalent web link.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

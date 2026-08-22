@@ -1,0 +1,9 @@
+# Continue a unique-name counter past nine
+
+When a destination file already exists, a numeric suffix is appended and incremented until the name is free. Once the existing suffix reaches two or more digits the counter restarts near zero instead of continuing, because the pattern that reads the existing suffix captures only its final digit. Single-digit suffixes already behave correctly.
+
+The task is complete when an existing numeric suffix of any length is read whole, so the next free name continues from it.
+
+Implement the task completely and correctly. Search and inspect the repository as needed, including related definitions and call sites. Run individual tests or test files with the project test runner at any point while investigating. Choose the smallest coherent repair, run the project test suite once as your final verification step with `uv run --offline --frozen pytest -q --tb=no`, and preserve earlier task work in the persistent checkout.
+
+Do not modify tests, generated files, dependency locks, or evaluation controls. Do not use network-dependent commands.

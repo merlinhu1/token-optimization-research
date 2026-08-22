@@ -27,6 +27,7 @@ FIXTURES = {
     "beets": {
         "repo": ROOT / "sources/evaluations/fixtures/medium/beetbox-beets/repo",
         "production_globs": ("beets/", "beetsplug/"),
+        "test_support_globs": ("beets/test/",),
         "production_suffix": ".py",
         "test_prefix": "test/",
         "test_command": ["uv", "run", "--offline", "--frozen", "pytest", "-q", "--tb=no"],
@@ -61,7 +62,9 @@ def commit_files(repo: Path, commit: str) -> list[str]:
 def classify(spec: dict[str, Any], files: list[str]) -> tuple[list[str], list[str]]:
     production, tests = [], []
     for path in files:
-        if path.startswith(spec["test_prefix"]):
+        if path.startswith(spec["test_prefix"]) or any(
+            path.startswith(prefix) for prefix in spec.get("test_support_globs", ())
+        ):
             tests.append(path)
         elif path.endswith(spec["production_suffix"]) and any(
             path.startswith(prefix) for prefix in spec["production_globs"]
@@ -111,11 +114,18 @@ def restore(repo: Path) -> None:
     git(repo, "checkout", "--", ".")
 
 
-def evaluate(spec: dict[str, Any], candidate: dict[str, Any], timeout: int) -> dict[str, Any]:
+def evaluate(spec: dict[str, Any], candidate: dict[str, Any], timeout: int, max_seed_chars: int | None = None) -> dict[str, Any]:
     """Require a real failure seeded and a real pass repaired, or reject the candidate."""
     repo = spec["repo"]
     patch = seed_patch(spec, candidate)
     verdict: dict[str, Any] = {**candidate, "accepted": False, "reason": None, "seed_characters": len(patch)}
+    if max_seed_chars is not None and len(patch) > max_seed_chars:
+        # Screened before the test runs, which are the expensive part. Seed size and
+        # between-replicate exploration variance rank-correlate at +1.00 across the six
+        # measured Beets tasks, so an oversized seed is rejected on the measurement it
+        # predicts rather than on taste.
+        verdict["reason"] = f"seed patch {len(patch)} chars exceeds the {max_seed_chars} cap"
+        return verdict
     if not patch.strip():
         verdict["reason"] = "empty production diff"
         return verdict
@@ -173,6 +183,15 @@ def main(argv: list[str] | None = None) -> int:
             "needs and the session's accumulated context never converges."
         ),
     )
+    parser.add_argument(
+        "--max-seed-chars",
+        type=int,
+        help=(
+            "reject a candidate whose seed patch exceeds this many characters, before running its "
+            "tests. Seed size predicts between-replicate exploration variance; Fastify, which "
+            "reproduces well, spans 520-855 characters."
+        ),
+    )
     parser.add_argument("--scan", type=int, default=200, help="commits of history to consider")
     parser.add_argument("--max-candidates", type=int, default=12)
     parser.add_argument("--timeout", type=int, default=600)
@@ -191,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
     for candidate in candidate_commits(spec, args.scan):
         if accepted >= args.max_candidates:
             break
-        verdict = evaluate(spec, candidate, args.timeout)
+        verdict = evaluate(spec, candidate, args.timeout, args.max_seed_chars)
         results.append(verdict)
         accepted += bool(verdict["accepted"])
         flag = "ACCEPT" if verdict["accepted"] else "reject"
