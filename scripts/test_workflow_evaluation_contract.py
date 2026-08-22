@@ -114,6 +114,26 @@ def requires_treatment_session(method):
     return wrapper
 
 
+TOOL_CANDIDATE_ROOT = Path("/opt/data/tool-candidates")
+
+
+def requires_tool_corpus(method):
+    """Skip a check that reads an installed treatment product from outside the repository.
+
+    The tool corpus is a local working directory, not repository evidence, so it can be absent
+    on a clean machine or after an owner reset. These checks verify installer fidelity against
+    real product bytes and cannot be meaningfully faked; they reactivate when the corpus returns.
+    """
+
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        if not TOOL_CANDIDATE_ROOT.is_dir():
+            self.skipTest(f"treatment tool corpus is absent at {TOOL_CANDIDATE_ROOT}")
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 def requires_populated_registry(method):
     """Skip a corpus-dependent assertion while the registry is empty between generations."""
 
@@ -851,6 +871,7 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertEqual(large["candidates"], [])
         self.assertEqual(large["selection_policy"]["active_fixture_count"], 0)
 
+    @requires_tool_corpus
     def test_new_treatment_adapters_preserve_declared_boundaries(self) -> None:
         runner.assert_profile_runnable("terminal-headroom")
         self.assertIs(
@@ -1610,6 +1631,7 @@ print('ok')
         # lanes; those protocols were deleted with the v0 sweep. The profile and host-integration
         # contract above is generation-independent and remains covered.
 
+    @requires_tool_corpus
     def test_token_savior_codex_product_installer_preserves_existing_agents_and_emits_current_hooks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -3240,6 +3262,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
             runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
 
     @requires_retained_sequence(SEQUENCE_ID)
+    @requires_tool_corpus
     def test_baseline_protocol_cannot_validate_treatment(self) -> None:
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(
@@ -5591,6 +5614,7 @@ class CorrectionContractTest(unittest.TestCase):
         active = [fixture for fixture in fixtures if fixture.get("evaluation_use") == "primary-objective"]
         self.assertTrue(all(profile_id in fixture["candidate_profiles"] for fixture in active))
 
+    @requires_tool_corpus
     def test_jcodemunch_guidance_installer_copies_product_authored_policy(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             home = Path(temp) / "codex"
