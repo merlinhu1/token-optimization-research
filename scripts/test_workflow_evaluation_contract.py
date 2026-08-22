@@ -1382,6 +1382,63 @@ print('ok')
                 offenders[profile_id] = missing[:3]
         self.assertEqual(offenders, {}, f"profiles reference paths that do not exist: {offenders}")
 
+    def test_comparison_rejects_arms_built_by_different_apparatus(self) -> None:
+        """ADR 0010 moved this guarantee from launch time to comparison time.
+
+        Freezing a protocol bound a treatment to the apparatus blessed when it was minted; it
+        never established that the baseline ran under the same one. This does, and it names the
+        field that diverged rather than reporting a generic binding failure.
+        """
+        import validate_repository as validator
+
+        def arm(**overrides):
+            descriptor = {
+                "version": "execution-condition-v1",
+                "sequence_id": "seq",
+                "model_facing_prompts": {"sha256": "a"},
+                "agent_condition": {"model": "gpt-5.6-sol"},
+                "dependencies": {"command": "npm ci"},
+                "isolation": {"prompt_delivery": "sequential-one-task-at-a-time"},
+                "runtime": {"dockerfile_sha256": "d", "timeout_seconds_per_task": 3600},
+            }
+            descriptor.update(overrides)
+            return {"selected_execution": {"descriptor": descriptor}}
+
+        baseline = arm()
+        self.assertEqual(validator.comparison_apparatus_divergences(arm(), baseline), [])
+        # What a treatment legitimately changes must not read as apparatus drift.
+        self.assertEqual(
+            validator.comparison_apparatus_divergences(
+                arm(selected_profile={"profile_id": "some-tool"}, execution_role="treatment"),
+                baseline,
+            ),
+            [],
+        )
+        self.assertEqual(
+            validator.comparison_apparatus_divergences(
+                arm(agent_condition={"model": "something-else"}), baseline
+            ),
+            ["agent_condition"],
+        )
+        self.assertIn(
+            "runtime.dockerfile_sha256",
+            validator.comparison_apparatus_divergences(
+                arm(runtime={"dockerfile_sha256": "other", "timeout_seconds_per_task": 3600}),
+                baseline,
+            ),
+        )
+        self.assertEqual(
+            validator.comparison_apparatus_divergences({}, baseline),
+            ["selected_execution.descriptor"],
+        )
+
+    def test_session_schema_does_not_require_a_frozen_protocol(self) -> None:
+        """A run records the configuration it used inline, so the protocol reference is optional."""
+        schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
+        self.assertNotIn("frozen_protocol", schema.get("required", []))
+        source = (ROOT / "scripts/validate_repository.py").read_text()
+        self.assertNotIn('validate_required_object(session, "frozen_protocol"', source)
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 
@@ -3346,17 +3403,30 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                     0,
                 )
 
-    def test_protocol_is_required_before_setup_for_paid_run(self) -> None:
+    def test_paid_run_mints_its_protocol_when_none_is_supplied(self) -> None:
+        """ADR 0010: a paid run derives its protocol instead of demanding one in advance.
+
+        The identity is content-addressed, so minting at run time cannot produce a protocol that
+        disagrees with the run it describes -- which is exactly what the old freeze-then-run
+        ordering could do silently.
+        """
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(protocol=None, prepare_only=False, no_provider=False)
-        with self.assertRaisesRegex(ValueError, "--protocol is required"):
-            runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
+        minted = ROOT / "sources/evaluations/protocols" / "minted-by-test.json"
+        with mock.patch.object(runner, "ensure_run_protocol", return_value=str(minted)) as mint:
+            with self.assertRaises(Exception):
+                runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
+        mint.assert_called_once()
+        self.assertEqual(args.protocol, str(minted))
 
-    def test_protocol_is_required_for_no_provider_prepare_only(self) -> None:
+    def test_provider_free_prepare_only_needs_no_protocol(self) -> None:
+        """A run that never reaches the provider produces nothing for a protocol to make
+        comparable, so requiring one only taxed the cheapest check in the repository."""
         seq = runner.load_sequence(SEQUENCE_ID)
         args = mock.Mock(protocol=None, prepare_only=True, no_provider=True)
-        with self.assertRaisesRegex(ValueError, "--protocol is required"):
-            runner.validate_protocol_for_run(seq, "baseline-bare-codex", args)
+        with mock.patch.object(runner, "ensure_run_protocol") as mint:
+            self.assertIsNone(runner.validate_protocol_for_run(seq, "baseline-bare-codex", args))
+        mint.assert_not_called()
 
     @requires_retained_sequence(SEQUENCE_ID)
     def test_protocol_timeout_mismatch_rejects(self) -> None:
@@ -6382,7 +6452,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             with (
                 mock.patch.object(matrix, "ROOT", root),
                 mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
-                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_, **__: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=interrupt_after_evidence),
             ):
@@ -6433,7 +6503,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             with (
                 mock.patch.object(matrix, "ROOT", root),
                 mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
-                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_, **__: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=corrupt_registry_after_evidence),
             ):
@@ -6480,7 +6550,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             with (
                 mock.patch.object(matrix, "ROOT", root),
                 mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
-                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_, **__: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=fail_with_unsafe_output),
             ):
@@ -6534,7 +6604,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
             with (
                 mock.patch.object(matrix, "ROOT", root),
                 mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
-                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_, **__: checkout / "protocol.json"),
                 mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                 mock.patch.object(matrix.subprocess, "run", side_effect=replace_registry),
             ):
@@ -6661,7 +6731,7 @@ class LifecycleV1ContractTest(unittest.TestCase):
                 with (
                     mock.patch.object(matrix, "ROOT", root),
                     mock.patch.object(matrix, "clone_published_checkout", side_effect=lambda destination, _commit: prepare_checkout(root, destination)),
-                    mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_: checkout / "protocol.json"),
+                    mock.patch.object(matrix, "find_protocol", side_effect=lambda checkout, *_, **__: checkout / "protocol.json"),
                     mock.patch.object(matrix, "workflow_lane_command", return_value=["unit-child"]),
                     mock.patch.object(matrix.subprocess, "run", side_effect=fail_with_symlinked_output),
                 ):

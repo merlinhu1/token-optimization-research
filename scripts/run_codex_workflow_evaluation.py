@@ -1550,6 +1550,30 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
     return path, json.loads(path.read_text())
 
 
+def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT) -> str:
+    """Materialise the protocol this run executes under, minting it if it does not exist yet.
+
+    Protocol identity is content-addressed: canonical_protocol_id derives it from the causal
+    descriptor bytes, so the same apparatus always resolves to the same file and a changed one
+    resolves to a new file rather than a conflict. Minting here rather than in a separate step
+    the operator has to remember removes the ordering trap that made freezing hazardous -- a
+    protocol minted at run time cannot have been invalidated by an edit made after it was
+    minted, because there is no window between the two. See ADR 0010.
+    """
+    protocol_id = canonical_protocol_id(seq, profile_id, root)
+    path = root / "sources/evaluations/protocols" / f"{protocol_id}.json"
+    if path.is_file():
+        return str(path)
+    import refresh_workflow_contracts as contracts
+
+    qualification_path = root / seq["qualification_path"]
+    document = contracts.frozen_protocol(seq, profile_id, qualification_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    contracts.write_json(path, document)
+    print(f"minted run protocol {protocol_id}", file=sys.stderr)
+    return str(path)
+
+
 def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argparse.Namespace) -> dict[str, Any] | None:
     assert_profile_runnable(profile_id)
     fixture.require_repowise_provider_contract(profile_id)
@@ -1566,7 +1590,14 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
                 "provider launch readiness gate failed: " + "; ".join(readiness_errors)
             )
     if not args.protocol:
-        raise ValueError("--protocol is required before any workflow setup")
+        if args.prepare_only:
+            # A provider-free run produces no measurement, so there is nothing for a protocol to
+            # make comparable. Requiring one here only blocked the readiness checks that should
+            # be the cheapest thing in the repository to run.
+            return None
+        # Otherwise mint it from the same live state the run is about to use. Demanding it in
+        # advance moved work onto the operator without adding a guarantee.
+        args.protocol = ensure_run_protocol(seq, profile_id)
     protocol_path, protocol = load_protocol(args.protocol)
     if protocol.get("protocol_schema_version") != 3:
         raise ValueError(f"protocol {protocol_path} must declare protocol_schema_version=3")

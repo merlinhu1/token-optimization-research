@@ -231,11 +231,12 @@ Run these in order. Getting the order wrong wastes a full qualification run.
    (`setup-deps.sh` reinstalls dependencies; `reset.sh` restores the prepared base).
 3. Regenerate qualification evidence — it executes the verifiers, so it is slow:
    `.venv/bin/python3 scripts/generate_workflow_qualification.py <sequence-id> <checkout>`
-4. Archive the superseded protocol, then mint the new one **last**:
-   `.venv/bin/python3 scripts/refresh_workflow_contracts.py --sequence-id <id> --profile-id <id>
-   --workflow-model-condition-id <id> --workflow-model <model> --workflow-reasoning-effort <effort>`
-5. Regenerate derived surfaces and reconcile narrative — see [Documentation lifecycle](#documentation-lifecycle).
-6. `make check`.
+4. Regenerate derived surfaces and reconcile narrative — see [Documentation lifecycle](#documentation-lifecycle).
+5. `make check`.
+
+You no longer mint a protocol as a step here. The run derives its own from live state
+([ADR 0010](docs/architecture/decision-records/0010-protocols-are-derived-at-run-time.md)), so
+there is no ordering to get wrong.
 
 When task contracts change, regenerate the affected `qualification-lifecycle-v2-*.json`, regenerate
 the runbook and registry summaries, and refresh only current execution contracts. A model-facing
@@ -243,16 +244,23 @@ prompt change mints new qualification and protocol identities and archives the p
 Qualification filenames are `qualification-<generation>-<YYYYMMDD>.json`; each fixture qualifies on
 its own schedule, so requalifying one does not force the other.
 
-### Protocol-minting traps
+### Protocols
 
-- **Mint protocols after every script edit is final.** The protocol descriptor pins
-  `validator_sha256`, the runner hash, and the qualification-generator hash. Editing any of those
-  scripts afterwards silently stops the protocol from matching, and the runner reports
-  `expected exactly one current designated baseline protocol ... found 0`.
-- **Pass the model-condition flags** to `refresh_workflow_contracts.py`. Without them the descriptor
-  records a null `model_condition_override` and will not match the active gate.
-- **`refresh_workflow_contracts.py` refuses to overwrite an existing protocol file.** Archive or
-  remove the superseded one first.
+Protocols are derived at run time, not minted in advance
+([ADR 0010](docs/architecture/decision-records/0010-protocols-are-derived-at-run-time.md)).
+Identity is content-addressed from the causal descriptor bytes, so the same apparatus always
+resolves to the same protocol and a changed one resolves to a new file rather than a conflict.
+
+- **A missing protocol is a warning, not a refusal.** The launch path names the divergence and
+  proceeds. It usually does mean the apparatus moved since the baseline, which is worth knowing
+  before you spend — but comparability is enforced where it can actually be violated, when two
+  runs are compared.
+- **Provider-free runs need no protocol at all.** They produce no measurement to make comparable.
+- **`refresh_workflow_contracts.py` is still available** for deliberately reserving an identity
+  ahead of time, which a parent lane holding a child to a fixed identity still requires. Pass the
+  model-condition flags when you use it; without them the descriptor records a null
+  `model_condition_override` and will not match the active gate. It refuses to overwrite an
+  existing protocol file, so archive the superseded one first.
 - **`make check` requires the current branch to have an upstream.** One contract test resolves
   `git rev-parse @{upstream}`, which fails on a fresh branch with no tracking ref.
 

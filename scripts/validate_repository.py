@@ -2022,8 +2022,11 @@ def validate_structured_session_schema(
         validate_session_schema_conformance(session, sid, errors)
     # The published schema requires these only under its schema_version 2 branch, and never
     # requires baseline_pool. Structured production records require all of them outright.
+    # frozen_protocol is deliberately absent from this list. Under ADR 0010 a run no longer has
+    # to be preceded by a minted protocol, and the configuration it ran under is recorded inline
+    # as selected_execution.descriptor -- a self-contained receipt rather than a pointer to a
+    # separate file. Records that do carry a protocol are still checked against it below.
     for key in (
-        "frozen_protocol",
         "baseline_pool",
         "selected_execution",
         "docker_image_identity",
@@ -2102,28 +2105,35 @@ def validate_structured_session_identity(
     session: dict, run_record: dict | None, sid: str, errors: list[str], *, schema_checked: bool = False
 ) -> None:
     validate_structured_session_schema(session, sid, errors, schema_checked=schema_checked)
-    frozen_protocol = validate_required_object(session, "frozen_protocol", sid, errors)
+    frozen_protocol = session.get("frozen_protocol")
+    if frozen_protocol is not None and not isinstance(frozen_protocol, dict):
+        errors.append(f"workflow session {sid} frozen_protocol must be an object when present")
+        frozen_protocol = None
     baseline_pool = validate_required_object(session, "baseline_pool", sid, errors)
     selected = validate_required_object(session, "selected_execution", sid, errors)
-    if frozen_protocol is None or baseline_pool is None or selected is None:
+    if baseline_pool is None or selected is None:
         return
 
-    protocol_id = frozen_protocol.get("protocol_id")
-    protocol_rel = frozen_protocol.get("path")
-    recorded_protocol_hash = frozen_protocol.get("sha256")
-    if not isinstance(protocol_id, str) or not protocol_id:
-        errors.append(f"workflow session {sid} frozen_protocol protocol_id must be a non-empty string")
-    if not isinstance(protocol_rel, str) or not protocol_rel:
-        errors.append(f"workflow session {sid} frozen_protocol missing path")
-        protocol_path = None
-    else:
-        protocol_path = ROOT / protocol_rel
-        if Path(protocol_rel).is_absolute() or ".." in Path(protocol_rel).parts:
-            errors.append(f"workflow session {sid} frozen_protocol path must be repository-relative")
-        elif not protocol_path.is_file():
-            errors.append(f"workflow session {sid} frozen protocol file does not exist: {protocol_rel}")
-    if not isinstance(recorded_protocol_hash, str) or not SHA256_RE.fullmatch(recorded_protocol_hash):
-        errors.append(f"workflow session {sid} frozen_protocol sha256 must be 64 lowercase hex")
+    protocol_id = protocol_rel = recorded_protocol_hash = None
+    protocol_path = None
+    if frozen_protocol is not None:
+        protocol_id = frozen_protocol.get("protocol_id")
+        protocol_rel = frozen_protocol.get("path")
+        recorded_protocol_hash = frozen_protocol.get("sha256")
+    if frozen_protocol is not None:
+        if not isinstance(protocol_id, str) or not protocol_id:
+            errors.append(f"workflow session {sid} frozen_protocol protocol_id must be a non-empty string")
+        if not isinstance(protocol_rel, str) or not protocol_rel:
+            errors.append(f"workflow session {sid} frozen_protocol missing path")
+            protocol_path = None
+        else:
+            protocol_path = ROOT / protocol_rel
+            if Path(protocol_rel).is_absolute() or ".." in Path(protocol_rel).parts:
+                errors.append(f"workflow session {sid} frozen_protocol path must be repository-relative")
+            elif not protocol_path.is_file():
+                errors.append(f"workflow session {sid} frozen protocol file does not exist: {protocol_rel}")
+        if not isinstance(recorded_protocol_hash, str) or not SHA256_RE.fullmatch(recorded_protocol_hash):
+            errors.append(f"workflow session {sid} frozen_protocol sha256 must be 64 lowercase hex")
 
     protocol = None
     if protocol_path is not None and protocol_path.is_file():
@@ -2517,6 +2527,51 @@ def comparison_replicate_binding_matches(
     )
 
 
+# Fields of the execution descriptor that a baseline and its treatment must agree on for the
+# pair to be a comparison rather than two measurements of different apparatus. The profile,
+# the execution role and the tool adapter are deliberately absent: those are what the treatment
+# changes. `fixture_runner_sha256` is absent too, because it carries the per-profile tool
+# manifest rather than the runner's own bytes and so differs by construction.
+_APPARATUS_RUNTIME_KEYS = (
+    "docker_image",
+    "docker_image_identity",
+    "dockerfile_sha256",
+    "mcp_probe_sha256",
+    "codex_entrypoint_sha256",
+    "timeout_seconds_per_task",
+    "network_isolation",
+    "isolation_policy",
+)
+
+
+def comparison_apparatus_divergences(
+    treatment: dict[str, Any],
+    baseline: dict[str, Any],
+) -> list[str]:
+    """Name the parts of the measurement apparatus that differ between the two arms.
+
+    This is the guarantee that used to rest on freezing a protocol before a run: that the two
+    numbers being compared were produced by the same machinery. Enforcing it here rather than at
+    launch means a screen costs nothing to start, while a comparison still cannot be assembled
+    out of runs that drifted apart -- and it applies to every retained session, because each one
+    already records the descriptor it ran under.
+    """
+    left = treatment.get("selected_execution", {}).get("descriptor", {})
+    right = baseline.get("selected_execution", {}).get("descriptor", {})
+    if not isinstance(left, dict) or not isinstance(right, dict) or not left or not right:
+        return ["selected_execution.descriptor"]
+    divergences = []
+    for key in ("version", "sequence_id", "model_facing_prompts", "agent_condition", "dependencies", "isolation"):
+        if left.get(key) != right.get(key):
+            divergences.append(key)
+    left_runtime = left.get("runtime") or {}
+    right_runtime = right.get("runtime") or {}
+    for key in _APPARATUS_RUNTIME_KEYS:
+        if left_runtime.get(key) != right_runtime.get(key):
+            divergences.append(f"runtime.{key}")
+    return divergences
+
+
 def comparison_baseline_matches_treatment(
     treatment: dict[str, Any],
     baseline: dict[str, Any],
@@ -2721,6 +2776,12 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
             ):
                 errors.append(
                     f"workflow session {sid} comparison baseline {comparison_id} is not a canonical sequence-, pool-, and accepted-replicate-matched baseline"
+                )
+            divergences = comparison_apparatus_divergences(session, baseline) if baseline else []
+            if divergences:
+                errors.append(
+                    f"workflow session {sid} and its comparison baseline {comparison_id} were produced by "
+                    f"different measurement apparatus: {', '.join(divergences)}"
                 )
         agent = session.get("agent", {})
         if isinstance(agent, dict):

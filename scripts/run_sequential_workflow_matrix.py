@@ -254,7 +254,9 @@ def find_protocol(
     sequence_id: str,
     profile_id: str,
     model_condition_override: dict[str, str] | None = None,
-) -> Path:
+    *,
+    required: bool = True,
+) -> Path | None:
     sequences = load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
     active_sequence = next((item for item in sequences if item.get("id") == sequence_id), None)
     if not isinstance(active_sequence, dict) or active_sequence.get("status") != "active":
@@ -295,12 +297,25 @@ def find_protocol(
             if protocol.get("baseline_pool", {}).get("descriptor") == current_baseline_descriptor:
                 exact_matches.append(path)
     matches = exact_matches or compatible_matches
-    if len(matches) != 1:
+    if len(matches) == 1:
+        return matches[0]
+    detail = (
+        f"exact={[path.name for path in exact_matches]} "
+        f"compatible={[path.name for path in compatible_matches]}"
+    )
+    if required:
         raise ValueError(
-            f"expected exactly one current frozen protocol for {sequence_id}/{profile_id}; "
-            f"exact={[path.name for path in exact_matches]} compatible={[path.name for path in compatible_matches]}"
+            f"expected exactly one current frozen protocol for {sequence_id}/{profile_id}; {detail}"
         )
-    return matches[0]
+    # Not fatal by itself. Comparability is enforced where it can actually be violated -- when
+    # two runs are compared -- rather than by refusing to start one. See ADR 0010. The warning
+    # stays because a missing protocol usually does mean the apparatus moved since the baseline,
+    # and knowing that before spending is worth more than being stopped by it.
+    print(
+        f"warning: no current frozen protocol for {sequence_id}/{profile_id}; {detail}",
+        file=sys.stderr,
+    )
+    return None
 
 
 
@@ -309,6 +324,12 @@ def find_protocol(
 
 
 
+
+
+def _plan_protocol(sequence_id: str, profile: str, model_condition: dict[str, str] | None) -> str | None:
+    """The plan records a protocol when one already exists; the lane mints one when it does not."""
+    found = find_protocol(ROOT, sequence_id, profile, model_condition_override=model_condition, required=False)
+    return str(found.relative_to(ROOT)) if found is not None else None
 
 
 def claude_baseline_run_gate(
@@ -517,7 +538,7 @@ def workflow_lane_command(
     *,
     sequence_id: str,
     profile_id: str,
-    protocol: Path,
+    protocol: Path | None,
     replicate_index: int,
     runner_args: list[str],
     model_condition: dict[str, str] | None = None,
@@ -543,7 +564,7 @@ def workflow_lane_command(
     cmd.extend([
         "--sequence-id", sequence_id,
         "--profile-id", profile_id,
-        "--protocol", str(protocol),
+        *(("--protocol", str(protocol)) if protocol is not None else ()),
         "--replicate-index", str(replicate_index),
         *runner_args,
     ])
@@ -622,21 +643,32 @@ def run_flow_lane(
     artifact_root = checkout / WORKFLOW_ARTIFACT_ROOT
     before_artifact_entries = {path.name for path in artifact_root.iterdir()}
 
-    protocol = find_protocol(checkout, sequence_id, treatment_profile).relative_to(checkout)
-    expected_session_binding = expected_session_binding_for_protocol(
-        sequence_id=sequence_id,
-        profile_id=treatment_profile,
-        replicate_index=replicate_index,
-        protocol_path=checkout / protocol,
-        root=checkout,
-    )
-    if (
-        (parent_claude_receipt_binding is not None and expected_session_binding != parent_claude_receipt_binding)
-        or (parent_opencode_receipt_binding is not None and expected_session_binding != parent_opencode_receipt_binding)
-    ):
-        raise UnsafeLaneOutputError(
-            "Lifecycle V1 child protocol does not match the parent-reserved identity"
+    # The lane runner mints its own protocol from live state when none exists yet, so a missing
+    # one is not a reason to refuse to start. Where a parent reserved an identity in advance, the
+    # child still has to match it, and that check needs a protocol to compare against.
+    found = find_protocol(checkout, sequence_id, treatment_profile, required=False)
+    protocol = found.relative_to(checkout) if found is not None else None
+    expected_session_binding = (
+        expected_session_binding_for_protocol(
+            sequence_id=sequence_id,
+            profile_id=treatment_profile,
+            replicate_index=replicate_index,
+            protocol_path=checkout / protocol,
+            root=checkout,
         )
+        if protocol is not None
+        else None
+    )
+    reserved_binding = parent_claude_receipt_binding or parent_opencode_receipt_binding
+    if reserved_binding is not None:
+        if expected_session_binding is None:
+            raise UnsafeLaneOutputError(
+                "parent reserved a session identity but no current protocol matches this lane"
+            )
+        if expected_session_binding != reserved_binding:
+            raise UnsafeLaneOutputError(
+                "child protocol does not match the parent-reserved identity"
+            )
     cmd = workflow_lane_command(
         sequence_id=sequence_id,
         profile_id=treatment_profile,
@@ -2036,7 +2068,7 @@ def main(argv: list[str] | None = None) -> int:
         {
             "sequence_id": sequence_id,
             "profile_id": profile,
-            "protocol": str(find_protocol(ROOT, sequence_id, profile, model_condition_override=model_condition).relative_to(ROOT)),
+            "protocol": _plan_protocol(sequence_id, profile, model_condition),
         }
         for sequence_id, profile in jobs
     ]
