@@ -2539,9 +2539,14 @@ _APPARATUS_RUNTIME_KEYS = (
     "mcp_probe_sha256",
     "codex_entrypoint_sha256",
     "timeout_seconds_per_task",
-    "network_isolation",
-    "isolation_policy",
 )
+# Compared only between arms that share a runtime. A replacement-runtime treatment swaps the CLI,
+# and a different CLI is isolated differently by construction -- its web tools and shell surface
+# are not the same thing -- so requiring these to match would refuse the comparison the profile
+# exists to make. Between two arms on the same runtime they must still be identical.
+_APPARATUS_SAME_RUNTIME_KEYS = ("network_isolation", "isolation_policy")
+# Version-capture keys are named after the runtime, so they differ whenever the runtime does.
+_APPARATUS_AGENT_KEYS = ("provider", "model", "model_condition_id", "reasoning_effort")
 
 
 def comparison_apparatus_divergences(
@@ -2564,20 +2569,21 @@ def comparison_apparatus_divergences(
     for key in ("version", "sequence_id", "model_facing_prompts", "dependencies", "isolation"):
         if left.get(key) != right.get(key):
             divergences.append(key)
-    # agent_condition is compared without runtime_id. Provider, model, condition and effort are
-    # the measurement conditions and must match; the CLI is what a replacement-runtime treatment
-    # deliberately changes, so treating it as drift would refuse the comparison it exists to make.
-    left_agent = dict(left.get("agent_condition") or {})
-    right_agent = dict(right.get("agent_condition") or {})
-    left_agent.pop("runtime_id", None)
-    right_agent.pop("runtime_id", None)
-    if left_agent != right_agent:
+    # The measurement conditions must match. The CLI is what a replacement-runtime treatment
+    # deliberately changes, so runtime_id and the runtime-named version-capture key are excluded.
+    left_agent = left.get("agent_condition") or {}
+    right_agent = right.get("agent_condition") or {}
+    if any(left_agent.get(key) != right_agent.get(key) for key in _APPARATUS_AGENT_KEYS):
         divergences.append("agent_condition")
     left_runtime = left.get("runtime") or {}
     right_runtime = right.get("runtime") or {}
     for key in _APPARATUS_RUNTIME_KEYS:
         if left_runtime.get(key) != right_runtime.get(key):
             divergences.append(f"runtime.{key}")
+    if left_agent.get("runtime_id") == right_agent.get("runtime_id"):
+        for key in _APPARATUS_SAME_RUNTIME_KEYS:
+            if left_runtime.get(key) != right_runtime.get(key):
+                divergences.append(f"runtime.{key}")
     return divergences
 
 

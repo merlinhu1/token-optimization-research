@@ -1589,6 +1589,44 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             validator.comparison_apparatus_divergences(drifted, arm("codex-cli")),
         )
 
+    def test_a_runtime_swap_does_not_read_as_isolation_drift(self) -> None:
+        """Two arms on different CLIs are isolated differently by construction.
+
+        network_isolation and isolation_policy describe the runtime's own surface, so requiring
+        them to match across a replacement-runtime comparison would refuse the comparison that
+        profile exists to make. Between arms on the same runtime they must still be identical.
+        """
+        import validate_repository as validator
+
+        def arm(runtime, isolation):
+            return {
+                "selected_execution": {
+                    "descriptor": {
+                        "agent_condition": {
+                            "runtime_id": runtime,
+                            "provider": "openai",
+                            "model": "gpt-5.6-sol",
+                            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+                            "reasoning_effort": "medium",
+                        },
+                        "runtime": {"isolation_policy": isolation},
+                    }
+                }
+            }
+
+        self.assertEqual(
+            validator.comparison_apparatus_divergences(
+                arm("opencode-cli", "opencode-shaped"), arm("codex-cli", "codex-shaped")
+            ),
+            [],
+        )
+        self.assertIn(
+            "runtime.isolation_policy",
+            validator.comparison_apparatus_divergences(
+                arm("codex-cli", "one"), arm("codex-cli", "another")
+            ),
+        )
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 

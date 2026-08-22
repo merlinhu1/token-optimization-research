@@ -1350,7 +1350,43 @@ def copy_artifacts_for_sessions(
             copied.append(str(rel))
             shutil.copytree(src, dst)
             fsync_compact_artifact_tree(dst)
+        copy_lane_protocol_for_session(checkout, session, copied)
     return copied
+
+
+def copy_lane_protocol_for_session(
+    checkout: Path,
+    session: dict[str, Any],
+    copied: list[str],
+) -> None:
+    """Carry a lane-minted protocol into the repository alongside the session that cites it.
+
+    A lane mints its protocol inside its own checkout, so a session merged without it references
+    a file the repository does not have and validation refuses the record it just accepted. The
+    protocol is the session's own immutable receipt, so it travels with it.
+    """
+    frozen = session.get("frozen_protocol")
+    if not isinstance(frozen, dict):
+        return
+    relative = frozen.get("path")
+    if not isinstance(relative, str) or not relative:
+        return
+    rel = Path(relative)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ValueError(f"session protocol path escapes the repository: {relative}")
+    source = checkout / rel
+    destination = ROOT / rel
+    if destination.exists() or not source.is_file() or source.is_symlink():
+        return
+    recorded = frozen.get("sha256")
+    actual = hashlib.sha256(source.read_bytes()).hexdigest()
+    if recorded != actual:
+        raise ValueError(
+            f"session {session.get('session_id')} protocol bytes do not match its recorded sha256"
+        )
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+    copied.append(str(rel))
 
 
 def atomic_write_bytes(path: Path, content: bytes) -> None:
