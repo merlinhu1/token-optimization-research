@@ -3841,6 +3841,49 @@ def recover_direct_claude_lifecycle_retained_run(
     return None
 
 
+def strict_ingress_refusal_reason(record: dict[str, Any], root: Path = ROOT) -> str:
+    """Name the branch of pilot_session_artifacts_valid that refused this session.
+
+    The predicate is twenty-one bare `return False` branches, so a rejection said only that
+    ingress failed. That turned a completed paid run into a guess, and the cheapest way to find
+    out which branch fired was to pay for another one. Re-running it under a line tracer costs
+    nothing and reports the exact source line, without annotating every branch by hand.
+    """
+    import inspect
+
+    code = getattr(pilot_session_artifacts_valid, "__code__", None)
+    if code is None:
+        # Patched or wrapped: there is no source to point at, and a diagnostic must never be the
+        # reason a refusal fails to report itself.
+        return "diagnostic unavailable: predicate is not a plain function"
+    visited: list[int] = []
+
+    def tracer(frame, event, arg):  # pragma: no cover - diagnostic path
+        if frame.f_code is code:
+            if event == "line":
+                visited.append(frame.f_lineno)
+            return tracer
+        return None
+
+    previous = sys.gettrace()
+    try:
+        sys.settrace(tracer)
+        pilot_session_artifacts_valid(record, root)
+    except Exception as exc:  # a diagnostic must never mask the original refusal
+        return f"diagnostic unavailable: {exc}"
+    finally:
+        sys.settrace(previous)
+    if not visited:
+        return "diagnostic unavailable: predicate did not execute"
+    try:
+        source = inspect.getsource(pilot_session_artifacts_valid).splitlines()
+        offset = visited[-1] - code.co_firstlineno
+        statement = source[offset].strip() if 0 <= offset < len(source) else "<unknown>"
+    except OSError:
+        statement = "<source unavailable>"
+    return f"refused at {code.co_filename}:{visited[-1]}: {statement}"
+
+
 def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) -> None:
     """Publish only a compact session that passes the same strict ingress used by matrix merge."""
     if not pilot_session_artifacts_valid(record, ROOT):
@@ -3853,11 +3896,13 @@ def publish_session_after_strict_ingress(record: dict[str, Any], run_dir: Path) 
                 "session_id": record["session_id"],
                 "artifact_root": record.get("artifacts", {}).get("root"),
                 "reason": "strict compact artifact ingress validation failed",
+                "refusal_detail": strict_ingress_refusal_reason(record),
                 "source_evidence_retained": str(run_dir),
             },
         )
         raise RuntimeError(
             f"strict compact artifact ingress validation failed for {record['session_id']}; "
+            f"{strict_ingress_refusal_reason(record)}; "
             f"evidence retained at {run_dir} and identity remains occupied"
         )
     update_registry(record)

@@ -1469,6 +1469,18 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         claude_launcher = (ROOT / "scripts/run_claude_code_workflow_model_condition.py").read_text()
         self.assertIn('!= "anthropic"', claude_launcher)
 
+    def test_strict_ingress_rejection_names_the_branch_that_refused(self) -> None:
+        """A refusal has to say which check failed, or a completed paid run becomes a guess.
+
+        The predicate is a long chain of bare `return False`, so a rejection previously reported
+        only that ingress failed. Finding out which branch fired meant paying for another run.
+        """
+        reason = runner.strict_ingress_refusal_reason({"session_id": "x", "artifacts": {}})
+        self.assertIn("run_codex_workflow_evaluation.py:", reason)
+        self.assertIn("return False", reason)
+        # A broken record must not turn the diagnostic itself into the failure.
+        self.assertIsInstance(runner.strict_ingress_refusal_reason({}), str)
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 
