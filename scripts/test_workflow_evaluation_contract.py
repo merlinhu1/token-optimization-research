@@ -1462,9 +1462,11 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         for provider in ("anthropic", "azure", "anything-else"):
             with self.assertRaises(ValueError):
                 opencode.provider_route(provider, "openai/gpt-5.6-sol")
+        # The probe runs for every runtime, so the allowlist has to carry each runtime's
+        # first-party value. Scoping it to Codex refused a correctly logged-in Claude CLI.
         self.assertEqual(
-            runner.fixture.PERMITTED_CODEX_AUTH_PROVIDERS,
-            {"openai", "chatgpt", ""},
+            runner.fixture.PERMITTED_AGENT_AUTH_PROVIDERS,
+            {"openai", "chatgpt", "anthropic", "firstparty", ""},
         )
         claude_launcher = (ROOT / "scripts/run_claude_code_workflow_model_condition.py").read_text()
         self.assertIn('!= "anthropic"', claude_launcher)

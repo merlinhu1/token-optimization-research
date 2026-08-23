@@ -38,9 +38,11 @@ CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
 CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
 CLAUDE_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE", "/opt/data/.local/bin/claude"))
 CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
-# The Codex CLI must be authenticated on the subscription this study measures. An allowlist is
-# used rather than a denylist so a provider that is merely unlisted cannot slip through.
-PERMITTED_CODEX_AUTH_PROVIDERS = {"openai", "chatgpt", ""}
+# The agent CLI must be authenticated first-party on the account this study measures, never
+# through a reselling gateway. An allowlist is used rather than a denylist so a provider that is
+# merely unlisted cannot slip through. This probe runs for every runtime, so it carries the
+# first-party values for each: Codex reports openai or chatgpt, Claude Code reports firstParty.
+PERMITTED_AGENT_AUTH_PROVIDERS = {"openai", "chatgpt", "anthropic", "firstparty", ""}
 CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
@@ -4120,7 +4122,7 @@ def preflight_claude_code(
                 auth_probe.returncode == 0
                 and raw_status.get("loggedIn") is True
                 and str(raw_status.get("apiProvider") or "").lower()
-                in PERMITTED_CODEX_AUTH_PROVIDERS
+                in PERMITTED_AGENT_AUTH_PROVIDERS
             ),
             "exit_code": auth_probe.returncode,
             "logged_in": raw_status.get("loggedIn") is True,
