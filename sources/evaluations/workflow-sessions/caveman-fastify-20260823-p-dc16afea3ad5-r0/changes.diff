@@ -1,0 +1,1011 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..3d7762a 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -900,10 +900,11 @@ function sendTrailer (payload, res, reply) {
+     if (typeof reply[kReplyTrailers][trailerName] !== 'function') continue
+     skipped = false
+     handled--
++    let called = false
+ 
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..5a5f9c9
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,105 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7bccdb8d49f41bcb480481cd4f8381b054f69847bed67fb003d83249dd6f0030"
++    },
++    "caveman": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "48646eeec87b27067502d8bd450484faf08af588df783706b1571ee72f2d918c"
++    },
++    "caveman-commit": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "771c3407d970fff5df512abb5026402d2431abecdd3e8f264f9142fec8198674"
++    },
++    "caveman-discover": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "8e8a2f12e7609891721c31ee79a2d89669658c38c9fe23d28ad02c3be4902b22"
++    },
++    "caveman-evidence-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "40bbecf3b951f6cdecab7204a696be7267084041d876d73c8ca9eecd25bdd1c6"
++    },
++    "caveman-explore": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "946ec2ef671939fabcb857de0fbff9a76d2af07a974fd44b8d38ed4da871ddbd"
++    },
++    "caveman-help": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-learn": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "41a82e4905672a99cd496d4221ebb7ca433bcac1044dbe3340f9258db323ed7e"
++    },
++    "caveman-manage": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fa77c71e35182d034291386a0cdc30c2ba858cf4ff7c0f920d95ec649dd73d33"
++    },
++    "caveman-optimize": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "2d4c31992efca5f51d8714ac6e204e28a3637a0514d5d107e49cd17623a0c377"
++    },
++    "caveman-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-setup": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "66da8df44278508e519cc54ce79f8fc6bc614c8f255b47210ccd3c46f84e9676"
++    },
++    "caveman-stats": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
++    },
++    "investigate-first": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
++    },
++    "lean-build": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "6074721f1653e6e9d6381595b094284807b8d5d001d7d3977ec534679b16a63c"
++    },
++    "migration": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
++    },
++    "safe-refactor": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "9df34a21a7a2c18ce13dbbe4a3f66b4e91df9e4bc33c1c9da8a80261583367ec"
++    },
++    "surgical-patch": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "028b9c3574142d19639d9f8eb11fbb01c58479f8f441e957d598a7215e79f95d"
++    },
++    "verify-and-stop": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "3d67de16a2b3c48b643bc511ebc4cb86e6c7105215d8428b6140cbcb73aba4e6"
++    }
++  }
++}
+
+# --- task-02-agent ---
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..5f3e956 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -82,7 +82,7 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+     // Remove the extra '/' to avoid: '/first//second'
+     pluginPrefix = pluginPrefix.slice(1)
+-  } else if (pluginPrefix[0] !== '/') {
++  } else if (!instancePrefix.endsWith('/') && pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+ 
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..3d7762a 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -900,10 +900,11 @@ function sendTrailer (payload, res, reply) {
+     if (typeof reply[kReplyTrailers][trailerName] !== 'function') continue
+     skipped = false
+     handled--
++    let called = false
+ 
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..5a5f9c9
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,105 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7bccdb8d49f41bcb480481cd4f8381b054f69847bed67fb003d83249dd6f0030"
++    },
++    "caveman": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "48646eeec87b27067502d8bd450484faf08af588df783706b1571ee72f2d918c"
++    },
++    "caveman-commit": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "771c3407d970fff5df512abb5026402d2431abecdd3e8f264f9142fec8198674"
++    },
++    "caveman-discover": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "8e8a2f12e7609891721c31ee79a2d89669658c38c9fe23d28ad02c3be4902b22"
++    },
++    "caveman-evidence-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "40bbecf3b951f6cdecab7204a696be7267084041d876d73c8ca9eecd25bdd1c6"
++    },
++    "caveman-explore": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "946ec2ef671939fabcb857de0fbff9a76d2af07a974fd44b8d38ed4da871ddbd"
++    },
++    "caveman-help": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-learn": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "41a82e4905672a99cd496d4221ebb7ca433bcac1044dbe3340f9258db323ed7e"
++    },
++    "caveman-manage": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fa77c71e35182d034291386a0cdc30c2ba858cf4ff7c0f920d95ec649dd73d33"
++    },
++    "caveman-optimize": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "2d4c31992efca5f51d8714ac6e204e28a3637a0514d5d107e49cd17623a0c377"
++    },
++    "caveman-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-setup": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "66da8df44278508e519cc54ce79f8fc6bc614c8f255b47210ccd3c46f84e9676"
++    },
++    "caveman-stats": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
++    },
++    "investigate-first": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
++    },
++    "lean-build": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "6074721f1653e6e9d6381595b094284807b8d5d001d7d3977ec534679b16a63c"
++    },
++    "migration": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
++    },
++    "safe-refactor": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "9df34a21a7a2c18ce13dbbe4a3f66b4e91df9e4bc33c1c9da8a80261583367ec"
++    },
++    "surgical-patch": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "028b9c3574142d19639d9f8eb11fbb01c58479f8f441e957d598a7215e79f95d"
++    },
++    "verify-and-stop": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "3d67de16a2b3c48b643bc511ebc4cb86e6c7105215d8428b6140cbcb73aba4e6"
++    }
++  }
++}
+
+# --- task-03-agent ---
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..5f3e956 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -82,7 +82,7 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+     // Remove the extra '/' to avoid: '/first//second'
+     pluginPrefix = pluginPrefix.slice(1)
+-  } else if (pluginPrefix[0] !== '/') {
++  } else if (!instancePrefix.endsWith('/') && pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+ 
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..3d7762a 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -900,10 +900,11 @@ function sendTrailer (payload, res, reply) {
+     if (typeof reply[kReplyTrailers][trailerName] !== 'function') continue
+     skipped = false
+     handled--
++    let called = false
+ 
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..5a5f9c9
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,105 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7bccdb8d49f41bcb480481cd4f8381b054f69847bed67fb003d83249dd6f0030"
++    },
++    "caveman": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "48646eeec87b27067502d8bd450484faf08af588df783706b1571ee72f2d918c"
++    },
++    "caveman-commit": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "771c3407d970fff5df512abb5026402d2431abecdd3e8f264f9142fec8198674"
++    },
++    "caveman-discover": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "8e8a2f12e7609891721c31ee79a2d89669658c38c9fe23d28ad02c3be4902b22"
++    },
++    "caveman-evidence-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "40bbecf3b951f6cdecab7204a696be7267084041d876d73c8ca9eecd25bdd1c6"
++    },
++    "caveman-explore": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "946ec2ef671939fabcb857de0fbff9a76d2af07a974fd44b8d38ed4da871ddbd"
++    },
++    "caveman-help": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-learn": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "41a82e4905672a99cd496d4221ebb7ca433bcac1044dbe3340f9258db323ed7e"
++    },
++    "caveman-manage": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fa77c71e35182d034291386a0cdc30c2ba858cf4ff7c0f920d95ec649dd73d33"
++    },
++    "caveman-optimize": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "2d4c31992efca5f51d8714ac6e204e28a3637a0514d5d107e49cd17623a0c377"
++    },
++    "caveman-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-setup": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "66da8df44278508e519cc54ce79f8fc6bc614c8f255b47210ccd3c46f84e9676"
++    },
++    "caveman-stats": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
++    },
++    "investigate-first": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
++    },
++    "lean-build": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "6074721f1653e6e9d6381595b094284807b8d5d001d7d3977ec534679b16a63c"
++    },
++    "migration": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
++    },
++    "safe-refactor": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "9df34a21a7a2c18ce13dbbe4a3f66b4e91df9e4bc33c1c9da8a80261583367ec"
++    },
++    "surgical-patch": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "028b9c3574142d19639d9f8eb11fbb01c58479f8f441e957d598a7215e79f95d"
++    },
++    "verify-and-stop": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "3d67de16a2b3c48b643bc511ebc4cb86e6c7105215d8428b6140cbcb73aba4e6"
++    }
++  }
++}
+
+# --- task-04-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402..8acabde 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -97,7 +97,14 @@ function preValidationCallback (err, request, reply) {
+     return
+   }
+ 
+-  const validationErr = validateSchema(reply[kRouteContext], request)
++  let validationErr
++  try {
++    validationErr = validateSchema(reply[kRouteContext], request)
++  } catch (err) {
++    reply[kReplyIsError] = true
++    reply.send(err)
++    return
++  }
+   const isAsync = (validationErr && typeof validationErr.then === 'function') || false
+ 
+   if (isAsync) {
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..5f3e956 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -82,7 +82,7 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+     // Remove the extra '/' to avoid: '/first//second'
+     pluginPrefix = pluginPrefix.slice(1)
+-  } else if (pluginPrefix[0] !== '/') {
++  } else if (!instancePrefix.endsWith('/') && pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+ 
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..3d7762a 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -900,10 +900,11 @@ function sendTrailer (payload, res, reply) {
+     if (typeof reply[kReplyTrailers][trailerName] !== 'function') continue
+     skipped = false
+     handled--
++    let called = false
+ 
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..5a5f9c9
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,105 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7bccdb8d49f41bcb480481cd4f8381b054f69847bed67fb003d83249dd6f0030"
++    },
++    "caveman": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "48646eeec87b27067502d8bd450484faf08af588df783706b1571ee72f2d918c"
++    },
++    "caveman-commit": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "771c3407d970fff5df512abb5026402d2431abecdd3e8f264f9142fec8198674"
++    },
++    "caveman-discover": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "8e8a2f12e7609891721c31ee79a2d89669658c38c9fe23d28ad02c3be4902b22"
++    },
++    "caveman-evidence-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "40bbecf3b951f6cdecab7204a696be7267084041d876d73c8ca9eecd25bdd1c6"
++    },
++    "caveman-explore": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "946ec2ef671939fabcb857de0fbff9a76d2af07a974fd44b8d38ed4da871ddbd"
++    },
++    "caveman-help": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-learn": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "41a82e4905672a99cd496d4221ebb7ca433bcac1044dbe3340f9258db323ed7e"
++    },
++    "caveman-manage": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fa77c71e35182d034291386a0cdc30c2ba858cf4ff7c0f920d95ec649dd73d33"
++    },
++    "caveman-optimize": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "2d4c31992efca5f51d8714ac6e204e28a3637a0514d5d107e49cd17623a0c377"
++    },
++    "caveman-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-setup": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "66da8df44278508e519cc54ce79f8fc6bc614c8f255b47210ccd3c46f84e9676"
++    },
++    "caveman-stats": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
++    },
++    "investigate-first": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
++    },
++    "lean-build": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "6074721f1653e6e9d6381595b094284807b8d5d001d7d3977ec534679b16a63c"
++    },
++    "migration": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
++    },
++    "safe-refactor": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "9df34a21a7a2c18ce13dbbe4a3f66b4e91df9e4bc33c1c9da8a80261583367ec"
++    },
++    "surgical-patch": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "028b9c3574142d19639d9f8eb11fbb01c58479f8f441e957d598a7215e79f95d"
++    },
++    "verify-and-stop": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "3d67de16a2b3c48b643bc511ebc4cb86e6c7105215d8428b6140cbcb73aba4e6"
++    }
++  }
++}
+
+# --- task-05-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402..8acabde 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -97,7 +97,14 @@ function preValidationCallback (err, request, reply) {
+     return
+   }
+ 
+-  const validationErr = validateSchema(reply[kRouteContext], request)
++  let validationErr
++  try {
++    validationErr = validateSchema(reply[kRouteContext], request)
++  } catch (err) {
++    reply[kReplyIsError] = true
++    reply.send(err)
++    return
++  }
+   const isAsync = (validationErr && typeof validationErr.then === 'function') || false
+ 
+   if (isAsync) {
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..5f3e956 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -82,7 +82,7 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+     // Remove the extra '/' to avoid: '/first//second'
+     pluginPrefix = pluginPrefix.slice(1)
+-  } else if (pluginPrefix[0] !== '/') {
++  } else if (!instancePrefix.endsWith('/') && pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+ 
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..3d7762a 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -900,10 +900,11 @@ function sendTrailer (payload, res, reply) {
+     if (typeof reply[kReplyTrailers][trailerName] !== 'function') continue
+     skipped = false
+     handled--
++    let called = false
+ 
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/route.js b/lib/route.js
+index 7d7b5de..1cb07fa 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -362,7 +362,8 @@ function buildRouting (options) {
+         // any route insertion error created by fastify can be safely ignore
+         // because it only duplicate route for head
+         if (!context[kRouteByFastify]) {
+-          const isDuplicatedRoute = error.message.includes(`Method '${opts.method}' already declared for route`)
++          const methods = Array.isArray(opts.method) ? opts.method : [opts.method]
++          const isDuplicatedRoute = methods.some(method => error.message.includes(`Method '${method}' already declared for route`))
+           if (isDuplicatedRoute) {
+             throw new FST_ERR_DUPLICATED_ROUTE(opts.method, opts.url)
+           }
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..5a5f9c9
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,105 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7bccdb8d49f41bcb480481cd4f8381b054f69847bed67fb003d83249dd6f0030"
++    },
++    "caveman": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "48646eeec87b27067502d8bd450484faf08af588df783706b1571ee72f2d918c"
++    },
++    "caveman-commit": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "771c3407d970fff5df512abb5026402d2431abecdd3e8f264f9142fec8198674"
++    },
++    "caveman-discover": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "8e8a2f12e7609891721c31ee79a2d89669658c38c9fe23d28ad02c3be4902b22"
++    },
++    "caveman-evidence-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "40bbecf3b951f6cdecab7204a696be7267084041d876d73c8ca9eecd25bdd1c6"
++    },
++    "caveman-explore": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "946ec2ef671939fabcb857de0fbff9a76d2af07a974fd44b8d38ed4da871ddbd"
++    },
++    "caveman-help": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-learn": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "41a82e4905672a99cd496d4221ebb7ca433bcac1044dbe3340f9258db323ed7e"
++    },
++    "caveman-manage": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fa77c71e35182d034291386a0cdc30c2ba858cf4ff7c0f920d95ec649dd73d33"
++    },
++    "caveman-optimize": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "2d4c31992efca5f51d8714ac6e204e28a3637a0514d5d107e49cd17623a0c377"
++    },
++    "caveman-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-setup": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "66da8df44278508e519cc54ce79f8fc6bc614c8f255b47210ccd3c46f84e9676"
++    },
++    "caveman-stats": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
++    },
++    "investigate-first": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
++    },
++    "lean-build": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "6074721f1653e6e9d6381595b094284807b8d5d001d7d3977ec534679b16a63c"
++    },
++    "migration": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
++    },
++    "safe-refactor": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "9df34a21a7a2c18ce13dbbe4a3f66b4e91df9e4bc33c1c9da8a80261583367ec"
++    },
++    "surgical-patch": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "028b9c3574142d19639d9f8eb11fbb01c58479f8f441e957d598a7215e79f95d"
++    },
++    "verify-and-stop": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "3d67de16a2b3c48b643bc511ebc4cb86e6c7105215d8428b6140cbcb73aba4e6"
++    }
++  }
++}
+
+# --- task-06-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402..8acabde 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -97,7 +97,14 @@ function preValidationCallback (err, request, reply) {
+     return
+   }
+ 
+-  const validationErr = validateSchema(reply[kRouteContext], request)
++  let validationErr
++  try {
++    validationErr = validateSchema(reply[kRouteContext], request)
++  } catch (err) {
++    reply[kReplyIsError] = true
++    reply.send(err)
++    return
++  }
+   const isAsync = (validationErr && typeof validationErr.then === 'function') || false
+ 
+   if (isAsync) {
+diff --git a/lib/head-route.js b/lib/head-route.js
+index c7496e2..ba6b1cb 100644
+--- a/lib/head-route.js
++++ b/lib/head-route.js
+@@ -16,6 +16,14 @@ function headRouteOnSendHandler (req, reply, payload, done) {
+     return
+   }
+ 
++  if (typeof payload.getReader === 'function') {
++    payload.cancel('Stream cancelled by HEAD route').catch((err) => {
++      reply.log.error({ err }, 'Error on Stream found for HEAD route')
++    })
++    done(null, null)
++    return
++  }
++
+   const size = '' + Buffer.byteLength(payload)
+ 
+   reply.header('content-length', size)
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..5f3e956 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -82,7 +82,7 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+     // Remove the extra '/' to avoid: '/first//second'
+     pluginPrefix = pluginPrefix.slice(1)
+-  } else if (pluginPrefix[0] !== '/') {
++  } else if (!instancePrefix.endsWith('/') && pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+ 
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..3d7762a 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -900,10 +900,11 @@ function sendTrailer (payload, res, reply) {
+     if (typeof reply[kReplyTrailers][trailerName] !== 'function') continue
+     skipped = false
+     handled--
++    let called = false
+ 
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/route.js b/lib/route.js
+index 7d7b5de..1cb07fa 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -362,7 +362,8 @@ function buildRouting (options) {
+         // any route insertion error created by fastify can be safely ignore
+         // because it only duplicate route for head
+         if (!context[kRouteByFastify]) {
+-          const isDuplicatedRoute = error.message.includes(`Method '${opts.method}' already declared for route`)
++          const methods = Array.isArray(opts.method) ? opts.method : [opts.method]
++          const isDuplicatedRoute = methods.some(method => error.message.includes(`Method '${method}' already declared for route`))
+           if (isDuplicatedRoute) {
+             throw new FST_ERR_DUPLICATED_ROUTE(opts.method, opts.url)
+           }
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+diff --git a/skills-lock.json b/skills-lock.json
+new file mode 100644
+index 0000000..5a5f9c9
+--- /dev/null
++++ b/skills-lock.json
+@@ -0,0 +1,105 @@
++{
++  "version": 1,
++  "skills": {
++    "cavecrew": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7bccdb8d49f41bcb480481cd4f8381b054f69847bed67fb003d83249dd6f0030"
++    },
++    "caveman": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "48646eeec87b27067502d8bd450484faf08af588df783706b1571ee72f2d918c"
++    },
++    "caveman-commit": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "790a4eeace0be35c6691faf923518ba5bd50f1f1305d1101d09dd4971be94e00"
++    },
++    "caveman-compress": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "771c3407d970fff5df512abb5026402d2431abecdd3e8f264f9142fec8198674"
++    },
++    "caveman-discover": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "8e8a2f12e7609891721c31ee79a2d89669658c38c9fe23d28ad02c3be4902b22"
++    },
++    "caveman-evidence-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "40bbecf3b951f6cdecab7204a696be7267084041d876d73c8ca9eecd25bdd1c6"
++    },
++    "caveman-explore": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "946ec2ef671939fabcb857de0fbff9a76d2af07a974fd44b8d38ed4da871ddbd"
++    },
++    "caveman-help": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "dd85267e76baad76995157e7b9f762dfa557cd58951ee92af0c283f48aa26537"
++    },
++    "caveman-learn": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "41a82e4905672a99cd496d4221ebb7ca433bcac1044dbe3340f9258db323ed7e"
++    },
++    "caveman-manage": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fa77c71e35182d034291386a0cdc30c2ba858cf4ff7c0f920d95ec649dd73d33"
++    },
++    "caveman-optimize": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "2d4c31992efca5f51d8714ac6e204e28a3637a0514d5d107e49cd17623a0c377"
++    },
++    "caveman-review": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
++    },
++    "caveman-setup": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "66da8df44278508e519cc54ce79f8fc6bc614c8f255b47210ccd3c46f84e9676"
++    },
++    "caveman-stats": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "57c7db449641379e2afd1389fdb17cec8f33d9c8e25b1d28093937b4431895e8"
++    },
++    "investigate-first": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "59b581b5abfc0e19b7dd5a7c3bb2b16621ab5e94e085065c7b724a9c86cc3d4d"
++    },
++    "lean-build": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "6074721f1653e6e9d6381595b094284807b8d5d001d7d3977ec534679b16a63c"
++    },
++    "migration": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "7348b2d21ca05bdecc1e4ec2c8b63515ccb1700c8a261fdbd458b04b7383945b"
++    },
++    "safe-refactor": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "9df34a21a7a2c18ce13dbbe4a3f66b4e91df9e4bc33c1c9da8a80261583367ec"
++    },
++    "surgical-patch": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "028b9c3574142d19639d9f8eb11fbb01c58479f8f441e957d598a7215e79f95d"
++    },
++    "verify-and-stop": {
++      "source": "../../../../../../../../../../tool-candidates/releases/caveman-2.2.0/source",
++      "sourceType": "local",
++      "computedHash": "3d67de16a2b3c48b643bc511ebc4cb86e6c7105215d8428b6140cbcb73aba4e6"
++    }
++  }
++}

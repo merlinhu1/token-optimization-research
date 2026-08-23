@@ -1805,10 +1805,16 @@ def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], prof
     if (
         seq.get("task_family_generation") in repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS
     ):
-        canonical_baseline = find_canonical_baseline_record(registry, seq, replicate_index)
+        # Anchor the pool on the baseline of this profile's own runtime. find_canonical_baseline_record
+        # does not filter on fingerprint, so under a Claude Code condition it still returned the
+        # Codex baseline and its Codex pool fingerprint then overrode the correct one -- making
+        # every Claude Code session invisible to this lookup even inside a correctly configured
+        # run. That skipped their comparison publication and left their replicate slots looking
+        # free. Codex and OpenCode resolve to the canonical baseline through this call as before.
+        pool_baseline = find_comparison_baseline_record(registry, seq, profile_id, replicate_index)
         frozen_pool_fingerprint = (
-            canonical_baseline.get("baseline_pool", {}).get("protocol_fingerprint")
-            if canonical_baseline is not None
+            pool_baseline.get("baseline_pool", {}).get("protocol_fingerprint")
+            if pool_baseline is not None
             else None
         )
         if isinstance(frozen_pool_fingerprint, str) and frozen_pool_fingerprint:

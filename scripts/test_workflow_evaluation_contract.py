@@ -4014,7 +4014,7 @@ class ManifestAndProtocolContractTest(unittest.TestCase):
                  mock.patch.object(matrix, "WORKFLOW_ARTIFACT_ROOT", Path("comparisons")), \
                  mock.patch.object(matrix, "load_json", return_value={"sessions": []}), \
                  mock.patch.object(matrix.workflow, "load_sequence", return_value=sequence), \
-                 mock.patch.object(matrix, "find_baseline_record", return_value=baseline), \
+                 mock.patch.object(matrix.workflow, "find_comparison_baseline_record", return_value=baseline), \
                  mock.patch.object(matrix, "baseline_reuse_state", return_value="reusable"), \
                  mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value=treatment), \
                  mock.patch.object(matrix.workflow, "reviewed_session_reuse_state", return_value="reusable"), \
@@ -5156,6 +5156,30 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             )
         )
 
+    def test_comparison_publication_resolves_the_baseline_per_runtime(self) -> None:
+        """A treatment's comparison is gated on a baseline from its own runtime, not on Codex's."""
+        seen: list[str] = []
+
+        def record_profile(registry, seq, profile_id, replicate_index):
+            seen.append(profile_id)
+            return None
+
+        with (
+            mock.patch.object(
+                matrix.workflow, "find_comparison_baseline_record", side_effect=record_profile
+            ),
+        ):
+            published = matrix.publish_ready_comparisons(
+                ["fastify-lifecycle-sequence-v2"],
+                ["behavior-caveman-claude-code-skill-v1", "behavior-caveman-codex-skill-v1"],
+                0,
+            )
+        self.assertEqual(published, [])
+        self.assertEqual(
+            seen,
+            ["behavior-caveman-claude-code-skill-v1", "behavior-caveman-codex-skill-v1"],
+        )
+
     def test_validation_restores_protected_files_before_checks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, \
              mock.patch.object(
@@ -5593,7 +5617,11 @@ class MatrixLifecycleContractTest(unittest.TestCase):
 
             with (
                 mock.patch.object(matrix, "ROOT", root),
-                mock.patch.object(matrix, "find_baseline_record", return_value={"session_id": "baseline"}),
+                mock.patch.object(
+                    matrix.workflow,
+                    "find_comparison_baseline_record",
+                    return_value={"session_id": "baseline"},
+                ),
                 mock.patch.object(matrix, "baseline_reuse_state", return_value="reusable"),
                 mock.patch.object(matrix.workflow, "find_pool_profile_record", return_value={"session_id": "treatment"}),
                 mock.patch.object(matrix.workflow, "reviewed_session_reuse_state", return_value="reusable"),

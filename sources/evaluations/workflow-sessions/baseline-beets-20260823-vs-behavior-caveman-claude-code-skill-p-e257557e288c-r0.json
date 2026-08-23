@@ -1,0 +1,32 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-beets-20260823-vs-behavior-caveman-claude-code-skill-p-e257557e288c-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "beetbox-beets-behavior-caveman-claude-code-skill-v1-e257557e288c-sequential-workflow-r0",
+  "comparison_design": "protocol-bound-shared-lifecycle-baseline",
+  "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
+  "baseline_profile_id": "baseline-claude-code-no-mcp",
+  "baseline_protocol_fingerprint": "e257557e288c",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+  "treatment_session_id": "behavior-caveman-claude-code-skill-beets-20260823-p-e257557e288c-r0",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 478129.1,
+  "treatment_weighted_token_cost": 342202.1,
+  "delta_weighted_token_cost": -135927.0,
+  "delta_percent": -28.428932687845187,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 5,
+    "treatment_tasks_passed": 5,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean behavior-caveman-claude-code-skill-v1 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}

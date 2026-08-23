@@ -1589,10 +1589,17 @@ def publish_ready_comparisons(
     registry = load_json(ROOT / "data/workflow-sessions.json")
     for sequence_id in sequence_ids:
         seq = workflow.load_sequence(sequence_id)
-        baseline = find_baseline_record(registry, seq, replicate_index)
-        if baseline is None or baseline_reuse_state(baseline, ROOT) != "reusable":
-            continue
         for profile_id in profiles:
+            # The baseline has to come from the treatment's own runtime, which is what
+            # write_comparison_if_ready has always resolved. This gate did not: it took the
+            # bare-Codex default once per sequence, found no such pool record for a Claude Code
+            # treatment, and skipped. The comparison it would have written was correct, so the
+            # symptom was a silently missing artifact rather than a cross-runtime one.
+            baseline = workflow.find_comparison_baseline_record(
+                registry, seq, profile_id, replicate_index
+            )
+            if baseline is None or baseline_reuse_state(baseline, ROOT) != "reusable":
+                continue
             treatment = workflow.find_pool_profile_record(registry, seq, profile_id, replicate_index)
             if treatment is None or workflow.reviewed_session_reuse_state(treatment, ROOT) != "reusable":
                 continue
