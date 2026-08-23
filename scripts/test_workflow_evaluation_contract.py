@@ -1651,6 +1651,91 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         self.assertIn("lifecycle_treatment_gate", gate)
         self.assertNotIn("runtime_id", gate, "the gate must not branch on runtime")
 
+    def test_every_runtime_reports_the_step_factor(self) -> None:
+        """ADR 0008 publishes weighted cost as steps times cost per step, on every lane.
+
+        Only the Codex extractor emitted agent_steps, so the decomposition was unavailable on the
+        two lanes that had just started producing paid results -- a total with no way to tell
+        whether a tool moved trajectory length or context carried per step.
+        """
+        extractors = (
+            "scripts/extract_codex_usage.py",
+            "scripts/extract_opencode_usage.py",
+            "scripts/extract_claude_code_usage.py",
+        )
+        for relative in extractors:
+            source = (ROOT / relative).read_text()
+            for field in (
+                '"agent_steps"',
+                '"agent_step_definition"',
+                '"agent_step_types"',
+                '"weighted_token_cost_per_step"',
+            ):
+                self.assertIn(field, source, f"{relative} does not report {field}")
+
+    def test_agent_step_counting_excludes_non_agent_items(self) -> None:
+        """A step is the agent acting: an assistant text block or a tool invocation.
+
+        thinking blocks are not items, and tool_result is the environment answering, so counting
+        either would measure something other than the trajectory.
+        """
+        import extract_claude_code_usage as claude
+
+        events = [
+            {
+                "type": "assistant",
+                "message": {
+                    "role": "assistant",
+                    "content": [
+                        {"type": "text", "text": "hello"},
+                        {"type": "thinking", "thinking": "..."},
+                        {"type": "tool_use", "name": "Bash"},
+                    ],
+                },
+            },
+            {
+                "type": "user",
+                "message": {"role": "user", "content": [{"type": "tool_result", "content": "ok"}]},
+            },
+        ]
+        self.assertEqual(
+            claude.agent_step_type_counts(events), {"text": 1, "tool_use": 1}
+        )
+
+    def test_no_profile_symlinks_a_tracked_repository_file_into_a_lane(self) -> None:
+        """A lane must not be able to mutate the repository it was cloned from.
+
+        Headroom symlinked scripts/run_pinned_uvx.py into its tool directory, and the lane's
+        permission hardening then chmodded through the symlink onto the tracked file. The run was
+        otherwise clean and make check failed afterwards on a mode change nobody made.
+        """
+        for profile_id in sorted(runner.SUPPORTED_WORKFLOW_TOOL_PROFILES):
+            try:
+                cfg = runner.fixture.active_tool_config({}, profile_id)
+            except ValueError:
+                continue
+            if not cfg:
+                continue
+            for command in (cfg.get("host_integration") or {}).get("install_commands", []):
+                rendered = [str(part) for part in command]
+                if rendered and rendered[0] == "ln":
+                    self.assertFalse(
+                        any("{repository_root}" in part for part in rendered),
+                        f"{profile_id} symlinks a repository file into its lane: {rendered}",
+                    )
+
+    def test_claude_account_home_has_a_default(self) -> None:
+        """An unset override must not be the difference between a lane running and not.
+
+        The first Claude Code lane failed at preflight naming an environment variable, while the
+        credentials were already where the CLI keeps them.
+        """
+        self.assertTrue(hasattr(runner.fixture, "claude_account_home"))
+        self.assertEqual(
+            runner.fixture.DEFAULT_CLAUDE_ACCOUNT_HOME,
+            Path("/opt/data/home/.claude"),
+        )
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 

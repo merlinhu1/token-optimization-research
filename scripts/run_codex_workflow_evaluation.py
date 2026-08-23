@@ -3407,12 +3407,9 @@ def sync_copied_claude_auth_back(claude_home: Path, run_dir: Path, stage: str) -
     """Persist OAuth refreshed by a successful isolated Claude provider task."""
     if os.environ.get("WORKFLOW_LANE_DISABLE_AUTH_SYNC") == "1":
         return
-    source_value = os.environ.get(fixture.CLAUDE_ACCOUNT_HOME_ENV)
-    source_auth = (
-        fixture._claude_account_credential(Path(source_value).expanduser())
-        if source_value
-        else None
-    )
+    source_home = fixture.claude_account_home()
+    source_value = str(source_home) if source_home else None
+    source_auth = fixture._claude_account_credential(source_home) if source_home else None
     copied_auth = claude_home / "claude-config" / ".credentials.json"
     if source_auth is None or not copied_auth.is_file():
         return

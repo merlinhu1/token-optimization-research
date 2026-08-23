@@ -29,9 +29,42 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+    from scripts.token_metrics import (
+        AGENT_STEP_DEFINITION,
+        WEIGHTED_TOKEN_COST_FORMULA,
+        weighted_token_cost,
+        weighted_token_cost_per_step,
+    )
 except ImportError:
-    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+    from token_metrics import (
+        AGENT_STEP_DEFINITION,
+        WEIGHTED_TOKEN_COST_FORMULA,
+        weighted_token_cost,
+        weighted_token_cost_per_step,
+    )
+
+
+def agent_step_type_counts(events: list[dict[str, Any]]) -> dict[str, int]:
+    """Count completed agent items in a Claude Code stream.
+
+    An item is an assistant text block or a tool invocation. thinking blocks are not items and
+    tool_result blocks are the environment answering rather than the agent acting, so counting
+    either would measure something other than the trajectory. ADR 0008 needs the step factor from
+    every runtime; the granularity is this runtime's own, so the definition travels with the count
+    and per-step figures compare replicates of one runtime rather than one runtime against another.
+    """
+    counts: dict[str, int] = {}
+    for event in events:
+        message = event.get("message")
+        if not isinstance(message, dict) or message.get("role") != "assistant":
+            continue
+        for block in message.get("content") or []:
+            if not isinstance(block, dict):
+                continue
+            block_type = block.get("type")
+            if block_type in {"text", "tool_use"}:
+                counts[str(block_type)] = counts.get(str(block_type), 0) + 1
+    return counts
 
 
 def load_events(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
@@ -296,6 +329,9 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         "fresh_input_formula": "input_tokens + cache_creation_input_tokens",
     }
 
+    agent_step_types = agent_step_type_counts(events)
+    agent_steps = sum(agent_step_types.values()) or None
+
     event_types: dict[str, int] = {}
     for event in events:
         event_type = str(event.get("type") or "unknown")
@@ -319,6 +355,15 @@ def build_summary(events_path: Path) -> dict[str, Any]:
             "output_tokens": output_tokens,
         }),
         "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
+        "agent_steps": agent_steps,
+        "agent_step_definition": AGENT_STEP_DEFINITION,
+        "agent_step_types": agent_step_types,
+        "weighted_token_cost_per_step": weighted_token_cost_per_step({
+            "fresh_input_tokens": fresh_input_tokens,
+            "cached_input_tokens": cached_input_tokens,
+            "output_tokens": output_tokens,
+            "agent_steps": agent_steps,
+        }),
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "provider_usage_details": provider_usage_details,

@@ -18,9 +18,19 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from scripts.token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+    from scripts.token_metrics import (
+        AGENT_STEP_DEFINITION,
+        WEIGHTED_TOKEN_COST_FORMULA,
+        weighted_token_cost,
+        weighted_token_cost_per_step,
+    )
 except ImportError:
-    from token_metrics import WEIGHTED_TOKEN_COST_FORMULA, weighted_token_cost
+    from token_metrics import (
+        AGENT_STEP_DEFINITION,
+        WEIGHTED_TOKEN_COST_FORMULA,
+        weighted_token_cost,
+        weighted_token_cost_per_step,
+    )
 
 try:
     from scripts import opencode_workflow_adapter as adapter
@@ -82,6 +92,11 @@ def build_summary(events_path: Path) -> dict[str, Any]:
     raw_step_blocks: list[dict[str, Any]] = []
     tool_calls = 0
     sessions: set[str] = set()
+    # A completed agent item in OpenCode is an assistant text part or a tool invocation.
+    # step_start and step_finish are turn boundaries rather than items, so counting them would
+    # measure the transport instead of the trajectory. The definition travels with the count:
+    # granularity is runtime-specific, so per-step figures compare replicates of one runtime.
+    agent_step_types: dict[str, int] = {}
     for outer in events:
         raw = raw_opencode_event(outer)
         if raw is None:
@@ -89,7 +104,10 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         session_id = raw.get("sessionID")
         if isinstance(session_id, str) and session_id:
             sessions.add(session_id)
-        if raw.get("type") == "tool_use":
+        raw_type = str(raw.get("type") or "")
+        if raw_type in {"text", "tool_use"}:
+            agent_step_types[raw_type] = agent_step_types.get(raw_type, 0) + 1
+        if raw_type == "tool_use":
             tool_calls += 1
         if raw.get("type") != "step_finish":
             continue
@@ -122,6 +140,7 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         warnings.append("No OpenCode step_finish usage blocks found; token fields are null.")
     if non_json:
         warnings.append("OpenCode JSONL contains non-JSON lines.")
+    agent_steps = sum(agent_step_types.values()) if raw_step_blocks else None
     values: dict[str, int | None] = {
         key: value if raw_step_blocks else None for key, value in cumulative.items()
     }
@@ -140,6 +159,14 @@ def build_summary(events_path: Path) -> dict[str, Any]:
         **values,
         "weighted_token_cost": weighted_token_cost(values),
         "weighted_token_cost_formula": WEIGHTED_TOKEN_COST_FORMULA,
+        # ADR 0008 publishes the metric as steps times cost per step, so every runtime has to
+        # report the step factor or the decomposition is unavailable on that lane.
+        "agent_steps": agent_steps,
+        "agent_step_definition": AGENT_STEP_DEFINITION,
+        "agent_step_types": agent_step_types,
+        "weighted_token_cost_per_step": weighted_token_cost_per_step(
+            {**values, "agent_steps": agent_steps}
+        ),
         "raw_artifact_tokens": None,
         "transformed_artifact_tokens": None,
         "opencode_usage": {

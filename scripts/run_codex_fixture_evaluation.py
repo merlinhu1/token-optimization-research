@@ -44,6 +44,17 @@ CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
 # first-party values for each: Codex reports openai or chatgpt, Claude Code reports firstParty.
 PERMITTED_AGENT_AUTH_PROVIDERS = {"openai", "chatgpt", "anthropic", "firstparty", ""}
 CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
+# Defaulted like every other runtime path. Leaving it unset-by-default meant a Claude lane failed
+# at preflight with an environment variable name and no indication that the credentials were
+# already sitting where the CLI keeps them; the override still wins when it is set.
+DEFAULT_CLAUDE_ACCOUNT_HOME = Path("/opt/data/home/.claude")
+
+
+def claude_account_home() -> Path | None:
+    configured = os.environ.get(CLAUDE_ACCOUNT_HOME_ENV)
+    if configured:
+        return Path(configured).expanduser()
+    return DEFAULT_CLAUDE_ACCOUNT_HOME if DEFAULT_CLAUDE_ACCOUNT_HOME.is_dir() else None
 OPENCODE_BIN = Path(os.environ.get("TOKEN_EVAL_OPENCODE_EXECUTABLE", "/opt/data/.local/bin/opencode"))
 OPENCODE_BIN_SHA256 = "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca"
 OPENCODE_ADAPTER = "{repository_root}/scripts/opencode_workflow_adapter.py"
@@ -1518,7 +1529,14 @@ TOOL_CONFIGS["headroom"].update({
     "path_entries": ["{tool_data_dir}/bin", "{codex_home}/home/.headroom/bin", "{codex_home}/home/.local/bin"],
     "env": {**TOOL_CONFIGS["headroom"]["env"], "PINNED_SERENA_WHEEL": str(_BATCH_ARTIFACT("serena"))},
     "host_integration": {
-        "install_commands": [["mkdir", "-p", "{tool_data_dir}/bin"], ["ln", "-sf", PINNED_UVX_RUNNER, "{tool_data_dir}/bin/uvx"]],
+        # Copied, not symlinked. A symlink into the repository let the lane's permission
+        # hardening chmod straight through onto a tracked file, which then failed the
+        # working-tree comparison in make check after an otherwise clean run.
+        "install_commands": [
+            ["mkdir", "-p", "{tool_data_dir}/bin"],
+            ["cp", PINNED_UVX_RUNNER, "{tool_data_dir}/bin/uvx"],
+            ["chmod", "755", "{tool_data_dir}/bin/uvx"],
+        ],
         "required_files": ["{tool_data_dir}/bin/uvx"],
     },
     "codex_wrapper": {"command": str(UV_BIN), "args": ["tool", "run", "--from", _headroom_wheel, "headroom", "wrap", "codex", "--port", "{tool_port}", "--verbose", "--"]},
@@ -2975,8 +2993,9 @@ def prepare_claude_home(
     auth_source_home: str | None = None
     auth_file: str | None = None
     if provider == "anthropic":
-        source_value = os.environ.get(CLAUDE_ACCOUNT_HOME_ENV)
-        credential = _claude_account_credential(Path(source_value).expanduser()) if source_value else None
+        source_home = claude_account_home()
+        source_value = str(source_home) if source_home else None
+        credential = _claude_account_credential(source_home) if source_home else None
         if credential is not None:
             destination = claude_home / "claude-config" / ".credentials.json"
             shutil.copy2(credential, destination)
