@@ -718,6 +718,39 @@ def artifact_merge_allowed(prepare_only: bool, lane_results: list[dict[str, Any]
     return not prepare_only and any(result.get("produced_session_ids") for result in lane_results)
 
 
+def lane_delivered_complete_measurement(result: dict[str, Any]) -> bool:
+    """Did this lane run the whole task series and measure it, whatever the verifiers said?
+
+    A lane exits nonzero for two very different reasons. The agent may have finished every task
+    and failed one verifier -- an acceptance verdict over a real, retainable weighted-token
+    sample. Or the run may have died against the apparatus: a provider outage, a rate limit, a
+    container that would not start. Only the second is a reason to abandon the sibling lanes,
+    because only the second says the next lane would measure nothing either. Distinguishing them
+    needs the run record, since the exit code alone collapses both into 1.
+    """
+    produced = result.get("produced_session_ids") or []
+    if len(produced) != 1 or not produced[0]:
+        return False
+    run_record_path = (
+        Path(result.get("checkout", ""))
+        / "sources/evaluations/workflow-sessions"
+        / str(produced[0])
+        / "run.json"
+    )
+    try:
+        run_record = load_json(run_record_path)
+        expected_tasks = len(workflow.load_sequence(str(result["sequence_id"]))["tasks"])
+    except (OSError, ValueError, KeyError):
+        return False
+    tasks = run_record.get("per_task_results")
+    if not isinstance(tasks, list) or len(tasks) != expected_tasks:
+        return False
+    if not all(task.get("agent_attempted") is True for task in tasks):
+        return False
+    cost = (run_record.get("token_usage") or {}).get("weighted_token_cost")
+    return isinstance(cost, (int, float)) and not isinstance(cost, bool) and cost > 0
+
+
 def matrix_outputs_complete(
     *,
     prepare_only: bool,
@@ -1787,7 +1820,7 @@ def execute_lane_jobs(
     run_job: Callable[[tuple[str, str]], dict[str, Any]],
     on_result: Callable[[dict[str, Any]], None] | None = None,
 ) -> list[dict[str, Any]]:
-    """Execute serialized jobs fail-stop; use queued futures only for parallel plans."""
+    """Execute serialized jobs, stopping on apparatus failure; queued futures for parallel plans."""
     results: list[dict[str, Any]] = []
     if not jobs:
         return results
@@ -1801,7 +1834,7 @@ def execute_lane_jobs(
         for job in jobs:
             result = run_job(job)
             record(result)
-            if result.get("exit_code") != 0:
+            if result.get("exit_code") != 0 and not lane_delivered_complete_measurement(result):
                 break
         return results
     with futures.ThreadPoolExecutor(max_workers=min(max_parallel, len(jobs))) as pool:

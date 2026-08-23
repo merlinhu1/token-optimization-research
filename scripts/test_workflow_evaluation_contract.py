@@ -742,6 +742,9 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
     @requires_treatment_session
     @requires_populated_registry
     def test_schema_rejects_unpaired_accepted_treatment(self) -> None:
+        # The property under test is the schema's, not the corpus's: an accepted treatment must
+        # name the baseline it is compared against. Any retained treatment record supplies a
+        # valid shape to assert it on, so this does not wait for the first accepted pair.
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         treatment = copy.deepcopy(
@@ -750,10 +753,15 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                 for session in registry["sessions"]
                 if session.get("schema_version") == 2
                 and session.get("session_role") in {"individual_tool_treatment", "stack_treatment"}
-                and session.get("interpretation", {}).get("accepted_for_objective") is True
-                and session.get("interpretation", {}).get("comparison_baseline_session_id")
             )
         )
+        baseline_id = next(
+            session["session_id"]
+            for session in registry["sessions"]
+            if session.get("session_role") == "baseline"
+        )
+        treatment["interpretation"]["accepted_for_objective"] = True
+        treatment["interpretation"]["comparison_baseline_session_id"] = baseline_id
         jsonschema.Draft202012Validator(schema).validate(treatment)
         treatment["interpretation"]["comparison_baseline_session_id"] = ""
         with self.assertRaises(jsonschema.ValidationError):
@@ -5082,6 +5090,71 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual(calls, jobs[:2])
         self.assertEqual([item["exit_code"] for item in results], [0, 1])
         self.assertEqual(matrix.execute_lane_jobs([], 3, return_nonzero), [])
+
+    def _lane_result_with_run_record(self, tmp: str, run_record: dict[str, Any]) -> dict[str, Any]:
+        session_id = "unit-session-r0"
+        run_dir = Path(tmp) / "sources/evaluations/workflow-sessions" / session_id
+        run_dir.mkdir(parents=True, exist_ok=True)
+        (run_dir / "run.json").write_text(json.dumps(run_record) + "\n")
+        return {
+            "sequence_id": "fastify-lifecycle-sequence-v2",
+            "lane_id": "fastify",
+            "exit_code": 1,
+            "checkout": tmp,
+            "produced_session_ids": [session_id],
+        }
+
+    @staticmethod
+    def _unit_run_record(attempted: int, total: int, cost: float) -> dict[str, Any]:
+        return {
+            "per_task_results": [
+                {"agent_attempted": index < attempted} for index in range(total)
+            ],
+            "token_usage": {"weighted_token_cost": cost},
+        }
+
+    def test_failed_verifier_does_not_abandon_the_sibling_lane(self) -> None:
+        """An acceptance verdict is not an apparatus failure and must not cost the next lane."""
+        task_count = len(runner.load_sequence("fastify-lifecycle-sequence-v2")["tasks"])
+        with tempfile.TemporaryDirectory() as tmp:
+            complete = self._lane_result_with_run_record(
+                tmp, self._unit_run_record(task_count, task_count, 467010.4)
+            )
+            self.assertTrue(matrix.lane_delivered_complete_measurement(complete))
+
+            calls: list[tuple[str, str]] = []
+
+            def run(job: tuple[str, str]) -> dict[str, Any]:
+                calls.append(job)
+                return dict(complete) if job[0] == "fastify" else {"lane_id": job[0], "exit_code": 0}
+
+            jobs = [("fastify", "caveman"), ("beets", "caveman")]
+            matrix.execute_lane_jobs(jobs, 1, run)
+            self.assertEqual(calls, jobs)
+
+    def test_truncated_or_unmeasured_lane_still_stops_the_plan(self) -> None:
+        """A run cut off against the apparatus says the next lane would measure nothing either."""
+        task_count = len(runner.load_sequence("fastify-lifecycle-sequence-v2")["tasks"])
+        with tempfile.TemporaryDirectory() as tmp:
+            truncated = self._lane_result_with_run_record(
+                tmp, self._unit_run_record(task_count - 1, task_count, 467010.4)
+            )
+            self.assertFalse(matrix.lane_delivered_complete_measurement(truncated))
+        with tempfile.TemporaryDirectory() as tmp:
+            unmeasured = self._lane_result_with_run_record(
+                tmp, self._unit_run_record(task_count, task_count, 0)
+            )
+            self.assertFalse(matrix.lane_delivered_complete_measurement(unmeasured))
+        with tempfile.TemporaryDirectory() as tmp:
+            short_series = self._lane_result_with_run_record(
+                tmp, self._unit_run_record(task_count - 1, task_count - 1, 467010.4)
+            )
+            self.assertFalse(matrix.lane_delivered_complete_measurement(short_series))
+        self.assertFalse(
+            matrix.lane_delivered_complete_measurement(
+                {"sequence_id": "fastify-lifecycle-sequence-v2", "exit_code": 1, "checkout": "/nonexistent"}
+            )
+        )
 
     def test_validation_restores_protected_files_before_checks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, \

@@ -1,0 +1,47 @@
+{
+  "audit_id": "caveman-claude-code-fastify-unpublishable-attempt-20260823",
+  "action": "disclose-a-completed-measurement-that-the-harness-could-not-publish",
+  "date": "2026-08-23",
+  "why_this_exists": "The retained caveman fastify r0 sample is a second attempt. The first attempt crossed the provider boundary and produced a complete measurement, but two harness defects prevented it from being published. Reporting only the second sample without this record would present a re-roll as a first sample, which is the survivorship pattern the retention policy forbids. The discarded attempt's weighted token cost is stated here so the pair can be inspected rather than taken on trust.",
+  "attempt": {
+    "session_id": "behavior-caveman-claude-code-skill-fastify-20260823-p-94cb0f4a5c49-r0",
+    "sequence_id": "fastify-lifecycle-sequence-v2",
+    "profile_id": "behavior-caveman-claude-code-skill-v1",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "replicate_index": 0,
+    "agent_runtime_version": "2.1.241 (Claude Code)",
+    "protocol_id": "fastify-lifecycle-sequence-v2-behavior-caveman-claude-code-skill-v1-8b6573965a81",
+    "preserved_bundle": "sources/evaluations/audits/unpublishable-attempts/behavior-caveman-claude-code-skill-fastify-20260823-p-94cb0f4a5c49-r0",
+    "artifact_contract": "compact-v1-four-files"
+  },
+  "measurement": {
+    "weighted_token_cost": 467010.4,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 48,
+    "weighted_token_cost_per_step": 9729.4,
+    "fresh_input_tokens": 326928,
+    "cached_input_tokens": 1368484,
+    "output_tokens": 539,
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "tasks_attempted": 6,
+    "tasks_of_series": 6,
+    "task_verifiers_passed": 5,
+    "failed_task_alias": "task-06",
+    "accepted": false
+  },
+  "why_it_could_not_be_published": [
+    {
+      "defect": "test_schema_rejects_unpaired_accepted_treatment selected its fixture from the registry by requiring an already accepted, already baseline-paired treatment session. The corpus held only baselines until this run, so the assertion had been skipping; the first treatment session unmasked it as a StopIteration rather than as a schema failure. Post-run validation failed and the matrix rolled the publication back.",
+      "fix": "The test now asserts the schema property on any retained treatment record it forces into the accepted-and-paired shape, so it no longer waits on corpus state it does not need."
+    },
+    {
+      "defect": "execute_lane_jobs treated any nonzero serialized lane exit as an apparatus failure and stopped the plan. This lane exited nonzero because one task verifier failed, which is an acceptance verdict over a real sample, so the beets lane never ran at all.",
+      "fix": "lane_delivered_complete_measurement distinguishes a completed, measured series from a run cut off against the apparatus. Only the latter stops the remaining lanes."
+    }
+  ],
+  "retention_position": {
+    "discarded_attempt_is_not_a_rejected_number": "The attempt was discarded by a harness rollback, not selected against. Its cost is disclosed above, and the two samples can be compared directly.",
+    "policy": "Never drop or rerun a retained replicate because of the number it produced. This attempt was never retained; the rerun is disclosed rather than silent.",
+    "reconstruction_not_attempted": "The lane checkout was reclaimed before recovery, and the compact contract discards the non-compact inputs that workflow_session_record reads. Rebuilding a registry record from the preserved four files would have required bespoke evidence-producing code, which is a worse hazard than a disclosed second sample."
+  }
+}
