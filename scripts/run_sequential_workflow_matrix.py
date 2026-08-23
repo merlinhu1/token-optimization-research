@@ -332,6 +332,9 @@ SERIALIZED_REPLICATION_PROFILE_IDS = {
     "baseline-claude-code-no-mcp",
     "runtime-opencode-codex-product-v1",
 }
+# Every supported family serializes: the race this prevents is over lane artifacts and
+# the session registry, which is a property of the harness, not of a task family.
+SERIALIZED_REPLICATION_GENERATIONS = set(workflow.repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS)
 
 
 def serialized_replication_lanes(
