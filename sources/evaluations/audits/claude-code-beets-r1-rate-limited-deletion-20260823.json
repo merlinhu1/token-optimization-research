@@ -1,0 +1,21 @@
+{
+ "schema_version": 1,
+ "date": "2026-08-23",
+ "action": "owner-authorized-record-deletion-and-replacement",
+ "session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r1",
+ "disposition": "invalid-infrastructure-interruption",
+ "cause": {
+  "finding": "The account's five-hour rate limit was reached mid-run. The stream records rate_limit_event utilisation climbing to 0.98 with status allowed_warning, then a final rate_limit_info of status rejected, rateLimitType five_hour, overageDisabledReason org_level_disabled, and a result event reading 'You've hit your session limit - resets 9:10am (UTC)'.",
+  "effect": "Task 2 ended at the limit and the remaining four tasks were never attempted, so the recorded 77,017 weighted cost covered two of six tasks.",
+  "not_an_agent_result": "Nothing about the agent's behaviour produced this. The run was interrupted by the provider account, so the number measures an outage rather than a trajectory and is not a retainable replicate."
+ },
+ "retention_policy_note": "Retention protects replicates whose agent performed badly, which produce real measurements of real trajectories. This one measured an interruption, so it is replaced rather than kept.",
+ "deleted": [
+  "data/workflow-sessions.json entry",
+  "sources/evaluations/workflow-sessions/baseline-claude-code-beets-20260823-p-e257557e288c-r1/"
+ ],
+ "retained": {
+  "protocol": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-baseline-claude-code-no-mcp-cddd8b083dcc.json is cited by the r0 session and stays."
+ },
+ "replacement": "Re-run at the same replicate index after the limit reset at 09:10 UTC."
+}
