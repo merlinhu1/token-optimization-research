@@ -839,7 +839,10 @@ def pilot_session_artifacts_valid(session: dict[str, Any], root: Path = ROOT) ->
         and run_record.get("replicate_index") == session.get("replicate_index")
         and run_record.get("workflow_sequence_id") == session.get("task_sequence", {}).get("sequence_id")
         and run_record.get("profile_id") == session.get("profile", {}).get("profile_id")
-        and run_record.get("accepted") is True
+        # No acceptance requirement here either. Verifiers gate acceptance and treatment unlock,
+        # never weighted-token retention, and the session/run agreement on `accepted` is checked
+        # by compact_run_record_matches_session. Requiring it twice discarded the same samples
+        # the policy exists to keep.
         and run_record.get("frozen_protocol") == session.get("frozen_protocol")
         and run_record.get("baseline_pool") == session.get("baseline_pool")
         and run_record.get("selected_execution") == session.get("selected_execution")

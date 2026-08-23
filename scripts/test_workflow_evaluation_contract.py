@@ -1528,6 +1528,8 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
         )
         source = (ROOT / "scripts/run_codex_workflow_evaluation.py").read_text()
         self.assertIn("require_accepted=False", source)
+        # And nowhere else in the ingress path may acceptance gate retention.
+        self.assertNotIn('run_record.get("accepted") is True', source)
 
     def test_descriptor_records_the_runtime_that_actually_ran(self) -> None:
         """The runtime belongs to the profile, not to the model condition.
