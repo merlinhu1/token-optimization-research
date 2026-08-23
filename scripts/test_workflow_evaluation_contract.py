@@ -1627,6 +1627,26 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             ),
         )
 
+    def test_every_runtime_uses_the_same_baseline_gate(self) -> None:
+        """Running the command is the authorization, for all three runtimes alike.
+
+        Codex baselines were gated on technical readiness, Claude Code additionally required a
+        signed authorization artifact naming an owner message, and OpenCode was refused
+        unconditionally. Three answers to one question, and the artifact was the mechanism that
+        nearly pointed a paid Claude run at a retired provider route.
+        """
+        source = (ROOT / "scripts/run_sequential_workflow_matrix.py").read_text()
+        for removed in (
+            "claude_baseline_run_gate",
+            "opencode_baseline_run_gate",
+            "CLAUDE_BASELINE_AUTHORITY_REL",
+        ):
+            self.assertNotIn(removed, source, f"{removed} reintroduces a per-runtime gate")
+        gate = source[source.index("def baseline_run_gate("):]
+        gate = gate[: gate.index("\n    if args.prepare_only")]
+        self.assertIn("lifecycle_treatment_gate", gate)
+        self.assertNotIn("runtime_id", gate, "the gate must not branch on runtime")
+
     def test_no_profile_declares_a_duplicate_mount(self) -> None:
         """Docker refuses the whole run when a target is bound twice.
 

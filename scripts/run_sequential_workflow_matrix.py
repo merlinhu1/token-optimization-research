@@ -41,12 +41,6 @@ OPENCODE_BASELINE_AUTHORITY_REL = Path(
     "sources/evaluations/audits/opencode-dcp-qualification-and-r2-authorization-20260730.json"
 )
 OPENCODE_BASELINE_ATTEMPT_DIR = Path("sources/evaluations/audits/opencode-bare-r2-attempts")
-# Claude Code has exactly one permitted route. Both names are here so nothing downstream has to
-# restate them, and so a second route cannot be introduced by adding a file.
-CLAUDE_BASELINE_CONDITION_ID = "claude-code-anthropic-opus-5-medium"
-CLAUDE_BASELINE_AUTHORITY_REL = Path(
-    "sources/evaluations/audits/claude-code-opus-5-medium-baseline-authorization.json"
-)
 CLAUDE_ANTHROPIC_OPUS_5_MEDIUM_CONDITION_ID = "claude-code-anthropic-opus-5-medium"
 WORKFLOW_ARTIFACT_ROOT = Path("sources/evaluations/workflow-sessions")
 COMPACT_ARTIFACT_NAMES = {"run.json", "changes.diff", "evidence.jsonl.gz", "manifest.sha256"}
@@ -334,65 +328,10 @@ def _plan_protocol(sequence_id: str, profile: str, model_condition: dict[str, st
     return str(found.relative_to(ROOT)) if found is not None else None
 
 
-def claude_baseline_run_gate(
-    registry: dict[str, Any],
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-    model_condition_id: str | None = None,
-) -> tuple[bool, str]:
-    """Claude Code runs under Opus 5 medium and under nothing else.
-
-    The authorization this gate used to read named a retired high-effort condition on a provider
-    the study does not use. Keeping a live authorization for a route that must never run again is
-    how the wrong route gets chosen, so the condition is now checked first and by name: no
-    authorization file, however well formed, can authorize anything else.
-    """
-    if model_condition_id != CLAUDE_BASELINE_CONDITION_ID:
-        return False, (
-            f"Claude Code runs only under {CLAUDE_BASELINE_CONDITION_ID}; "
-            f"refused model condition {model_condition_id!r}"
-        )
-    path = root / CLAUDE_BASELINE_AUTHORITY_REL
-    if not path.is_file():
-        return False, (
-            "no current Claude Code baseline authorization: expected "
-            f"{CLAUDE_BASELINE_AUTHORITY_REL} authorizing {CLAUDE_BASELINE_CONDITION_ID}"
-        )
-    try:
-        authority = load_json(path)
-    except (OSError, ValueError) as exc:
-        return False, f"unreadable Claude Code baseline authority: {exc}"
-    expected_sequences = [
-        item["id"]
-        for item in load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
-        if item.get("status") == "active"
-    ]
-    condition = authority.get("model_condition")
-    if not isinstance(condition, dict) or condition.get("id") != CLAUDE_BASELINE_CONDITION_ID:
-        return False, "Claude Code baseline authority does not authorize the Opus 5 medium condition"
-    if (
-        authority.get("paid_baseline_execution_authorized") is not True
-        or authority.get("authorized_replicate_index") != replicate_index
-        or sequence_id not in expected_sequences
-        or authority.get("sequence_order") != expected_sequences
-    ):
-        return False, "Claude Code baseline authority does not match the requested identity or scope"
-    occupied = workflow.find_pool_profile_record(
-        registry, workflow.load_sequence(sequence_id), "baseline-claude-code-no-mcp", replicate_index
-    )
-    if occupied is not None:
-        return False, f"Claude Code baseline identity is already occupied by session {occupied.get('session_id')}"
-    return True, f"owner-authorized Claude Code {CLAUDE_BASELINE_CONDITION_ID} baseline is unoccupied"
-
-
 SERIALIZED_REPLICATION_PROFILE_IDS = {
     "baseline-claude-code-no-mcp",
     "runtime-opencode-codex-product-v1",
 }
-# Every supported family serializes: the race this prevents is over lane artifacts and
-# the session registry, which is a property of the harness, not of a task family.
-SERIALIZED_REPLICATION_GENERATIONS = set(workflow.repository_validation.SUPPORTED_TASK_FAMILY_GENERATIONS)
 
 
 def serialized_replication_lanes(
@@ -489,19 +428,6 @@ def plan_workflow_jobs(
 
 
 
-
-
-def opencode_baseline_run_gate(
-    registry: dict[str, Any],
-    sequence_id: str,
-    replicate_index: int,
-    root: Path = ROOT,
-    *,
-    r2_beets_retry: bool = False,
-) -> tuple[bool, str]:
-    # Both authorised OpenCode baseline paths belonged to the retired high-effort campaign,
-    # whose receipts were deleted with that corpus. No standalone OpenCode baseline remains.
-    return False, "no current OpenCode baseline authorization"
 
 
 def workflow_lane_command(
@@ -2013,24 +1939,15 @@ def main(argv: list[str] | None = None) -> int:
         return workflow.lifecycle_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     def baseline_run_gate(sequence_id: str) -> tuple[bool, str]:
-        if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli":
-            return opencode_baseline_run_gate(
-                registry,
-                sequence_id,
-                args.replicate_index,
-                ROOT,
-                r2_beets_retry=args.r2_beets_retry,
-            )
-        if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "claude-code":
-            if args.dry_run:
-                return True, "dry-run only; no provider spend"
-            return claude_baseline_run_gate(
-                registry,
-                sequence_id,
-                args.replicate_index,
-                ROOT,
-                model_condition_id=str(model_condition.get("id")),
-            )
+        """Readiness, not authorization. Running the command is the authorization.
+
+        Codex baselines have always been gated on technical readiness alone. Claude Code
+        additionally required a signed authorization artifact naming an owner message, and
+        OpenCode was refused unconditionally -- three answers to the same question, for no reason
+        that survives inspection. The route each runtime may use is enforced by the registry
+        holding exactly one condition per runtime; whether an identity is already occupied is
+        decided generically by the campaign state before this gate is consulted.
+        """
         return workflow.lifecycle_treatment_gate(workflow.load_sequence(sequence_id), ROOT)
 
     if args.prepare_only and treatment_profiles:
