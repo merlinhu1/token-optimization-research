@@ -21829,6 +21829,1782 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 6
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "ponytail-fastify-20260824-p-dc16afea3ad5-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-artifact-ponytail-codex-plugin-v1-dc16afea3ad5-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v2-artifact-ponytail-codex-plugin-v1-e945531c8437",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-artifact-ponytail-codex-plugin-v1-e945531c8437.json",
+        "sha256": "9e613b662ff116795ef4d6b7f8e4fafcd222d040c9173cbf8440dc9c6a5b9b7f"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "dc16afea3ad5",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "6d5c2ef4e843e1e7c8e9d1386546713473c2883f4c8444898b2ed094dc0c3a01",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "artifact-ponytail-codex-plugin-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "artifact-ponytail-codex-plugin-v1"
+            ],
+            "enabled_surfaces": [
+              "codex-plugin",
+              "product-authored-skills-and-commands",
+              "session-start-hook",
+              "user-prompt-submit-hook",
+              "subagent-start-hook"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "f3a17d0853db451ff2abaf080cd803e6c2052e8937cc434680ef3d1a0898c539",
+            "registry_entry": {
+              "id": "artifact-ponytail-codex-plugin-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "codex-plugin",
+                "product-authored-skills-and-commands",
+                "session-start-hook",
+                "user-prompt-submit-hook",
+                "subagent-start-hook"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "artifact-ponytail-codex-plugin-v1",
+                  "surface": "codex-plugin+skills+commands+trusted-lifecycle-hooks",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Create a local Codex marketplace from the exact pinned Ponytail commit, install ponytail@ponytail through the official `codex plugin` commands in a lane-private CODEX_HOME, discover every plugin hook through Codex app-server, persist trust for the reviewed current hashes, and verify the enabled plugin plus trusted hooks."
+              },
+              "reset": {
+                "policy": "Delete the lane-private CODEX_HOME, local marketplace mirror, hook-trust receipt, plugin cache, and all generated evaluation artifacts after evidence capture."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-plugin-hooks-and-skills",
+                "integration_state": "official-codex-plugin+pinned-local-marketplace+trusted-product-hooks",
+                "instruction_policy": "product-authored-plugin-skills-and-hooks",
+                "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+                "assignment_proof": "provider-free plugin list plus source-pin receipt plus trusted hooks/list receipt required"
+              },
+              "notes": "Guide-faithful replacement for the deleted prompt-only artifact-ponytail profile."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "fastify-trailer-duplicate-callback-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+              },
+              {
+                "task_id": "fastify-nested-prefix-join-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+              },
+              {
+                "task_id": "fastify-serializer-compiler-flag-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+              },
+              {
+                "task_id": "fastify-sync-validator-throw-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+              },
+              {
+                "task_id": "fastify-duplicated-route-method-array-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+              },
+              {
+                "task_id": "fastify-head-route-web-stream-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "ponytail-codex-plugin-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+            "tool_config": {
+              "display_name": "Ponytail official Codex plugin v1",
+              "lane_name": "artifact-ponytail-codex-plugin-v1",
+              "surface": "codex-plugin/skills+commands+sessionstart+userpromptsubmit+subagentstart-hooks",
+              "allowed_terms": [
+                "ponytail"
+              ],
+              "data_dir_name": "ponytail-codex-plugin-v1",
+              "mounts": [
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+              ],
+              "codex_features": {
+                "hooks": true
+              },
+              "host_integration": {
+                "home_dot_codex_alias": true,
+                "install_commands": [
+                  [
+                    "python3",
+                    "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                    "--source",
+                    "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                    "--expected-commit",
+                    "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                    "--marketplace-root",
+                    "{tool_data_dir}/marketplace",
+                    "--marketplace-name",
+                    "ponytail",
+                    "--plugin-name",
+                    "ponytail"
+                  ],
+                  [
+                    "codex",
+                    "plugin",
+                    "marketplace",
+                    "add",
+                    "{tool_data_dir}/marketplace",
+                    "--json"
+                  ],
+                  [
+                    "codex",
+                    "plugin",
+                    "add",
+                    "ponytail@ponytail",
+                    "--json"
+                  ],
+                  [
+                    "python3",
+                    "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+                    "--codex",
+                    "codex",
+                    "--cwd",
+                    "{repo}",
+                    "--plugin-id",
+                    "ponytail@ponytail",
+                    "--expected-events",
+                    "sessionStart,userPromptSubmit,subagentStart",
+                    "--receipt",
+                    "{tool_data_dir}/ponytail-hook-trust.json"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "codex",
+                    "plugin",
+                    "list",
+                    "--json"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/config.toml",
+                  "{codex_home}/plugins/cache/ponytail/ponytail/4.9.0/.codex-plugin/plugin.json",
+                  "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                  "{tool_data_dir}/ponytail-hook-trust.json"
+                ],
+                "timeout_seconds": 300
+              },
+              "preflight_command": [
+                "codex",
+                "plugin",
+                "list",
+                "--json"
+              ],
+              "default_tool_state": "active-plugin-hooks-and-skills",
+              "path_entries": [],
+              "required_source_artifacts": [
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+                "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+              ],
+              "clean_source_roots": [
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source"
+              ],
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                  "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256",
+                  "kind": "official-release-artifact"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+                  "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf",
+                  "kind": "official-install-guide"
+                }
+              ],
+              "tool_manifest_identity": "current-file-v1"
+            },
+            "tool_config_sha256": "4f419caff71d2f1ddd0b6cfef839ebcc140e1b858d6ca4604050764f2d059f60",
+            "tool_state": "active-plugin-hooks-and-skills",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "preflight_command",
+              "command": [
+                "codex",
+                "plugin",
+                "list",
+                "--json"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "codex",
+              "resolved_path": "/opt/data/bin/codex",
+              "realpath": "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+              "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+              "metadata": {
+                "size": 7236,
+                "mode": "-rwx--x--x",
+                "uid": 10000,
+                "gid": 10000,
+                "mtime_ns": 1786742167666302194
+              },
+              "version": {
+                "command": [
+                  "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "codex-cli 0.147.0",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                "exists": true,
+                "kind": "file",
+                "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                "git_clean": true,
+                "package_json_sha256": "5f7e5ab891c31ae006b986d34e0977fda44fc54e654cc4e07531dd5dd6f96b8f"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+                "exists": true,
+                "kind": "file",
+                "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf"
+              },
+              {
+                "path": "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "fc1b064e9e09049ec8520fd1244043e6559a8752d08aed6ff168c5eebe38838a"
+              },
+              {
+                "path": "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "1de483868a674f660daa414e6533951ccd877b294735953a9f3f5d8dc1abb353"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+            "agent_runtime_id": "codex-cli",
+            "model_condition": {
+              "id": "codex-openai-gpt-5-6-sol-medium",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_codex_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "reasoning_effort": "medium",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "dc16afea3ad5",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "registry_status": "active-default",
+            "launcher": {
+              "path": "scripts/run_codex_workflow_model_condition.py",
+              "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "ponytail-codex-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+        "tool_config": {
+          "display_name": "Ponytail official Codex plugin v1",
+          "lane_name": "artifact-ponytail-codex-plugin-v1",
+          "surface": "codex-plugin/skills+commands+sessionstart+userpromptsubmit+subagentstart-hooks",
+          "allowed_terms": [
+            "ponytail"
+          ],
+          "data_dir_name": "ponytail-codex-plugin-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+            "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+          ],
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "python3",
+                "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "--source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "--expected-commit",
+                "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                "--marketplace-root",
+                "{tool_data_dir}/marketplace",
+                "--marketplace-name",
+                "ponytail",
+                "--plugin-name",
+                "ponytail"
+              ],
+              [
+                "codex",
+                "plugin",
+                "marketplace",
+                "add",
+                "{tool_data_dir}/marketplace",
+                "--json"
+              ],
+              [
+                "codex",
+                "plugin",
+                "add",
+                "ponytail@ponytail",
+                "--json"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+                "--codex",
+                "codex",
+                "--cwd",
+                "{repo}",
+                "--plugin-id",
+                "ponytail@ponytail",
+                "--expected-events",
+                "sessionStart,userPromptSubmit,subagentStart",
+                "--receipt",
+                "{tool_data_dir}/ponytail-hook-trust.json"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "codex",
+                "plugin",
+                "list",
+                "--json"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/config.toml",
+              "{codex_home}/plugins/cache/ponytail/ponytail/4.9.0/.codex-plugin/plugin.json",
+              "{tool_data_dir}/marketplace/source-pin-receipt.json",
+              "{tool_data_dir}/ponytail-hook-trust.json"
+            ],
+            "timeout_seconds": 300
+          },
+          "preflight_command": [
+            "codex",
+            "plugin",
+            "list",
+            "--json"
+          ],
+          "default_tool_state": "active-plugin-hooks-and-skills",
+          "path_entries": [],
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+            "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+              "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+              "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1"
+        },
+        "tool_config_sha256": "4f419caff71d2f1ddd0b6cfef839ebcc140e1b858d6ca4604050764f2d059f60",
+        "tool_state": "active-plugin-hooks-and-skills",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "codex",
+            "plugin",
+            "list",
+            "--json"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "codex",
+          "resolved_path": "/opt/data/bin/codex",
+          "realpath": "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+          "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+          "metadata": {
+            "size": 7236,
+            "mode": "-rwx--x--x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1786742167666302194
+          },
+          "version": {
+            "command": [
+              "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "codex-cli 0.147.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+            "exists": true,
+            "kind": "file",
+            "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+            "git_clean": true,
+            "package_json_sha256": "5f7e5ab891c31ae006b986d34e0977fda44fc54e654cc4e07531dd5dd6f96b8f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf"
+          },
+          {
+            "path": "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "fc1b064e9e09049ec8520fd1244043e6559a8752d08aed6ff168c5eebe38838a"
+          },
+          {
+            "path": "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "1de483868a674f660daa414e6533951ccd877b294735953a9f3f5d8dc1abb353"
+          }
+        ]
+      },
+      "date": "2026-08-24",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "fastify-trailer-duplicate-callback-v2",
+          "fastify-nested-prefix-join-v2",
+          "fastify-serializer-compiler-flag-v2",
+          "fastify-sync-validator-throw-v2",
+          "fastify-duplicated-route-method-array-v2",
+          "fastify-head-route-web-stream-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "codex-plugin",
+          "product-authored-skills-and-commands",
+          "session-start-hook",
+          "user-prompt-submit-hook",
+          "subagent-start-hook"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "artifact-ponytail-codex-plugin-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.147.0",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 204773,
+        "cached_input_tokens": 4595968,
+        "cache_write_tokens": 0,
+        "output_tokens": 12705,
+        "reasoning_tokens": 2750,
+        "total_provider_tokens": 4813446,
+        "weighted_token_cost": 740599.8,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 68,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "agent_message": 25,
+          "command_execution": 37,
+          "file_change": 6
+        },
+        "weighted_token_cost_per_step": 10891.2,
+        "provider_usage_details": {
+          "runtime": "codex-cli",
+          "accounting_mode": "final-cumulative-total-per-thread",
+          "raw_token_field_totals": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 4595968,
+            "input_tokens": 4800741,
+            "output_tokens": 12705,
+            "reasoning_output_tokens": 2750
+          },
+          "incremental_raw_token_field_totals": {
+            "cached_input_tokens": 4595968,
+            "input_tokens": 4800741,
+            "output_tokens": 12705,
+            "reasoning_output_tokens": 2750
+          },
+          "fresh_input_formula": "input_tokens - cached_input_tokens",
+          "reasoning_tokens_available": true
+        },
+        "accounting_basis": "Codex CLI telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-trailer-duplicate-callback-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-nested-prefix-join-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-serializer-compiler-flag-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-sync-validator-throw-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-duplicated-route-method-array-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-head-route-web-stream-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032d7-f584-7c01-b474-2c3413199abc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/task-06-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0",
+        "run_record": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/ponytail-fastify-20260824-p-dc16afea3ad5-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-fastify-20260821-p-dc16afea3ad5-r0",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "ponytail-beets-20260824-p-c86863838e8b-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-artifact-ponytail-codex-plugin-v1-c86863838e8b-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v2-artifact-ponytail-codex-plugin-v1-1c19a96c9b43",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-artifact-ponytail-codex-plugin-v1-1c19a96c9b43.json",
+        "sha256": "51ac4b3c3b5a07944bc065e122281f81711fbe75c41990d021a2f5bee1543192"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "c86863838e8b",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "5a90ba60ca60709a34e82206140fc38d9a318d9d209b502f4a8c3a75369be714",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "artifact-ponytail-codex-plugin-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "artifact-ponytail-codex-plugin-v1"
+            ],
+            "enabled_surfaces": [
+              "codex-plugin",
+              "product-authored-skills-and-commands",
+              "session-start-hook",
+              "user-prompt-submit-hook",
+              "subagent-start-hook"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "f3a17d0853db451ff2abaf080cd803e6c2052e8937cc434680ef3d1a0898c539",
+            "registry_entry": {
+              "id": "artifact-ponytail-codex-plugin-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "codex-plugin",
+                "product-authored-skills-and-commands",
+                "session-start-hook",
+                "user-prompt-submit-hook",
+                "subagent-start-hook"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "artifact-ponytail-codex-plugin-v1",
+                  "surface": "codex-plugin+skills+commands+trusted-lifecycle-hooks",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Create a local Codex marketplace from the exact pinned Ponytail commit, install ponytail@ponytail through the official `codex plugin` commands in a lane-private CODEX_HOME, discover every plugin hook through Codex app-server, persist trust for the reviewed current hashes, and verify the enabled plugin plus trusted hooks."
+              },
+              "reset": {
+                "policy": "Delete the lane-private CODEX_HOME, local marketplace mirror, hook-trust receipt, plugin cache, and all generated evaluation artifacts after evidence capture."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-plugin-hooks-and-skills",
+                "integration_state": "official-codex-plugin+pinned-local-marketplace+trusted-product-hooks",
+                "instruction_policy": "product-authored-plugin-skills-and-hooks",
+                "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+                "assignment_proof": "provider-free plugin list plus source-pin receipt plus trusted hooks/list receipt required"
+              },
+              "notes": "Guide-faithful replacement for the deleted prompt-only artifact-ponytail profile."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "beets-unique-path-counter-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+              },
+              {
+                "task_id": "beets-empty-string-field-split-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+              },
+              {
+                "task_id": "beets-date-query-alternation-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+              },
+              {
+                "task_id": "beets-membership-query-hashable-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+              },
+              {
+                "task_id": "beets-spotify-uri-extraction-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+              },
+              {
+                "task_id": "beets-lyrics-keep-synced-override-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "ponytail-codex-plugin-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+            "tool_config": {
+              "display_name": "Ponytail official Codex plugin v1",
+              "lane_name": "artifact-ponytail-codex-plugin-v1",
+              "surface": "codex-plugin/skills+commands+sessionstart+userpromptsubmit+subagentstart-hooks",
+              "allowed_terms": [
+                "ponytail"
+              ],
+              "data_dir_name": "ponytail-codex-plugin-v1",
+              "mounts": [
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+              ],
+              "codex_features": {
+                "hooks": true
+              },
+              "host_integration": {
+                "home_dot_codex_alias": true,
+                "install_commands": [
+                  [
+                    "python3",
+                    "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                    "--source",
+                    "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                    "--expected-commit",
+                    "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                    "--marketplace-root",
+                    "{tool_data_dir}/marketplace",
+                    "--marketplace-name",
+                    "ponytail",
+                    "--plugin-name",
+                    "ponytail"
+                  ],
+                  [
+                    "codex",
+                    "plugin",
+                    "marketplace",
+                    "add",
+                    "{tool_data_dir}/marketplace",
+                    "--json"
+                  ],
+                  [
+                    "codex",
+                    "plugin",
+                    "add",
+                    "ponytail@ponytail",
+                    "--json"
+                  ],
+                  [
+                    "python3",
+                    "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+                    "--codex",
+                    "codex",
+                    "--cwd",
+                    "{repo}",
+                    "--plugin-id",
+                    "ponytail@ponytail",
+                    "--expected-events",
+                    "sessionStart,userPromptSubmit,subagentStart",
+                    "--receipt",
+                    "{tool_data_dir}/ponytail-hook-trust.json"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "codex",
+                    "plugin",
+                    "list",
+                    "--json"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/config.toml",
+                  "{codex_home}/plugins/cache/ponytail/ponytail/4.9.0/.codex-plugin/plugin.json",
+                  "{tool_data_dir}/marketplace/source-pin-receipt.json",
+                  "{tool_data_dir}/ponytail-hook-trust.json"
+                ],
+                "timeout_seconds": 300
+              },
+              "preflight_command": [
+                "codex",
+                "plugin",
+                "list",
+                "--json"
+              ],
+              "default_tool_state": "active-plugin-hooks-and-skills",
+              "path_entries": [],
+              "required_source_artifacts": [
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+                "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+              ],
+              "clean_source_roots": [
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source"
+              ],
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                  "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256",
+                  "kind": "official-release-artifact"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+                  "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf",
+                  "kind": "official-install-guide"
+                }
+              ],
+              "tool_manifest_identity": "current-file-v1"
+            },
+            "tool_config_sha256": "4f419caff71d2f1ddd0b6cfef839ebcc140e1b858d6ca4604050764f2d059f60",
+            "tool_state": "active-plugin-hooks-and-skills",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "preflight_command",
+              "command": [
+                "codex",
+                "plugin",
+                "list",
+                "--json"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "codex",
+              "resolved_path": "/opt/data/bin/codex",
+              "realpath": "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+              "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+              "metadata": {
+                "size": 7236,
+                "mode": "-rwx--x--x",
+                "uid": 10000,
+                "gid": 10000,
+                "mtime_ns": 1786742167666302194
+              },
+              "version": {
+                "command": [
+                  "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "codex-cli 0.147.0",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+                "exists": true,
+                "kind": "file",
+                "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                "git_clean": true,
+                "package_json_sha256": "5f7e5ab891c31ae006b986d34e0977fda44fc54e654cc4e07531dd5dd6f96b8f"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+                "exists": true,
+                "kind": "file",
+                "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf"
+              },
+              {
+                "path": "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "fc1b064e9e09049ec8520fd1244043e6559a8752d08aed6ff168c5eebe38838a"
+              },
+              {
+                "path": "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "1de483868a674f660daa414e6533951ccd877b294735953a9f3f5d8dc1abb353"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+            "agent_runtime_id": "codex-cli",
+            "model_condition": {
+              "id": "codex-openai-gpt-5-6-sol-medium",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_codex_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "uv sync --group test --frozen",
+            "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+            "lockfiles": [
+              {
+                "path": "uv.lock",
+                "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "reasoning_effort": "medium",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "c86863838e8b",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "registry_status": "active-default",
+            "launcher": {
+              "path": "scripts/run_codex_workflow_model_condition.py",
+              "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "ponytail-codex-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+        "tool_config": {
+          "display_name": "Ponytail official Codex plugin v1",
+          "lane_name": "artifact-ponytail-codex-plugin-v1",
+          "surface": "codex-plugin/skills+commands+sessionstart+userpromptsubmit+subagentstart-hooks",
+          "allowed_terms": [
+            "ponytail"
+          ],
+          "data_dir_name": "ponytail-codex-plugin-v1",
+          "mounts": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+            "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+          ],
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "python3",
+                "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+                "--source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "--expected-commit",
+                "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                "--marketplace-root",
+                "{tool_data_dir}/marketplace",
+                "--marketplace-name",
+                "ponytail",
+                "--plugin-name",
+                "ponytail"
+              ],
+              [
+                "codex",
+                "plugin",
+                "marketplace",
+                "add",
+                "{tool_data_dir}/marketplace",
+                "--json"
+              ],
+              [
+                "codex",
+                "plugin",
+                "add",
+                "ponytail@ponytail",
+                "--json"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+                "--codex",
+                "codex",
+                "--cwd",
+                "{repo}",
+                "--plugin-id",
+                "ponytail@ponytail",
+                "--expected-events",
+                "sessionStart,userPromptSubmit,subagentStart",
+                "--receipt",
+                "{tool_data_dir}/ponytail-hook-trust.json"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "codex",
+                "plugin",
+                "list",
+                "--json"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/config.toml",
+              "{codex_home}/plugins/cache/ponytail/ponytail/4.9.0/.codex-plugin/plugin.json",
+              "{tool_data_dir}/marketplace/source-pin-receipt.json",
+              "{tool_data_dir}/ponytail-hook-trust.json"
+            ],
+            "timeout_seconds": 300
+          },
+          "preflight_command": [
+            "codex",
+            "plugin",
+            "list",
+            "--json"
+          ],
+          "default_tool_state": "active-plugin-hooks-and-skills",
+          "path_entries": [],
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+            "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "{repository_root}/scripts/trust_codex_plugin_hooks.py"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+              "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+              "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1"
+        },
+        "tool_config_sha256": "4f419caff71d2f1ddd0b6cfef839ebcc140e1b858d6ca4604050764f2d059f60",
+        "tool_state": "active-plugin-hooks-and-skills",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "codex",
+            "plugin",
+            "list",
+            "--json"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "codex",
+          "resolved_path": "/opt/data/bin/codex",
+          "realpath": "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+          "sha256": "134063e133f0b4244fa3b251acf973d4fe4b4aeeacbdc135211bf480f59f1477",
+          "metadata": {
+            "size": 7236,
+            "mode": "-rwx--x--x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1786742167666302194
+          },
+          "version": {
+            "command": [
+              "/opt/data/.local/lib/node_modules/@openai/codex/bin/codex.js",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "codex-cli 0.147.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+            "exists": true,
+            "kind": "file",
+            "sha256": "7f45b3fab0b92ae5ff95c4608acda9f6ee2f0374b0122cba046289167d0cd256"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+            "git_clean": true,
+            "package_json_sha256": "5f7e5ab891c31ae006b986d34e0977fda44fc54e654cc4e07531dd5dd6f96b8f"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "743044a29ec74de597baa1ac492f874c08d749bf0510bd81663a7637681516cf"
+          },
+          {
+            "path": "{repository_root}/scripts/prepare_pinned_codex_marketplace.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "fc1b064e9e09049ec8520fd1244043e6559a8752d08aed6ff168c5eebe38838a"
+          },
+          {
+            "path": "{repository_root}/scripts/trust_codex_plugin_hooks.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "1de483868a674f660daa414e6533951ccd877b294735953a9f3f5d8dc1abb353"
+          }
+        ]
+      },
+      "date": "2026-08-24",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "beets-unique-path-counter-v2",
+          "beets-empty-string-field-split-v2",
+          "beets-date-query-alternation-v2",
+          "beets-membership-query-hashable-v2",
+          "beets-spotify-uri-extraction-v2",
+          "beets-lyrics-keep-synced-override-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "artifact-ponytail-codex-plugin-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "codex-plugin",
+          "product-authored-skills-and-commands",
+          "session-start-hook",
+          "user-prompt-submit-hook",
+          "subagent-start-hook"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "artifact-ponytail-codex-plugin-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.147.0",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 148069,
+        "cached_input_tokens": 4123136,
+        "cache_write_tokens": 0,
+        "output_tokens": 12333,
+        "reasoning_tokens": 2259,
+        "total_provider_tokens": 4283538,
+        "weighted_token_cost": 634380.6,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 60,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "agent_message": 24,
+          "command_execution": 29,
+          "file_change": 7
+        },
+        "weighted_token_cost_per_step": 10573.0,
+        "provider_usage_details": {
+          "runtime": "codex-cli",
+          "accounting_mode": "final-cumulative-total-per-thread",
+          "raw_token_field_totals": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 4123136,
+            "input_tokens": 4271205,
+            "output_tokens": 12333,
+            "reasoning_output_tokens": 2259
+          },
+          "incremental_raw_token_field_totals": {
+            "cached_input_tokens": 4123136,
+            "input_tokens": 4271205,
+            "output_tokens": 12333,
+            "reasoning_output_tokens": 2259
+          },
+          "fresh_input_formula": "input_tokens - cached_input_tokens",
+          "reasoning_tokens_available": true
+        },
+        "accounting_basis": "Codex CLI telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-unique-path-counter-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-empty-string-field-split-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-date-query-alternation-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-membership-query-hashable-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-spotify-uri-extraction-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lyrics-keep-synced-override-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a032e2-30fa-7830-943d-5c0619b56db3",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/task-06-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0",
+        "run_record": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/ponytail-beets-20260824-p-c86863838e8b-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-beets-20260822-p-c86863838e8b-r0",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
     }
   ]
 }

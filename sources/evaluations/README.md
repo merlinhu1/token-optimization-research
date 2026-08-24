@@ -2,18 +2,18 @@
 
 This directory contains Lifecycle V2 fixture implementations, frozen execution contracts, retained provider-run evidence, derived comparisons, and audit receipts.
 
-- `fixtures/` — Fastify and Beets Lifecycle V2 fixtures; their generated qualification evidence is active for the future rerun.
-- `protocols/` — the two bare-Codex no-result contracts eligible for the future rerun.
-- `workflow-sessions/` — active provider-backed compact workflow evidence. It is currently empty because the prior corpus was archived before rerun.
+- `fixtures/` — Fastify and Beets Lifecycle V2 fixtures and their generated qualification evidence.
+- `protocols/` — frozen execution contracts, content-addressed and derived at run time ([ADR 0010](../../docs/architecture/decision-records/0010-protocols-are-derived-at-run-time.md)); one file per apparatus that has actually run.
+- `workflow-sessions/` — active provider-backed compact workflow evidence and the derived comparison artifacts beside it.
 - `archive/` — superseded generations, retained only while they remain compatible controls.
 - `audits/` — current qualification, invalidation, retirement, installation-parity, and general research receipts.
 
 <!-- generated:corpus-summary -->
-The active registry contains 20 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 6 individual-tool treatments. By sequence: 10 `beets-lifecycle-sequence-v2`, 10 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 8, Codex CLI 8, OpenCode CLI 4.
+The active registry contains 22 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 8 individual-tool treatments. By sequence: 11 `beets-lifecycle-sequence-v2`, 11 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 8, Codex CLI 10, OpenCode CLI 4.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 3 replicates (71, 52, 52 agent steps, spread 36.5%); weighted cost per step spread 13.6%; `c86863838e8b` holds 5 replicates (64, 64, 63, 123, 77 agent steps, spread 95.2%); weighted cost per step spread 98.5%; `dc16afea3ad5` holds 5 replicates (69, 73, 76, 138, 72 agent steps, spread 100.0%); weighted cost per step spread 42.1%; `e257557e288c` holds 3 replicates (66, 36, 35 agent steps, spread 88.6%); weighted cost per step spread 44.3%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 3 replicates (71, 52, 52 agent steps, spread 36.5%); weighted cost per step spread 13.6%; `c86863838e8b` holds 6 replicates (64, 64, 63, 123, 77, 60 agent steps, spread 105.0%); weighted cost per step spread 118.7%; `dc16afea3ad5` holds 6 replicates (69, 73, 76, 138, 72, 68 agent steps, spread 102.9%); weighted cost per step spread 42.1%; `e257557e288c` holds 3 replicates (66, 36, 35 agent steps, spread 88.6%); weighted cost per step spread 44.3%.
 <!-- /generated:corpus-summary -->
 
 The active qualifications are `fixtures/medium/fastify-fastify/qualification-lifecycle-v2-20260821.json` and `fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json`. Both lanes carry provider-backed results under those identities; a qualification proves preparation only and is never an effectiveness result.
 
-Historical audit receipts and papers retain their provenance and point to the archived result paths where applicable. They must not be read as current findings until a new corrected-contract corpus is executed and published.
+Historical audit receipts and papers retain their provenance and point to the archived result paths where applicable. They are not current findings and must not be reused as controls for the Lifecycle V2 corpus.
