@@ -1,0 +1,708 @@
+{
+  "session_id": "rtk-beets-20260824-p-c86863838e8b-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-terminal-rtk-codex-instructions-v1-c86863838e8b-sequential-workflow-r0",
+  "replicate_index": 0,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v2-terminal-rtk-codex-instructions-v1-4e66e877f287",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-terminal-rtk-codex-instructions-v1-4e66e877f287.json",
+    "sha256": "b89d09820a0b527451335e43bd932ed49e2a07ac89d50360b0c560568e03cd35"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "c86863838e8b",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "0b7bc655d5986f40bfd0d9c7e3a38aec714d1e20db29100b9e841467cdc04e8b",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "terminal-rtk-codex-instructions-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "terminal-rtk-codex-instructions-v1"
+        ],
+        "enabled_surfaces": [
+          "codex-global-instructions",
+          "terminal-output"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "09169e7cfe82ac626baf50e5fb6fdec8525e91e983e4e8dacee62192b5899069",
+        "registry_entry": {
+          "id": "terminal-rtk-codex-instructions-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "codex-global-instructions",
+            "terminal-output"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "terminal-rtk-codex-instructions-v1",
+              "surface": "codex-global-instructions/terminal-output-compaction",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the pinned RTK binary with `rtk init --global --codex` against lane-private CODEX_HOME; require generated AGENTS.md and RTK.md before execution."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME and RTK state after evidence capture; verify global instruction files cannot survive into another lane."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "active-instruction-layer",
+            "integration_state": "official-codex-global-instructions"
+          },
+          "notes": "Versioned correction of the historical PATH-only RTK profile. Measures the product-authored Codex instruction policy, not transparent command rewriting."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "rtk-codex-instructions-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+        "tool_config": {
+          "display_name": "RTK Codex global instruction policy v1",
+          "lane_name": "terminal-rtk-codex-instructions-v1",
+          "surface": "codex-global-instructions/terminal-output-compaction",
+          "allowed_terms": [
+            "rtk"
+          ],
+          "data_dir_name": "rtk-codex-instructions-v1",
+          "executable": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "path_entries": [
+            "/opt/data/tool-candidates/rtk/target/release",
+            "/opt",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "env": {
+            "RTK_TELEMETRY": "0"
+          },
+          "host_integration": {
+            "install_commands": [
+              [
+                "rtk",
+                "init",
+                "--global",
+                "--codex"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "rtk",
+                "init",
+                "--global",
+                "--codex",
+                "--dry-run"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/AGENTS.md",
+              "{codex_home}/RTK.md"
+            ]
+          },
+          "preflight_command": [
+            "rtk",
+            "--version"
+          ],
+          "default_tool_state": "active-instruction-layer",
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+              "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+              "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1"
+        },
+        "tool_config_sha256": "1bc9d2b08ea995d60b5686aac4ebd813449b7d33e901e796dfb160d99cfc2bb7",
+        "tool_state": "active-instruction-layer",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "rtk",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "rtk",
+          "resolved_path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "realpath": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+          "metadata": {
+            "size": 10326432,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1786095874000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt:/opt/data/tool-candidates/rtk/target/release:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "rtk 0.45.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "exists": true,
+            "kind": "file",
+            "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+            "git_clean": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+        "agent_runtime_id": "codex-cli",
+        "model_condition": {
+          "id": "codex-openai-gpt-5-6-sol-medium",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_codex_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "c86863838e8b",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-default",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "codex_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "rtk-codex-instructions-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+    "tool_config": {
+      "display_name": "RTK Codex global instruction policy v1",
+      "lane_name": "terminal-rtk-codex-instructions-v1",
+      "surface": "codex-global-instructions/terminal-output-compaction",
+      "allowed_terms": [
+        "rtk"
+      ],
+      "data_dir_name": "rtk-codex-instructions-v1",
+      "executable": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+      "path_entries": [
+        "/opt/data/tool-candidates/rtk/target/release",
+        "/opt",
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+      ],
+      "mounts": [
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+      ],
+      "env": {
+        "RTK_TELEMETRY": "0"
+      },
+      "host_integration": {
+        "install_commands": [
+          [
+            "rtk",
+            "init",
+            "--global",
+            "--codex"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "rtk",
+            "init",
+            "--global",
+            "--codex",
+            "--dry-run"
+          ]
+        ],
+        "required_files": [
+          "{codex_home}/AGENTS.md",
+          "{codex_home}/RTK.md"
+        ]
+      },
+      "preflight_command": [
+        "rtk",
+        "--version"
+      ],
+      "default_tool_state": "active-instruction-layer",
+      "required_source_artifacts": [
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+      ],
+      "clean_source_roots": [
+        "/opt/data/tool-candidates/releases/rtk-0.45.0/source"
+      ],
+      "artifact_identities": [
+        {
+          "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+          "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4",
+          "kind": "official-release-artifact"
+        },
+        {
+          "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+          "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a",
+          "kind": "official-install-guide"
+        }
+      ],
+      "tool_manifest_identity": "current-file-v1"
+    },
+    "tool_config_sha256": "1bc9d2b08ea995d60b5686aac4ebd813449b7d33e901e796dfb160d99cfc2bb7",
+    "tool_state": "active-instruction-layer",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "preflight_command",
+      "command": [
+        "rtk",
+        "--version"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "rtk",
+      "resolved_path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+      "realpath": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+      "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+      "metadata": {
+        "size": 10326432,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1786095874000000000
+      },
+      "version": {
+        "command": [
+          "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt:/opt/data/tool-candidates/rtk/target/release:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "rtk 0.45.0",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+        "exists": true,
+        "kind": "file",
+        "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+        "git_clean": true
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+        "exists": true,
+        "kind": "file",
+        "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a"
+      }
+    ]
+  },
+  "profile_id": "terminal-rtk-codex-instructions-v1",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v2",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 21600,
+  "codex_version": "codex-cli 0.147.0",
+  "agent_runtime_version": "codex-cli 0.147.0",
+  "token_usage": {
+    "measurement_source": "codex-jsonl-usage-events",
+    "fresh_input_tokens": 168994,
+    "cached_input_tokens": 2695424,
+    "cache_write_tokens": 0,
+    "output_tokens": 12691,
+    "reasoning_tokens": 2254,
+    "total_provider_tokens": 2877109,
+    "weighted_token_cost": 514682.4,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 67,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "agent_message": 24,
+      "command_execution": 37,
+      "file_change": 6
+    },
+    "weighted_token_cost_per_step": 7681.8,
+    "provider_usage_details": {
+      "runtime": "codex-cli",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "raw_token_field_totals": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 2695424,
+        "input_tokens": 2864418,
+        "output_tokens": 12691,
+        "reasoning_output_tokens": 2254
+      },
+      "incremental_raw_token_field_totals": {
+        "cached_input_tokens": 2695424,
+        "input_tokens": 2864418,
+        "output_tokens": 12691,
+        "reasoning_output_tokens": 2254
+      },
+      "fresh_input_formula": "input_tokens - cached_input_tokens",
+      "reasoning_tokens_available": true
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-04-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-05-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/task-06-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "01a033db-41d6-7ac2-bd3a-507e664eff01",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0",
+    "run_record": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/rtk-beets-20260824-p-c86863838e8b-r0"
+}
