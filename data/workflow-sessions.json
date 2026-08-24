@@ -23605,6 +23605,4117 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 6
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-terminal-rtk-claude-code-hook-v1-94cb0f4a5c49-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v2-terminal-rtk-claude-code-hook-v1-0f1410b200e7",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-terminal-rtk-claude-code-hook-v1-0f1410b200e7.json",
+        "sha256": "60b005622ead6ad75f2317a6480f4ddf687b82a690384583ce489406f399faa2"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "94cb0f4a5c49",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "7c21acca556945057007e291f7107ba6e5f6374d4618f78a00f28427b9010401",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "terminal-rtk-claude-code-hook-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "terminal-rtk-claude-code-hook-v1"
+            ],
+            "enabled_surfaces": [
+              "claude-code-pre-tool-use-hook",
+              "terminal-output",
+              "claude-code-global-instructions"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "Codex RTK instructions",
+              "MCP servers",
+              "other token-saving tools"
+            ],
+            "registry_entry_sha256": "d69ef30aff2acb7dd942f6f6344f4e57fbf971d8856e59b36216b2b9c60218e6",
+            "registry_entry": {
+              "id": "terminal-rtk-claude-code-hook-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "substrate": "claude-code",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "claude-code-pre-tool-use-hook",
+                "terminal-output",
+                "claude-code-global-instructions"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces",
+                "Codex RTK instructions",
+                "MCP servers",
+                "other token-saving tools"
+              ],
+              "components": [
+                {
+                  "component_id": "terminal-rtk-claude-code-hook-v1",
+                  "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Run pinned RTK 0.42.4 `rtk init --global --auto-patch` with lane-private CLAUDE_CONFIG_DIR; require the generated Claude settings hook, RTK.md, and global CLAUDE.md before execution."
+              },
+              "reset": {
+                "policy": "Delete lane-private Claude config, RTK hook/settings, RTK.md, global CLAUDE.md, cache, and generated state after evidence capture; verify no RTK state survives into another lane."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-hook-and-instruction-layer",
+                "integration_state": "official-claude-code-global-hook"
+              },
+              "notes": "Claude Code-specific RTK treatment. Measures the official native Claude PreToolUse hook and product-authored global instruction layer, separate from terminal-rtk-codex-instructions-v1."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "fastify-trailer-duplicate-callback-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+              },
+              {
+                "task_id": "fastify-nested-prefix-join-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+              },
+              {
+                "task_id": "fastify-serializer-compiler-flag-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+              },
+              {
+                "task_id": "fastify-sync-validator-throw-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+              },
+              {
+                "task_id": "fastify-duplicated-route-method-array-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+              },
+              {
+                "task_id": "fastify-head-route-web-stream-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "rtk-claude-code-hook-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "tool_config": {
+              "display_name": "RTK Claude Code native hook and instruction policy v1",
+              "lane_name": "terminal-rtk-claude-code-hook-v1",
+              "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+              "allowed_terms": [
+                "rtk"
+              ],
+              "data_dir_name": "rtk-claude-code-hook-v1",
+              "executable": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "path_entries": [
+                "{codex_home}/runtime-bin",
+                "/opt/data/tool-candidates/rtk/target/release",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "mounts": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "env": {
+                "RTK_TELEMETRY": "0"
+              },
+              "claude_features": {
+                "hooks": true
+              },
+              "host_integration_backend": "host",
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/bin/sh",
+                    "-lc",
+                    "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "{codex_home}/runtime-bin/rtk",
+                    "init",
+                    "--show"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/claude-config/settings.json",
+                  "{codex_home}/claude-config/CLAUDE.md",
+                  "{codex_home}/claude-config/RTK.md"
+                ],
+                "timeout_seconds": 120
+              },
+              "preflight_command": [
+                "rtk",
+                "--version"
+              ],
+              "default_tool_state": "active-hook-and-instruction-layer",
+              "required_source_artifacts": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "clean_source_roots": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source"
+              ],
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                  "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4",
+                  "kind": "official-release-artifact"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                  "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a",
+                  "kind": "official-install-guide"
+                }
+              ],
+              "tool_manifest_identity": "current-file-v1"
+            },
+            "tool_config_sha256": "4dd94cd700371a4eaedfa129185fe9dde5b4bdbcffaad88b2c457114371f0b5e",
+            "tool_state": "active-hook-and-instruction-layer",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "preflight_command",
+              "command": [
+                "rtk",
+                "--version"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "rtk",
+              "resolved_path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "realpath": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+              "metadata": {
+                "size": 10326432,
+                "mode": "-rwxr-xr-x",
+                "uid": 10000,
+                "gid": 10000,
+                "mtime_ns": 1786095874000000000
+              },
+              "version": {
+                "command": [
+                  "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt/data/tool-candidates/rtk/target/release:{repository_root}/.identity-codex-home/runtime-bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "rtk 0.45.0",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "exists": true,
+                "kind": "file",
+                "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+                "git_clean": true
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                "exists": true,
+                "kind": "file",
+                "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+            "agent_runtime_id": "claude-code",
+            "model_condition": {
+              "id": "claude-code-anthropic-opus-5-medium",
+              "provider": "anthropic",
+              "model": "claude-opus-5",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "reasoning_effort": "medium",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "94cb0f4a5c49",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "reasoning_effort": "medium",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_claude_code_workflow_model_condition.py",
+              "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "rtk-claude-code-hook-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "RTK Claude Code native hook and instruction policy v1",
+          "lane_name": "terminal-rtk-claude-code-hook-v1",
+          "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+          "allowed_terms": [
+            "rtk"
+          ],
+          "data_dir_name": "rtk-claude-code-hook-v1",
+          "executable": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "path_entries": [
+            "{codex_home}/runtime-bin",
+            "/opt/data/tool-candidates/rtk/target/release",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "env": {
+            "RTK_TELEMETRY": "0"
+          },
+          "claude_features": {
+            "hooks": true
+          },
+          "host_integration_backend": "host",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/bin/sh",
+                "-lc",
+                "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{codex_home}/runtime-bin/rtk",
+                "init",
+                "--show"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/claude-config/settings.json",
+              "{codex_home}/claude-config/CLAUDE.md",
+              "{codex_home}/claude-config/RTK.md"
+            ],
+            "timeout_seconds": 120
+          },
+          "preflight_command": [
+            "rtk",
+            "--version"
+          ],
+          "default_tool_state": "active-hook-and-instruction-layer",
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+              "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+              "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1"
+        },
+        "tool_config_sha256": "4dd94cd700371a4eaedfa129185fe9dde5b4bdbcffaad88b2c457114371f0b5e",
+        "tool_state": "active-hook-and-instruction-layer",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "rtk",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "rtk",
+          "resolved_path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "realpath": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+          "metadata": {
+            "size": 10326432,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1786095874000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt/data/tool-candidates/rtk/target/release:{repository_root}/.identity-codex-home/runtime-bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "rtk 0.45.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "exists": true,
+            "kind": "file",
+            "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+            "git_clean": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a"
+          }
+        ]
+      },
+      "date": "2026-08-24",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "fastify-trailer-duplicate-callback-v2",
+          "fastify-nested-prefix-join-v2",
+          "fastify-serializer-compiler-flag-v2",
+          "fastify-sync-validator-throw-v2",
+          "fastify-duplicated-route-method-array-v2",
+          "fastify-head-route-web-stream-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "claude-code-pre-tool-use-hook",
+          "terminal-output",
+          "claude-code-global-instructions"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "Codex RTK instructions",
+          "MCP servers",
+          "other token-saving tools"
+        ],
+        "component_ids": [
+          "terminal-rtk-claude-code-hook-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "claude-code",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "name": "Claude Code",
+        "version": "2.1.241 (Claude Code)",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "fresh_input_tokens": 386922,
+        "cached_input_tokens": 2564019,
+        "cache_write_tokens": 386782,
+        "output_tokens": 778,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 2951719,
+        "weighted_token_cost": 647991.9,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 74,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "text": 9,
+          "tool_use": 65
+        },
+        "weighted_token_cost_per_step": 8756.6,
+        "provider_usage_details": {
+          "runtime": "claude-code",
+          "accounting_mode": "sum-unique-assistant-message-usage",
+          "accounting_note": "",
+          "assistant_usage_block_count": 70,
+          "result_usage_block_count": 6,
+          "result_usage_counted": false,
+          "reasoning_tokens_available": false,
+          "canonical_components": {
+            "input_tokens": 140,
+            "cache_creation_input_tokens": 386782,
+            "cache_read_input_tokens": 2564019,
+            "output_tokens": 778,
+            "reasoning_tokens": 0
+          },
+          "raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 386782,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 386782,
+            "cache_read_input_tokens": 2564019,
+            "input_tokens": 140,
+            "output_tokens": 778
+          },
+          "result_raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 386782,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 386782,
+            "cache_read_input_tokens": 2564019,
+            "input_tokens": 140,
+            "output_tokens": 19034,
+            "output_tokens_details.thinking_tokens": 6202
+          },
+          "raw_model_usage_token_field_totals": {},
+          "result_raw_model_usage_token_field_totals": {
+            "claude-opus-5.cacheCreationInputTokens": 386782,
+            "claude-opus-5.cacheReadInputTokens": 2564019,
+            "claude-opus-5.inputTokens": 140,
+            "claude-opus-5.outputTokens": 19034
+          },
+          "raw_usage_blocks": [
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMZwYpdnDWuCZqoa9jKV",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 15587,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 15587
+                },
+                "output_tokens": 1,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMZwpr3dBvwFR9x9KRsg",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 20530,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 20530
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMZx1m88KMhZrEBRqP3A",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1324,
+                "cache_read_input_tokens": 20530,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1324
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMZxEHSpHgiHnMXnRCJM",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 987,
+                "cache_read_input_tokens": 21854,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 987
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMZxdxyQ6gmdj41EXYo1",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 462,
+                "cache_read_input_tokens": 22841,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 462
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa1DxSE1RSafpStwYiC",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 463,
+                "cache_read_input_tokens": 23303,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 463
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa1W82HpCMC4n7m21Vr",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 367,
+                "cache_read_input_tokens": 23766,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 367
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa3zUu53WnN3jybhAfv",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 990,
+                "cache_read_input_tokens": 24133,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 990
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa6QFT5NZeRR2MomS6C",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 510,
+                "cache_read_input_tokens": 25123,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 510
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa7HsVq2uAAc1ZsYv4p",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 18757,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 18757
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa7URVqcdqwQrYKaRun",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 18945,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 18945
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa7f3UBRJuEMmC4YACq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 311,
+                "cache_read_input_tokens": 27271,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 311
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa7pB9MoZnnfZe3UWMm",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 405,
+                "cache_read_input_tokens": 27582,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 405
+                },
+                "output_tokens": 6,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa8EJi7f2to7VDoQ5Fq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 583,
+                "cache_read_input_tokens": 27987,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 583
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMa8Nfzj85bSSHChZzty",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 399,
+                "cache_read_input_tokens": 28570,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 399
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaAsNiFv1EUvHiPvTRo",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 394,
+                "cache_read_input_tokens": 28969,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 394
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaBYnYZEZS7t58L1C8r",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 22280,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 22280
+                },
+                "output_tokens": 15,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaBjcR2JsDdgXxhnNco",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 22838,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 22838
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaBwDfbNEtvEmt2ibYR",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 528,
+                "cache_read_input_tokens": 31164,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 528
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaC8xre8vS4Q8KwGHNe",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 281,
+                "cache_read_input_tokens": 31692,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 281
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaCJv8sRTmkF6WmBMX5",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 271,
+                "cache_read_input_tokens": 31973,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 271
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaEnrxchx6UiBvVUteW",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 303,
+                "cache_read_input_tokens": 32244,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 303
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaFYwaX9XcwWTn1PjZq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 25489,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 25489
+                },
+                "output_tokens": 15,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaFjyrJXQf7GGQos4Yf",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 26478,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 26478
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaFtd1WAAh4xwT85nbB",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 697,
+                "cache_read_input_tokens": 34804,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 697
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaGBPpBvouy2xruJPL8",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 670,
+                "cache_read_input_tokens": 35501,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 670
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaGPjURQ6QfXGfQ963j",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 242,
+                "cache_read_input_tokens": 36171,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 242
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaGYhUXvRhXsGBFAnoZ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 965,
+                "cache_read_input_tokens": 36413,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 965
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaGqHNDVoLUSwsMBMgv",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 328,
+                "cache_read_input_tokens": 37378,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 328
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaGzdh1oxskbxF5uAQc",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 207,
+                "cache_read_input_tokens": 37706,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 207
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaH8XhKs1GG1nTkpCz7",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 637,
+                "cache_read_input_tokens": 37913,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 637
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaHpD9nfRRwNRUDkBDm",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 726,
+                "cache_read_input_tokens": 38550,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 726
+                },
+                "output_tokens": 10,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaJ7DMNW6FnLzo6zh8R",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 486,
+                "cache_read_input_tokens": 39276,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 486
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaJMpBSw4DNeTzSHgDx",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 747,
+                "cache_read_input_tokens": 39762,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 747
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaK7H6QEYhjqMrD5q7S",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1688,
+                "cache_read_input_tokens": 40509,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1688
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaKNEGbN24QKCsAdbaS",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 429,
+                "cache_read_input_tokens": 42197,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 429
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaL9cX6MDirSWmRAZ7C",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 849,
+                "cache_read_input_tokens": 42626,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 849
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaLJdVmRHbuiUNpGWZg",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 784,
+                "cache_read_input_tokens": 43475,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 784
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaMrnJAPs4SnJgAHEZf",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1829,
+                "cache_read_input_tokens": 44259,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1829
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaN7hV5HHbBu6ACYMPW",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 319,
+                "cache_read_input_tokens": 46088,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 319
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaNTGxSQez1SBh741zT",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 391,
+                "cache_read_input_tokens": 46407,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 391
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaPCLK62ZaFWbtfBm3q",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 796,
+                "cache_read_input_tokens": 46798,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 796
+                },
+                "output_tokens": 7,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaPXpLP3w9UqfkuAeMb",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 385,
+                "cache_read_input_tokens": 47594,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 385
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaPhhf7q68UCEZuRZen",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 522,
+                "cache_read_input_tokens": 47979,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 522
+                },
+                "output_tokens": 9,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaQ4Md9JWQqkLm1KsEr",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 289,
+                "cache_read_input_tokens": 48501,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 289
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaSX6GPgiR5mWmVejBN",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 239,
+                "cache_read_input_tokens": 48790,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 239
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaTYnjfBQHQdrKne4Ht",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 42199,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 42199
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaTn1iosCwuYsyJrbya",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 42626,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 42626
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaTxsKzYjMzre6nVWdK",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 504,
+                "cache_read_input_tokens": 50952,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 504
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaUHegp3wn9smhve1zu",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 965,
+                "cache_read_input_tokens": 51456,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 965
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaUWKC2AfH2Z9JMPhtq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 153,
+                "cache_read_input_tokens": 52421,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 153
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaUfA17TpCoZ1qKxjKx",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1025,
+                "cache_read_input_tokens": 52574,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1025
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaV5NHH8Z9M94LkwRua",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1044,
+                "cache_read_input_tokens": 53599,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1044
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaVQCN2XziCjM7QCL3B",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 450,
+                "cache_read_input_tokens": 54643,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 450
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaVbFsePnVpvwYBEyHB",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 232,
+                "cache_read_input_tokens": 55093,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 232
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaY6wNaXKcpp4ZUd81y",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 202,
+                "cache_read_input_tokens": 55325,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 202
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaYroqqgDbkza8jvpMP",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 48524,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 48524
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaZ6AWkUdR5NKKAbF89",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 48861,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 48861
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaZJYQTtYnNu5jw5Yii",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 413,
+                "cache_read_input_tokens": 57187,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 413
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaZSe4zHgqky4QpbLb2",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 523,
+                "cache_read_input_tokens": 57600,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 523
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaZimvNFyPtcDiwdWwH",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 302,
+                "cache_read_input_tokens": 58123,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 302
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaZrxJYPELSpFrNBRQb",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1158,
+                "cache_read_input_tokens": 58425,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1158
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaa573bsSzBkFKhYsG8",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1449,
+                "cache_read_input_tokens": 59583,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1449
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaaCakXiyf2yqJqJhCG",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 607,
+                "cache_read_input_tokens": 61032,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 607
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaaVraAwwCtGeDnnGnj",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 392,
+                "cache_read_input_tokens": 61639,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 392
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMab8SzJqHW8eH5cp9Jr",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 719,
+                "cache_read_input_tokens": 62031,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 719
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMabMqQA3K2SuXPxTv2H",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 147,
+                "cache_read_input_tokens": 62750,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 147
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMadprANPHWPFutHTFTD",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 183,
+                "cache_read_input_tokens": 62897,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 183
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMagKSfecuxE8DN4suib",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 160,
+                "cache_read_input_tokens": 63080,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 160
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaiuzN5xtfUwQU2EW5E",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 237,
+                "cache_read_input_tokens": 63240,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 237
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            }
+          ],
+          "result_raw_usage_blocks": [
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 18,
+                "cache_creation_input_tokens": 41220,
+                "cache_read_input_tokens": 161550,
+                "output_tokens": 2062,
+                "output_tokens_details": {
+                  "thinking_tokens": 322
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 41220,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 18,
+                  "outputTokens": 2062,
+                  "cacheReadInputTokens": 161550,
+                  "cacheCreationInputTokens": 41220,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.544615,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 14,
+                "cache_creation_input_tokens": 39794,
+                "cache_read_input_tokens": 152913,
+                "output_tokens": 1670,
+                "output_tokens_details": {
+                  "thinking_tokens": 322
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 39794,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 14,
+                  "outputTokens": 1670,
+                  "cacheReadInputTokens": 152913,
+                  "cacheCreationInputTokens": 39794,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.5162165000000001,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 12,
+                "cache_creation_input_tokens": 46501,
+                "cache_read_input_tokens": 139607,
+                "output_tokens": 1315,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 46501,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 12,
+                  "outputTokens": 1315,
+                  "cacheReadInputTokens": 139607,
+                  "cacheCreationInputTokens": 46501,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.5677485000000001,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 48,
+                "cache_creation_input_tokens": 66192,
+                "cache_read_input_tokens": 931231,
+                "output_tokens": 8470,
+                "output_tokens_details": {
+                  "thinking_tokens": 4377
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 66192,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 48,
+                  "outputTokens": 8470,
+                  "cacheReadInputTokens": 931231,
+                  "cacheCreationInputTokens": 66192,
+                  "webSearchRequests": 0,
+                  "costUSD": 1.3395254999999997,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 20,
+                "cache_creation_input_tokens": 89400,
+                "cache_read_input_tokens": 438597,
+                "output_tokens": 2382,
+                "output_tokens_details": {
+                  "thinking_tokens": 482
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 89400,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 20,
+                  "outputTokens": 2382,
+                  "cacheReadInputTokens": 438597,
+                  "cacheCreationInputTokens": 89400,
+                  "webSearchRequests": 0,
+                  "costUSD": 1.1729485,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 28,
+                "cache_creation_input_tokens": 103675,
+                "cache_read_input_tokens": 740121,
+                "output_tokens": 3135,
+                "output_tokens_details": {
+                  "thinking_tokens": 699
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 103675,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 28,
+                  "outputTokens": 3135,
+                  "cacheReadInputTokens": 740121,
+                  "cacheCreationInputTokens": 103675,
+                  "webSearchRequests": 0,
+                  "costUSD": 1.4853255,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            }
+          ],
+          "provider_reported_total_tokens": null,
+          "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+          "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+        },
+        "accounting_basis": "Claude Code telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-trailer-duplicate-callback-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-01-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-nested-prefix-join-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-02-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-serializer-compiler-flag-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-03-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-sync-validator-throw-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-04-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-duplicated-route-method-array-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-05-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-head-route-web-stream-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "37384e53-30d8-4a6c-9957-a50396dc04e2",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/task-06-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0",
+        "run_record": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/rtk-claude-code-fastify-20260824-p-94cb0f4a5c49-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "rtk-claude-code-beets-20260824-p-e257557e288c-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-terminal-rtk-claude-code-hook-v1-e257557e288c-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v2-terminal-rtk-claude-code-hook-v1-0e3c62eae2a3",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-terminal-rtk-claude-code-hook-v1-0e3c62eae2a3.json",
+        "sha256": "0f9b5fdb03b6b8a735e0304ee9d1ff537b7b136423667ef37e4e0d3ea8a7ccf8"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "e257557e288c",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "fd74fcd0333b2f99af50ea5919d771a7a2efc510fb9acd3ef37b4c41c4544439",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "terminal-rtk-claude-code-hook-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "terminal-rtk-claude-code-hook-v1"
+            ],
+            "enabled_surfaces": [
+              "claude-code-pre-tool-use-hook",
+              "terminal-output",
+              "claude-code-global-instructions"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "Codex RTK instructions",
+              "MCP servers",
+              "other token-saving tools"
+            ],
+            "registry_entry_sha256": "d69ef30aff2acb7dd942f6f6344f4e57fbf971d8856e59b36216b2b9c60218e6",
+            "registry_entry": {
+              "id": "terminal-rtk-claude-code-hook-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "substrate": "claude-code",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "claude-code-pre-tool-use-hook",
+                "terminal-output",
+                "claude-code-global-instructions"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces",
+                "Codex RTK instructions",
+                "MCP servers",
+                "other token-saving tools"
+              ],
+              "components": [
+                {
+                  "component_id": "terminal-rtk-claude-code-hook-v1",
+                  "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Run pinned RTK 0.42.4 `rtk init --global --auto-patch` with lane-private CLAUDE_CONFIG_DIR; require the generated Claude settings hook, RTK.md, and global CLAUDE.md before execution."
+              },
+              "reset": {
+                "policy": "Delete lane-private Claude config, RTK hook/settings, RTK.md, global CLAUDE.md, cache, and generated state after evidence capture; verify no RTK state survives into another lane."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-hook-and-instruction-layer",
+                "integration_state": "official-claude-code-global-hook"
+              },
+              "notes": "Claude Code-specific RTK treatment. Measures the official native Claude PreToolUse hook and product-authored global instruction layer, separate from terminal-rtk-codex-instructions-v1."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "beets-unique-path-counter-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+              },
+              {
+                "task_id": "beets-empty-string-field-split-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+              },
+              {
+                "task_id": "beets-date-query-alternation-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+              },
+              {
+                "task_id": "beets-membership-query-hashable-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+              },
+              {
+                "task_id": "beets-spotify-uri-extraction-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+              },
+              {
+                "task_id": "beets-lyrics-keep-synced-override-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "rtk-claude-code-hook-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "tool_config": {
+              "display_name": "RTK Claude Code native hook and instruction policy v1",
+              "lane_name": "terminal-rtk-claude-code-hook-v1",
+              "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+              "allowed_terms": [
+                "rtk"
+              ],
+              "data_dir_name": "rtk-claude-code-hook-v1",
+              "executable": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "path_entries": [
+                "{codex_home}/runtime-bin",
+                "/opt/data/tool-candidates/rtk/target/release",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "mounts": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "env": {
+                "RTK_TELEMETRY": "0"
+              },
+              "claude_features": {
+                "hooks": true
+              },
+              "host_integration_backend": "host",
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/bin/sh",
+                    "-lc",
+                    "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "{codex_home}/runtime-bin/rtk",
+                    "init",
+                    "--show"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/claude-config/settings.json",
+                  "{codex_home}/claude-config/CLAUDE.md",
+                  "{codex_home}/claude-config/RTK.md"
+                ],
+                "timeout_seconds": 120
+              },
+              "preflight_command": [
+                "rtk",
+                "--version"
+              ],
+              "default_tool_state": "active-hook-and-instruction-layer",
+              "required_source_artifacts": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "clean_source_roots": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source"
+              ],
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                  "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4",
+                  "kind": "official-release-artifact"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                  "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a",
+                  "kind": "official-install-guide"
+                }
+              ],
+              "tool_manifest_identity": "current-file-v1"
+            },
+            "tool_config_sha256": "4dd94cd700371a4eaedfa129185fe9dde5b4bdbcffaad88b2c457114371f0b5e",
+            "tool_state": "active-hook-and-instruction-layer",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "preflight_command",
+              "command": [
+                "rtk",
+                "--version"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "rtk",
+              "resolved_path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "realpath": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+              "metadata": {
+                "size": 10326432,
+                "mode": "-rwxr-xr-x",
+                "uid": 10000,
+                "gid": 10000,
+                "mtime_ns": 1786095874000000000
+              },
+              "version": {
+                "command": [
+                  "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt/data/tool-candidates/rtk/target/release:{repository_root}/.identity-codex-home/runtime-bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "rtk 0.45.0",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "exists": true,
+                "kind": "file",
+                "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+                "git_clean": true
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                "exists": true,
+                "kind": "file",
+                "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+            "agent_runtime_id": "claude-code",
+            "model_condition": {
+              "id": "claude-code-anthropic-opus-5-medium",
+              "provider": "anthropic",
+              "model": "claude-opus-5",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "uv sync --group test --frozen",
+            "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+            "lockfiles": [
+              {
+                "path": "uv.lock",
+                "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "reasoning_effort": "medium",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "e257557e288c",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "reasoning_effort": "medium",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_claude_code_workflow_model_condition.py",
+              "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "rtk-claude-code-hook-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6fa8271b89a577706ea0bbffcc8e4521831f41b646ed9519369efee3642fe41c",
+        "tool_config": {
+          "display_name": "RTK Claude Code native hook and instruction policy v1",
+          "lane_name": "terminal-rtk-claude-code-hook-v1",
+          "surface": "claude-code-pre-tool-use-hook/terminal-output-compaction",
+          "allowed_terms": [
+            "rtk"
+          ],
+          "data_dir_name": "rtk-claude-code-hook-v1",
+          "executable": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "path_entries": [
+            "{codex_home}/runtime-bin",
+            "/opt/data/tool-candidates/rtk/target/release",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "mounts": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "env": {
+            "RTK_TELEMETRY": "0"
+          },
+          "claude_features": {
+            "hooks": true
+          },
+          "host_integration_backend": "host",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/bin/sh",
+                "-lc",
+                "mkdir -p {codex_home}/runtime-bin && cp /opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk {codex_home}/runtime-bin/rtk && chmod 755 {codex_home}/runtime-bin/rtk && {codex_home}/runtime-bin/rtk init --global --auto-patch"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{codex_home}/runtime-bin/rtk",
+                "init",
+                "--show"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/claude-config/settings.json",
+              "{codex_home}/claude-config/CLAUDE.md",
+              "{codex_home}/claude-config/RTK.md"
+            ],
+            "timeout_seconds": 120
+          },
+          "preflight_command": [
+            "rtk",
+            "--version"
+          ],
+          "default_tool_state": "active-hook-and-instruction-layer",
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+              "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+              "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1"
+        },
+        "tool_config_sha256": "4dd94cd700371a4eaedfa129185fe9dde5b4bdbcffaad88b2c457114371f0b5e",
+        "tool_state": "active-hook-and-instruction-layer",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "rtk",
+            "--version"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "rtk",
+          "resolved_path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "realpath": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+          "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+          "metadata": {
+            "size": 10326432,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1786095874000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt/data/tool-candidates/rtk/target/release:{repository_root}/.identity-codex-home/runtime-bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "rtk 0.45.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+            "exists": true,
+            "kind": "file",
+            "sha256": "c4c036fbf181fc55ef329786c8c17e0d427972b053b825944d968a6aafef1ba4"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+            "git_clean": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "413b3c684d00c36d6517b5f45fa02dc10c83a2a5c22f0e18dea6288e3aa9490a"
+          }
+        ]
+      },
+      "date": "2026-08-24",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "beets-unique-path-counter-v2",
+          "beets-empty-string-field-split-v2",
+          "beets-date-query-alternation-v2",
+          "beets-membership-query-hashable-v2",
+          "beets-spotify-uri-extraction-v2",
+          "beets-lyrics-keep-synced-override-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-rtk-claude-code-hook-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "claude-code-pre-tool-use-hook",
+          "terminal-output",
+          "claude-code-global-instructions"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "Codex RTK instructions",
+          "MCP servers",
+          "other token-saving tools"
+        ],
+        "component_ids": [
+          "terminal-rtk-claude-code-hook-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "claude-code",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "name": "Claude Code",
+        "version": "2.1.241 (Claude Code)",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "fresh_input_tokens": 258757,
+        "cached_input_tokens": 1327731,
+        "cache_write_tokens": 258663,
+        "output_tokens": 509,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 1586997,
+        "weighted_token_cost": 394584.1,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 50,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "text": 8,
+          "tool_use": 42
+        },
+        "weighted_token_cost_per_step": 7891.7,
+        "provider_usage_details": {
+          "runtime": "claude-code",
+          "accounting_mode": "sum-unique-assistant-message-usage",
+          "accounting_note": "",
+          "assistant_usage_block_count": 47,
+          "result_usage_block_count": 6,
+          "result_usage_counted": false,
+          "reasoning_tokens_available": false,
+          "canonical_components": {
+            "input_tokens": 94,
+            "cache_creation_input_tokens": 258663,
+            "cache_read_input_tokens": 1327731,
+            "output_tokens": 509,
+            "reasoning_tokens": 0
+          },
+          "raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 258663,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 258663,
+            "cache_read_input_tokens": 1327731,
+            "input_tokens": 94,
+            "output_tokens": 509
+          },
+          "result_raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 258663,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 258663,
+            "cache_read_input_tokens": 1327731,
+            "input_tokens": 94,
+            "output_tokens": 9457,
+            "output_tokens_details.thinking_tokens": 1621
+          },
+          "raw_model_usage_token_field_totals": {},
+          "result_raw_model_usage_token_field_totals": {
+            "claude-opus-5.cacheCreationInputTokens": 258663,
+            "claude-opus-5.cacheReadInputTokens": 1327731,
+            "claude-opus-5.inputTokens": 94,
+            "claude-opus-5.outputTokens": 9457
+          },
+          "raw_usage_blocks": [
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeManG1iJ6YkPeA6sycgQ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 11377,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 11377
+                },
+                "output_tokens": 1,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeManY762GqWetFgjm38R",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 11814,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 11814
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeManfW64KGuSmcNFijRV",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 328,
+                "cache_read_input_tokens": 20140,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 328
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeManwkPaimfnNWmcXUvg",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 466,
+                "cache_read_input_tokens": 20468,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 466
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMao6s5Hj3Fsma5AV1R1",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 534,
+                "cache_read_input_tokens": 20934,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 534
+                },
+                "output_tokens": 7,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaoHbz9PcrEvMAiwgCx",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 266,
+                "cache_read_input_tokens": 21468,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 266
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaoYMzZTGPVfz17K2Fq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 462,
+                "cache_read_input_tokens": 21734,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 462
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaomifkgjLeYV5Q7CW5",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 309,
+                "cache_read_input_tokens": 22196,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 309
+                },
+                "output_tokens": 5,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMap1NCw4Qh9ScSbM3TA",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 564,
+                "cache_read_input_tokens": 22505,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 564
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMat2BvbVoXcjGyEojdL",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 848,
+                "cache_read_input_tokens": 23069,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 848
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMatPqRdtLZnxantm3FU",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 598,
+                "cache_read_input_tokens": 23917,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 598
+                },
+                "output_tokens": 5,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMatzUmT2oFMxan9h8qm",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 17298,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 17298
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMauH1C43QGWiRb5ABA6",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 17594,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 17594
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMauQinRne6iypD2cUVA",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1412,
+                "cache_read_input_tokens": 25920,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1412
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMauhhjrd1FUZBDkzBmn",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 254,
+                "cache_read_input_tokens": 27332,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 254
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMaurPNyjbFpmPjTt39d",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1947,
+                "cache_read_input_tokens": 27586,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1947
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMavE1dYeX2324aAL9Ck",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 364,
+                "cache_read_input_tokens": 29533,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 364
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMavaZ9pSBZgzJ2EMfLF",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 374,
+                "cache_read_input_tokens": 29897,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 374
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMazEbDeVtN8optdRaW6",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 540,
+                "cache_read_input_tokens": 30271,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 540
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMazkfj8khiH1z1kmx5G",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 23504,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 23504
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMazyBJ6jgiCFeBaNyxx",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 24486,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 24486
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb1FhizJn1eYTZcwf9C",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 308,
+                "cache_read_input_tokens": 32812,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 308
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb1ZcV8W4hexP2PawLh",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 241,
+                "cache_read_input_tokens": 33120,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 241
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb58nrirHF16NUyhPXL",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 467,
+                "cache_read_input_tokens": 33361,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 467
+                },
+                "output_tokens": 5,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb5dML7KdbSENm5TNPi",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 26526,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 26526
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb5qN97PHuixxuuWoUS",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 28495,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 28495
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb5zZXxPbXK6ydmuPkE",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 573,
+                "cache_read_input_tokens": 36821,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 573
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb6B731khe785sRsof1",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 489,
+                "cache_read_input_tokens": 37394,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 489
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb6PvTyHdEX5HobYsZL",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 299,
+                "cache_read_input_tokens": 37883,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 299
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMb6hKyGyScsjU4BzWei",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 224,
+                "cache_read_input_tokens": 38182,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 224
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbABXx2WqmcHGvrT9jD",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 427,
+                "cache_read_input_tokens": 38406,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 427
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbAdRRzNCQuz6YyohjJ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 4965,
+                "cache_read_input_tokens": 30734,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 4965
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbArbwVYn4QacNaxom2",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1160,
+                "cache_read_input_tokens": 38833,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1160
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbB1v2nFmseDPGC1vaR",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1112,
+                "cache_read_input_tokens": 39993,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1112
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbBRjW5e5GtWxP1TK8U",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 689,
+                "cache_read_input_tokens": 41105,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 689
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbBfQX6MgrpNuKg5xQg",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 324,
+                "cache_read_input_tokens": 41794,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 324
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbBuZpE1mPN6pF63bpi",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 227,
+                "cache_read_input_tokens": 42118,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 227
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbFUCCLiQRdQ9iEYDg3",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 287,
+                "cache_read_input_tokens": 42345,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 287
+                },
+                "output_tokens": 5,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbG1ztEfmabsWxvW6W5",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 35366,
+                "cache_read_input_tokens": 4208,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 35366
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbGGXzkGzSJjVazB1ER",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 37039,
+                "cache_read_input_tokens": 8326,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 37039
+                },
+                "output_tokens": 14,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbGSZk5chTZ5zno7Ej8",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1295,
+                "cache_read_input_tokens": 45365,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1295
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbGypC35zLB5XmaaTsX",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 584,
+                "cache_read_input_tokens": 46660,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 584
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbHC8cCGxsz9VqxSL7m",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 547,
+                "cache_read_input_tokens": 47244,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 547
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbHaR41N7FJZkF2ML8a",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 474,
+                "cache_read_input_tokens": 47791,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 474
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbHxHSj5qBf58Whd5Sj",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 411,
+                "cache_read_input_tokens": 48265,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 411
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbJCGKjLaQKqt9cYhM6",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 513,
+                "cache_read_input_tokens": 48676,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 513
+                },
+                "output_tokens": 6,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeMbMeC8UWUEBuKo2bRhx",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 282,
+                "cache_read_input_tokens": 49189,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 282
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            }
+          ],
+          "result_raw_usage_blocks": [
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 22,
+                "cache_creation_input_tokens": 27566,
+                "cache_read_input_tokens": 208965,
+                "output_tokens": 2079,
+                "output_tokens_details": {
+                  "thinking_tokens": 316
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 27566,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 22,
+                  "outputTokens": 2079,
+                  "cacheReadInputTokens": 208965,
+                  "cacheCreationInputTokens": 27566,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.4322275,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 16,
+                "cache_creation_input_tokens": 39783,
+                "cache_read_input_tokens": 183073,
+                "output_tokens": 1595,
+                "output_tokens_details": {
+                  "thinking_tokens": 397
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 39783,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 16,
+                  "outputTokens": 1595,
+                  "cacheReadInputTokens": 183073,
+                  "cacheCreationInputTokens": 39783,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.5293215,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 10,
+                "cache_creation_input_tokens": 49006,
+                "cache_read_input_tokens": 111827,
+                "output_tokens": 1031,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 49006,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 10,
+                  "outputTokens": 1031,
+                  "cacheReadInputTokens": 111827,
+                  "cacheCreationInputTokens": 49006,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.5717985000000001,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 14,
+                "cache_creation_input_tokens": 57033,
+                "cache_read_input_tokens": 201220,
+                "output_tokens": 1233,
+                "output_tokens_details": {
+                  "thinking_tokens": 78
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 57033,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 14,
+                  "outputTokens": 1233,
+                  "cacheReadInputTokens": 201220,
+                  "cacheCreationInputTokens": 57033,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.7018349999999999,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 14,
+                "cache_creation_input_tokens": 8764,
+                "cache_read_input_tokens": 276922,
+                "output_tokens": 1372,
+                "output_tokens_details": {
+                  "thinking_tokens": 271
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 8764,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 14,
+                  "outputTokens": 1372,
+                  "cacheReadInputTokens": 276922,
+                  "cacheCreationInputTokens": 8764,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.260471,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 18,
+                "cache_creation_input_tokens": 76511,
+                "cache_read_input_tokens": 345724,
+                "output_tokens": 2147,
+                "output_tokens_details": {
+                  "thinking_tokens": 559
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 76511,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 18,
+                  "outputTokens": 2147,
+                  "cacheReadInputTokens": 345724,
+                  "cacheCreationInputTokens": 76511,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.991737,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty"
+                }
+              }
+            }
+          ],
+          "provider_reported_total_tokens": null,
+          "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+          "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+        },
+        "accounting_basis": "Claude Code telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-unique-path-counter-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-01-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-empty-string-field-split-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-02-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-date-query-alternation-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-03-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-membership-query-hashable-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "controller_verification": "failed",
+          "accepted": false,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-04-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 2,
+          "verifier_passed": false
+        },
+        {
+          "task_id": "beets-spotify-uri-extraction-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-05-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lyrics-keep-synced-override-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "4fa55a99-a661-4726-b46f-29416804555d",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/task-06-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 5,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/verify-workflow.sh",
+        "final_verifier_passed": false,
+        "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+        "project_compile_passed": true,
+        "functional_verifier_passed": false,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": [
+          "one or more workflow verifiers failed"
+        ]
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0",
+        "run_record": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/rtk-claude-code-beets-20260824-p-e257557e288c-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
     }
   ]
 }
