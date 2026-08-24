@@ -1,0 +1,1533 @@
+{
+  "session_id": "artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-artifact-ponytail-claude-code-plugin-v1-e257557e288c-sequential-workflow-r0",
+  "replicate_index": 0,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v2-artifact-ponytail-claude-code-plugin-v1-ad303d25383a",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-artifact-ponytail-claude-code-plugin-v1-ad303d25383a.json",
+    "sha256": "0baef842164e8ed24512f495b1cd93b389d125f82f8744051cc482f218d0f528"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "e257557e288c",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "4bc5674ba312a361690aed6c21cedeca11bea9e973605385b894cb9240f63ae1",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "artifact-ponytail-claude-code-plugin-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-native-plugin+skills+hooks"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "registry_entry_sha256": "2208110f4118a2339c4dba7ee623f12f8bf6bdb891c085f3f91de347db37756e",
+        "registry_entry": {
+          "id": "artifact-ponytail-claude-code-plugin-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "integration-qualified-provider-free",
+          "enabled_surfaces": [
+            "claude-code-native-plugin+skills+hooks"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "direct-account transport"
+          ],
+          "components": [
+            {
+              "component_id": "artifact-ponytail-claude-code-plugin-v1",
+              "surface": "native-plugin+skills+hooks",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned Ponytail source snapshot from artifact-ponytail-codex-plugin-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualified-provider-free",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "artifact-ponytail-codex-plugin-v1"
+          ],
+          "notes": "Claude Code preparation profile for Ponytail; source profile artifact-ponytail-codex-plugin-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "ponytail",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "tool_config": {
+          "display_name": "Ponytail Claude Code native plugin",
+          "lane_name": "artifact-ponytail",
+          "surface": "claude-code-native-plugin/sessionstart+userpromptsubmit+subagentstart-hooks+skills+commands",
+          "allowed_terms": [
+            "ponytail"
+          ],
+          "data_dir_name": "ponytail",
+          "mounts": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "{repository_root}/scripts/prepare_pinned_claude_marketplace.py",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts"
+          ],
+          "claude_features": {
+            "hooks": true,
+            "plugin": "ponytail"
+          },
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "controller_install_commands": [
+              [
+                "python3",
+                "{repository_root}/scripts/prepare_pinned_claude_marketplace.py",
+                "--source",
+                "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+                "--expected-commit",
+                "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+                "--marketplace-root",
+                "{tool_data_dir}/marketplace",
+                "--marketplace-name",
+                "ponytail",
+                "--plugin-name",
+                "ponytail"
+              ]
+            ],
+            "install_commands": [
+              [
+                "claude",
+                "plugin",
+                "marketplace",
+                "add",
+                "{tool_data_dir}/marketplace"
+              ],
+              [
+                "claude",
+                "plugin",
+                "install",
+                "ponytail@ponytail"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "bash",
+                "-lc",
+                "set -o pipefail; claude plugin list --json | python3 -c 'import sys; assert \"ponytail\" in sys.stdin.read()'"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/marketplace/source-pin-receipt.json",
+              "{tool_data_dir}/marketplace/.claude-plugin/marketplace.json",
+              "{tool_data_dir}/marketplace/plugins/ponytail/.claude-plugin/plugin.json"
+            ],
+            "timeout_seconds": 300
+          },
+          "preflight_command": [
+            "claude",
+            "plugin",
+            "list",
+            "--json"
+          ],
+          "default_tool_state": "active-native-plugin-hooks-and-skills",
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime"
+          ],
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "01f93dbb4b1432e7f3f71588056ba98d6d31a07c04ab6d1c3eb7538fbd996b5d",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "preflight_command",
+          "command": [
+            "claude",
+            "plugin",
+            "list",
+            "--json"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "claude",
+          "resolved_path": "/opt/data/.local/bin/claude",
+          "realpath": "/opt/data/.local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe",
+          "sha256": "0771bd866cff82b76581fc0499f6529e1a36845078f144f8c81dccb3bc7037b8",
+          "metadata": {
+            "size": 342636848,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1787556319618839178
+          },
+          "version": {
+            "command": [
+              "/opt/data/.local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "2.1.241 (Claude Code)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+            "package_json_sha256": "5f7e5ab891c31ae006b986d34e0977fda44fc54e654cc4e07531dd5dd6f96b8f"
+          },
+          {
+            "path": "{repository_root}/scripts/prepare_pinned_claude_marketplace.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "43574c6bc29a91f518c8bbcb9dbd17085bd65222232774c4e5a90775faaee3a9"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "e257557e288c",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "ponytail",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "tool_config": {
+      "display_name": "Ponytail Claude Code native plugin",
+      "lane_name": "artifact-ponytail",
+      "surface": "claude-code-native-plugin/sessionstart+userpromptsubmit+subagentstart-hooks+skills+commands",
+      "allowed_terms": [
+        "ponytail"
+      ],
+      "data_dir_name": "ponytail",
+      "mounts": [
+        "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+        "{repository_root}/scripts/prepare_pinned_claude_marketplace.py",
+        "/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime",
+        "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts"
+      ],
+      "claude_features": {
+        "hooks": true,
+        "plugin": "ponytail"
+      },
+      "host_integration_backend": "docker",
+      "host_integration": {
+        "controller_install_commands": [
+          [
+            "python3",
+            "{repository_root}/scripts/prepare_pinned_claude_marketplace.py",
+            "--source",
+            "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+            "--expected-commit",
+            "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+            "--marketplace-root",
+            "{tool_data_dir}/marketplace",
+            "--marketplace-name",
+            "ponytail",
+            "--plugin-name",
+            "ponytail"
+          ]
+        ],
+        "install_commands": [
+          [
+            "claude",
+            "plugin",
+            "marketplace",
+            "add",
+            "{tool_data_dir}/marketplace"
+          ],
+          [
+            "claude",
+            "plugin",
+            "install",
+            "ponytail@ponytail"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "bash",
+            "-lc",
+            "set -o pipefail; claude plugin list --json | python3 -c 'import sys; assert \"ponytail\" in sys.stdin.read()'"
+          ]
+        ],
+        "required_files": [
+          "{tool_data_dir}/marketplace/source-pin-receipt.json",
+          "{tool_data_dir}/marketplace/.claude-plugin/marketplace.json",
+          "{tool_data_dir}/marketplace/plugins/ponytail/.claude-plugin/plugin.json"
+        ],
+        "timeout_seconds": 300
+      },
+      "preflight_command": [
+        "claude",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "default_tool_state": "active-native-plugin-hooks-and-skills",
+      "path_entries": [
+        "/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime"
+      ],
+      "artifact_identities": []
+    },
+    "tool_config_sha256": "01f93dbb4b1432e7f3f71588056ba98d6d31a07c04ab6d1c3eb7538fbd996b5d",
+    "tool_state": "qualified-provider-free",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "preflight_command",
+      "command": [
+        "claude",
+        "plugin",
+        "list",
+        "--json"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "claude",
+      "resolved_path": "/opt/data/.local/bin/claude",
+      "realpath": "/opt/data/.local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe",
+      "sha256": "0771bd866cff82b76581fc0499f6529e1a36845078f144f8c81dccb3bc7037b8",
+      "metadata": {
+        "size": 342636848,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1787556319618839178
+      },
+      "version": {
+        "command": [
+          "/opt/data/.local/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "2.1.241 (Claude Code)",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/runtime",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+        "package_json_sha256": "5f7e5ab891c31ae006b986d34e0977fda44fc54e654cc4e07531dd5dd6f96b8f"
+      },
+      {
+        "path": "{repository_root}/scripts/prepare_pinned_claude_marketplace.py",
+        "exists": true,
+        "kind": "file",
+        "sha256": "43574c6bc29a91f518c8bbcb9dbd17085bd65222232774c4e5a90775faaee3a9"
+      }
+    ]
+  },
+  "profile_id": "artifact-ponytail-claude-code-plugin-v1",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v2",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 1,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 21600,
+  "codex_version": "",
+  "agent_runtime_version": "2.1.241 (Claude Code)",
+  "token_usage": {
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "fresh_input_tokens": 258351,
+    "cached_input_tokens": 798097,
+    "cache_write_tokens": 258287,
+    "output_tokens": 358,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 1056806,
+    "weighted_token_cost": 340308.7,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 35,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "text": 7,
+      "tool_use": 28
+    },
+    "weighted_token_cost_per_step": 9723.1,
+    "provider_usage_details": {
+      "runtime": "claude-code",
+      "accounting_mode": "sum-unique-assistant-message-usage",
+      "accounting_note": "",
+      "assistant_usage_block_count": 32,
+      "result_usage_block_count": 6,
+      "result_usage_counted": false,
+      "reasoning_tokens_available": false,
+      "canonical_components": {
+        "input_tokens": 64,
+        "cache_creation_input_tokens": 258287,
+        "cache_read_input_tokens": 798097,
+        "output_tokens": 358,
+        "reasoning_tokens": 0
+      },
+      "raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 258287,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 258287,
+        "cache_read_input_tokens": 798097,
+        "input_tokens": 64,
+        "output_tokens": 358
+      },
+      "result_raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 258287,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 258287,
+        "cache_read_input_tokens": 798097,
+        "input_tokens": 64,
+        "output_tokens": 6175,
+        "output_tokens_details.thinking_tokens": 730
+      },
+      "raw_model_usage_token_field_totals": {},
+      "result_raw_model_usage_token_field_totals": {
+        "claude-opus-5.cacheCreationInputTokens": 258287,
+        "claude-opus-5.cacheReadInputTokens": 798097,
+        "claude-opus-5.inputTokens": 64,
+        "claude-opus-5.outputTokens": 6175
+      },
+      "raw_usage_blocks": [
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBtisEF6uLWZvmyj3He",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 13145,
+            "cache_read_input_tokens": 4208,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 13145
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBuTHPp33JdcY7XYcCA",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 13678,
+            "cache_read_input_tokens": 8326,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 13678
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBupy83cMcT5pwEfRND",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 472,
+            "cache_read_input_tokens": 22004,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 472
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBuwdTq8PPEB1Pz7Czr",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 534,
+            "cache_read_input_tokens": 22476,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 534
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBv66DAUmjBARVLk3GA",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 244,
+            "cache_read_input_tokens": 23010,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 244
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBvcZXYcqgJfRMii39P",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 473,
+            "cache_read_input_tokens": 23254,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 473
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMBziqfDVEKVPQ1xE6xA",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 841,
+            "cache_read_input_tokens": 23727,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 841
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC1XxLvTtKSBqthTdae",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 19185,
+            "cache_read_input_tokens": 4208,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 19185
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC2K6Tw3honQ69U9cPJ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 19732,
+            "cache_read_input_tokens": 8326,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 19732
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC2i4arMxWJs96JrS9p",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1766,
+            "cache_read_input_tokens": 28058,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1766
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC3GvX3mW3rjs52gBtX",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 944,
+            "cache_read_input_tokens": 29824,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 944
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC3ehTYLucT6BiPnYcB",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 502,
+            "cache_read_input_tokens": 30768,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 502
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC4AxsKtMNypqarcHNK",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 224,
+            "cache_read_input_tokens": 31270,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 224
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC7pnHtC7rxDNwPB18w",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 540,
+            "cache_read_input_tokens": 31494,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 540
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC8PVJFTfKc5PxFfeKk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 24543,
+            "cache_read_input_tokens": 4208,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 24543
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC8Z4GaoeYafyYtpNhG",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 25826,
+            "cache_read_input_tokens": 8326,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 25826
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMC8mDkfsD1oX4iDNZht",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 308,
+            "cache_read_input_tokens": 34152,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 308
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCCTFsgEyUzTVvRg5DU",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 467,
+            "cache_read_input_tokens": 34460,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 467
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCCp5WyQrFifwu5GZ4r",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 27442,
+            "cache_read_input_tokens": 4208,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 27442
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCDEYBRC6VTM8DguhA9",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 28529,
+            "cache_read_input_tokens": 8326,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 28529
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCDNmnBANNvPG9dPvw8",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 573,
+            "cache_read_input_tokens": 36855,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 573
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCDsTCTqRHmiEeMMNXH",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 375,
+            "cache_read_input_tokens": 37428,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 375
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCHTi3sAiAV72kNkCgV",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 455,
+            "cache_read_input_tokens": 37803,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 455
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCHyesATCFJCuQYpW3c",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3341,
+            "cache_read_input_tokens": 31650,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3341
+            },
+            "output_tokens": 15,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCJ9VTR8GhZojcTNfdy",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1485,
+            "cache_read_input_tokens": 38258,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1485
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCJQCjqAi2tnFi5joG1",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 324,
+            "cache_read_input_tokens": 39743,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 324
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCN3MjDfTiPPuKKoTqh",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 320,
+            "cache_read_input_tokens": 40067,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 320
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCNZSUjTnpsBffrHFoi",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 32880,
+            "cache_read_input_tokens": 4208,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 32880
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCNxUpK2eMTdQZgpFbW",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 37094,
+            "cache_read_input_tokens": 8326,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 37094
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCPKoU15baRSLzJLERK",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1077,
+            "cache_read_input_tokens": 45420,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1077
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCPwwboZe6tojPAs1XS",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 712,
+            "cache_read_input_tokens": 46497,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 712
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeMCTa9nC5KxCpzghbUG3",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 256,
+            "cache_read_input_tokens": 47209,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 256
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        }
+      ],
+      "result_raw_usage_blocks": [
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 29387,
+            "cache_read_input_tokens": 127005,
+            "output_tokens": 1302,
+            "output_tokens_details": {
+              "thinking_tokens": 136
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 29387,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 1302,
+              "cacheReadInputTokens": 127005,
+              "cacheCreationInputTokens": 29387,
+              "webSearchRequests": 0,
+              "costUSD": 0.38999249999999996,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 42893,
+            "cache_read_input_tokens": 163948,
+            "output_tokens": 1333,
+            "output_tokens_details": {
+              "thinking_tokens": 236
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 42893,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 1333,
+              "cacheReadInputTokens": 163948,
+              "cacheCreationInputTokens": 42893,
+              "webSearchRequests": 0,
+              "costUSD": 0.5442990000000001,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 8,
+            "cache_creation_input_tokens": 51144,
+            "cache_read_input_tokens": 81146,
+            "output_tokens": 706,
+            "output_tokens_details": {
+              "thinking_tokens": 0
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 51144,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 8,
+              "outputTokens": 706,
+              "cacheReadInputTokens": 81146,
+              "cacheCreationInputTokens": 51144,
+              "webSearchRequests": 0,
+              "costUSD": 0.5697030000000001,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 10,
+            "cache_creation_input_tokens": 57374,
+            "cache_read_input_tokens": 124620,
+            "output_tokens": 898,
+            "output_tokens_details": {
+              "thinking_tokens": 0
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 57374,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 10,
+              "outputTokens": 898,
+              "cacheReadInputTokens": 124620,
+              "cacheCreationInputTokens": 57374,
+              "webSearchRequests": 0,
+              "costUSD": 0.65855,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 8,
+            "cache_creation_input_tokens": 5470,
+            "cache_read_input_tokens": 149718,
+            "output_tokens": 682,
+            "output_tokens_details": {
+              "thinking_tokens": 0
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 5470,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 8,
+              "outputTokens": 682,
+              "cacheReadInputTokens": 149718,
+              "cacheCreationInputTokens": 5470,
+              "webSearchRequests": 0,
+              "costUSD": 0.146649,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 10,
+            "cache_creation_input_tokens": 72019,
+            "cache_read_input_tokens": 151660,
+            "output_tokens": 1254,
+            "output_tokens_details": {
+              "thinking_tokens": 358
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 72019,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 10,
+              "outputTokens": 1254,
+              "cacheReadInputTokens": 151660,
+              "cacheCreationInputTokens": 72019,
+              "webSearchRequests": 0,
+              "costUSD": 0.82742,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty"
+            }
+          }
+        }
+      ],
+      "provider_reported_total_tokens": null,
+      "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+      "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-01-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-02-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-03-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+      "controller_verification": "failed",
+      "accepted": false,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-04-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 2,
+      "verifier_passed": false
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-05-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/task-06-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "06dc499e-1481-4c15-8fe0-ba8611044526",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0",
+    "run_record": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/artifact-ponytail-claude-code-plugin-beets-20260824-p-e257557e288c-r0"
+}

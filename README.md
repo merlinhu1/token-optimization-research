@@ -9,12 +9,12 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lane
 | Sequence | Fixture | Ordered stages |
 |---|---|---|
 | `fastify-lifecycle-sequence-v2` | Fastify | 6 bounded defect repairs |
-| `beets-lifecycle-sequence-v2` | Beets | 7 bounded defect repairs |
+| `beets-lifecycle-sequence-v2` | Beets | 6 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry contains 18 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 4 individual-tool treatments. By sequence: 9 `beets-lifecycle-sequence-v2`, 9 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 6, Codex CLI 8, OpenCode CLI 4.
+The active registry contains 20 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 6 individual-tool treatments. By sequence: 10 `beets-lifecycle-sequence-v2`, 10 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 8, Codex CLI 8, OpenCode CLI 4.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 2 replicates (71, 52 agent steps, spread 36.5%); weighted cost per step spread 12.9%; `c86863838e8b` holds 5 replicates (64, 64, 63, 123, 77 agent steps, spread 95.2%); weighted cost per step spread 98.5%; `dc16afea3ad5` holds 5 replicates (69, 73, 76, 138, 72 agent steps, spread 100.0%); weighted cost per step spread 42.1%; `e257557e288c` holds 2 replicates (66, 36 agent steps, spread 83.3%); weighted cost per step spread 41.1%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 3 replicates (71, 52, 52 agent steps, spread 36.5%); weighted cost per step spread 13.6%; `c86863838e8b` holds 5 replicates (64, 64, 63, 123, 77 agent steps, spread 95.2%); weighted cost per step spread 98.5%; `dc16afea3ad5` holds 5 replicates (69, 73, 76, 138, 72 agent steps, spread 100.0%); weighted cost per step spread 42.1%; `e257557e288c` holds 3 replicates (66, 36, 35 agent steps, spread 88.6%); weighted cost per step spread 44.3%.
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
