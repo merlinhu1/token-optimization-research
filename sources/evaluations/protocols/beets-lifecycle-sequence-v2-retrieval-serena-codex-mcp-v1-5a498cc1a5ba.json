@@ -1,0 +1,685 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "beets-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-5a498cc1a5ba",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen retrieval-serena-codex-mcp-v1 protocol for beets-lifecycle-sequence-v2; no provider/model run has occurred.",
+  "frozen_at": "2026-08-22",
+  "hypothesis": "retrieval-serena-codex-mcp-v1 produces reproducible weighted token cost and software-quality evidence for beets-lifecycle-sequence-v2",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v2",
+    "task_family_generation": "lifecycle-v2",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+    "qualification_sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "baseline-bare-codex",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "retrieval-serena-codex-mcp-v1",
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id beets-lifecycle-sequence-v2 --profile-id retrieval-serena-codex-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-5a498cc1a5ba.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "metric": "weighted_token_cost",
+    "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "fields": [
+      "weighted_token_cost"
+    ],
+    "provider_telemetry_inputs": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ],
+    "raw_totals_are_metrics": false
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "3562763dc262",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "task_family_generation": "lifecycle-v2",
+      "runner_contract_version": "workflow-runner-v10",
+      "runner_sha256": "5e25a09c188bdf79da9e69cc8335b829af78c37384d448505f8ed1672c91ef40",
+      "qualification_generator_sha256": "30229f3b7e848ef621b1a2b2d7c3aba78d58d6723dd543838c0a3515cc856e20",
+      "validator_sha256": "2294684a849e59a9fd2664090e454289bdd0822fca894dc6beb221a2b75e1fb4",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "sequence_contract": "bounded-defect-repair-series",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "weighted_token_cost",
+      "acceptance_design": "compile-plus-essential-smoke",
+      "acceptance_policy": {
+        "gate": "compile-plus-essential-smoke-for-coding-tasks",
+        "visibility": "controller-only",
+        "coding_task_classes": [
+          "defect-repair"
+        ],
+        "review_task_gate": "not-applicable",
+        "quality_diagnostics_gate": false,
+        "broader_tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+      "tasks": [
+        {
+          "id": "beets-unique-path-counter-v2",
+          "order": 1,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/agent-prompt.txt",
+          "prompt_sha256": "0338f9af2e63a4807949125a93016b8be5ad6cb088c983e5ba1dfa139eea1053",
+          "seed_patch_sha256": "389887a516de22d73c74e6e7343926b8a03265145931dce078ef151efa2081f9",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/verify.sh",
+          "verifier_sha256": "8b71484d47416d050d7603f5245abeab9b8dc438a9cd3e8c9e071ac71044bb56",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/__init__.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_util.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/util/__init__.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-empty-string-field-split-v2",
+          "order": 2,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/agent-prompt.txt",
+          "prompt_sha256": "eeea034bc7ce0374de1f09af4b5371ce6228f6d2d78d0f7aade55bcc7e5653a6",
+          "seed_patch_sha256": "c043f380ac2a9bf55daaa87d942dc38ad512f748aa60a6129cddf789ff04938e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/verify.sh",
+          "verifier_sha256": "62f73de90085a7cc77d85dd77597aca50db00d55b1a40b9af8173a624c055c33",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/hooks.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/autotag/hooks.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-date-query-alternation-v2",
+          "order": 3,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/agent-prompt.txt",
+          "prompt_sha256": "a4bff3579e9e1c44b6a5f8c59491b08589b06f02aeafc413b6f4b989a5bb9dbf",
+          "seed_patch_sha256": "f513faa82863d106df17b31c7598a9ff4353a192f8b716d19fd320fb071cb4af",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/verify.sh",
+          "verifier_sha256": "2b8fdb3443268e96db976aa95ad345115aebd86986fedab2cc09c933841be184",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_datequery.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-membership-query-hashable-v2",
+          "order": 4,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/agent-prompt.txt",
+          "prompt_sha256": "cd6002b41853aaca802dab6ef8d2a202d2ca351d1cb6e97798b80847f319a0f6",
+          "seed_patch_sha256": "ae732cba3535faefacbf756c2fcbdaa8b7b2f17d68d116057c51553804a65d19",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/verify.sh",
+          "verifier_sha256": "7f3a21db5310007ded0580124ad357a84626adde932e12e06cd9e4aef0a9c948",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_query.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-spotify-uri-extraction-v2",
+          "order": 5,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/agent-prompt.txt",
+          "prompt_sha256": "c878c706b7aa2da8fea308156f07911c7cfcf84644561cc0371c9636ffe9490c",
+          "seed_patch_sha256": "a099d9854485494c8967f80bf9a29ec1cef7946c5248124cd474982eeb1b39e1",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/verify.sh",
+          "verifier_sha256": "7e6c0c5dc76ab9537c75cc1109d2302d2ba51f380cd5d2c7dfed8696c5930a53",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/id_extractors.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_id_extractors.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/util/id_extractors.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lyrics-keep-synced-override-v2",
+          "order": 6,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/agent-prompt.txt",
+          "prompt_sha256": "77cd8cf5b1d6cbff3a5be16f6d7ac512a8d04bf7f073a20dafd68641f570531b",
+          "seed_patch_sha256": "aafbf8f90a56275c87da43d9790dc73d54a159e3068ab9862667815d8676b06d",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/verify.sh",
+          "verifier_sha256": "e58464136109a44b20ef71f6b1e64c02c11d827de80371f437c2a635ff6eae34",
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/lyrics.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_lyrics.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beetsplug/lyrics.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+        "sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-bare-codex",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "codex-native-shell-edit"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Codex instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "uv sync --group test --frozen",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ],
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-medium"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "acceptance_design": "compile-plus-essential-smoke",
+        "acceptance_policy": {
+          "gate": "compile-plus-essential-smoke-for-coding-tasks",
+          "visibility": "controller-only",
+          "coding_task_classes": [
+            "defect-repair"
+          ],
+          "review_task_gate": "not-applicable",
+          "quality_diagnostics_gate": false,
+          "broader_tests_required": false,
+          "source_review_required": false
+        },
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "9d012a437e0514bd90e22dc5d28429b737a2821992d6a00e4ae6009a5ee7dddb",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-serena-codex-mcp-v1"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "708fd84e0f21a489165b71b319e29fe38d30213accfb62d25d85d31eb265e61d",
+        "registry_entry": {
+          "id": "retrieval-serena-codex-mcp-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "mcp"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-serena-codex-mcp-v1",
+              "surface": "retrieval-context+mcp",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Serena official `setup codex` and Codex context contract with retained MCP handshake proof."
+          },
+          "reset": {
+            "policy": "Delete lane-private CODEX_HOME, product state, generated repository treatment files, and background processes after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "cold-auto-index",
+            "integration_state": "official-codex-mcp",
+            "assignment_proof": "provider-free initialize plus tools/list handshake required"
+          },
+          "notes": "Versioned replacement for deleted historical results whose treatment assignment was not operationally proven. Provider-free integration qualification passed for Lifecycle V2 fastify and beets under sources/evaluations/audits/integration-qualification-retrieval-serena-codex-mcp-v1-20260827.json: prepare-only lanes on both sequences installed Serena via official `setup codex`, proved a live MCP initialize plus tools/list handshake (23 tools, e.g. find_symbol, activate_project), and completed host-integration and codex-preflight checks with no failures."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "serena-codex-mcp-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+        "tool_config": {
+          "display_name": "Serena 1.7.0 official Codex MCP and lifecycle hooks",
+          "lane_name": "retrieval-serena-codex-mcp-v1",
+          "surface": "retrieval/context+official-codex-mcp",
+          "mcp_server": "serena",
+          "allowed_terms": [
+            "serena"
+          ],
+          "data_dir_name": "serena-codex-mcp-v1",
+          "mcp_command": "{tool_data_dir}/venv/bin/serena",
+          "mcp_args": [
+            "start-mcp-server",
+            "--project-from-cwd",
+            "--context=codex",
+            "--enable-web-dashboard",
+            "false",
+            "--open-web-dashboard",
+            "false"
+          ],
+          "env": {
+            "SERENA_HOME": "{tool_data_dir}"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "{repository_root}/scripts/install_serena_codex_hooks.py"
+          ],
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl"
+              ],
+              [
+                "{tool_data_dir}/venv/bin/serena",
+                "setup",
+                "codex"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/install_serena_codex_hooks.py",
+                "--codex-home",
+                "{codex_home}"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{tool_data_dir}/venv/bin/serena",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/venv/bin/serena",
+              "{tool_data_dir}/venv/bin/serena-hooks",
+              "{codex_home}/config.toml",
+              "{codex_home}/hooks.json"
+            ],
+            "timeout_seconds": 600
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "default_tool_state": "cold-auto-index",
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
+          ],
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/source/docs/02-usage/030_clients.md",
+            "{repository_root}/scripts/install_serena_codex_hooks.py"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/serena-1.7.0/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+              "sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source/docs/02-usage/030_clients.md",
+              "sha256": "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "mcp_config_via_host_integration": true,
+          "codex_features": {
+            "hooks": true
+          }
+        },
+        "tool_config_sha256": "09b2d1a88d4991f10c34ad2902b1a1174e660b948abf5e725bc660ce6bf65115",
+        "tool_state": "cold-auto-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "{tool_data_dir}/venv/bin/serena",
+            "start-mcp-server",
+            "--project-from-cwd",
+            "--context=codex",
+            "--enable-web-dashboard",
+            "false",
+            "--open-web-dashboard",
+            "false"
+          ]
+        },
+        "binary_identity": {
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/serena",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
+            ],
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl"
+            ],
+            [
+              "{tool_data_dir}/venv/bin/serena",
+              "setup",
+              "codex"
+            ],
+            [
+              "python3",
+              "{repository_root}/scripts/install_serena_codex_hooks.py",
+              "--codex-home",
+              "{codex_home}"
+            ]
+          ],
+          "install_contract_sha256": "69bad31f39bf14b9f7e587570772fbbb4e75e9fe3c72f632d7b30c888d197777"
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "949a27ef1e5fda1a6e7b561e777bcece345c6ffd",
+            "git_clean": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source/docs/02-usage/030_clients.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e"
+          },
+          {
+            "path": "{repository_root}/scripts/install_serena_codex_hooks.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "73906fd333e7c10d824886cd100beb88b571d38c6fc2035943fc299673cd2da6"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected"
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "3562763dc262",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      }
+    }
+  }
+}
