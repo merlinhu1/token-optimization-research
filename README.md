@@ -12,9 +12,9 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lane
 | `beets-lifecycle-sequence-v2` | Beets | 6 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry contains 30 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 16 individual-tool treatments. By sequence: 15 `beets-lifecycle-sequence-v2`, 15 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 12, Codex CLI 14, OpenCode CLI 4.
+The active registry contains 32 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 18 individual-tool treatments. By sequence: 16 `beets-lifecycle-sequence-v2`, 16 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 14, Codex CLI 14, OpenCode CLI 4.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 5 replicates (71, 52, 52, 74, 72 agent steps, spread 42.3%); weighted cost per step spread 43.4%; `c86863838e8b` holds 8 replicates (64, 64, 63, 123, 77, 60, 67, 73 agent steps, spread 105.0%); weighted cost per step spread 118.7%; `dc16afea3ad5` holds 8 replicates (69, 73, 76, 138, 72, 68, 64, 68 agent steps, spread 115.6%); weighted cost per step spread 42.1%; `e257557e288c` holds 5 replicates (66, 36, 35, 50, 45 agent steps, spread 88.6%); weighted cost per step spread 61.7%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 6 replicates (71, 52, 52, 74, 72, 89 agent steps, spread 71.2%); weighted cost per step spread 43.4%; `c86863838e8b` holds 8 replicates (64, 64, 63, 123, 77, 60, 67, 73 agent steps, spread 105.0%); weighted cost per step spread 118.7%; `dc16afea3ad5` holds 8 replicates (69, 73, 76, 138, 72, 68, 64, 68 agent steps, spread 115.6%); weighted cost per step spread 42.1%; `e257557e288c` holds 6 replicates (66, 36, 35, 50, 45, 51 agent steps, spread 88.6%); weighted cost per step spread 61.7%.
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
