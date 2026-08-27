@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-27",
+  "created_at": "2026-08-27T10:32:59.101762+00:00",
+  "purpose": "Provider-free MCP handshake qualification for retrieval-serena-codex-mcp-v1 under Lifecycle V2 (fastify+beets) before Serena r0 production runs",
+  "profiles": [
+    "retrieval-serena-codex-mcp-v1"
+  ],
+  "sequences": [
+    "beets-lifecycle-sequence-v2",
+    "fastify-lifecycle-sequence-v2"
+  ],
+  "no_provider": true,
+  "execution_mode": "prepare-only-no-provider",
+  "provider_calls": 0,
+  "summary": {
+    "expected": 2,
+    "passed": 2,
+    "failed": 0,
+    "provider_backed_sessions_created": 0
+  },
+  "failures": [],
+  "source_matrix_sha256": "c7f7ba5e1afa5fe3d5c8d9ee783984b94cc7d4d202dd87e1aca5e065f611855f",
+  "controller_provenance": {
+    "fixture_runner_sha256": "2facfa1a5cfba72c86420a336dd712313423bdb0d6cae6a0e2be8fbb6c557569",
+    "workflow_runner_sha256": "5e25a09c188bdf79da9e69cc8335b829af78c37384d448505f8ed1672c91ef40",
+    "matrix_runner_sha256": "5643e85f6d8ecef8e56cd3310a883de85c10d11f19cb655ce4b4d5325e6c1e2e",
+    "qualification_publisher_sha256": "fe26aa0980586a30141deb742e3a6153345e143684e6640bbcdec35ae6c1e428"
+  },
+  "lanes": [
+    {
+      "session_id": "prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+        "concealment": {
+          "order": 1,
+          "head": "106c7cd3c61e03257150ad5143d7ea66c5978590",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "106c7cd3c61e03257150ad5143d7ea66c5978590"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "composite_diff_sha256": "12410306720d2d9671f1c746f70643f6e6db0f5ce16a9b9b0441fef793e3a297",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "composite_diff_sha256": "12410306720d2d9671f1c746f70643f6e6db0f5ce16a9b9b0441fef793e3a297",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "12410306720d2d9671f1c746f70643f6e6db0f5ce16a9b9b0441fef793e3a297",
+          "runtime_composite_seed_diff_sha256": "12410306720d2d9671f1c746f70643f6e6db0f5ce16a9b9b0441fef793e3a297",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "skipped": false,
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "diagnostic_exit_codes": [],
+        "host_integration_retry_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/.config/serena-codex-mcp-v1/venv/bin/serena",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/.config/serena-codex-mcp-v1/venv/bin/serena-hooks",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/config.toml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/hooks.json"
+        ],
+        "artifact_identities": [
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "kind": "official-release-artifact",
+            "expected_sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891",
+            "actual_sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891",
+            "passed": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source/docs/02-usage/030_clients.md",
+            "kind": "official-install-guide",
+            "expected_sha256": "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e",
+            "actual_sha256": "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e",
+            "passed": true
+          }
+        ],
+        "post_install_artifacts": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-verify-1.txt"
+        ],
+        "claude_mcp_config": null
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "Serena",
+        "stderr_present": true,
+        "tool_names": [
+          "activate_project",
+          "delete_memory",
+          "edit_memory",
+          "find_declaration",
+          "find_implementations",
+          "find_referencing_symbols",
+          "find_symbol",
+          "get_current_config",
+          "get_diagnostics_for_file",
+          "get_symbols_overview",
+          "initial_instructions",
+          "insert_after_symbol",
+          "insert_before_symbol",
+          "list_memories",
+          "onboarding",
+          "read_memory",
+          "rename_memory",
+          "rename_symbol",
+          "replace_in_files",
+          "replace_symbol_body",
+          "safe_delete_symbol",
+          "search_for_pattern",
+          "write_memory"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "required": true,
+        "attempted": true,
+        "attempt_required": true,
+        "probe_exit_code": 0,
+        "activation_passed": true,
+        "treatment_degradation": false,
+        "known_failure": null,
+        "secondary_handshakes": [],
+        "tool_count": 23
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-beets-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-0a4cf8a1c789.json",
+      "protocol_sha256": "59b7e70c36334488c5d972d4a170b6048fbe4f788c877a4e47d7c5327de92075",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    },
+    {
+      "session_id": "prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v2",
+      "prepared": true,
+      "prepare_verification": {
+        "passed": true,
+        "mode": "preseeded-composite",
+        "future_seed_regressions_visible": true,
+        "seed_patches_model_visible": false,
+        "preseeded_task_orders": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "pending_seed_orders": [],
+        "controller_verification": "final-only",
+        "diff_basis": "ordered-task-checkpoints-plus-final-cumulative-diff",
+        "fixed_snapshot_oid": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+        "concealment": {
+          "order": 1,
+          "head": "5023910d58fab121b882b40eecb30e25fe4342f5",
+          "head_is_root": true,
+          "reachable_commit_count": 1,
+          "reflog_oids": [
+            "5023910d58fab121b882b40eecb30e25fe4342f5"
+          ],
+          "remotes": [],
+          "working_tree_clean": true,
+          "fixed_snapshot_object_present": false,
+          "unreachable_objects": [],
+          "leaked_git_admin_paths": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "composite_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "composite_diff_sha256": "424bb4058ccaac9a04b7c6915934f1c7f698a977eae7610c0d555052d4de8290",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "stage_seed_delivery": {
+          "mode": "preseeded-composite",
+          "preseeded_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "merged_task_orders": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "composite_diff_sha256": "424bb4058ccaac9a04b7c6915934f1c7f698a977eae7610c0d555052d4de8290",
+          "model_repo_seed_or_verifier_assets": [],
+          "model_concealed_paths": [],
+          "model_concealed_paths_present": [],
+          "passed": true
+        },
+        "fixed_composite_qualification": {
+          "path": "sources/evaluations/fixtures/medium/fastify-fastify/qualification-lifecycle-v2-20260821.json",
+          "passed": true,
+          "full_fixed_cumulative_verifier_zero": true,
+          "composite_seed_merge_zero": true,
+          "composite_seeded_verifiers_nonzero": true,
+          "composite_seed_diff_sha256": "424bb4058ccaac9a04b7c6915934f1c7f698a977eae7610c0d555052d4de8290",
+          "runtime_composite_seed_diff_sha256": "424bb4058ccaac9a04b7c6915934f1c7f698a977eae7610c0d555052d4de8290",
+          "composite_seed_diff_hash_matches": true
+        },
+        "concealment_passed": true,
+        "composite_seed_delivery_passed": true
+      },
+      "host_integration": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "skipped": false,
+        "controller_install_exit_codes": [],
+        "install_exit_codes": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "verify_exit_codes": [
+          0
+        ],
+        "diagnostic_exit_codes": [],
+        "host_integration_retry_exit_codes": [],
+        "missing_required_files": [],
+        "required_files": [
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/.config/serena-codex-mcp-v1/venv/bin/serena",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/.config/serena-codex-mcp-v1/venv/bin/serena-hooks",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/config.toml",
+          "/opt/data/eval-workflow-lanes/workflow-matrix-20260827T103159710908Z-p1968406-r0/fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/checkout/sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-homes/retrieval-serena-codex-mcp-v1/hooks.json"
+        ],
+        "artifact_identities": [
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "kind": "official-release-artifact",
+            "expected_sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891",
+            "actual_sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891",
+            "passed": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source/docs/02-usage/030_clients.md",
+            "kind": "official-install-guide",
+            "expected_sha256": "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e",
+            "actual_sha256": "62b271277e5ba7783695646da04cab1cc9618e63d066b35e31b731a280f8481e",
+            "passed": true
+          }
+        ],
+        "post_install_artifacts": [],
+        "artifacts": [
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-1.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-2.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-3.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-install-4.txt",
+          "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/tool-host-verify-1.txt"
+        ],
+        "claude_mcp_config": null
+      },
+      "mcp_handshake": {
+        "errors": [],
+        "initialize_passed": true,
+        "non_json_stdout_lines": [],
+        "passed": true,
+        "protocol_version": "2025-06-18",
+        "server_name": "Serena",
+        "stderr_present": true,
+        "tool_names": [
+          "activate_project",
+          "delete_memory",
+          "edit_memory",
+          "find_declaration",
+          "find_implementations",
+          "find_referencing_symbols",
+          "find_symbol",
+          "get_current_config",
+          "get_diagnostics_for_file",
+          "get_symbols_overview",
+          "initial_instructions",
+          "insert_after_symbol",
+          "insert_before_symbol",
+          "list_memories",
+          "onboarding",
+          "read_memory",
+          "rename_memory",
+          "rename_symbol",
+          "replace_in_files",
+          "replace_symbol_body",
+          "safe_delete_symbol",
+          "search_for_pattern",
+          "write_memory"
+        ],
+        "tools_list_passed": true,
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "required": true,
+        "attempted": true,
+        "attempt_required": true,
+        "probe_exit_code": 0,
+        "activation_passed": true,
+        "treatment_degradation": false,
+        "known_failure": null,
+        "secondary_handshakes": [],
+        "tool_count": 23
+      },
+      "codex_preflight": {
+        "profile_id": "retrieval-serena-codex-mcp-v1",
+        "passed": true,
+        "doctor_exit_code": 1,
+        "mcp_list_exit_code": 0,
+        "tool_preflight_exit_code": null,
+        "coverage_preflight_exit_code": null,
+        "missing_declared_filter_commands": [],
+        "forbidden_command_probe_exit_code": 0,
+        "forbidden_mcp_hits": [],
+        "forbidden_config_hits": [],
+        "visible_forbidden_commands": [],
+        "failure_reasons": [],
+        "warnings": [
+          "codex doctor exited 1; preserve the diagnostic, but use the isolated MCP/config probes and task execution as gates"
+        ],
+        "artifacts": {
+          "doctor": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-doctor.txt",
+          "mcp_list": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-mcp-list.txt",
+          "effective_config": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/codex-effective-config.toml",
+          "forbidden_command_visibility": "sources/evaluations/workflow-sessions/prepare-fastify-lifecycle-sequence-v2--retrieval-serena-codex-mcp-v1/forbidden-command-visibility.txt",
+          "tool_preflight": null,
+          "tool_coverage_preflight": null
+        }
+      },
+      "tool_warmup_exit_code": 0,
+      "protocol_path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-def74c09e8f9.json",
+      "protocol_sha256": "5277bb5c87972ef9efd7af68fb860c35810ba6b2b941893d8ec3549ca253b004",
+      "qualification_checks": {
+        "lane_exit_zero": true,
+        "prepared": true,
+        "prepare_verification": true,
+        "host_integration": true,
+        "codex_preflight": true,
+        "warmup": true,
+        "mcp_handshake": true
+      }
+    }
+  ]
+}
