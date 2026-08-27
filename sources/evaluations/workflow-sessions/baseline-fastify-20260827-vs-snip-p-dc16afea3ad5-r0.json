@@ -1,0 +1,32 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-fastify-20260827-vs-snip-p-dc16afea3ad5-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "fastify-fastify-terminal-snip-codex-hook-v1-dc16afea3ad5-sequential-workflow-r0",
+  "comparison_design": "protocol-bound-shared-lifecycle-baseline",
+  "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
+  "baseline_profile_id": "baseline-bare-codex",
+  "baseline_protocol_fingerprint": "dc16afea3ad5",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "fastify-lifecycle-sequence-v2",
+  "baseline_session_id": "baseline-fastify-20260821-p-dc16afea3ad5-r0",
+  "treatment_session_id": "snip-fastify-20260827-p-dc16afea3ad5-r0",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 756955.8,
+  "treatment_weighted_token_cost": 590513.2,
+  "delta_weighted_token_cost": -166442.6000000001,
+  "delta_percent": -21.988417289358253,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 6,
+    "treatment_tasks_passed": 6,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean terminal-snip-codex-hook-v1 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}
