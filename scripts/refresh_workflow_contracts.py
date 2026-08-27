@@ -51,16 +51,24 @@ def registered_model_condition(condition_id: str, model: str, reasoning_effort: 
     return selected
 
 
-def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
-    global BASELINE_MODEL_CONDITION, MODEL_CONDITION_LAUNCHER
+def launcher_identity_for_condition(condition_id: str) -> tuple[str, dict[str, str]]:
+    """Return (launcher path, launcher identity) for a registered condition, deterministically.
+
+    Pulled out of configure_model_condition so any caller that needs to apply this same model
+    condition to a *different* runner module -- ensure_run_protocol self-patching its own module
+    is the motivating case -- can build byte-identical launcher_identity bytes without duplicating
+    this lookup. The two must agree exactly: launcher_identity is embedded in the protocol
+    descriptor, so two callers that resolve it differently for the same condition_id would mint
+    two different protocol hashes for what is supposed to be one causal apparatus.
+    """
     selected, _ = condition_runtime.resolve_condition_pair(ROOT, condition_id)
-    MODEL_CONDITION_LAUNCHER = {
+    launcher = {
         "opencode-cli": OPENCODE_MODEL_CONDITION_LAUNCHER,
         "claude-code": CLAUDE_MODEL_CONDITION_LAUNCHER,
     }.get(selected.get("runtime_id"), "scripts/run_codex_workflow_model_condition.py")
-    launcher_path = ROOT / MODEL_CONDITION_LAUNCHER
+    launcher_path = ROOT / launcher
     launcher_identity = {
-        "path": MODEL_CONDITION_LAUNCHER,
+        "path": launcher,
         "sha256": digest(launcher_path),
     }
     if selected.get("runtime_id") in {"opencode-cli", "claude-code"}:
@@ -69,6 +77,12 @@ def configure_model_condition(condition_id: str, model: str, reasoning_effort: s
             "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
             "condition_runtime_sha256": digest(runtime_path),
         })
+    return launcher, launcher_identity
+
+
+def configure_model_condition(condition_id: str, model: str, reasoning_effort: str) -> None:
+    global BASELINE_MODEL_CONDITION, MODEL_CONDITION_LAUNCHER
+    MODEL_CONDITION_LAUNCHER, launcher_identity = launcher_identity_for_condition(condition_id)
     _, BASELINE_MODEL_CONDITION = condition_runtime.configure_runner(
         runner,
         selected_condition_id=condition_id,

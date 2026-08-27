@@ -1561,6 +1561,27 @@ def load_protocol(path_or_id: str) -> tuple[Path, dict[str, Any]]:
     return path, json.loads(path.read_text())
 
 
+def governing_model_condition(profile_id: str, root: Path = ROOT) -> tuple[str, str, str]:
+    """Return the (condition_id, model, reasoning_effort) that governs this profile's runtime.
+
+    Codex-cli profiles are governed by the module's own active-default constants. Every other
+    runtime (Claude Code, OpenCode) has no sensible codex-flavored default, so it is resolved
+    from the one non-historical registered condition for that runtime_id.
+    """
+    runtime_id = profile_runtime_id(profile_id, root)
+    if runtime_id == "codex-cli":
+        return DEFAULT_WORKFLOW_MODEL_CONDITION_ID, DEFAULT_WORKFLOW_MODEL, DEFAULT_WORKFLOW_REASONING_EFFORT
+    conditions = json.loads((root / "data/evaluation-agent-runtimes.json").read_text()).get("model_conditions", [])
+    matches = [
+        item for item in conditions
+        if item.get("runtime_id") == runtime_id and item.get("status") != "historical-inactive"
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"expected exactly one active model condition for runtime {runtime_id}; found {len(matches)}")
+    selected = matches[0]
+    return str(selected["id"]), str(selected["model"]), str(selected["reasoning_effort"])
+
+
 def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT) -> str:
     """Materialise the protocol this run executes under, minting it if it does not exist yet.
 
@@ -1570,7 +1591,60 @@ def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT)
     the operator has to remember removes the ordering trap that made freezing hazardous -- a
     protocol minted at run time cannot have been invalidated by an edit made after it was
     minted, because there is no window between the two. See ADR 0010.
+
+    The governing model condition is applied here, unconditionally, before the first hash is
+    computed -- and applied to *this* module object specifically, not to whatever copy
+    refresh_workflow_contracts.py happens to import. That distinction is the actual fix: this
+    file is reachable under more than one import identity (a bare `python3
+    scripts/run_codex_workflow_evaluation.py` invocation registers it under one name; a launcher
+    script's `import run_codex_workflow_evaluation` registers it under another; a test's `from
+    scripts import run_codex_workflow_evaluation` under a third), and
+    refresh_workflow_contracts.py always resolves its own `from scripts import
+    run_codex_workflow_evaluation as runner` -- a fixed name that need not be the same module
+    object this code is currently executing as. Patching only that fixed-name copy (via
+    contracts.configure_model_condition, as an earlier version of this fix did) left this
+    function's own pre-check reading unpatched globals whenever the two identities diverged, so
+    a bare invocation still saw two different hashes for the same protocol and still crashed with
+    "protocol mint did not produce <path>" -- confirmed by reproducing it in an isolated worktree
+    after the first fix landed. Patching sys.modules[__name__] directly is identity-independent:
+    whichever copy is currently running is the one that gets patched, so the pre-check below and
+    the mint's internal write always agree. It also fixes a second, quieter divergence:
+    baseline_protocol_fingerprint (used to bind a newly minted protocol's baseline_pool identity)
+    only agrees with find_canonical_baseline_record's gate-bound resolution once this same
+    condition has been applied, so an unpatched mint could previously produce a protocol whose own
+    recorded baseline fingerprint didn't match the baseline it would actually be compared against
+    -- passing every pre-spend check and only failing the registry's post-run validator after a
+    lane had already run to completion and spent real provider budget.
     """
+    import refresh_workflow_contracts as contracts
+
+    condition_id, model, reasoning_effort = governing_model_condition(profile_id, root)
+    self_module = sys.modules[__name__]
+    # configure_runner captures whatever the module's current functions are as "original" and
+    # wraps them again; calling it repeatedly for the *same* condition is a safe no-op in value
+    # terms (verified), but calling it for one condition and then a different one stacks the
+    # second wrapper on top of the first's closure instead of on the pristine functions, and the
+    # result is neither condition cleanly. Guarding on the already-applied condition id avoids
+    # that for the repeat-same-profile case, which is the only one that occurs in production: one
+    # lane subprocess always runs exactly one profile_id (see workflow_lane_command), so this
+    # function is never asked to switch conditions within a process.
+    # Compared against a marker this block itself sets, not DEFAULT_WORKFLOW_MODEL_CONDITION_ID:
+    # for codex-cli, governing_model_condition returns that same constant's pristine value, so
+    # comparing against it directly reads "already configured" before configure_runner has ever
+    # wrapped this module's functions, and silently skips the whole patch.
+    if getattr(self_module, "_ensure_run_protocol_condition_id", None) != condition_id:
+        import workflow_model_condition_runtime as condition_runtime
+
+        _, launcher_identity = contracts.launcher_identity_for_condition(condition_id)
+        condition_runtime.configure_runner(
+            self_module,
+            selected_condition_id=condition_id,
+            expected_model=model,
+            expected_reasoning_effort=reasoning_effort,
+            launcher_identity=launcher_identity,
+        )
+        self_module._ensure_run_protocol_condition_id = condition_id
+
     protocol_id = canonical_protocol_id(seq, profile_id, root)
     path = root / "sources/evaluations/protocols" / f"{protocol_id}.json"
     if path.is_file():
@@ -1578,14 +1652,12 @@ def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT)
     # Delegate to the sanctioned minting entrypoint rather than reimplementing part of it. It
     # applies the model condition and runs the profile gates before writing, and reusing it is
     # what keeps a run-time mint byte-identical to one an operator would have produced by hand.
-    import refresh_workflow_contracts as contracts
-
     contracts.main([
         "--sequence-id", seq["id"],
         "--profile-id", profile_id,
-        "--workflow-model-condition-id", DEFAULT_WORKFLOW_MODEL_CONDITION_ID,
-        "--workflow-model", DEFAULT_WORKFLOW_MODEL,
-        "--workflow-reasoning-effort", DEFAULT_WORKFLOW_REASONING_EFFORT,
+        "--workflow-model-condition-id", condition_id,
+        "--workflow-model", model,
+        "--workflow-reasoning-effort", reasoning_effort,
     ])
     if not path.is_file():
         raise ValueError(f"protocol mint did not produce {path}")
