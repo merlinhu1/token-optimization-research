@@ -3495,9 +3495,15 @@ class PublishedSchemaGateTest(unittest.TestCase):
         self.assertEqual(summaries.main(["--check"]), 0)
 
         body = summaries.render_summary()
-        sessions = registry_sessions()
-        if sessions:
-            self.assertIn(f"{len(sessions)} accepted provider-backed session", body)
+        # Operationally-invalid sessions (a nonzero provider exit mid-lane, a protocol
+        # mismatch) are retained as honest failure receipts but are not accepted results, so
+        # the "accepted provider-backed session" count must exclude them.
+        accepted_sessions = [
+            session for session in registry_sessions()
+            if session.get("interpretation", {}).get("accepted_for_objective") is True
+        ]
+        if accepted_sessions:
+            self.assertIn(f"{len(accepted_sessions)} accepted provider-backed session", body)
         else:
             self.assertIn("holds no provider-backed sessions", body)
 

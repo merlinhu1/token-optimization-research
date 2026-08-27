@@ -108,7 +108,15 @@ def render_decomposition(sessions: list[dict]) -> str:
 
 def render_summary() -> str:
     doc = json.loads(REGISTRY.read_text())
-    sessions = doc.get("sessions") or []
+    # Operationally-invalid attempts (a nonzero provider exit mid-lane, a protocol mismatch) are
+    # retained in the registry as honest failure receipts -- never silently dropped -- but they
+    # are not accepted results, and the label below says "accepted." Counting them here would
+    # make a real spend loss look like more corpus. accepted_for_objective is the field that
+    # actually decides that, not mere presence in the registry.
+    sessions = [
+        session for session in (doc.get("sessions") or [])
+        if session.get("interpretation", {}).get("accepted_for_objective") is True
+    ]
     archives = archived_generations()
 
     if not sessions:
