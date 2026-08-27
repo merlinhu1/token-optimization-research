@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "beets-lifecycle-sequence-v2-retrieval-serena-claude-code-mcp-v1-74becd53d687",
+  "protocol_id": "beets-lifecycle-sequence-v2-retrieval-serena-claude-code-mcp-v1-fa6b379e9321",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen retrieval-serena-claude-code-mcp-v1 protocol for beets-lifecycle-sequence-v2; no provider/model run has occurred.",
   "frozen_at": "2026-08-22",
@@ -18,30 +18,30 @@
   },
   "baseline": {
     "profile_id": "baseline-claude-code-no-mcp",
-    "runtime_id": "codex-cli",
-    "provider": "openai",
-    "model": "gpt-5.6-sol",
-    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
     "reasoning_effort": "medium",
     "command": ""
   },
   "comparison_baseline": {
     "profile_id": "baseline-claude-code-no-mcp",
-    "runtime_id": "codex-cli",
-    "provider": "openai",
-    "model": "gpt-5.6-sol",
-    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
     "reasoning_effort": "medium",
     "command": ""
   },
   "treatment": {
     "profile_id": "retrieval-serena-claude-code-mcp-v1",
     "runtime_id": "claude-code",
-    "provider": "openai",
-    "model": "gpt-5.6-sol",
-    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id beets-lifecycle-sequence-v2 --profile-id retrieval-serena-claude-code-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-serena-claude-code-mcp-v1-74becd53d687.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-anthropic-opus-5-medium --workflow-model claude-opus-5 --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v2 --profile-id retrieval-serena-claude-code-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-serena-claude-code-mcp-v1-fa6b379e9321.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "metric": "weighted_token_cost",
@@ -61,7 +61,7 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "3562763dc262",
+    "protocol_fingerprint": "e257557e288c",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v2",
@@ -267,26 +267,28 @@
         "sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911"
       },
       "baseline_profile": {
-        "profile_id": "baseline-bare-codex",
+        "profile_id": "baseline-claude-code-no-mcp",
         "profile_type": "control",
         "enabled_surfaces": [
-          "codex-native-shell-edit"
+          "claude-code-native-shell-edit",
+          "project-claude-md-instruction-discovery"
         ],
         "disabled_overlaps": [
           "all MCP servers",
           "all token-saving surfaces",
-          "global Codex instructions",
+          "global Claude instructions",
           "hooks",
           "skills/plugins",
           "warm indexes"
         ]
       },
       "agent": {
-        "runtime_id": "codex-cli",
-        "provider": "openai",
-        "model": "gpt-5.6-sol",
-        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
-        "reasoning_effort": "medium"
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
       },
       "runtime_inputs": {
         "timeout_seconds_per_task": 3600,
@@ -310,7 +312,9 @@
             "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
           }
         ],
-        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-medium"
+        "claude_runtime_condition": "claude-code-anthropic-opus-5-medium",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "model_condition_launcher": "scripts/run_claude_code_workflow_model_condition.py"
       },
       "isolation": {
         "prompt_delivery": "sequential-one-task-at-a-time",
@@ -336,11 +340,25 @@
         "prompt_sanitizer": "sanitize_task_prompt-v1",
         "concealment": "declared-model-concealed-paths-removed-before-root-commit",
         "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
       }
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "be2e44a8e8b5de11008a8e76a014aa462f1244d5cdb0241ac8542f63d17b8114",
+    "descriptor_sha256": "0e87c3ebcc8a2bb9c88b1390ec16a554179cd5d422b7f944a407f71facb79b87",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "beets-lifecycle-sequence-v2",
@@ -583,7 +601,15 @@
           "agent_web_tools": "disabled-by-permission",
           "external_retrieval_audit": "fail-closed"
         },
-        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives"
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
       },
       "dependencies": {
         "command": "uv sync --group test --frozen",
@@ -598,9 +624,9 @@
       },
       "agent_condition": {
         "runtime_id": "claude-code",
-        "provider": "openai",
-        "model": "gpt-5.6-sol",
-        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
         "reasoning_effort": "medium",
         "runtime_version_condition": "captured-at-run-and-bound-to-record"
       },
@@ -616,8 +642,22 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "3562763dc262",
+        "protocol_fingerprint": "e257557e288c",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
       }
     }
   }
