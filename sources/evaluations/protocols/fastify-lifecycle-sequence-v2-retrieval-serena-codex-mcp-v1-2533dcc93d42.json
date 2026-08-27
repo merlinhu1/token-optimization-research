@@ -1,6 +1,6 @@
 {
   "protocol_schema_version": 3,
-  "protocol_id": "fastify-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-4d455e14af47",
+  "protocol_id": "fastify-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-2533dcc93d42",
   "status": "frozen-ready-not-run",
   "outcome": "Frozen retrieval-serena-codex-mcp-v1 protocol for fastify-lifecycle-sequence-v2; no provider/model run has occurred.",
   "frozen_at": "2026-08-21",
@@ -41,7 +41,7 @@
     "model": "gpt-5.6-sol",
     "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
     "reasoning_effort": "medium",
-    "command": "python3 scripts/run_codex_workflow_evaluation.py --sequence-id fastify-lifecycle-sequence-v2 --profile-id retrieval-serena-codex-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-4d455e14af47.json --docker-image token-eval-codex:latest"
+    "command": "python3 scripts/run_codex_workflow_model_condition.py --workflow-model-condition-id codex-openai-gpt-5-6-sol-medium --workflow-model gpt-5.6-sol --workflow-reasoning-effort medium --sequence-id fastify-lifecycle-sequence-v2 --profile-id retrieval-serena-codex-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-2533dcc93d42.json --docker-image token-eval-codex:latest"
   },
   "token_accounting_boundary": {
     "metric": "weighted_token_cost",
@@ -61,7 +61,7 @@
   },
   "baseline_pool": {
     "protocol_version": "baseline-pool-v1",
-    "protocol_fingerprint": "88567e83e5cf",
+    "protocol_fingerprint": "dc16afea3ad5",
     "descriptor": {
       "version": "baseline-pool-v1",
       "task_family_generation": "lifecycle-v2",
@@ -304,7 +304,8 @@
         "provider": "openai",
         "model": "gpt-5.6-sol",
         "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
-        "reasoning_effort": "medium"
+        "reasoning_effort": "medium",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
       },
       "runtime_inputs": {
         "timeout_seconds_per_task": 3600,
@@ -328,7 +329,9 @@
             "sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3"
           }
         ],
-        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-medium"
+        "codex_runtime_condition": "codex-openai-gpt-5-6-sol-medium",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "model_condition_launcher": "scripts/run_codex_workflow_model_condition.py"
       },
       "isolation": {
         "prompt_delivery": "sequential-one-task-at-a-time",
@@ -354,11 +357,23 @@
         "prompt_sanitizer": "sanitize_task_prompt-v1",
         "concealment": "declared-model-concealed-paths-removed-before-root-commit",
         "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-default",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
       }
     }
   },
   "selected_execution": {
-    "descriptor_sha256": "ee4420c25d26aedacb491c38adb8e20c04292fdbc522fbde1e92082813cbd710",
+    "descriptor_sha256": "ab2bbc592e80e7bfaf3afa14dc6e6604b4e956b118d2c270e7a620508b0001e5",
     "descriptor": {
       "version": "execution-condition-v1",
       "sequence_id": "fastify-lifecycle-sequence-v2",
@@ -662,7 +677,15 @@
           "codex_web_search": "disabled",
           "external_retrieval_audit": "fail-closed"
         },
-        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected"
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+        "agent_runtime_id": "codex-cli",
+        "model_condition": {
+          "id": "codex-openai-gpt-5-6-sol-medium",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_codex_workflow_model_condition.py"
+        }
       },
       "dependencies": {
         "command": "npm install --ignore-scripts --no-audit --no-fund",
@@ -695,8 +718,20 @@
       },
       "baseline_pool_reference": {
         "protocol_version": "baseline-pool-v1",
-        "protocol_fingerprint": "88567e83e5cf",
+        "protocol_fingerprint": "dc16afea3ad5",
         "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-default",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
       }
     }
   }
