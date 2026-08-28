@@ -2130,7 +2130,7 @@
         }
       ],
       "install": {
-        "policy": "Install the pinned 1.108.114 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
+        "policy": "Install the pinned 1.108.290 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
       },
       "reset": {
         "policy": "Delete the lane-private venv, CODE_INDEX_PATH, CODEX_HOME, MCP config, install receipt, and index after evidence capture; verify no guidance or generated state survives into another lane."
@@ -2144,12 +2144,17 @@
       },
       "source_snapshot": {
         "repository": "jgravelle/jcodemunch-mcp",
-        "commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-        "version": "1.108.114",
-        "wheel": "/opt/data/tool-candidates/jcodemunch-mcp/dist/jcodemunch_mcp-1.108.114-py3-none-any.whl",
-        "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
-        "readme_sha256": "09ba2669b45355464761b130a9696f7851af2e42df7fb9bec1283357788f3ad2",
-        "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2"
+        "commit": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+        "version": "1.108.290",
+        "wheel": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+        "wheel_sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+        "readme_sha256": "d331109d2df6fa3f7ed1f0a7838477d6e31e5df888cf0574a3d70616b53c839b",
+        "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+        "release_directory": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290",
+        "artifact": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs",
+        "guidance_unchanged_since_1.108.114": true
       },
       "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
     },
@@ -2322,9 +2327,14 @@
       },
       "source_snapshot": {
         "repository": "oraios/serena",
-        "commit": "103a17072e9b915c9c9980f946902be856695978",
+        "commit": "949a27ef1e5fda1a6e7b561e777bcece345c6ffd",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4",
+        "version": "1.7.0",
+        "release_directory": "/opt/data/tool-candidates/releases/serena-1.7.0",
+        "artifact": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/serena-1.7.0/source/docs/02-usage/030_clients.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Atomic symbolic-retrieval treatment compared with bare OpenCode; zero natural uptake remains valid."
     },
@@ -2489,10 +2499,14 @@
       },
       "source_snapshot": {
         "repository": "headroom-ai/headroom",
-        "commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
-        "version": "0.28.0",
+        "commit": "87e71dd10057ff3cbe826bde617682971339e4f8",
+        "version": "0.36.3",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4",
+        "release_directory": "/opt/data/tool-candidates/releases/headroom-0.36.3",
+        "artifact": "/opt/data/tool-candidates/releases/headroom-0.36.3/artifacts/headroom_ai-0.36.3-cp310-abi3-manylinux_2_28_x86_64.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/headroom-0.36.3/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole."
     },
@@ -2713,10 +2727,14 @@
       },
       "source_snapshot": {
         "repository": "jrollin/cartog",
-        "commit": "890d15b66b523841290a63e431a31b6f6438fc4b",
-        "version": "0.30.1",
+        "commit": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08",
+        "version": "0.32.2",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v3/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9"
+        "runtime_adapter_sha256": "dc787ae0a9038b002687ccce03ae91863c286119f79675059ffc78e88b31edd9",
+        "release_directory": "/opt/data/tool-candidates/releases/cartog-0.32.2",
+        "artifact": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts/cartog-x86_64-unknown-linux-gnu.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/cartog-0.32.2/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Fresh full-product successor with required warm structural index, live watcher, and product-authored routing guidance; optional vector reranker remains disabled.",
       "name": "Cartog OpenCode product V2 repaired",
@@ -2940,10 +2958,14 @@
       },
       "source_snapshot": {
         "repository": "safishamsi/graphify",
-        "commit": "199061207f6648f116fd6dbb0b2214502c55d90a",
-        "version": "0.9.1",
+        "commit": "b2cd36267456c166788c95be6e68574064a92a42",
+        "version": "0.9.48",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v5/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352"
+        "runtime_adapter_sha256": "4fe90a1a85dfe47db5f5637c4cfdb07c89384b598d2c274ed0af080f3ae42352",
+        "release_directory": "/opt/data/tool-candidates/releases/graphify-0.9.48",
+        "artifact": "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/graphify-0.9.48/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Successive OpenCode screen selected from the live compatible shortlist. Uses the official OpenCode skill, AGENTS guidance, plugin, and full graph without adding an MCP arm. Corrected before accepted execution to enable only the assigned project skill in the isolated OpenCode permission map; the prior skill-disabled generation was deleted as invalid."
     },
@@ -2993,10 +3015,14 @@
       },
       "source_snapshot": {
         "repository": "rtk-ai/rtk",
-        "commit": "23aae98c5b29cd52d77061c6efd2e65e5e3cc6dd",
-        "version": "0.42.4",
+        "commit": "b34be37caf3796b69a50952a28e60e32b5daad43",
+        "version": "0.45.0",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+        "release_directory": "/opt/data/tool-candidates/releases/rtk-0.45.0",
+        "artifact": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Successive OpenCode screen selected from the live compatible shortlist; measures the official command-rewriting plugin rather than the Codex instruction profile."
     },
@@ -3049,10 +3075,14 @@
       },
       "source_snapshot": {
         "repository": "colbymchenry/codegraph",
-        "commit": "4077ed19b7d8a88eba93601c0c308e59c8640f8c",
-        "version": "1.1.1",
+        "commit": "ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6",
+        "version": "1.5.0",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v4/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7"
+        "runtime_adapter_sha256": "e3c6e77fc22ae12a6548ee3ad92836d58c2db411ceae7c3743c370c469e6bbf7",
+        "release_directory": "/opt/data/tool-candidates/releases/codegraph-1.5.0",
+        "artifact": "/opt/data/tool-candidates/releases/codegraph-1.5.0/artifacts/codegraph-linux-x64.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/codegraph-1.5.0/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Next native OpenCode-eligible product after Token Savior, which is skipped because its pinned product has no OpenCode integration. Uses CodeGraph official OpenCode installer and MCP server."
     },
@@ -3103,12 +3133,18 @@
       },
       "source_snapshot": {
         "repository": "jgravelle/jcodemunch-mcp",
-        "version": "1.108.114",
-        "source_commit": "fbc14e40c7057ebc6d718fb48083d30522afe15f",
-        "wheel_sha256": "9ae3a44c2be5709d33fa2b56c9e569906ed63906a907f89b4762a370d397ed54",
+        "version": "1.108.290",
+        "source_commit": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+        "wheel_sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
         "guidance_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+        "commit": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+        "release_directory": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290",
+        "artifact": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs",
+        "guidance_unchanged_since_1.108.114": true
       },
       "notes": "Second successive screen: jCodemunch has a universal host-install guide and an MCP server, so this is a host-agnostic OpenCode treatment rather than a prompt-only simulation."
     },
@@ -3215,12 +3251,17 @@
       },
       "source_snapshot": {
         "repository": "",
-        "version": "8.9.1",
-        "source_commit": "b1e086cf06bc7a7622473ffe9637c122567404e0",
+        "version": "8.28.0",
+        "source_commit": "3313c3a4e88722e134e5747663c02d5db5ad3032",
         "bundle_sha256": "1a920ef5dfb50f9f1a23baa7d26ab2f9329616242713a7d8734928970ad4fb59",
         "package_sha256": "f8478ca025747dada0b86288f696e1ae39ea8701a5081c60f54c70eafa034963",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+        "commit": "3313c3a4e88722e134e5747663c02d5db5ad3032",
+        "release_directory": "/opt/data/tool-candidates/releases/sigmap-8.28.0",
+        "artifact": "/opt/data/tool-candidates/releases/sigmap-8.28.0/artifacts/sigmap-8.28.0.tgz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/sigmap-8.28.0/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Second successive screen: SigMap is a zero-dependency standalone MCP/context bundle and explicitly supports the OpenCode MCP client."
     },
@@ -3270,12 +3311,17 @@
       },
       "source_snapshot": {
         "repository": "",
-        "version": "4.8.4",
-        "source_commit": "40e50d9e03242aa5dd53ac771950f9127362b25f",
+        "version": "4.9.0",
+        "source_commit": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
         "plugin_sha256": "e2443648e1864724f56e2a073fdf2f29199772606d9ea1c175fe06eaa3b75853",
         "guidance_sha256": "1cd148db944eff33bf8bb878c41a290fe85b86de3e65ac311d5d501e71a0cdbf",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+        "commit": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+        "release_directory": "/opt/data/tool-candidates/releases/ponytail-4.9.0",
+        "artifact": "/opt/data/tool-candidates/releases/ponytail-4.9.0/artifacts/ponytail-v4.9.0-source.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/ponytail-4.9.0/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Requalified on 2026-08-03: the pinned Ponytail 4.8.4 native OpenCode plugin loaded successfully under OpenCode 1.18.9 through adapter-v6, with the exact plugin/guidance hashes recorded above and no instruction-only substitute."
     },
@@ -3325,12 +3371,17 @@
       },
       "source_snapshot": {
         "repository": "JuliusBrussee/caveman",
-        "version": "0.1.0",
-        "source_commit": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+        "version": "2.2.0",
+        "source_commit": "9aa63945a349bef17206540650db48c30fafbdf2",
         "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
         "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3"
+        "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+        "commit": "9aa63945a349bef17206540650db48c30fafbdf2",
+        "release_directory": "/opt/data/tool-candidates/releases/caveman-2.2.0",
+        "artifact": "/opt/data/tool-candidates/releases/caveman-2.2.0/artifacts/caveman-v2.2.0-source.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/caveman-2.2.0/source/INSTALL.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
     },
@@ -3437,11 +3488,16 @@
       },
       "source_snapshot": {
         "repository": "yvgude/lean-ctx",
-        "version": "3.8.18",
-        "source_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+        "version": "3.9.19",
+        "source_commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
         "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v7/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15"
+        "runtime_adapter_sha256": "e559c52ef4ef8a7e6b02cd03bfc2b86c2da039da493969d21f1ebbeb116c1f15",
+        "commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+        "release_directory": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19",
+        "artifact": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/artifacts/lean-ctx-x86_64-unknown-linux-gnu.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Corrected official OpenCode integration: the product-generated ~/.config/opencode configuration and AGENTS guidance are copied byte-for-byte into the lane-active isolated XDG root, with MCP handshake and warm index retained."
     },
@@ -4346,9 +4402,13 @@
       },
       "source_snapshot": {
         "repository": "repowise-dev/repowise",
-        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
-        "version": "0.39.0",
-        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4"
+        "commit": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+        "version": "0.45.0",
+        "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+        "release_directory": "/opt/data/tool-candidates/releases/repowise-0.45.0",
+        "artifact": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Successor to the deleted provider-free setup. `--no-prose` keeps setup deterministic; REPOWISE_PROVIDER=codex_cli enables RepoWise's LLM-backed MCP path during natural use."
     },
@@ -4400,11 +4460,15 @@
       },
       "source_snapshot": {
         "repository": "repowise-dev/repowise",
-        "commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
-        "version": "0.39.0",
+        "commit": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+        "version": "0.45.0",
         "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v9/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e"
+        "runtime_adapter_sha256": "6cabc28420901ec9fea5997bd63559311d73d2c7fb9c86e54d64ba42c67b822e",
+        "release_directory": "/opt/data/tool-candidates/releases/repowise-0.45.0",
+        "artifact": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+        "official_install_guide": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
       "notes": "Successor to the deleted provider-free setup. RepoWise has no OpenCode-specific editor installer, so this keeps the documented stdio MCP registration while explicitly configuring its OpenCode provider."
     }

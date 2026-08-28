@@ -4,17 +4,17 @@
 
 - Repository: `jgravelle/jcodemunch-mcp`
 - URL: https://github.com/jgravelle/jcodemunch-mcp
-- Version/ref inspected: local shallow clone `bdebb6399f07`, 2026-07-01
+- Version/ref inspected: `1.108.290` release at commit `9e76d6320c017b774d54bb31d79dd4b8a5876aff`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: bdebb6399f07431d4b072582ff80f7639d8752c5
-- Commit URL: https://github.com/jgravelle/jcodemunch-mcp/commit/bdebb6399f07431d4b072582ff80f7639d8752c5
-- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
-- Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
-- Stars at inspection: 1,942
-- Forks at inspection: 300
+- Commit inspected: 9e76d6320c017b774d54bb31d79dd4b8a5876aff
+- Commit URL: https://github.com/jgravelle/jcodemunch-mcp/commit/9e76d6320c017b774d54bb31d79dd4b8a5876aff
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 1.108.290 release checkout from the batch release corpus, the same bytes its lanes install; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Stars at inspection (2026-07-01, not refreshed offline): 1,942
+- Forks at inspection (2026-07-01, not refreshed offline): 300
 - License: NOASSERTION
-- Updated at: 2026-06-26T04:40:07Z
+- Updated at (2026-07-01, not refreshed offline): 2026-06-26T04:40:07Z
 
 ## Summary
 
@@ -25,15 +25,20 @@ jcodemunch MCP indexes code into symbol/context structures and exposes many MCP 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime source | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative implementation files fetched from GitHub HEAD with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Used to identify installer, plugin, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime source | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Representative implementation files read from the pinned release checkout with SHA-256 prefixes. |
 | README/docs | README path identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
 
-Repository tree inspection found 626 files and 574 files matching integration, source, test, benchmark, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `1.108.290` release checkout found 964 files: 786 source, 56 documentation, 626 test/benchmark, and 316 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `clients/ts/decoder.ts`
+- `mcpb/build.py`
+- `mcpb/server/main.py`
 - `src/jcodemunch_mcp/__init__.py`
 - `src/jcodemunch_mcp/__main__.py`
 - `src/jcodemunch_mcp/agent_selector.py`
@@ -46,6 +51,7 @@ Repository tree inspection found 626 files and 574 files matching integration, s
 - `src/jcodemunch_mcp/cli/init.py`
 - `src/jcodemunch_mcp/cli/install_pack.py`
 - `src/jcodemunch_mcp/cli/observatory.py`
+- `src/jcodemunch_mcp/cli/parity.py`
 - `src/jcodemunch_mcp/cli/receipt.py`
 - `src/jcodemunch_mcp/cli/reflect.py`
 - `src/jcodemunch_mcp/cli/skills.py`
@@ -55,29 +61,50 @@ Repository tree inspection found 626 files and 574 files matching integration, s
 - `src/jcodemunch_mcp/counter.py`
 - `src/jcodemunch_mcp/credentials.py`
 - `src/jcodemunch_mcp/embeddings/__init__.py`
+- `src/jcodemunch_mcp/embeddings/advice.py`
 - `src/jcodemunch_mcp/embeddings/local_encoder.py`
 - `src/jcodemunch_mcp/encoding/__init__.py`
-- `src/jcodemunch_mcp/encoding/decoder.py`
-- `src/jcodemunch_mcp/encoding/format.py`
-- `src/jcodemunch_mcp/encoding/gate.py`
-- `src/jcodemunch_mcp/encoding/generic.py`
-- `src/jcodemunch_mcp/encoding/json_passthrough.py`
-- `src/jcodemunch_mcp/encoding/schema_driven.py`
-- `src/jcodemunch_mcp/encoding/schemas/__init__.py`
-- `src/jcodemunch_mcp/encoding/schemas/find_importers.py`
-- `src/jcodemunch_mcp/encoding/schemas/find_references.py`
-- `src/jcodemunch_mcp/encoding/schemas/get_blast_radius.py`
-- `src/jcodemunch_mcp/encoding/schemas/get_call_hierarchy.py`
-- `src/jcodemunch_mcp/encoding/schemas/get_dependency_cycles.py`
+
+Host-integration documentation shipped in the release:
+
+- `AGENTS.md`
+- `AGENT_HINTS.md`
+- `AGENT_HOOKS.md`
+- `AGENT_INSTALL_UNIVERSAL.md`
+- `CLAUDE.md`
+- `CLIENTS.md`
+- `CONFIGURATION.md`
+- `INSTALL_FROM_SOURCE.md`
+- `clients/ts/README.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
 
-### Fresh pinned-source refresh
+This dossier previously described `bdebb6399f07`, read from GitHub HEAD on 2026-07-01. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **1.108.290** release at `9e76d6320c01`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
 
-The 2026-07-01 refresh pins the inspected source to `bdebb6399f07431d4b072582ff80f7639d8752c5` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `src/jcodemunch_mcp/__init__.py`, `src/jcodemunch_mcp/__main__.py`, `src/jcodemunch_mcp/agent_selector.py`, `src/jcodemunch_mcp/cli/__init__.py`, `src/jcodemunch_mcp/cli/delivery.py`, `src/jcodemunch_mcp/cli/digest.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+Upstream shipped **199 releases** between 2026-07-01 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+14 of those releases name an install surface in their own title:
+
+- [1.108.284] - 2026-08-17 - A documented setting the storage layer never read
+- [1.108.283] - 2026-08-17 - A config in the wrong shape is a client that reports success and registers nothing
+- [1.108.258] - 2026-08-07 - A config read that reads the config
+- [1.108.255] - 2026-08-07 - Hook output on channels the model never sees
+- [1.108.251] - 2026-08-06 - every server start silently deleted your installed starter packs
+- [1.108.250] - 2026-08-06 - `config --check` reported a default while the indexer used your config
+- [1.108.248] - 2026-08-06 - starter packs install again, and stop misreporting why they did not
+- [1.108.242] - 2026-08-05 - documentation restructure: CAPABILITIES.md + CLIENTS.md, corrected tool counts and counters
+- [1.108.221] - 2026-08-02 - what this install could establish, not just what it saw
+- [1.108.197] - 2026-07-28 - the escape hatch read the wrong config file
+- [1.108.150] - 2026-07-28 - stateless-MCP forward cover: principal session keying + SSE deprecation notice
+- [1.108.121] - 2026-07-11 - License CLI reads the config-file `license_key`
+- …and 2 more; see `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
+The official install guide this tool is evaluated against is `source/CLIENTS.md` at sha256 `19e87ba818c8efad…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
 
 
 - `src/jcodemunch_mcp/server.py` implements the MCP server and lazily imports tool modules at dispatch time to reduce cold-start cost for sessions that do not need indexing-heavy tools.

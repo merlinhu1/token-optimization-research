@@ -3553,6 +3553,53 @@ class PublishedSchemaGateTest(unittest.TestCase):
         self.assertEqual(over, validate_repository.OVERSIZED_COMPACT_DIFF_SESSION_IDS)
 
 
+class ToolIdentityMatchesExecutionTest(unittest.TestCase):
+    """The config a run records must be the config the run installs.
+
+    These lived in two tables and disagreed for eleven Claude Code profiles: the
+    identity map named each tool's historical base config while execution resolved
+    its real Claude surface. The lanes installed the right product, but run.json --
+    and through it the execution descriptor and protocol identity -- named an
+    apparatus that never ran.
+    """
+
+    def test_recorded_tool_identity_is_the_installed_tool_config(self):
+        for profile_id, recorded in runner.SUPPORTED_WORKFLOW_TOOL_PROFILES.items():
+            installed = runner.fixture.PROFILE_TOOL_CONFIG_OVERRIDES.get(profile_id)
+            if installed is None:
+                continue
+            with self.subTest(profile=profile_id):
+                self.assertEqual(
+                    recorded, installed,
+                    f"{profile_id} records tool config {recorded!r} but installs "
+                    f"{installed!r}; a paid run would bind evidence to an apparatus "
+                    f"it never used",
+                )
+
+    def test_a_claude_lane_does_not_advertise_a_retired_profile_name(self):
+        """A cloned Claude config inherits the base entry's display_name.
+
+        Left alone that labels an official-surface lane "(historical ... profile)",
+        which is what a reader of run.json sees.
+        """
+        for profile_id in runner.SUPPORTED_WORKFLOW_TOOL_PROFILES:
+            if runner.profile_runtime_id(profile_id) != "claude-code":
+                continue
+            tool_id = runner.PROFILE_META[profile_id].get("tool_id")
+            if not tool_id or not tool_id.endswith(("-claude-code-mcp-v1",
+                                                    "-claude-code-hook-v1",
+                                                    "-claude-code-product-v1",
+                                                    "-claude-code-skill-v1",
+                                                    "-claude-code-hybrid-v1")):
+                continue
+            name = str(runner.fixture.TOOL_CONFIGS[tool_id].get("display_name", ""))
+            with self.subTest(profile=profile_id):
+                self.assertNotIn(
+                    "historical", name.lower(),
+                    f"{profile_id} would record display_name {name!r}",
+                )
+
+
 class ManifestAndProtocolContractTest(unittest.TestCase):
     def frozen_protocol_doc(
         self,

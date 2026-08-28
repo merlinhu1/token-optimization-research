@@ -90,19 +90,29 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "terminal-rtk": "rtk",
     "terminal-rtk-codex-instructions-v1": "rtk-codex-instructions-v1",
     "terminal-rtk-claude-code-hook-v1": "rtk-claude-code-hook-v1",
-    "retrieval-cartog-claude-code-product-v1": "cartog",
     "behavior-caveman-claude-code-skill-v1": "caveman",
-    "retrieval-codegraph-claude-code-mcp-v1": "codegraph",
-    "codescope-claude-code-mcp-v1": "codescope",
-    "retrieval-graphify-claude-code-skill-v1": "graphify",
-    "integrated-leanctx-claude-code-hybrid-v1": "lean-ctx",
+    # Every Claude Code profile below previously named its historical base config here
+    # while `run_codex_fixture_evaluation.PROFILE_TOOL_CONFIG_OVERRIDES` resolved the
+    # real claude-code config for execution. The lanes installed the right product --
+    # CodeGraph's retained tool-host-install-1.txt shows `install --target claude`
+    # running -- but this map feeds `tool_adapter_identity`, so run.json recorded a
+    # tool_config that was never installed. For jcodemunch the name it recorded was
+    # the deleted-invalid uv-launcher profile. `assert_maps_agree` below now makes the
+    # two maps impossible to separate again.
+    "retrieval-codegraph-claude-code-mcp-v1": "codegraph-claude-code-mcp-v1",
+    "codescope-claude-code-mcp-v1": "codescope-claude-code-mcp-v1",
+    "retrieval-graphify-claude-code-skill-v1": "graphify-claude-code-skill-v1",
+    "integrated-leanctx-claude-code-hybrid-v1": "leanctx-claude-code-hybrid-v1",
+    # ponytail and caveman are not listed here: their Claude Code lanes genuinely run
+    # the base config, so the two maps already agree for them.
     "artifact-ponytail-claude-code-plugin-v1": "ponytail",
-    "retrieval-serena-claude-code-mcp-v1": "serena",
-    "retrieval-sigmap-claude-code-mcp-v1": "sigmap",
-    "terminal-snip-claude-code-hook-v1": "snip",
-    "integrated-token-savior-claude-code-product-v1": "token-savior",
-    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice",
-    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-mcp",
+    "retrieval-serena-claude-code-mcp-v1": "serena-claude-code-mcp-v1",
+    "retrieval-sigmap-claude-code-mcp-v1": "sigmap-claude-code-mcp-v1",
+    "terminal-snip-claude-code-hook-v1": "snip-claude-code-hook-v1",
+    "integrated-token-savior-claude-code-product-v1": "token-savior-claude-code-product-v1",
+    "terminal-tokenjuice-claude-code-hook-v1": "tokenjuice-claude-code-hook-v1",
+    "retrieval-jcodemunch-claude-code-mcp-v1": "jcodemunch-claude-code-mcp-v1",
+    "retrieval-cartog-claude-code-product-v1": "cartog-claude-code-product-v1",
     "terminal-snip": "snip",
     "terminal-snip-codex-hook-v1": "snip-codex-hook-v1",
     "terminal-lowfat": "lowfat",
@@ -129,6 +139,33 @@ SUPPORTED_WORKFLOW_TOOL_PROFILES = {
     "artifact-ponytail-opencode-plugin-v1": "ponytail-opencode-plugin-v1",
     "behavior-caveman-opencode-plugin-v1": "caveman-opencode-plugin-v1",
 }
+
+
+def _assert_tool_maps_agree() -> None:
+    """This map names the tool config; the fixture runner's overrides install it.
+
+    They are separate tables that must describe the same thing, and for eleven Claude
+    Code profiles they silently did not: run.json recorded a historical base config
+    while the lane installed the product's real Claude surface. That is not a cosmetic
+    label -- the recorded config is hashed into ``tool_config_sha256`` and through the
+    execution descriptor into the protocol identity, so the causal record named an
+    apparatus that never ran. Fail at import rather than let a paid run mint evidence
+    against a config it did not use.
+    """
+    disagreements = sorted(
+        f"{profile}: identity says {recorded!r}, execution installs {installed!r}"
+        for profile, recorded in SUPPORTED_WORKFLOW_TOOL_PROFILES.items()
+        if (installed := fixture.PROFILE_TOOL_CONFIG_OVERRIDES.get(profile))
+        and installed != recorded
+    )
+    if disagreements:
+        raise AssertionError(
+            "tool identity and tool execution disagree for "
+            f"{len(disagreements)} profile(s):\n  " + "\n  ".join(disagreements)
+        )
+
+
+_assert_tool_maps_agree()
 
 # Existing profile protocols were qualified against this runner manifest. The
 # Token Savior v2 controller-only host-install path does not alter those

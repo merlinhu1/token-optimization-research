@@ -4,13 +4,13 @@
 
 - Repository: `colbymchenry/codegraph`
 - URL: https://github.com/colbymchenry/codegraph
-- Version/ref inspected: local shallow clone `4077ed19b7d8`, 2026-06-26
+- Version/ref inspected: `1.5.0` release at commit `ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 4077ed19b7d8
-- Commit URL: https://github.com/colbymchenry/codegraph/commit/4077ed19b7d8
-- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (local shallow clone; representative CLI, context builder/formatter, search parser, DB queries, API, output-budget, and staleness tests inspected)
+- Commit inspected: ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6
+- Commit URL: https://github.com/colbymchenry/codegraph/commit/ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 1.5.0 release checkout from the batch release corpus, the same bytes its lanes install; representative CLI, context builder/formatter, search parser, DB queries, API, output-budget, and staleness tests inspected)
 
 ## Summary
 
@@ -20,48 +20,81 @@ CodeGraph builds a local code knowledge graph and provides task-oriented context
 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
-| Repository source tree | `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json` | Local shallow clone tree used to identify source, hook, MCP, test, benchmark, and runtime paths. |
-| Runtime/source content | `sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json` | Representative implementation files read from local clone with byte counts, SHA-256 prefixes, and behavior excerpts. |
+| Repository source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Local shallow clone tree used to identify source, hook, MCP, test, benchmark, and runtime paths. |
+| Runtime/source content | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Representative implementation files read from local clone with byte counts, SHA-256 prefixes, and behavior excerpts. |
 | README/docs | README/docs and skill files where present. | README claims remain discovery evidence; source findings below control this evidence stage. |
 | Tests/benchmarks | Test and benchmark paths identified; representative tests inspected where listed. | Benchmark-method review remains benchmark-audit work. |
 
 ## Initial source-structure finding
 
-Local tree inspection found 391 files and 350 files matching integration, source, test, benchmark, hook, MCP, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `1.5.0` release checkout found 648 files: 400 source, 61 documentation, 211 test/benchmark, and 126 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `scripts/agent-eval/offload-eval-cost.mjs`
+- `scripts/agent-eval/offload-eval-effort.mjs`
+- `scripts/agent-eval/offload-eval-hook.mjs`
+- `scripts/agent-eval/offload-eval-judge.mjs`
+- `scripts/agent-eval/offload-eval-metrics.mjs`
+- `scripts/agent-eval/offload-eval-summarize.mjs`
+- `scripts/agent-eval/parse-arms.mjs`
+- `scripts/agent-eval/parse-run.mjs`
+- `scripts/agent-eval/parse-session.mjs`
+- `scripts/agent-eval/probe-context.mjs`
+- `scripts/agent-eval/probe-explore.mjs`
+- `scripts/agent-eval/probe-node.mjs`
+- `scripts/agent-eval/probe-sweep.mjs`
+- `scripts/agent-eval/probe-trace.mjs`
+- `scripts/agent-eval/repro-concurrent-explore.mjs`
+- `scripts/agent-eval/repro-daemon-clients.mjs`
+- `scripts/agent-eval/seq-matrix.mjs`
+- `site/astro.config.mjs`
+- `site/src/content.config.ts`
 - `src/bin/uninstall.ts`
-- `src/bin/codegraph.ts`
-- `src/bin/fatal-handler.ts`
-- `src/bin/node-version-check.ts`
-- `src/context/formatter.ts`
-- `src/context/markers.ts`
-- `src/context/index.ts`
-- `src/search/query-parser.ts`
-- `src/search/query-utils.ts`
-- `src/db/migrations.ts`
-- `src/db/queries.ts`
-- `src/db/schema.sql`
-- `src/db/sqlite-adapter.ts`
-- `src/db/index.ts`
-- `src/index.ts`
-- `telemetry-worker/src/index.ts`
-- `__tests__/explore-synth-constant-endpoints.test.ts`
-- `__tests__/explore-corroboration-ranking.test.ts`
-- `__tests__/explore-blast-radius.test.ts`
-- `__tests__/explore-output-budget.test.ts`
-- `__tests__/mcp-files-path-normalization.test.ts`
-- `__tests__/mcp-unindexed.test.ts`
-- `__tests__/mcp-tool-allowlist.test.ts`
-- `__tests__/mcp-catchup-gate.test.ts`
-- `__tests__/mcp-roots.test.ts`
-- `__tests__/mcp-initialize.test.ts`
-- `__tests__/mcp-ppid-watchdog.test.ts`
-- `__tests__/mcp-debounce-env.test.ts`
+- `src/installer/beta-signup.ts`
+- `src/installer/clack.d.ts`
+- `src/installer/config-writer.ts`
+- `src/installer/index.ts`
+- `src/installer/instructions-template.ts`
+- `src/installer/targets/antigravity.ts`
+- `src/installer/targets/claude.ts`
+- `src/installer/targets/codex.ts`
+
+Host-integration documentation shipped in the release:
+
+- `.claude/skills/add-lang/SKILL.md`
+- `.claude/skills/agent-eval/SKILL.md`
+- `CLAUDE.md`
+- `docs/design/agent-codegraph-adoption.md`
+- `scripts/agent-eval/offload-eval.md`
+- `site/src/content/docs/getting-started/configuration.md`
+- `site/src/content/docs/getting-started/installation.md`
+- `site/src/content/docs/reference/mcp-server.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
+
+This dossier previously described `4077ed19b7d8`, read from GitHub HEAD on 2026-06-26. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **1.5.0** release at `ea72e1b19092`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
+
+Upstream shipped **11 releases** between 2026-06-26 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+This project's changelog headings carry no descriptive titles, so which of those releases touched an install surface cannot be read off the headings. The most recent are:
+
+- [1.5.0] - 2026-07-21
+- [1.4.1] - 2026-07-10
+- [1.4.0] - 2026-07-10
+- [1.3.1] - 2026-07-09
+- [1.3.0] - 2026-07-07
+- [1.2.0] - 2026-07-02
+- [1.1.6] - 2026-06-30
+- [1.1.5] - 2026-06-30
+- …and 3 further releases; see `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
+The official install guide this tool is evaluated against is `source/README.md` at sha256 `ef12f20aa127d8a5…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
 
 - `src/bin/codegraph.ts` exposes install, init, index, sync, status, query, files, context, callers, callees, and impact commands.
 - `src/context/index.ts` builds task context by combining full-text search, graph traversal, query-derived symbols, path scoring, and relevance signals.

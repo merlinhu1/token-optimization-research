@@ -4,17 +4,17 @@
 
 - Repository: `manojmallick/sigmap`
 - URL: https://github.com/manojmallick/sigmap
-- Version/ref inspected: local shallow clone `569320994751`, 2026-07-01
+- Version/ref inspected: `8.28.0` release at commit `3313c3a4e88722e134e5747663c02d5db5ad3032`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 569320994751935ab25bf4a9b5bd07aee99cc53b
-- Commit URL: https://github.com/manojmallick/sigmap/commit/569320994751935ab25bf4a9b5bd07aee99cc53b
-- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
-- Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
-- Stars at inspection: 530
-- Forks at inspection: 37
+- Commit inspected: 3313c3a4e88722e134e5747663c02d5db5ad3032
+- Commit URL: https://github.com/manojmallick/sigmap/commit/3313c3a4e88722e134e5747663c02d5db5ad3032
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 8.28.0 release checkout from the batch release corpus, the same bytes its lanes install; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Stars at inspection (2026-07-01, not refreshed offline): 530
+- Forks at inspection (2026-07-01, not refreshed offline): 37
 - License: MIT
-- Updated at: 2026-06-26T03:25:38Z
+- Updated at (2026-07-01, not refreshed offline): 2026-06-26T03:25:38Z
 
 ## Summary
 
@@ -25,56 +25,67 @@ SigMap extracts code signatures and exposes an MCP server with tools for context
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
 
-Repository tree inspection found 499 files and 365 files matching integration, source, test, benchmark, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `8.28.0` release checkout found 573 files: 339 source, 106 documentation, 260 test/benchmark, and 42 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `packages/adapters/claude.js`
+- `packages/adapters/codex.js`
+- `packages/adapters/cursor.js`
+- `src/config/defaults.js`
+- `src/config/loader.js`
+- `src/config/tune.js`
+- `src/init/creation-workflow.js`
+- `src/map/config-manifest.js`
 - `src/mcp/handlers.js`
 - `src/mcp/install.js`
 - `src/mcp/server.js`
 - `src/mcp/tools.js`
-- `src/retrieval/ranker.js`
-- `src/retrieval/tokenizer.js`
-- `src/graph/builder.js`
-- `src/graph/impact.js`
-- `src/session/memory.js`
-- `src/session/notes.js`
-- `benchmarks/R_LANGUAGE_BENCHMARKS.md`
-- `benchmarks/R_LANGUAGE_SETUP.md`
-- `benchmarks/latest.json`
-- `benchmarks/llm-ablation-tasks.json`
-- `benchmarks/reports/benchmark-matrix.json`
-- `benchmarks/reports/quality.json`
-- `benchmarks/reports/retrieval.json`
-- `benchmarks/reports/task-benchmark.json`
-- `benchmarks/reports/token-reduction.json`
-- `benchmarks/reports/token-reduction.md`
-- `benchmarks/task-metadata.json`
-- `benchmarks/tasks/abseil-cpp.jsonl`
-- `benchmarks/tasks/akka.jsonl`
-- `benchmarks/tasks/axios.jsonl`
-- `benchmarks/tasks/express.jsonl`
-- `benchmarks/tasks/fastapi.jsonl`
-- `benchmarks/tasks/fastify.jsonl`
-- `benchmarks/tasks/flask.jsonl`
-- `benchmarks/tasks/gin.jsonl`
-- `benchmarks/tasks/laravel.jsonl`
-- `benchmarks/tasks/okhttp.jsonl`
-- `benchmarks/tasks/rails.jsonl`
+- `src/skills/skills.js`
+
+Host-integration documentation shipped in the release:
+
+- `AGENTS.md`
+- `docs-vp/guide/agents.md`
+- `docs-vp/guide/config.md`
+- `docs-vp/guide/mcp.md`
+- `docs/JETBRAINS_SETUP.md`
+- `docs/readmes/ENTERPRISE_SETUP.md`
+- `docs/readmes/JETBRAINS_SETUP.md`
+- `docs/readmes/MCP_SETUP.md`
+- `docs/readmes/jetbrains-plugin.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
 
-### Fresh pinned-source refresh
+This dossier previously described `569320994751`, read from GitHub HEAD on 2026-07-01. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **8.28.0** release at `3313c3a4e887`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
 
-The 2026-07-01 refresh pins the inspected source to `569320994751935ab25bf4a9b5bd07aee99cc53b` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `benchmarks/R_LANGUAGE_BENCHMARKS.md`, `benchmarks/R_LANGUAGE_SETUP.md`, `src/graph/builder.js`, `src/graph/impact.js`, `src/mcp/handlers.js`, `src/mcp/install.js`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+Upstream shipped **36 releases** between 2026-07-01 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+This project's changelog headings carry no descriptive titles, so which of those releases touched an install surface cannot be read off the headings. The most recent are:
+
+- [8.28.0] — 2026-08-18
+- [8.27.0] — 2026-08-18
+- [8.26.2] — 2026-08-18
+- [8.26.1] — 2026-08-18
+- [8.26.0] — 2026-08-18
+- [8.25.0] — 2026-08-18
+- [8.24.0] — 2026-07-28
+- [8.23.0] — 2026-07-28
+- …and 28 further releases; see `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
+The official install guide this tool is evaluated against is `source/README.md` at sha256 `5c6d0392b5dcbadd…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
 
 
 - `src/mcp/server.js` is a zero-dependency JSON-RPC line server that lists tools and dispatches calls over stdin/stdout.

@@ -4,13 +4,13 @@
 
 - Repository: `Mibayy/token-savior`
 - URL: https://github.com/Mibayy/token-savior
-- Version/ref inspected: local shallow clone `ff42ef14cc97`, 2026-06-26
+- Version/ref inspected: `4.21.0` release at commit `1e5984b452c5b98e6376a7250b3213f5c3500626`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: ff42ef14cc97
-- Commit URL: https://github.com/Mibayy/token-savior/commit/ff42ef14cc97
-- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (local shallow clone; representative MCP server, tool schemas, compact ops, bash rewriter, memory DB, query API, project indexer, and tests inspected)
+- Commit inspected: 1e5984b452c5b98e6376a7250b3213f5c3500626
+- Commit URL: https://github.com/Mibayy/token-savior/commit/1e5984b452c5b98e6376a7250b3213f5c3500626
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 4.21.0 release checkout from the batch release corpus, the same bytes its lanes install; representative MCP server, tool schemas, compact ops, bash rewriter, memory DB, query API, project indexer, and tests inspected)
 
 ## Summary
 
@@ -20,48 +20,69 @@ Token Savior is an integrated MCP/profile stack combining structural code naviga
 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
-| Repository source tree | `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json` | Local shallow clone tree used to identify source, hook, MCP, test, benchmark, and runtime paths. |
-| Runtime/source content | `sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json` | Representative implementation files read from local clone with byte counts, SHA-256 prefixes, and behavior excerpts. |
+| Repository source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Local shallow clone tree used to identify source, hook, MCP, test, benchmark, and runtime paths. |
+| Runtime/source content | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Representative implementation files read from local clone with byte counts, SHA-256 prefixes, and behavior excerpts. |
 | README/docs | README/docs and skill files where present. | README claims remain discovery evidence; source findings below control this evidence stage. |
 | Tests/benchmarks | Test and benchmark paths identified; representative tests inspected where listed. | Benchmark-method review remains benchmark-audit work. |
 
 ## Initial source-structure finding
 
-Local tree inspection found 336 files and 319 files matching integration, source, test, benchmark, hook, MCP, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `4.21.0` release checkout found 444 files: 374 source, 19 documentation, 218 test/benchmark, and 67 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
-- `src/token_savior/server_state.py`
-- `src/token_savior/server.py`
-- `src/token_savior/server_runtime.py`
-- `src/token_savior/tool_schemas.py`
-- `src/token_savior/compact_ops.py`
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `hooks/__init__.py`
 - `hooks/bash_rewriter_hook.py`
-- `tests/test_bash_rewriter.py`
+- `hooks/openclaw/token-savior-memory/handler.js`
+- `hooks/tool_capture_hook.py`
+- `hooks/ts_discipline_guard.py`
+- `scripts/deroot_hooks.py`
+- `scripts/generer_bundles_hooks.py`
+- `src/token_savior/__init__.py`
 - `src/token_savior/bash_rewriter/__init__.py`
-- `src/token_savior/bash_rewriter/rules.py`
-- `hooks/memory-precompact.sh`
-- `hooks/memory-userprompt.sh`
-- `hooks/memory-session-stop.sh`
-- `hooks/memory-posttooluse.sh`
-- `hooks/memory-pretooluse.sh`
-- `hooks/memory-hooks-config.json`
-- `hooks/memory-session-start.sh`
-- `tests/test_memory_citation_uri.py`
-- `tests/test_memory_auto_extract.py`
-- `tests/test_memory_session_rollup.py`
-- `tests/test_memory_public_surface.py`
-- `tests/test_memory_vector_setup.py`
-- `tests/test_memory_vector_indexation.py`
-- `tests/test_memory_file_context.py`
-- `tests/test_memory_hybrid_search.py`
-- `tests/test_memory_db.py`
-- `tests/test_memory_viewer.py`
-- `tests/test_memory_narrative_fields.py`
-- `scripts/migrate_memory_md.py`
+- `src/token_savior/cli_init/__init__.py`
+- `src/token_savior/cli_init/agent_paths.py`
+- `src/token_savior/cli_init/merger.py`
+- `src/token_savior/cli_init/vocabulaire_clients.py`
+- `src/token_savior/code_mode/__init__.py`
+- `src/token_savior/compactors/__init__.py`
+- `src/token_savior/config_analyzer.py`
+- `src/token_savior/daemon_client.py`
+- `src/token_savior/discover/__init__.py`
+- `src/token_savior/memory/__init__.py`
+- `src/token_savior/memory/ledger_hook.py`
+- `src/token_savior/memory/precondition_hook.py`
+- `src/token_savior/memory/preflight_hook.py`
+- `src/token_savior/memory/rules_hook.py`
+- `src/token_savior/server_handlers/__init__.py`
+- `src/token_savior/utils/__init__.py`
+
+Host-integration documentation shipped in the release:
+
+- `AGENTS.md`
+- `CLAUDE.md`
+- `hooks/openclaw/token-savior-memory/HOOK.md`
+- `llms-install.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
+
+This dossier previously described `ff42ef14cc97`, read from GitHub HEAD on 2026-06-26. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **4.21.0** release at `1e5984b452c5`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
+
+Upstream shipped **25 releases** between 2026-06-26 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+4 of those releases name an install surface in their own title:
+
+- v4.18.1 — Two clients on one repository, now covered by tests (2026-07-26)
+- v4.14.0 — The client tells us which projects are open (2026-07-26)
+- v4.12.2 — `pip install token-savior-recall` produced a server that could not start (2026-07-26)
+- v4.8.0 — Observations as MCP resources (2026-07-04)
+
+The official install guide this tool is evaluated against is `source/README.md` at sha256 `e78f621c63cf9795…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
 
 - `src/token_savior/server.py` exposes project-wide structural query functions as MCP tools and documents tool-selection guidance that prefers symbol/context tools over raw search for many queries.
 - `src/token_savior/tool_schemas.py` defines MCP tool schemas, profile filtering, project parameters, compressed-output toggles, and batch-mode limits.

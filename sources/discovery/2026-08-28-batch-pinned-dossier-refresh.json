@@ -1,0 +1,4673 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-28",
+  "purpose": "Re-inspect every batch-pinned treatment tool against the release its lanes install, replacing dossier readings taken from GitHub HEAD between 2026-06-26 and 2026-07-01.",
+  "basis": "Pinned source/ checkouts in the release corpus, each verified to sit at the BATCH_RELEASES commit. Not a fresh network fetch: upstream HEAD moves, the pinned checkout does not.",
+  "evidence_stage": "source-logic",
+  "tool_count": 16,
+  "tools": [
+    {
+      "tool": "cartog",
+      "release_directory": "cartog-0.32.2",
+      "version": "0.32.2",
+      "pinned_commit": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08",
+      "checkout_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-05T16:04:56+02:00",
+      "release_artifact": {
+        "path": "artifacts/cartog-x86_64-unknown-linux-gnu.tar.gz",
+        "exists": true,
+        "sha256_prefix": "c6f330b51488cd8f"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "e2155e82d421dc1c"
+      },
+      "file_counts": {
+        "total": 991,
+        "integration": 76,
+        "source": 418,
+        "test_or_benchmark": 729,
+        "documentation": 79
+      },
+      "integration_code_paths": [
+        "crates/cartog-lsp/src/client.rs",
+        "crates/cartog-mcp/src/e2e_progress.rs",
+        "crates/cartog-mcp/src/lib.rs",
+        "crates/cartog-mcp/src/progress.rs",
+        "crates/cartog-mcp/src/single_writer.rs",
+        "crates/cartog-mcp/src/tools/graph.rs",
+        "crates/cartog-mcp/src/tools/index.rs",
+        "crates/cartog-mcp/src/tools/manage.rs",
+        "crates/cartog-mcp/src/tools/mod.rs",
+        "crates/cartog-mcp/src/tools/rag.rs",
+        "crates/cartog-mcp/src/tools/search.rs",
+        "crates/cartog-mcp/src/types.rs",
+        "crates/cartog-rag/src/setup.rs",
+        "crates/cartog/src/commands/config_display.rs",
+        "crates/cartog/src/commands/init.rs",
+        "crates/cartog/src/config/convert.rs",
+        "crates/cartog/src/config/load.rs",
+        "crates/cartog/src/config/mod.rs",
+        "crates/cartog/src/config/schema.rs",
+        "editors/vscode/src/install.ts",
+        "site/astro.config.mjs"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "agents/codebase-onboarding.md",
+        "agents/refactoring-scout.md",
+        "crates/cartog-mcp/README.md",
+        "docs/agent-snippet.md",
+        "docs/how-to/configure-lsp-servers.md",
+        "docs/mcp-setup.md",
+        "docs/reference/config.md",
+        "docs/reference/mcp-tools.md",
+        "skills/cartog-install/SKILL.md",
+        "skills/cartog/SKILL.md",
+        "skills/cartog/references/query_cookbook.md",
+        "skills/cartog/references/supported_languages.md"
+      ],
+      "integration_paths": [
+        ".claude-plugin/marketplace.json",
+        ".claude-plugin/plugin.json",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/workflows/skill-tests.yml",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "agents/codebase-onboarding.md",
+        "agents/refactoring-scout.md",
+        "agents/tests/eval.sh",
+        "agents/tests/golden_examples.yaml",
+        "benchmarks/agent/README.md",
+        "benchmarks/agent/lib.sh",
+        "benchmarks/agent/parse_repos.py",
+        "benchmarks/agent/parse_tasks.py",
+        "benchmarks/agent/repos.yaml",
+        "benchmarks/agent/run.sh",
+        "benchmarks/agent/tasks.yaml",
+        "crates/cartog-lsp/src/client.rs",
+        "crates/cartog-mcp/Cargo.toml",
+        "crates/cartog-mcp/README.md",
+        "crates/cartog-mcp/src/e2e_progress.rs",
+        "crates/cartog-mcp/src/lib.rs",
+        "crates/cartog-mcp/src/progress.rs",
+        "crates/cartog-mcp/src/single_writer.rs",
+        "crates/cartog-mcp/src/tests/degraded.rs",
+        "crates/cartog-mcp/src/tests/handlers.rs",
+        "crates/cartog-mcp/src/tests/lsp_gate.rs",
+        "crates/cartog-mcp/src/tests/mod.rs",
+        "crates/cartog-mcp/src/tests/read_tools.rs",
+        "crates/cartog-mcp/src/tests/schema.rs",
+        "crates/cartog-mcp/src/tests/single_writer.rs",
+        "crates/cartog-mcp/src/tests/update.rs",
+        "crates/cartog-mcp/src/tests/validation.rs",
+        "crates/cartog-mcp/src/tools/graph.rs",
+        "crates/cartog-mcp/src/tools/index.rs",
+        "crates/cartog-mcp/src/tools/manage.rs",
+        "crates/cartog-mcp/src/tools/mod.rs",
+        "crates/cartog-mcp/src/tools/rag.rs",
+        "crates/cartog-mcp/src/tools/search.rs",
+        "crates/cartog-mcp/src/types.rs",
+        "crates/cartog-rag/src/setup.rs",
+        "crates/cartog-watch/tests/initial_index_staleness_test.rs",
+        "crates/cartog/src/commands/config_display.rs",
+        "crates/cartog/src/commands/init.rs",
+        "crates/cartog/src/config/convert.rs",
+        "crates/cartog/src/config/load.rs",
+        "crates/cartog/src/config/mod.rs",
+        "crates/cartog/src/config/schema.rs",
+        "crates/cartog/src/config/tests/convert.rs",
+        "crates/cartog/src/config/tests/load.rs",
+        "crates/cartog/src/config/tests/mod.rs",
+        "crates/cartog/src/config/tests/schema.rs",
+        "crates/cartog/tests/init_test.rs",
+        "docs/agent-snippet.md",
+        "docs/how-to/configure-lsp-servers.md",
+        "docs/mcp-setup.md",
+        "docs/reference/config.md",
+        "docs/reference/mcp-tools.md",
+        "editors/vscode/src/install.test.ts",
+        "editors/vscode/src/install.ts"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/workflows/skill-tests.yml",
+        "agents/tests/eval.sh",
+        "agents/tests/golden_examples.yaml",
+        "benchmarks/README.md",
+        "benchmarks/agent/README.md",
+        "benchmarks/agent/lib.sh",
+        "benchmarks/agent/parse_repos.py",
+        "benchmarks/agent/parse_tasks.py",
+        "benchmarks/agent/repos.yaml",
+        "benchmarks/agent/results/2026-06-03-context-discoverability.md",
+        "benchmarks/agent/results/2026-06-03-django-newdesc-n4.jsonl",
+        "benchmarks/agent/results/2026-06-03-django-noprompt-n4.jsonl",
+        "benchmarks/agent/results/2026-06-03-django-sonnet-n4-noembed.jsonl",
+        "benchmarks/agent/results/2026-06-03-findings.md",
+        "benchmarks/agent/results/2026-06-03-tokio-newdesc-n4.jsonl",
+        "benchmarks/agent/results/2026-06-03-tokio-noprompt-n4.jsonl",
+        "benchmarks/agent/results/2026-06-03-tokio-sonnet-n4-noembed.jsonl",
+        "benchmarks/agent/results/README.md",
+        "benchmarks/agent/run.sh",
+        "benchmarks/agent/tasks.yaml",
+        "benchmarks/bench-project.sh",
+        "benchmarks/contextbench/README.md",
+        "benchmarks/contextbench/cartog_adapter.py",
+        "benchmarks/contextbench/prepare_gold.py",
+        "benchmarks/fixtures/gen_go.py",
+        "benchmarks/fixtures/gen_java.py",
+        "benchmarks/fixtures/gen_rb.py",
+        "benchmarks/fixtures/gen_rs.py",
+        "benchmarks/fixtures/gen_ts.py",
+        "benchmarks/fixtures/generate_fixtures.py"
+      ],
+      "representative_files": [
+        {
+          "path": "benchmarks/agent/parse_repos.py",
+          "bytes": 2335,
+          "sha256_prefix": "3589b54d07800542"
+        },
+        {
+          "path": "benchmarks/agent/parse_tasks.py",
+          "bytes": 1464,
+          "sha256_prefix": "7c72830caf110a43"
+        },
+        {
+          "path": "crates/cartog/src/commands/config_display.rs",
+          "bytes": 14266,
+          "sha256_prefix": "ce826072a2d3f361"
+        },
+        {
+          "path": "crates/cartog/src/commands/init.rs",
+          "bytes": 9357,
+          "sha256_prefix": "d235943f0bd0180e"
+        },
+        {
+          "path": "crates/cartog/src/config/convert.rs",
+          "bytes": 7582,
+          "sha256_prefix": "b3c334e14bf69789"
+        },
+        {
+          "path": "crates/cartog/src/config/load.rs",
+          "bytes": 17651,
+          "sha256_prefix": "3fe82b1af83b786b"
+        },
+        {
+          "path": "crates/cartog/src/config/mod.rs",
+          "bytes": 190,
+          "sha256_prefix": "41dd4341bfed1749"
+        },
+        {
+          "path": "crates/cartog/src/config/schema.rs",
+          "bytes": 14344,
+          "sha256_prefix": "c5b51e1dd9946a8c"
+        },
+        {
+          "path": "crates/cartog-lsp/src/client.rs",
+          "bytes": 36824,
+          "sha256_prefix": "514bf1605f2457b7"
+        },
+        {
+          "path": "crates/cartog-mcp/src/e2e_progress.rs",
+          "bytes": 8111,
+          "sha256_prefix": "5587c5489dd0a836"
+        },
+        {
+          "path": "crates/cartog-mcp/src/lib.rs",
+          "bytes": 57039,
+          "sha256_prefix": "3ba28c153875e62f"
+        },
+        {
+          "path": "crates/cartog-mcp/src/progress.rs",
+          "bytes": 17691,
+          "sha256_prefix": "b7c2ce2dd9d6ac47"
+        },
+        {
+          "path": "benchmarks/fixtures/gen_go.py",
+          "bytes": 110712,
+          "sha256_prefix": "40997035e1b9df36"
+        },
+        {
+          "path": "benchmarks/fixtures/gen_rs.py",
+          "bytes": 105710,
+          "sha256_prefix": "35a23d791f7e3051"
+        },
+        {
+          "path": "benchmarks/fixtures/gen_ts.py",
+          "bytes": 95918,
+          "sha256_prefix": "a2c0ef9282c183c1"
+        },
+        {
+          "path": "benchmarks/fixtures/generate_fixtures.py",
+          "bytes": 84442,
+          "sha256_prefix": "fda6ea0315cde1e2"
+        },
+        {
+          "path": "crates/cartog-rag/src/search.rs",
+          "bytes": 80785,
+          "sha256_prefix": "7163d36299621245"
+        },
+        {
+          "path": "crates/cartog-watch/src/lib.rs",
+          "bytes": 69217,
+          "sha256_prefix": "aaadda80625de4d6"
+        },
+        {
+          "path": "benchmarks/fixtures/gen_rb.py",
+          "bytes": 66340,
+          "sha256_prefix": "4dcf9e274bda02bb"
+        },
+        {
+          "path": "benchmarks/fixtures/gen_java.py",
+          "bytes": 64686,
+          "sha256_prefix": "aa9ded4987e75fe5"
+        }
+      ],
+      "dossier": "jrollin-cartog.md",
+      "previously_audited_commit": "890d15b66b52",
+      "previously_audited_on": "2026-06-29",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-06-29",
+        "pinned_version": "0.32.2",
+        "releases_since_audit": 6,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "0.32.2",
+          "date": "2026-08-05",
+          "heading": "[0.32.2] - 2026-08-05",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "0.30.3",
+          "date": "2026-07-06",
+          "heading": "[0.30.3] - 2026-07-06",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "[0.32.2] - 2026-08-05",
+          "[0.32.1] - 2026-07-26",
+          "[0.32.0] - 2026-07-26",
+          "[0.31.1] - 2026-07-22",
+          "[0.31.0] - 2026-07-16",
+          "[0.30.3] - 2026-07-06"
+        ]
+      }
+    },
+    {
+      "tool": "caveman",
+      "release_directory": "caveman-2.2.0",
+      "version": "2.2.0",
+      "pinned_commit": "9aa63945a349bef17206540650db48c30fafbdf2",
+      "checkout_head": "9aa63945a349bef17206540650db48c30fafbdf2",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-20T13:10:04+02:00",
+      "release_artifact": {
+        "path": "artifacts/caveman-v2.2.0-source.tar.gz",
+        "exists": true,
+        "sha256_prefix": "3081846d48315a6b"
+      },
+      "official_install_guide": {
+        "path": "source/INSTALL.md",
+        "exists": true,
+        "sha256_prefix": "3eac1c3f79c09a84"
+      },
+      "file_counts": {
+        "total": 1412,
+        "integration": 373,
+        "source": 888,
+        "test_or_benchmark": 634,
+        "documentation": 189
+      },
+      "integration_code_paths": [
+        "agents/compile.mjs",
+        "agents/delegate/caveman-delegate-mcp.mjs",
+        "agents/delegate/portable-process.mjs",
+        "agents/drift-report.mjs",
+        "agents/probe-installed.mjs",
+        "bin/install.js",
+        "bin/lib/opencode-agent.js",
+        "bin/lib/owned-install.js",
+        "browse/bin/binary-installer.generated.mjs",
+        "browse/scripts/copy-binary-installer.mjs",
+        "cli/install.js",
+        "engine/compressors/config.go",
+        "extension/playwright.config.mjs",
+        "mcp/bin/binary-installer.generated.mjs",
+        "mcp/bin/caveman-mcp.mjs",
+        "mcp/bin/release.generated.mjs",
+        "mcp/cmd/caveman-mcp/main.go",
+        "mcp/engine_tools.go",
+        "mcp/protocol.go",
+        "mcp/server.go",
+        "packages/agent/src/adapters.ts",
+        "packages/agent/src/breakers.ts",
+        "packages/agent/src/budget.ts",
+        "packages/agent/src/build.ts",
+        "packages/agent/src/catalog.ts",
+        "packages/agent/src/claude-runtime.ts",
+        "packages/agent/src/claude.ts",
+        "packages/agent/src/cli.ts",
+        "packages/agent/src/code.ts",
+        "packages/agent/src/compaction.ts",
+        "packages/agent/src/context-ir.ts",
+        "packages/agent/src/definition-graph.ts",
+        "packages/agent/src/dev-loader.ts",
+        "packages/agent/src/execution-kernel.ts",
+        "packages/agent/src/index.ts",
+        "packages/agent/src/memory-store.ts",
+        "packages/agent/src/portable-process.ts",
+        "packages/agent/src/primitives.ts",
+        "packages/agent/src/runtime-identity.ts",
+        "packages/agent/src/runtime.ts"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "INSTALL.md",
+        "agents/cavecrew-builder.md",
+        "agents/cavecrew-investigator.md",
+        "agents/cavecrew-reviewer.md",
+        "agents/docs/AGENTS.md",
+        "agents/docs/CLAUDE.md",
+        "browse/CLAUDE.md",
+        "cacheengine/CLAUDE.md",
+        "commands/caveman-init.md",
+        "docs/install-windows.md",
+        "docs/plans/cavemem-multi-agent.md",
+        "docs/technical/agent-wrapping.md",
+        "docs/technical/configuration.md",
+        "docs/technical/install-and-update.md",
+        "docs/technical/skills-hooks-and-plugins.md",
+        "engine/AGENTS.md",
+        "engine/CLAUDE.md",
+        "explorer/fastcontext.claude-agent.md"
+      ],
+      "integration_paths": [
+        ".claude-plugin/marketplace.json",
+        ".claude-plugin/plugin.json",
+        ".codex/config.toml",
+        ".codex/hooks.json",
+        ".github/workflows/sync-skill.yml",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "INSTALL.md",
+        "agents/agents.json",
+        "agents/cavecrew-builder.md",
+        "agents/cavecrew-investigator.md",
+        "agents/cavecrew-reviewer.md",
+        "agents/compile.mjs",
+        "agents/delegate/caveman-delegate-mcp.mjs",
+        "agents/delegate/portable-process.mjs",
+        "agents/delegate/portable-process.test.mjs",
+        "agents/docs/AGENTS.md",
+        "agents/docs/CLAUDE.md",
+        "agents/drift-report.mjs",
+        "agents/probe-installed.mjs",
+        "agents/profiles/aider.json",
+        "agents/profiles/claude.json",
+        "agents/profiles/codex.json",
+        "agents/profiles/gemini.json",
+        "agents/profiles/hermes.json",
+        "agents/profiles/openclaw.json",
+        "agents/profiles/opencode.json",
+        "agents/profiles/pi.json",
+        "agents/profiles/schema.json",
+        "agents/reserved-verbs.json",
+        "bin/install.js",
+        "bin/lib/opencode-agent.js",
+        "bin/lib/owned-install.js",
+        "browse/CLAUDE.md",
+        "browse/bin/binary-installer.generated.mjs",
+        "browse/scripts/copy-binary-installer.mjs",
+        "cacheengine/CLAUDE.md",
+        "cacheengine/cachebench/scripts/fetch_lmcache_agentic_traces.sh",
+        "cli/install.js",
+        "commands/caveman-init.md",
+        "commands/caveman-init.toml",
+        "docs/install-windows.md",
+        "docs/plans/cavemem-multi-agent.md",
+        "docs/technical/agent-wrapping.md",
+        "docs/technical/configuration.md",
+        "docs/technical/install-and-update.md",
+        "docs/technical/skills-hooks-and-plugins.md",
+        "engine/AGENTS.md",
+        "engine/CLAUDE.md",
+        "engine/compressors/config.go",
+        "engine/compressors/config_test.go",
+        "experiments/skillopt-luna-minimal/data/splits/reserve5-replacements/tasks.json",
+        "explorer/fastcontext.claude-agent.md",
+        "explorer/tests/agent-file.test.mjs",
+        "extension/AGENTS.md",
+        "extension/CLAUDE.md",
+        "extension/playwright.config.mjs",
+        "install.ps1",
+        "install.sh",
+        "integrations/CLAUDE.md"
+      ],
+      "test_or_benchmark_paths": [
+        "agents/delegate/portable-process.test.mjs",
+        "benchmarks/prompts.json",
+        "benchmarks/requirements.txt",
+        "benchmarks/results/.gitkeep",
+        "benchmarks/run.py",
+        "browse/BENCHMARK.md",
+        "browse/bin/launcher.test.mjs",
+        "browse/cdp_integration_test.go",
+        "browse/cdp_test.go",
+        "browse/cmd/caveman-browse/main_integration_test.go",
+        "browse/cmd/caveman-browse/main_test.go",
+        "browse/session_test.go",
+        "browse/testdata/agent_checkout.html",
+        "browse/testdata/order_dashboard.html",
+        "browse/tests/package.test.mjs",
+        "cacheengine/cachebench/README.md",
+        "cacheengine/cachebench/REPLAY_PROTOCOL.md",
+        "cacheengine/cachebench/cachebench_test.go",
+        "cacheengine/cachebench/corpus.go",
+        "cacheengine/cachebench/corpus_test.go",
+        "cacheengine/cachebench/equivalence.go",
+        "cacheengine/cachebench/observed.go",
+        "cacheengine/cachebench/render.go",
+        "cacheengine/cachebench/replay.go",
+        "cacheengine/cachebench/replay_http.go",
+        "cacheengine/cachebench/replay_test.go",
+        "cacheengine/cachebench/results/lmcache-agentic-traces-2026-08-10.json",
+        "cacheengine/cachebench/scripts/fetch_lmcache_agentic_traces.sh",
+        "cacheengine/cachebench/scripts/lmcache_parquet_to_jsonl.py",
+        "cacheengine/cachebench/simulate.go"
+      ],
+      "representative_files": [
+        {
+          "path": "agents/compile.mjs",
+          "bytes": 27768,
+          "sha256_prefix": "72c2ee34c1c2d12f"
+        },
+        {
+          "path": "agents/delegate/caveman-delegate-mcp.mjs",
+          "bytes": 7123,
+          "sha256_prefix": "af087ecdf1d5be64"
+        },
+        {
+          "path": "agents/delegate/portable-process.mjs",
+          "bytes": 3683,
+          "sha256_prefix": "23520321740e602c"
+        },
+        {
+          "path": "agents/drift-report.mjs",
+          "bytes": 4043,
+          "sha256_prefix": "117d012b6c2bae85"
+        },
+        {
+          "path": "agents/probe-installed.mjs",
+          "bytes": 5655,
+          "sha256_prefix": "9539651c95588543"
+        },
+        {
+          "path": "bin/install.js",
+          "bytes": 81108,
+          "sha256_prefix": "f66b3850a98ed20b"
+        },
+        {
+          "path": "bin/lib/opencode-agent.js",
+          "bytes": 3533,
+          "sha256_prefix": "8d3dd4aa7011e795"
+        },
+        {
+          "path": "bin/lib/owned-install.js",
+          "bytes": 12514,
+          "sha256_prefix": "736af1d375da24eb"
+        },
+        {
+          "path": "browse/bin/binary-installer.generated.mjs",
+          "bytes": 8356,
+          "sha256_prefix": "048ca25eae51b2bf"
+        },
+        {
+          "path": "browse/scripts/copy-binary-installer.mjs",
+          "bytes": 417,
+          "sha256_prefix": "dc1221668358971f"
+        },
+        {
+          "path": "cli/install.js",
+          "bytes": 323,
+          "sha256_prefix": "de79660176618114"
+        },
+        {
+          "path": "engine/compressors/config.go",
+          "bytes": 6821,
+          "sha256_prefix": "4aa24bcfb86b9079"
+        },
+        {
+          "path": "packages/cli/src/index.ts",
+          "bytes": 716392,
+          "sha256_prefix": "d751f227bd68e4c1"
+        },
+        {
+          "path": "packages/agent/src/runtime.ts",
+          "bytes": 216122,
+          "sha256_prefix": "8163ca10f7a8393a"
+        },
+        {
+          "path": "packages/sdk/python/caveman_cloud/core.py",
+          "bytes": 107875,
+          "sha256_prefix": "8bf2ff87c2c9abb0"
+        },
+        {
+          "path": "packages/sdk/typescript/src/index.ts",
+          "bytes": 105476,
+          "sha256_prefix": "eec55422a0e7c73e"
+        },
+        {
+          "path": "packages/cli/src/practices.generated.ts",
+          "bytes": 92531,
+          "sha256_prefix": "897125c3ab0d1d1c"
+        },
+        {
+          "path": "packages/graders/src/index.ts",
+          "bytes": 90051,
+          "sha256_prefix": "40ea84147b22f36d"
+        },
+        {
+          "path": "proxy/internal/gateway/proxy.go",
+          "bytes": 66697,
+          "sha256_prefix": "444331d0f58499df"
+        }
+      ],
+      "dossier": "juliusbrussee-caveman.md",
+      "previously_audited_commit": "25d22f864ad68cc447a4cb93aefde918aa4aec9f",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": false,
+        "reason": "release ships no changelog"
+      }
+    },
+    {
+      "tool": "codegraph",
+      "release_directory": "codegraph-1.5.0",
+      "version": "1.5.0",
+      "pinned_commit": "ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6",
+      "checkout_head": "ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-07-21T19:13:40Z",
+      "release_artifact": {
+        "path": "artifacts/codegraph-linux-x64.tar.gz",
+        "exists": true,
+        "sha256_prefix": "2ba65e87a1210b70"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "ef12f20aa127d8a5"
+      },
+      "file_counts": {
+        "total": 648,
+        "integration": 126,
+        "source": 400,
+        "test_or_benchmark": 211,
+        "documentation": 61
+      },
+      "integration_code_paths": [
+        "scripts/agent-eval/offload-eval-cost.mjs",
+        "scripts/agent-eval/offload-eval-effort.mjs",
+        "scripts/agent-eval/offload-eval-hook.mjs",
+        "scripts/agent-eval/offload-eval-judge.mjs",
+        "scripts/agent-eval/offload-eval-metrics.mjs",
+        "scripts/agent-eval/offload-eval-summarize.mjs",
+        "scripts/agent-eval/parse-arms.mjs",
+        "scripts/agent-eval/parse-run.mjs",
+        "scripts/agent-eval/parse-session.mjs",
+        "scripts/agent-eval/probe-context.mjs",
+        "scripts/agent-eval/probe-explore.mjs",
+        "scripts/agent-eval/probe-node.mjs",
+        "scripts/agent-eval/probe-sweep.mjs",
+        "scripts/agent-eval/probe-trace.mjs",
+        "scripts/agent-eval/repro-concurrent-explore.mjs",
+        "scripts/agent-eval/repro-daemon-clients.mjs",
+        "scripts/agent-eval/seq-matrix.mjs",
+        "site/astro.config.mjs",
+        "site/src/content.config.ts",
+        "src/bin/uninstall.ts",
+        "src/installer/beta-signup.ts",
+        "src/installer/clack.d.ts",
+        "src/installer/config-writer.ts",
+        "src/installer/index.ts",
+        "src/installer/instructions-template.ts",
+        "src/installer/targets/antigravity.ts",
+        "src/installer/targets/claude.ts",
+        "src/installer/targets/codex.ts",
+        "src/installer/targets/cursor.ts",
+        "src/installer/targets/gemini.ts",
+        "src/installer/targets/hermes.ts",
+        "src/installer/targets/kiro.ts",
+        "src/installer/targets/opencode.ts",
+        "src/installer/targets/registry.ts",
+        "src/installer/targets/shared.ts",
+        "src/installer/targets/toml.ts",
+        "src/installer/targets/types.ts",
+        "src/mcp/daemon-manager.ts",
+        "src/mcp/daemon-paths.ts",
+        "src/mcp/daemon-registry.ts"
+      ],
+      "install_guide_paths": [
+        ".claude/skills/add-lang/SKILL.md",
+        ".claude/skills/agent-eval/SKILL.md",
+        "CLAUDE.md",
+        "docs/design/agent-codegraph-adoption.md",
+        "scripts/agent-eval/offload-eval.md",
+        "site/src/content/docs/getting-started/configuration.md",
+        "site/src/content/docs/getting-started/installation.md",
+        "site/src/content/docs/reference/mcp-server.md"
+      ],
+      "integration_paths": [
+        ".claude/skills/add-lang/SKILL.md",
+        ".claude/skills/agent-eval/SKILL.md",
+        ".claude/skills/agent-eval/corpus.json",
+        "CLAUDE.md",
+        "__tests__/config-secret-redaction.test.ts",
+        "__tests__/daemon-client-liveness.test.ts",
+        "__tests__/exclude-config.test.ts",
+        "__tests__/frontload-hook.test.ts",
+        "__tests__/git-hooks.test.ts",
+        "__tests__/include-config.test.ts",
+        "__tests__/include-ignored-config.test.ts",
+        "__tests__/install-sh-prune.test.ts",
+        "__tests__/installer-targets.test.ts",
+        "__tests__/installer.test.ts",
+        "__tests__/integration/mcp-input-limits.test.ts",
+        "__tests__/mcp-catchup-gate.test.ts",
+        "__tests__/mcp-daemon.test.ts",
+        "__tests__/mcp-debounce-env.test.ts",
+        "__tests__/mcp-files-path-normalization.test.ts",
+        "__tests__/mcp-initialize.test.ts",
+        "__tests__/mcp-ppid-watchdog.test.ts",
+        "__tests__/mcp-require-project-path.test.ts",
+        "__tests__/mcp-roots.test.ts",
+        "__tests__/mcp-staleness-banner.test.ts",
+        "__tests__/mcp-startup-orphan.test.ts",
+        "__tests__/mcp-tool-allowlist.test.ts",
+        "__tests__/mcp-tool-annotations.test.ts",
+        "__tests__/mcp-unindexed.test.ts",
+        "docs/benchmarks/answer-directly-vs-explore-agent.md",
+        "docs/design/agent-codegraph-adoption.md",
+        "install.ps1",
+        "install.sh",
+        "scripts/agent-eval/ab-adoption.sh",
+        "scripts/agent-eval/ab-hook.sh",
+        "scripts/agent-eval/ab-impl.sh",
+        "scripts/agent-eval/ab-new-vs-baseline.sh",
+        "scripts/agent-eval/ab-sufficiency.sh",
+        "scripts/agent-eval/arms-F.sh",
+        "scripts/agent-eval/arms-matrix.sh",
+        "scripts/agent-eval/audit.sh",
+        "scripts/agent-eval/bench-readme.sh",
+        "scripts/agent-eval/bench-why-repo.sh",
+        "scripts/agent-eval/block-read-hook.sh",
+        "scripts/agent-eval/hook-settings.json",
+        "scripts/agent-eval/itrun.sh",
+        "scripts/agent-eval/offload-eval-3arm.sh",
+        "scripts/agent-eval/offload-eval-cost.mjs",
+        "scripts/agent-eval/offload-eval-effort.mjs",
+        "scripts/agent-eval/offload-eval-frontload-matrix.sh",
+        "scripts/agent-eval/offload-eval-frontload.sh",
+        "scripts/agent-eval/offload-eval-ground-truth.json",
+        "scripts/agent-eval/offload-eval-hook.mjs",
+        "scripts/agent-eval/offload-eval-judge.mjs",
+        "scripts/agent-eval/offload-eval-matrix.sh",
+        "scripts/agent-eval/offload-eval-metrics.mjs",
+        "scripts/agent-eval/offload-eval-refs1.sh",
+        "scripts/agent-eval/offload-eval-setup.sh",
+        "scripts/agent-eval/offload-eval-styles.sh",
+        "scripts/agent-eval/offload-eval-summarize.mjs",
+        "scripts/agent-eval/offload-eval.md"
+      ],
+      "test_or_benchmark_paths": [
+        "__tests__/adaptive-explore-sizing.test.ts",
+        "__tests__/android-res-exclusion.test.ts",
+        "__tests__/arkts-resolution.test.ts",
+        "__tests__/batched-ref-cleanup.test.ts",
+        "__tests__/beta-signup.test.ts",
+        "__tests__/c-fnptr-kernel-sweep.test.ts",
+        "__tests__/c-fnptr-synthesizer.test.ts",
+        "__tests__/celery-dispatch-synthesizer.test.ts",
+        "__tests__/cfml-inheritance-resolution.test.ts",
+        "__tests__/cfml-receiver-inference.test.ts",
+        "__tests__/cli-affected-paths.test.ts",
+        "__tests__/cli-no-color.test.ts",
+        "__tests__/cli-node-command.test.ts",
+        "__tests__/cli-query-command.test.ts",
+        "__tests__/cli-version.test.ts",
+        "__tests__/closure-collection-synthesizer.test.ts",
+        "__tests__/concurrent-locking.test.ts",
+        "__tests__/config-secret-redaction.test.ts",
+        "__tests__/context-ranking.test.ts",
+        "__tests__/context.test.ts",
+        "__tests__/cooperative-yield.test.ts",
+        "__tests__/daemon-attach-log.test.ts",
+        "__tests__/daemon-bind-failure.test.ts",
+        "__tests__/daemon-client-liveness.test.ts",
+        "__tests__/daemon-manager.test.ts",
+        "__tests__/daemon-registry.test.ts",
+        "__tests__/daemon-socket-fallback.test.ts",
+        "__tests__/db-perf.test.ts",
+        "__tests__/db-reopen-on-replace.test.ts",
+        "__tests__/drupal.test.ts"
+      ],
+      "representative_files": [
+        {
+          "path": "scripts/agent-eval/offload-eval-cost.mjs",
+          "bytes": 7268,
+          "sha256_prefix": "f4f546efc8bf5a99"
+        },
+        {
+          "path": "scripts/agent-eval/offload-eval-effort.mjs",
+          "bytes": 6844,
+          "sha256_prefix": "6e8bcec6afd2f5b3"
+        },
+        {
+          "path": "scripts/agent-eval/offload-eval-hook.mjs",
+          "bytes": 4694,
+          "sha256_prefix": "9d557c7479ace4c3"
+        },
+        {
+          "path": "scripts/agent-eval/offload-eval-judge.mjs",
+          "bytes": 5337,
+          "sha256_prefix": "691c21e5ed5c5aca"
+        },
+        {
+          "path": "scripts/agent-eval/offload-eval-metrics.mjs",
+          "bytes": 4399,
+          "sha256_prefix": "5fdf287610f27dcc"
+        },
+        {
+          "path": "scripts/agent-eval/offload-eval-summarize.mjs",
+          "bytes": 4608,
+          "sha256_prefix": "1c07fdf2e400521f"
+        },
+        {
+          "path": "scripts/agent-eval/parse-arms.mjs",
+          "bytes": 5574,
+          "sha256_prefix": "4d6e184328964b4b"
+        },
+        {
+          "path": "scripts/agent-eval/parse-bench-readme.mjs",
+          "bytes": 5136,
+          "sha256_prefix": "3538e6e4988d51ef"
+        },
+        {
+          "path": "scripts/agent-eval/parse-run.mjs",
+          "bytes": 2115,
+          "sha256_prefix": "ea85bef783d3cab1"
+        },
+        {
+          "path": "scripts/agent-eval/parse-session.mjs",
+          "bytes": 4326,
+          "sha256_prefix": "9f3225a1ab09f093"
+        },
+        {
+          "path": "scripts/agent-eval/probe-context.mjs",
+          "bytes": 950,
+          "sha256_prefix": "8ee6337716b902ab"
+        },
+        {
+          "path": "scripts/agent-eval/probe-explore.mjs",
+          "bytes": 1768,
+          "sha256_prefix": "27d65b3aa2986e61"
+        },
+        {
+          "path": "src/extraction/tree-sitter.ts",
+          "bytes": 310242,
+          "sha256_prefix": "fca53e883d28874b"
+        },
+        {
+          "path": "src/mcp/tools.ts",
+          "bytes": 228853,
+          "sha256_prefix": "537125b78646efb8"
+        },
+        {
+          "path": "src/resolution/callback-synthesizer.ts",
+          "bytes": 180326,
+          "sha256_prefix": "12cabcd2a6a81ab5"
+        },
+        {
+          "path": "src/extraction/index.ts",
+          "bytes": 119060,
+          "sha256_prefix": "5fb9882f8ed68ea8"
+        },
+        {
+          "path": "src/resolution/index.ts",
+          "bytes": 109485,
+          "sha256_prefix": "5b4981b37410b972"
+        },
+        {
+          "path": "src/resolution/name-matcher.ts",
+          "bytes": 102252,
+          "sha256_prefix": "1bdcf5173220607f"
+        },
+        {
+          "path": "src/bin/codegraph.ts",
+          "bytes": 100183,
+          "sha256_prefix": "c87e98247f1a1393"
+        },
+        {
+          "path": "src/db/queries.ts",
+          "bytes": 94660,
+          "sha256_prefix": "5d1dd66444b384e5"
+        }
+      ],
+      "dossier": "colbymchenry-codegraph.md",
+      "previously_audited_commit": "4077ed19b7d8",
+      "previously_audited_on": "2026-06-26",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-06-26",
+        "pinned_version": "1.5.0",
+        "releases_since_audit": 11,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "1.5.0",
+          "date": "2026-07-21",
+          "heading": "[1.5.0] - 2026-07-21",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "1.1.2",
+          "date": "2026-06-28",
+          "heading": "[1.1.2] - 2026-06-28",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "[1.5.0] - 2026-07-21",
+          "[1.4.1] - 2026-07-10",
+          "[1.4.0] - 2026-07-10",
+          "[1.3.1] - 2026-07-09",
+          "[1.3.0] - 2026-07-07",
+          "[1.2.0] - 2026-07-02",
+          "[1.1.6] - 2026-06-30",
+          "[1.1.5] - 2026-06-30",
+          "[1.1.4] - 2026-06-29",
+          "[1.1.3] - 2026-06-29",
+          "[1.1.2] - 2026-06-28"
+        ]
+      }
+    },
+    {
+      "tool": "codescope",
+      "release_directory": "codescope-0.8.12",
+      "version": "0.8.12",
+      "pinned_commit": "d8e58d83e920c46a27e8b2e72c1e85a16c6af3fd",
+      "checkout_head": "d8e58d83e920c46a27e8b2e72c1e85a16c6af3fd",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-04-24T23:16:27+03:00",
+      "release_artifact": {
+        "path": "artifacts/codescope-v0.8.12-x86_64-unknown-linux-gnu.tar.gz",
+        "exists": true,
+        "sha256_prefix": "ee353ad91cd23c08"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "3540e5e7c23735b5"
+      },
+      "file_counts": {
+        "total": 309,
+        "integration": 119,
+        "source": 186,
+        "test_or_benchmark": 23,
+        "documentation": 77
+      },
+      "integration_code_paths": [
+        "crates/cli/src/commands/agents.rs",
+        "crates/cli/src/commands/hooks.rs",
+        "crates/cli/src/commands/init.rs",
+        "crates/cli/src/commands/install.rs",
+        "crates/mcp-server/src/daemon.rs",
+        "crates/mcp-server/src/error.rs",
+        "crates/mcp-server/src/helpers.rs",
+        "crates/mcp-server/src/index_state.rs",
+        "crates/mcp-server/src/indexing.rs",
+        "crates/mcp-server/src/lib.rs",
+        "crates/mcp-server/src/main.rs",
+        "crates/mcp-server/src/nlp.rs",
+        "crates/mcp-server/src/params.rs",
+        "crates/mcp-server/src/resources/mod.rs",
+        "crates/mcp-server/src/server.rs",
+        "crates/mcp-server/src/telemetry.rs",
+        "crates/mcp-server/src/tools/admin.rs",
+        "crates/mcp-server/src/tools/adr.rs",
+        "crates/mcp-server/src/tools/analytics.rs",
+        "crates/mcp-server/src/tools/ask.rs",
+        "crates/mcp-server/src/tools/callgraph.rs",
+        "crates/mcp-server/src/tools/contributors.rs",
+        "crates/mcp-server/src/tools/conversations.rs",
+        "crates/mcp-server/src/tools/embeddings.rs",
+        "crates/mcp-server/src/tools/exploration.rs",
+        "crates/mcp-server/src/tools/http.rs",
+        "crates/mcp-server/src/tools/indexed.rs",
+        "crates/mcp-server/src/tools/knowledge.rs",
+        "crates/mcp-server/src/tools/memory.rs",
+        "crates/mcp-server/src/tools/mod.rs",
+        "crates/mcp-server/src/tools/quality.rs",
+        "crates/mcp-server/src/tools/refactor.rs",
+        "crates/mcp-server/src/tools/sandbox.rs",
+        "crates/mcp-server/src/tools/search.rs",
+        "crates/mcp-server/src/tools/skills.rs",
+        "crates/mcp-server/src/tools/temporal.rs",
+        "crates/mcp-server/src/watcher.rs",
+        "crates/web/frontend/postcss.config.js",
+        "crates/web/frontend/tailwind.config.ts",
+        "crates/web/frontend/vite.config.ts"
+      ],
+      "install_guide_paths": [
+        ".claude/agents/_SHARED.md",
+        ".claude/agents/context-optimizer.md",
+        ".claude/agents/doctor-diagnostician.md",
+        ".claude/agents/graph-architect.md",
+        ".claude/agents/knowledge-librarian.md",
+        ".claude/agents/lsp-bridge-lead.md",
+        ".claude/agents/mcp-tool-curator.md",
+        ".claude/agents/project-maintainer.md",
+        ".claude/agents/release-captain.md",
+        ".claude/agents/web-ui-designer.md",
+        ".claude/reviews/_CONSOLIDATED.md",
+        ".claude/reviews/ada-report.md",
+        ".claude/reviews/chomsky-report.md",
+        ".claude/reviews/dewey-report.md",
+        ".claude/reviews/hopper-report.md",
+        ".claude/reviews/knuth-report.md",
+        ".claude/reviews/linnaeus-report.md",
+        ".claude/reviews/nightingale-report.md",
+        ".claude/reviews/ranganathan-report.md",
+        ".claude/reviews/shannon-report.md"
+      ],
+      "integration_paths": [
+        ".claude-plugin/marketplace.json",
+        ".claude-plugin/plugin.json",
+        ".claude/agents/_SHARED.md",
+        ".claude/agents/bench-champion.md",
+        ".claude/agents/context-optimizer.md",
+        ".claude/agents/doctor-diagnostician.md",
+        ".claude/agents/graph-architect.md",
+        ".claude/agents/knowledge-librarian.md",
+        ".claude/agents/lsp-bridge-lead.md",
+        ".claude/agents/mcp-tool-curator.md",
+        ".claude/agents/parser-specialist.md",
+        ".claude/agents/project-maintainer.md",
+        ".claude/agents/release-captain.md",
+        ".claude/agents/web-ui-designer.md",
+        ".claude/reviews/_CONSOLIDATED.md",
+        ".claude/reviews/ada-report.md",
+        ".claude/reviews/chomsky-report.md",
+        ".claude/reviews/dewey-report.md",
+        ".claude/reviews/hopper-report.md",
+        ".claude/reviews/knuth-report.md",
+        ".claude/reviews/linnaeus-report.md",
+        ".claude/reviews/nightingale-report.md",
+        ".claude/reviews/ranganathan-report.md",
+        ".claude/reviews/shannon-report.md",
+        ".claude/reviews/turing-report.md",
+        ".claude/reviews/victor-report.md",
+        ".claude/rules/codescope-mandatory.md",
+        ".claude/skills/demo/SKILL.md",
+        ".claude/skills/lint-all/SKILL.md",
+        ".claude/skills/ship/SKILL.md",
+        ".claude/skills/status/SKILL.md",
+        ".claude/skills/tool-audit/SKILL.md",
+        ".mcp.json",
+        "CLAUDE.md",
+        "configs/README.md",
+        "configs/claude-code.json",
+        "configs/codex-cli.yaml",
+        "configs/cursor.json",
+        "configs/gemini-cli.json",
+        "configs/zed.json",
+        "crates/cli/src/commands/agents.rs",
+        "crates/cli/src/commands/hooks.rs",
+        "crates/cli/src/commands/init.rs",
+        "crates/cli/src/commands/install.rs",
+        "crates/mcp-server/Cargo.toml",
+        "crates/mcp-server/src/daemon.rs",
+        "crates/mcp-server/src/error.rs",
+        "crates/mcp-server/src/helpers.rs",
+        "crates/mcp-server/src/index_state.rs",
+        "crates/mcp-server/src/indexing.rs",
+        "crates/mcp-server/src/lib.rs",
+        "crates/mcp-server/src/main.rs",
+        "crates/mcp-server/src/nlp.rs",
+        "crates/mcp-server/src/params.rs",
+        "crates/mcp-server/src/resources/mod.rs",
+        "crates/mcp-server/src/server.rs",
+        "crates/mcp-server/src/telemetry.rs",
+        "crates/mcp-server/src/tools/admin.rs",
+        "crates/mcp-server/src/tools/adr.rs",
+        "crates/mcp-server/src/tools/analytics.rs"
+      ],
+      "test_or_benchmark_paths": [
+        ".claude/agents/bench-champion.md",
+        ".claude/agents/parser-specialist.md",
+        ".claude/skills/mcp-test/SKILL.md",
+        "BENCHMARKS.md",
+        "crates/bench/Cargo.toml",
+        "crates/bench/src/main.rs",
+        "crates/cli/src/compress/pytest.rs",
+        "crates/cli/tests/parse_tests.rs",
+        "crates/core/tests/cuda_parser_tests.rs",
+        "crates/core/tests/db_tests.rs",
+        "crates/core/tests/embedding_tests.rs",
+        "crates/core/tests/integration_tests.rs",
+        "crates/core/tests/migration_tests.rs",
+        "crates/core/tests/real_conversation_test.rs",
+        "crates/core/tests/remote_connect_spike.rs",
+        "crates/core/tests/tool_query_tests.rs",
+        "crates/e2e/tests/smoke_cli.rs",
+        "crates/e2e/tests/smoke_multiproject.rs",
+        "crates/e2e/tests/smoke_server.rs",
+        "crates/mcp-server/tests/graph_query_tests.rs",
+        "crates/mcp-server/tests/helpers_tests.rs",
+        "crates/web/frontend/src/components/NodeInspector.tsx",
+        "crates/web/tests/api_tests.rs"
+      ],
+      "representative_files": [
+        {
+          "path": "crates/cli/src/commands/agents.rs",
+          "bytes": 15500,
+          "sha256_prefix": "6c08dafe0942afb2"
+        },
+        {
+          "path": "crates/cli/src/commands/hooks.rs",
+          "bytes": 5594,
+          "sha256_prefix": "88af297083121a6c"
+        },
+        {
+          "path": "crates/cli/src/commands/init.rs",
+          "bytes": 11851,
+          "sha256_prefix": "ffef9cf51d02f504"
+        },
+        {
+          "path": "crates/cli/src/commands/install.rs",
+          "bytes": 3061,
+          "sha256_prefix": "b68d2fb40c0892c5"
+        },
+        {
+          "path": "crates/mcp-server/src/daemon.rs",
+          "bytes": 45,
+          "sha256_prefix": "a0d091912b44fefa"
+        },
+        {
+          "path": "crates/mcp-server/src/error.rs",
+          "bytes": 1678,
+          "sha256_prefix": "9c999305ea72b792"
+        },
+        {
+          "path": "crates/mcp-server/src/helpers.rs",
+          "bytes": 29381,
+          "sha256_prefix": "a6d9cd3374b328a8"
+        },
+        {
+          "path": "crates/mcp-server/src/index_state.rs",
+          "bytes": 6931,
+          "sha256_prefix": "5ed56fc08448d7c7"
+        },
+        {
+          "path": "crates/mcp-server/src/indexing.rs",
+          "bytes": 26232,
+          "sha256_prefix": "7f3868f96feb8eaa"
+        },
+        {
+          "path": "crates/mcp-server/src/lib.rs",
+          "bytes": 14912,
+          "sha256_prefix": "6c44c209cbb5dab2"
+        },
+        {
+          "path": "crates/mcp-server/src/main.rs",
+          "bytes": 11229,
+          "sha256_prefix": "b479bfdc8b190ee4"
+        },
+        {
+          "path": "crates/mcp-server/src/nlp.rs",
+          "bytes": 18138,
+          "sha256_prefix": "08dc56b0ae721474"
+        },
+        {
+          "path": "crates/web/src/lib.rs",
+          "bytes": 63914,
+          "sha256_prefix": "886b5e13fbed54c7"
+        },
+        {
+          "path": "crates/core/src/graph/query.rs",
+          "bytes": 50787,
+          "sha256_prefix": "6c9ecfcd559a7fe9"
+        },
+        {
+          "path": "crates/web/src/dream.rs",
+          "bytes": 45848,
+          "sha256_prefix": "1eced71bc9e92b97"
+        },
+        {
+          "path": "crates/core/src/parser/extractor.rs",
+          "bytes": 37456,
+          "sha256_prefix": "e5807048937decbd"
+        },
+        {
+          "path": "crates/core/src/graph/builder.rs",
+          "bytes": 33801,
+          "sha256_prefix": "96282e5b79e775d2"
+        },
+        {
+          "path": "crates/mcp-server/src/tools/analytics.rs",
+          "bytes": 29067,
+          "sha256_prefix": "824b979284cd9ed4"
+        },
+        {
+          "path": "crates/core/src/graph/schema.rs",
+          "bytes": 26844,
+          "sha256_prefix": "02ef6544eab136e7"
+        }
+      ],
+      "dossier": "onur-gokyildiz-bhi-codescope.md",
+      "previously_audited_commit": "d8e58d83e920",
+      "previously_audited_on": "2026-06-29",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-06-29",
+        "pinned_version": "0.8.12",
+        "releases_since_audit": 0,
+        "install_relevant_releases": 0,
+        "newest": null,
+        "oldest_after_audit": null,
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": []
+      }
+    },
+    {
+      "tool": "graphify",
+      "release_directory": "graphify-0.9.48",
+      "version": "0.9.48",
+      "pinned_commit": "b2cd36267456c166788c95be6e68574064a92a42",
+      "checkout_head": "b2cd36267456c166788c95be6e68574064a92a42",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-20T16:33:07+01:00",
+      "release_artifact": {
+        "path": "artifacts/graphifyy-0.9.48-py3-none-any.whl",
+        "exists": true,
+        "sha256_prefix": "4f745d72d6c5165e"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "49db070139e8ffcd"
+      },
+      "file_counts": {
+        "total": 823,
+        "integration": 337,
+        "source": 336,
+        "test_or_benchmark": 368,
+        "documentation": 363
+      },
+      "integration_code_paths": [
+        "graphify/__init__.py",
+        "graphify/exporters/__init__.py",
+        "graphify/extractors/__init__.py",
+        "graphify/extractors/json_config.py",
+        "graphify/hooks.py",
+        "graphify/install.py",
+        "graphify/mcp_ingest.py",
+        "tools/__init__.py",
+        "tools/skillgen/__init__.py",
+        "tools/skillgen/__main__.py",
+        "tools/skillgen/gen.py",
+        "worked/httpx/raw/client.py"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "docs/docker-mcp-sqlite.md",
+        "graphify/always_on/agents-md.md",
+        "graphify/always_on/claude-md.md",
+        "graphify/skill-agents.md",
+        "graphify/skill-aider.md",
+        "graphify/skill-amp.md",
+        "graphify/skill-claw.md",
+        "graphify/skill-codex.md",
+        "graphify/skill-copilot.md",
+        "graphify/skill-devin.md",
+        "graphify/skill-droid.md",
+        "graphify/skill-kilo.md",
+        "graphify/skill-kiro.md",
+        "graphify/skill-opencode.md",
+        "graphify/skill-pi.md",
+        "graphify/skill-trae.md",
+        "graphify/skill-vscode.md",
+        "graphify/skill-windows.md",
+        "graphify/skill.md"
+      ],
+      "integration_paths": [
+        ".pre-commit-config.yaml",
+        "AGENTS.md",
+        "docs/docker-mcp-sqlite.md",
+        "graphify/__init__.py",
+        "graphify/always_on/agents-md.md",
+        "graphify/always_on/claude-md.md",
+        "graphify/exporters/__init__.py",
+        "graphify/extractors/__init__.py",
+        "graphify/extractors/json_config.py",
+        "graphify/hooks.py",
+        "graphify/install.py",
+        "graphify/mcp_ingest.py",
+        "graphify/skill-agents.md",
+        "graphify/skill-aider.md",
+        "graphify/skill-amp.md",
+        "graphify/skill-claw.md",
+        "graphify/skill-codex.md",
+        "graphify/skill-copilot.md",
+        "graphify/skill-devin.md",
+        "graphify/skill-droid.md",
+        "graphify/skill-kilo.md",
+        "graphify/skill-kiro.md",
+        "graphify/skill-opencode.md",
+        "graphify/skill-pi.md",
+        "graphify/skill-trae.md",
+        "graphify/skill-vscode.md",
+        "graphify/skill-windows.md",
+        "graphify/skill.md",
+        "graphify/skills/agents/references/add-watch.md",
+        "graphify/skills/agents/references/exports.md",
+        "graphify/skills/agents/references/extraction-spec.md",
+        "graphify/skills/agents/references/github-and-merge.md",
+        "graphify/skills/agents/references/hooks.md",
+        "graphify/skills/agents/references/query.md",
+        "graphify/skills/agents/references/transcribe.md",
+        "graphify/skills/agents/references/update.md",
+        "graphify/skills/amp/references/add-watch.md",
+        "graphify/skills/amp/references/exports.md",
+        "graphify/skills/amp/references/extraction-spec.md",
+        "graphify/skills/amp/references/github-and-merge.md",
+        "graphify/skills/amp/references/hooks.md",
+        "graphify/skills/amp/references/query.md",
+        "graphify/skills/amp/references/transcribe.md",
+        "graphify/skills/amp/references/update.md",
+        "graphify/skills/claude/references/add-watch.md",
+        "graphify/skills/claude/references/exports.md",
+        "graphify/skills/claude/references/extraction-spec.md",
+        "graphify/skills/claude/references/github-and-merge.md",
+        "graphify/skills/claude/references/hooks.md",
+        "graphify/skills/claude/references/query.md",
+        "graphify/skills/claude/references/transcribe.md",
+        "graphify/skills/claude/references/update.md",
+        "graphify/skills/claw/references/add-watch.md",
+        "graphify/skills/claw/references/exports.md",
+        "graphify/skills/claw/references/extraction-spec.md",
+        "graphify/skills/claw/references/github-and-merge.md",
+        "graphify/skills/claw/references/hooks.md",
+        "graphify/skills/claw/references/query.md",
+        "graphify/skills/claw/references/transcribe.md",
+        "graphify/skills/claw/references/update.md"
+      ],
+      "test_or_benchmark_paths": [
+        "BENCHMARKS.md",
+        "docs/superpowers/specs/2026-05-04-incremental-updates-dedup-design.md",
+        "graphify/benchmark.py",
+        "graphify/cargo_introspect.py",
+        "graphify/pg_introspect.py",
+        "graphify/skills/agents/references/extraction-spec.md",
+        "graphify/skills/amp/references/extraction-spec.md",
+        "graphify/skills/claude/references/extraction-spec.md",
+        "graphify/skills/claw/references/extraction-spec.md",
+        "graphify/skills/codex/references/extraction-spec.md",
+        "graphify/skills/copilot/references/extraction-spec.md",
+        "graphify/skills/droid/references/extraction-spec.md",
+        "graphify/skills/kilo/references/extraction-spec.md",
+        "graphify/skills/kiro/references/extraction-spec.md",
+        "graphify/skills/opencode/references/extraction-spec.md",
+        "graphify/skills/pi/references/extraction-spec.md",
+        "graphify/skills/trae/references/extraction-spec.md",
+        "graphify/skills/vscode/references/extraction-spec.md",
+        "graphify/skills/windows/references/extraction-spec.md",
+        "tests/__init__.py",
+        "tests/bench_extract.py",
+        "tests/bench_query_scoring.py",
+        "tests/conftest.py",
+        "tests/fixtures/barrel_reexport.ts",
+        "tests/fixtures/bindings.xaml",
+        "tests/fixtures/cjs_require.js",
+        "tests/fixtures/cookieHelpers.ts",
+        "tests/fixtures/cpp_logger/a/Logger.cpp",
+        "tests/fixtures/cpp_logger/a/Logger.h",
+        "tests/fixtures/cpp_logger/b/Logger.cpp"
+      ],
+      "representative_files": [
+        {
+          "path": "graphify/__init__.py",
+          "bytes": 1424,
+          "sha256_prefix": "5afcd670aa65337a"
+        },
+        {
+          "path": "graphify/exporters/__init__.py",
+          "bytes": 25,
+          "sha256_prefix": "0a1e96c29d760184"
+        },
+        {
+          "path": "graphify/extractors/__init__.py",
+          "bytes": 2683,
+          "sha256_prefix": "bcfe037079f3ce2b"
+        },
+        {
+          "path": "graphify/extractors/json_config.py",
+          "bytes": 9723,
+          "sha256_prefix": "d15ea6d9b48cc71e"
+        },
+        {
+          "path": "graphify/hooks.py",
+          "bytes": 35742,
+          "sha256_prefix": "4db36add5f5e5842"
+        },
+        {
+          "path": "graphify/install.py",
+          "bytes": 101935,
+          "sha256_prefix": "62f5c79a9ef74f2f"
+        },
+        {
+          "path": "graphify/mcp_ingest.py",
+          "bytes": 13184,
+          "sha256_prefix": "7553845a7cae7c31"
+        },
+        {
+          "path": "tools/__init__.py",
+          "bytes": 0,
+          "sha256_prefix": "e3b0c44298fc1c14"
+        },
+        {
+          "path": "tools/skillgen/__init__.py",
+          "bytes": 0,
+          "sha256_prefix": "e3b0c44298fc1c14"
+        },
+        {
+          "path": "tools/skillgen/__main__.py",
+          "bytes": 181,
+          "sha256_prefix": "785fe2d07491d82f"
+        },
+        {
+          "path": "tools/skillgen/gen.py",
+          "bytes": 61959,
+          "sha256_prefix": "c30e2aa792f7f43a"
+        },
+        {
+          "path": "worked/httpx/raw/client.py",
+          "bytes": 5394,
+          "sha256_prefix": "90c07a2fd63c9034"
+        },
+        {
+          "path": "graphify/extract.py",
+          "bytes": 324142,
+          "sha256_prefix": "785d3c30ac98a33c"
+        },
+        {
+          "path": "graphify/extractors/engine.py",
+          "bytes": 304562,
+          "sha256_prefix": "36276ac7fc7ec9a5"
+        },
+        {
+          "path": "graphify/cli.py",
+          "bytes": 211795,
+          "sha256_prefix": "345fabd8fedd1309"
+        },
+        {
+          "path": "graphify/llm.py",
+          "bytes": 158499,
+          "sha256_prefix": "5321f6a67185ed8a"
+        },
+        {
+          "path": "graphify/extractors/resolution.py",
+          "bytes": 130668,
+          "sha256_prefix": "8418776a808ace58"
+        },
+        {
+          "path": "graphify/serve.py",
+          "bytes": 112035,
+          "sha256_prefix": "6c1736cc39dd88e7"
+        },
+        {
+          "path": "graphify/detect.py",
+          "bytes": 104448,
+          "sha256_prefix": "dd039caccf5fc91b"
+        },
+        {
+          "path": "graphify/build.py",
+          "bytes": 101939,
+          "sha256_prefix": "6e181353a94a5547"
+        }
+      ],
+      "dossier": "safishamsi-graphify.md",
+      "previously_audited_commit": "199061207f66",
+      "previously_audited_on": "2026-06-29",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-06-29",
+        "pinned_version": "0.9.48",
+        "releases_since_audit": 46,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "0.9.48",
+          "date": "2026-08-20",
+          "heading": "0.9.48 (2026-08-20)",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "0.9.3",
+          "date": "2026-06-30",
+          "heading": "0.9.3 (2026-06-30)",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "0.9.48 (2026-08-20)",
+          "0.9.47 (2026-08-19)",
+          "0.9.46 (2026-08-17)",
+          "0.9.45 (2026-08-16)",
+          "0.9.44 (2026-08-15)",
+          "0.9.43 (2026-08-14)",
+          "0.9.42 (2026-08-13)",
+          "0.9.41 (2026-08-12)",
+          "0.9.40 (2026-08-11)",
+          "0.9.39 (2026-08-10)",
+          "0.9.38 (2026-08-09)",
+          "0.9.37 (2026-08-08)"
+        ]
+      }
+    },
+    {
+      "tool": "headroom",
+      "release_directory": "headroom-0.36.3",
+      "version": "0.36.3",
+      "pinned_commit": "87e71dd10057ff3cbe826bde617682971339e4f8",
+      "checkout_head": "87e71dd10057ff3cbe826bde617682971339e4f8",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-21T14:57:44-07:00",
+      "release_artifact": {
+        "path": "artifacts/headroom_ai-0.36.3-cp310-abi3-manylinux_2_28_x86_64.whl",
+        "exists": true,
+        "sha256_prefix": "a3fb71716b62da07"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "fee6ad17c8df5d69"
+      },
+      "file_counts": {
+        "total": 2311,
+        "integration": 426,
+        "source": 1759,
+        "test_or_benchmark": 1209,
+        "documentation": 147
+      },
+      "integration_code_paths": [
+        "claude_analysis_ttl.py",
+        "crates/headroom-core/src/transforms/pipeline/config.rs",
+        "crates/headroom-core/src/transforms/smart_crusher/config.rs",
+        "crates/headroom-core/src/transforms/text_crusher/config.rs",
+        "crates/headroom-proxy/src/config.rs",
+        "crates/headroom-simulators/src/config.rs",
+        "docs/next.config.mjs",
+        "docs/postcss.config.mjs",
+        "docs/source.config.ts",
+        "e2e/__init__.py",
+        "e2e/_lib/__init__.py",
+        "e2e/init/run.py",
+        "examples/langchain_demo/__init__.py",
+        "examples/mcp_demo/__init__.py",
+        "examples/mcp_demo/mock_mcp_servers.py",
+        "examples/mcp_demo/run_agent_eval.py",
+        "examples/mcp_demo/show_before_after.py",
+        "examples/mcp_demo/show_compression.py",
+        "headroom/__init__.py",
+        "headroom/agent_savings.py",
+        "headroom/audit/__init__.py",
+        "headroom/audit/codex.py",
+        "headroom/backends/__init__.py",
+        "headroom/cache/__init__.py",
+        "headroom/cache/backends/__init__.py",
+        "headroom/capture/__init__.py",
+        "headroom/ccr/__init__.py",
+        "headroom/ccr/mcp_http.py",
+        "headroom/ccr/mcp_server.py",
+        "headroom/cli/__init__.py",
+        "headroom/cli/_utils/__init__.py",
+        "headroom/cli/agent_savings.py",
+        "headroom/cli/init.py",
+        "headroom/cli/install.py",
+        "headroom/cli/mcp.py",
+        "headroom/client.py",
+        "headroom/compression/__init__.py",
+        "headroom/compression/handlers/__init__.py",
+        "headroom/config.py",
+        "headroom/dashboard/__init__.py"
+      ],
+      "install_guide_paths": [
+        "docs/claude-code-bedrock-headroom.md",
+        "docs/content/docs/agent-orchestration.mdx",
+        "docs/content/docs/claude-code-azure-foundry.mdx",
+        "docs/content/docs/claude-code-vertex.mdx",
+        "docs/content/docs/codex-recovery.mdx",
+        "docs/content/docs/configuration.mdx",
+        "docs/content/docs/docker-install.mdx",
+        "docs/content/docs/installation.mdx",
+        "docs/content/docs/mcp.mdx",
+        "docs/content/docs/opencode-deepseek.mdx",
+        "docs/content/docs/opencode.mdx",
+        "docs/content/docs/persistent-installs.mdx",
+        "docs/content/docs/vscode-claude-code.mdx",
+        "examples/deployment/macos-launchagent/README.md",
+        "plugins/headroom-agent-hooks/README.md",
+        "plugins/headroom-oauth2/CHANGELOG.md",
+        "plugins/headroom-oauth2/README.md",
+        "plugins/hermes/README.md",
+        "plugins/openclaw/README.md",
+        "plugins/openclaw/hook-shim/HOOK.md"
+      ],
+      "integration_paths": [
+        ".claude-plugin/marketplace.json",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/actions/headroom-e2e-setup/action.yml",
+        ".github/plugin/marketplace.json",
+        ".github/workflows/init-e2e.yml",
+        ".github/workflows/init-native-e2e.yml",
+        ".github/workflows/install-native-e2e.yml",
+        ".github/workflows/opencode-plugin.yml",
+        ".pre-commit-config.yaml",
+        ".release-please-config.json",
+        "benchmarks/__init__.py",
+        "benchmarks/agent_cost_benchmark.py",
+        "benchmarks/claude_session_branch_compare.py",
+        "benchmarks/claude_session_mode_benchmark.py",
+        "benchmarks/real_world_agent_benchmark.py",
+        "benchmarks/scenarios/__init__.py",
+        "claude_analysis_ttl.py",
+        "crates/headroom-core/config/pipeline.toml",
+        "crates/headroom-core/src/transforms/pipeline/config.rs",
+        "crates/headroom-core/src/transforms/smart_crusher/config.rs",
+        "crates/headroom-core/src/transforms/text_crusher/config.rs",
+        "crates/headroom-proxy/src/config.rs",
+        "crates/headroom-simulators/src/config.rs",
+        "docker/differential-network-capture/run-claude-lane.sh",
+        "docs/claude-code-bedrock-headroom.md",
+        "docs/content/docs/agent-orchestration.mdx",
+        "docs/content/docs/claude-code-azure-foundry.mdx",
+        "docs/content/docs/claude-code-vertex.mdx",
+        "docs/content/docs/codex-recovery.mdx",
+        "docs/content/docs/configuration.mdx",
+        "docs/content/docs/docker-install.mdx",
+        "docs/content/docs/installation.mdx",
+        "docs/content/docs/mcp.mdx",
+        "docs/content/docs/opencode-deepseek.mdx",
+        "docs/content/docs/opencode.mdx",
+        "docs/content/docs/persistent-installs.mdx",
+        "docs/content/docs/vscode-claude-code.mdx",
+        "docs/next.config.mjs",
+        "docs/postcss.config.mjs",
+        "docs/source.config.ts",
+        "docs/tsconfig.json",
+        "e2e/__init__.py",
+        "e2e/_lib/__init__.py",
+        "e2e/docker-native-install.sh",
+        "e2e/init/run.py",
+        "examples/deployment/macos-launchagent/README.md",
+        "examples/deployment/macos-launchagent/install.sh",
+        "examples/deployment/macos-launchagent/shell-integration.sh",
+        "examples/deployment/macos-launchagent/uninstall.sh",
+        "examples/langchain_demo/__init__.py",
+        "examples/mcp_demo/__init__.py",
+        "examples/mcp_demo/mock_mcp_servers.py",
+        "examples/mcp_demo/run_agent_eval.py",
+        "examples/mcp_demo/show_before_after.py",
+        "examples/mcp_demo/show_compression.py",
+        "examples/strands_mcp_dispatch_test.py",
+        "headroom/__init__.py",
+        "headroom/agent_savings.py",
+        "headroom/audit/__init__.py",
+        "headroom/audit/codex.py"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/ISSUE_TEMPLATE/copilot-subscription-test-report.md",
+        "REALIGNMENT/11-phase-I-test-infra.md",
+        "TESTING-copilot-subscription.md",
+        "benchmarks/__init__.py",
+        "benchmarks/adversarial_ccr_tests.py",
+        "benchmarks/agent_cost_benchmark.py",
+        "benchmarks/bench_latency.py",
+        "benchmarks/bench_relevance.py",
+        "benchmarks/bench_transforms.py",
+        "benchmarks/cache_bust_trace_report.py",
+        "benchmarks/cache_validation_bundle.py",
+        "benchmarks/ccr_regression_benchmark.py",
+        "benchmarks/claude_session_branch_compare.py",
+        "benchmarks/claude_session_mode_benchmark.py",
+        "benchmarks/comprehensive_eval.py",
+        "benchmarks/compression_benchmark.py",
+        "benchmarks/conftest.py",
+        "benchmarks/dynamic_detector_benchmark.py",
+        "benchmarks/headroom_adversarial_benchmark.py",
+        "benchmarks/headroom_worst_case_benchmark.py",
+        "benchmarks/i18n_compression_eval.py",
+        "benchmarks/prefix_cache_benchmark.py",
+        "benchmarks/proxy_mode_benchmark.py",
+        "benchmarks/real_world_agent_benchmark.py",
+        "benchmarks/run_benchmarks.py",
+        "benchmarks/scenarios/__init__.py",
+        "benchmarks/scenarios/conversations.py",
+        "benchmarks/scenarios/tool_outputs.py",
+        "benchmarks/synthetic_long_cache_suite_report.py",
+        "benchmarks/synthetic_token_cache_bust_report.py"
+      ],
+      "representative_files": [
+        {
+          "path": "benchmarks/__init__.py",
+          "bytes": 1204,
+          "sha256_prefix": "caa5f187d3bbfde1"
+        },
+        {
+          "path": "benchmarks/agent_cost_benchmark.py",
+          "bytes": 28108,
+          "sha256_prefix": "ff8696e260c760e1"
+        },
+        {
+          "path": "benchmarks/claude_session_branch_compare.py",
+          "bytes": 22840,
+          "sha256_prefix": "97b0bd4e344acb17"
+        },
+        {
+          "path": "benchmarks/claude_session_mode_benchmark.py",
+          "bytes": 82353,
+          "sha256_prefix": "b7235e83b2ddd3b5"
+        },
+        {
+          "path": "benchmarks/real_world_agent_benchmark.py",
+          "bytes": 26670,
+          "sha256_prefix": "b788d98ee5a25456"
+        },
+        {
+          "path": "benchmarks/scenarios/__init__.py",
+          "bytes": 767,
+          "sha256_prefix": "534178e942f88956"
+        },
+        {
+          "path": "claude_analysis_ttl.py",
+          "bytes": 12403,
+          "sha256_prefix": "887ff8cda4072525"
+        },
+        {
+          "path": "crates/headroom-core/src/transforms/pipeline/config.rs",
+          "bytes": 13780,
+          "sha256_prefix": "5895e01e90d71404"
+        },
+        {
+          "path": "crates/headroom-core/src/transforms/smart_crusher/config.rs",
+          "bytes": 9323,
+          "sha256_prefix": "1a18ddc8d0152c0a"
+        },
+        {
+          "path": "crates/headroom-core/src/transforms/text_crusher/config.rs",
+          "bytes": 1125,
+          "sha256_prefix": "89adab735d0f6326"
+        },
+        {
+          "path": "crates/headroom-proxy/src/config.rs",
+          "bytes": 37541,
+          "sha256_prefix": "3208b69aeab7a207"
+        },
+        {
+          "path": "crates/headroom-simulators/src/config.rs",
+          "bytes": 1960,
+          "sha256_prefix": "bf6fd9533d964ea2"
+        },
+        {
+          "path": "headroom/proxy/handlers/openai.py",
+          "bytes": 489504,
+          "sha256_prefix": "dd04a9ed2f6ee82c"
+        },
+        {
+          "path": "headroom/providers/opencode/_dist/entry.opencode.js",
+          "bytes": 463727,
+          "sha256_prefix": "44a966e432471ae2"
+        },
+        {
+          "path": "headroom/dashboard/static/tailwind.min.js",
+          "bytes": 407279,
+          "sha256_prefix": "176e894661aa9cdc"
+        },
+        {
+          "path": "headroom/cli/wrap.py",
+          "bytes": 324497,
+          "sha256_prefix": "c4e7f4748102809b"
+        },
+        {
+          "path": "headroom/transforms/content_router.py",
+          "bytes": 322492,
+          "sha256_prefix": "f8239204a4bf3e05"
+        },
+        {
+          "path": "headroom/proxy/handlers/anthropic.py",
+          "bytes": 285392,
+          "sha256_prefix": "efdf263de24b9633"
+        },
+        {
+          "path": "headroom/proxy/server.py",
+          "bytes": 278243,
+          "sha256_prefix": "70489295301089ba"
+        },
+        {
+          "path": "headroom/proxy/helpers.py",
+          "bytes": 137893,
+          "sha256_prefix": "db54bc211280224f"
+        }
+      ],
+      "dossier": "chopratejas-headroom.md",
+      "previously_audited_commit": "715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-07-01",
+        "pinned_version": "0.36.3",
+        "releases_since_audit": 11,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "0.36.3",
+          "date": "2026-08-21",
+          "heading": "[0.36.3](https://github.com/headroomlabs-ai/headroom/compare/v0.36.2...v0.36.3) (2026-08-21)",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "0.29.0",
+          "date": "2026-07-03",
+          "heading": "[0.29.0](https://github.com/headroomlabs-ai/headroom/compare/v0.28.0...v0.29.0) (2026-07-03)",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": true,
+        "recent_headings": [
+          "[0.36.3](https://github.com/headroomlabs-ai/headroom/compare/v0.36.2...v0.36.3) (2026-08-21)",
+          "[0.36.2](https://github.com/headroomlabs-ai/headroom/compare/v0.36.1...v0.36.2) (2026-08-21)",
+          "[0.36.1](https://github.com/headroomlabs-ai/headroom/compare/v0.36.0...v0.36.1) (2026-08-20)",
+          "[0.36.0](https://github.com/headroomlabs-ai/headroom/compare/v0.35.0...v0.36.0) (2026-08-20)",
+          "[0.35.0](https://github.com/headroomlabs-ai/headroom/compare/v0.34.0...v0.35.0) (2026-08-12)",
+          "[0.34.0](https://github.com/headroomlabs-ai/headroom/compare/v0.33.0...v0.34.0) (2026-08-05)",
+          "[0.33.0](https://github.com/headroomlabs-ai/headroom/compare/v0.32.0...v0.33.0) (2026-07-29)",
+          "[0.32.0](https://github.com/headroomlabs-ai/headroom/compare/v0.31.0...v0.32.0) (2026-07-17)",
+          "[0.32.0](https://github.com/JerrettDavis/headroom/compare/v0.31.0...v0.32.0) (2026-07-13)",
+          "[0.31.0](https://github.com/headroomlabs-ai/headroom/compare/v0.30.0...v0.31.0) (2026-07-09)",
+          "[0.29.0](https://github.com/headroomlabs-ai/headroom/compare/v0.28.0...v0.29.0) (2026-07-03)"
+        ]
+      }
+    },
+    {
+      "tool": "jcodemunch",
+      "release_directory": "jcodemunch-mcp-1.108.290",
+      "version": "1.108.290",
+      "pinned_commit": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+      "checkout_head": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-21T09:48:21-05:00",
+      "release_artifact": {
+        "path": "artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+        "exists": true,
+        "sha256_prefix": "9408996309f127bd"
+      },
+      "official_install_guide": {
+        "path": "source/CLIENTS.md",
+        "exists": true,
+        "sha256_prefix": "19e87ba818c8efad"
+      },
+      "file_counts": {
+        "total": 964,
+        "integration": 316,
+        "source": 786,
+        "test_or_benchmark": 626,
+        "documentation": 56
+      },
+      "integration_code_paths": [
+        "clients/ts/decoder.ts",
+        "mcpb/build.py",
+        "mcpb/server/main.py",
+        "src/jcodemunch_mcp/__init__.py",
+        "src/jcodemunch_mcp/__main__.py",
+        "src/jcodemunch_mcp/agent_selector.py",
+        "src/jcodemunch_mcp/cli/__init__.py",
+        "src/jcodemunch_mcp/cli/delivery.py",
+        "src/jcodemunch_mcp/cli/digest.py",
+        "src/jcodemunch_mcp/cli/file_risk.py",
+        "src/jcodemunch_mcp/cli/health.py",
+        "src/jcodemunch_mcp/cli/hooks.py",
+        "src/jcodemunch_mcp/cli/init.py",
+        "src/jcodemunch_mcp/cli/install_pack.py",
+        "src/jcodemunch_mcp/cli/observatory.py",
+        "src/jcodemunch_mcp/cli/parity.py",
+        "src/jcodemunch_mcp/cli/receipt.py",
+        "src/jcodemunch_mcp/cli/reflect.py",
+        "src/jcodemunch_mcp/cli/skills.py",
+        "src/jcodemunch_mcp/cli/upgrade.py",
+        "src/jcodemunch_mcp/cli/whatsnew.py",
+        "src/jcodemunch_mcp/config.py",
+        "src/jcodemunch_mcp/counter.py",
+        "src/jcodemunch_mcp/credentials.py",
+        "src/jcodemunch_mcp/embeddings/__init__.py",
+        "src/jcodemunch_mcp/embeddings/advice.py",
+        "src/jcodemunch_mcp/embeddings/local_encoder.py",
+        "src/jcodemunch_mcp/encoding/__init__.py",
+        "src/jcodemunch_mcp/encoding/decoder.py",
+        "src/jcodemunch_mcp/encoding/format.py",
+        "src/jcodemunch_mcp/encoding/gate.py",
+        "src/jcodemunch_mcp/encoding/generic.py",
+        "src/jcodemunch_mcp/encoding/json_passthrough.py",
+        "src/jcodemunch_mcp/encoding/schema_driven.py",
+        "src/jcodemunch_mcp/encoding/schemas/__init__.py",
+        "src/jcodemunch_mcp/encoding/schemas/find_importers.py",
+        "src/jcodemunch_mcp/encoding/schemas/find_references.py",
+        "src/jcodemunch_mcp/encoding/schemas/get_blast_radius.py",
+        "src/jcodemunch_mcp/encoding/schemas/get_call_hierarchy.py",
+        "src/jcodemunch_mcp/encoding/schemas/get_dependency_cycles.py"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "AGENT_HINTS.md",
+        "AGENT_HOOKS.md",
+        "AGENT_INSTALL_UNIVERSAL.md",
+        "CLAUDE.md",
+        "CLIENTS.md",
+        "CONFIGURATION.md",
+        "INSTALL_FROM_SOURCE.md",
+        "clients/ts/README.md"
+      ],
+      "integration_paths": [
+        ".claude-plugin/marketplace.json",
+        ".claude-plugin/plugin.json",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        "AGENTS.md",
+        "AGENT_HINTS.md",
+        "AGENT_HOOKS.md",
+        "AGENT_INSTALL_UNIVERSAL.md",
+        "CLAUDE.md",
+        "CLIENTS.md",
+        "CONFIGURATION.md",
+        "INSTALL_FROM_SOURCE.md",
+        "benchmarks/codex_surface/README.md",
+        "benchmarks/codex_surface/run_codex_arms.py",
+        "benchmarks/codex_surface/tasks.json",
+        "benchmarks/offload/results-local__jcodemunch-mcp-0394b683.json",
+        "benchmarks/profile_config_regression.py",
+        "benchmarks/replay/__init__.py",
+        "clients/ts/README.md",
+        "clients/ts/decoder.ts",
+        "mcpb/build.py",
+        "mcpb/server/main.py",
+        "munch-bench/munch_bench/__init__.py",
+        "munch-bench/tests/__init__.py",
+        "src/jcodemunch_mcp/__init__.py",
+        "src/jcodemunch_mcp/__main__.py",
+        "src/jcodemunch_mcp/agent_selector.py",
+        "src/jcodemunch_mcp/cli/__init__.py",
+        "src/jcodemunch_mcp/cli/delivery.py",
+        "src/jcodemunch_mcp/cli/digest.py",
+        "src/jcodemunch_mcp/cli/file_risk.py",
+        "src/jcodemunch_mcp/cli/health.py",
+        "src/jcodemunch_mcp/cli/hooks.py",
+        "src/jcodemunch_mcp/cli/init.py",
+        "src/jcodemunch_mcp/cli/install_pack.py",
+        "src/jcodemunch_mcp/cli/observatory.py",
+        "src/jcodemunch_mcp/cli/parity.py",
+        "src/jcodemunch_mcp/cli/receipt.py",
+        "src/jcodemunch_mcp/cli/reflect.py",
+        "src/jcodemunch_mcp/cli/skills.py",
+        "src/jcodemunch_mcp/cli/upgrade.py",
+        "src/jcodemunch_mcp/cli/whatsnew.py",
+        "src/jcodemunch_mcp/config.py",
+        "src/jcodemunch_mcp/counter.py",
+        "src/jcodemunch_mcp/credentials.py",
+        "src/jcodemunch_mcp/embeddings/__init__.py",
+        "src/jcodemunch_mcp/embeddings/advice.py",
+        "src/jcodemunch_mcp/embeddings/local_encoder.py",
+        "src/jcodemunch_mcp/encoding/__init__.py",
+        "src/jcodemunch_mcp/encoding/decoder.py",
+        "src/jcodemunch_mcp/encoding/format.py",
+        "src/jcodemunch_mcp/encoding/gate.py",
+        "src/jcodemunch_mcp/encoding/generic.py",
+        "src/jcodemunch_mcp/encoding/json_passthrough.py",
+        "src/jcodemunch_mcp/encoding/schema_driven.py",
+        "src/jcodemunch_mcp/encoding/schemas/__init__.py",
+        "src/jcodemunch_mcp/encoding/schemas/find_importers.py",
+        "src/jcodemunch_mcp/encoding/schemas/find_references.py",
+        "src/jcodemunch_mcp/encoding/schemas/get_blast_radius.py",
+        "src/jcodemunch_mcp/encoding/schemas/get_call_hierarchy.py",
+        "src/jcodemunch_mcp/encoding/schemas/get_dependency_cycles.py"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/workflows/benchmark.yml",
+        ".github/workflows/test.yml",
+        "SPEC.md",
+        "SPEC_MUNCH.md",
+        "benchmarks/METHODOLOGY.md",
+        "benchmarks/RAG_COMPARISON_NOTES.md",
+        "benchmarks/README.md",
+        "benchmarks/REPRODUCING.md",
+        "benchmarks/ab-test-dead-code-2026-03-18.md",
+        "benchmarks/ab-test-naming-audit-2026-03-18.md",
+        "benchmarks/anchor/measure.py",
+        "benchmarks/cache_stability/measure.py",
+        "benchmarks/cache_stability/results.json",
+        "benchmarks/calibration/planted_queries.json",
+        "benchmarks/codex_surface/README.md",
+        "benchmarks/codex_surface/run_codex_arms.py",
+        "benchmarks/codex_surface/tasks.json",
+        "benchmarks/deadcode_eval/README.md",
+        "benchmarks/deadcode_eval/results-2026-08-03.json",
+        "benchmarks/deadcode_eval/run_eval.py",
+        "benchmarks/description_smells/README.md",
+        "benchmarks/description_smells/jcm_tools_full.json",
+        "benchmarks/description_smells/jdata_tools.json",
+        "benchmarks/description_smells/jdoc_tools.json",
+        "benchmarks/description_smells/rubric_upstream.py",
+        "benchmarks/description_smells/score_descriptions.py",
+        "benchmarks/description_smells/scores.json",
+        "benchmarks/goldset/corpus/events/handlers.py",
+        "benchmarks/goldset/corpus/events/protocol.py",
+        "benchmarks/goldset/corpus/events/registry.py"
+      ],
+      "representative_files": [
+        {
+          "path": "benchmarks/codex_surface/run_codex_arms.py",
+          "bytes": 23993,
+          "sha256_prefix": "87cb328ea8691980"
+        },
+        {
+          "path": "benchmarks/profile_config_regression.py",
+          "bytes": 9287,
+          "sha256_prefix": "cf1f75bc91a1a460"
+        },
+        {
+          "path": "benchmarks/replay/__init__.py",
+          "bytes": 292,
+          "sha256_prefix": "bd20ba3bf6018724"
+        },
+        {
+          "path": "clients/ts/decoder.ts",
+          "bytes": 10348,
+          "sha256_prefix": "8b08dbe8ccb7e81b"
+        },
+        {
+          "path": "mcpb/build.py",
+          "bytes": 3259,
+          "sha256_prefix": "0a30cbcebdb7463a"
+        },
+        {
+          "path": "mcpb/server/main.py",
+          "bytes": 776,
+          "sha256_prefix": "8b18a7eeedf51b32"
+        },
+        {
+          "path": "munch-bench/munch_bench/__init__.py",
+          "bytes": 107,
+          "sha256_prefix": "cb6ff0da4a3dfe46"
+        },
+        {
+          "path": "src/jcodemunch_mcp/__init__.py",
+          "bytes": 261,
+          "sha256_prefix": "35f4bcdb8beda276"
+        },
+        {
+          "path": "src/jcodemunch_mcp/__main__.py",
+          "bytes": 120,
+          "sha256_prefix": "41c4691fed397c20"
+        },
+        {
+          "path": "src/jcodemunch_mcp/agent_selector.py",
+          "bytes": 17872,
+          "sha256_prefix": "81b954b95796b680"
+        },
+        {
+          "path": "src/jcodemunch_mcp/cli/__init__.py",
+          "bytes": 0,
+          "sha256_prefix": "e3b0c44298fc1c14"
+        },
+        {
+          "path": "src/jcodemunch_mcp/cli/delivery.py",
+          "bytes": 5051,
+          "sha256_prefix": "428907502aee991f"
+        },
+        {
+          "path": "src/jcodemunch_mcp/server.py",
+          "bytes": 516406,
+          "sha256_prefix": "3033aa746ac4e90e"
+        },
+        {
+          "path": "src/jcodemunch_mcp/parser/extractor.py",
+          "bytes": 439181,
+          "sha256_prefix": "25515d09b416ba6f"
+        },
+        {
+          "path": "src/jcodemunch_mcp/storage/sqlite_store.py",
+          "bytes": 144758,
+          "sha256_prefix": "f83deebaebe4c6e7"
+        },
+        {
+          "path": "src/jcodemunch_mcp/tools/index_folder.py",
+          "bytes": 142539,
+          "sha256_prefix": "d22e2bbdf0e9ff0e"
+        },
+        {
+          "path": "src/jcodemunch_mcp/config.py",
+          "bytes": 112126,
+          "sha256_prefix": "81bfe8dd4dffd09b"
+        },
+        {
+          "path": "src/jcodemunch_mcp/tools/plan_refactoring.py",
+          "bytes": 102885,
+          "sha256_prefix": "de2d20b71515a4ed"
+        },
+        {
+          "path": "src/jcodemunch_mcp/tools/search_symbols.py",
+          "bytes": 97747,
+          "sha256_prefix": "e9be838ed5f9334d"
+        },
+        {
+          "path": "src/jcodemunch_mcp/cli/init.py",
+          "bytes": 92458,
+          "sha256_prefix": "be6fd943958193fb"
+        }
+      ],
+      "dossier": "jgravelle-jcodemunch-mcp.md",
+      "previously_audited_commit": "bdebb6399f07431d4b072582ff80f7639d8752c5",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-07-01",
+        "pinned_version": "1.108.290",
+        "releases_since_audit": 199,
+        "install_relevant_releases": 14,
+        "newest": {
+          "version": "1.108.290",
+          "date": "2026-08-21",
+          "heading": "[1.108.290] - 2026-08-21 - Charging ourselves for the calls before the one that worked",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "1.108.92",
+          "date": "2026-07-02",
+          "heading": "[1.108.92] - 2026-07-02 - Progress-notification flood control + response drain (#359)",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [
+          "[1.108.284] - 2026-08-17 - A documented setting the storage layer never read",
+          "[1.108.283] - 2026-08-17 - A config in the wrong shape is a client that reports success and registers nothing",
+          "[1.108.258] - 2026-08-07 - A config read that reads the config",
+          "[1.108.255] - 2026-08-07 - Hook output on channels the model never sees",
+          "[1.108.251] - 2026-08-06 - every server start silently deleted your installed starter packs",
+          "[1.108.250] - 2026-08-06 - `config --check` reported a default while the indexer used your config",
+          "[1.108.248] - 2026-08-06 - starter packs install again, and stop misreporting why they did not",
+          "[1.108.242] - 2026-08-05 - documentation restructure: CAPABILITIES.md + CLIENTS.md, corrected tool counts and counters",
+          "[1.108.221] - 2026-08-02 - what this install could establish, not just what it saw",
+          "[1.108.197] - 2026-07-28 - the escape hatch read the wrong config file",
+          "[1.108.150] - 2026-07-28 - stateless-MCP forward cover: principal session keying + SSE deprecation notice",
+          "[1.108.121] - 2026-07-11 - License CLI reads the config-file `license_key`",
+          "[1.108.115] - 2026-07-09 - New installs default to the `counter` tool surface",
+          "[1.108.98] - 2026-07-05 - Audit P2 batch 1: config keys honored at serve; MUNCH legend no longer corrupts `@digit` values"
+        ],
+        "titles_are_descriptive": true,
+        "recent_headings": [
+          "[1.108.290] - 2026-08-21 - Charging ourselves for the calls before the one that worked",
+          "[1.108.289] - 2026-08-21 - A licence you can point at, and one you cannot churn",
+          "[1.108.288] - 2026-08-20 - The reported surface was never the only one",
+          "[1.108.287] - 2026-08-19 - Yesterday's fixes stopped where the reports did",
+          "[1.108.286] - 2026-08-18 - Three surfaces that advertised a product we were not running",
+          "[1.108.285] - 2026-08-18 - Five answers that were asserted, not established",
+          "[1.108.284] - 2026-08-17 - A documented setting the storage layer never read",
+          "[1.108.283] - 2026-08-17 - A config in the wrong shape is a client that reports success and registers nothing",
+          "[1.108.282] - 2026-08-16 - Half the tool descriptions never said what the tool would not do",
+          "[1.108.281] - 2026-08-15 - A declared pattern with no implementation reads as a language without constants",
+          "[1.108.280] - 2026-08-14 - A cache keyed on a spelling is keyed on the caller's working directory",
+          "[1.108.279] - 2026-08-14 - A machine's language is not English and its bytes are not UTF-8"
+        ]
+      }
+    },
+    {
+      "tool": "leanctx",
+      "release_directory": "lean-ctx-3.9.19",
+      "version": "3.9.19",
+      "pinned_commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+      "checkout_head": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-18T15:22:50+02:00",
+      "release_artifact": {
+        "path": "artifacts/lean-ctx-x86_64-unknown-linux-gnu.tar.gz",
+        "exists": true,
+        "sha256_prefix": "f2fce32af52c2b7b"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "0e53184df357ed64"
+      },
+      "file_counts": {
+        "total": 3416,
+        "integration": 470,
+        "source": 2427,
+        "test_or_benchmark": 826,
+        "documentation": 350
+      },
+      "integration_code_paths": [
+        "clients/python/leanctx/__init__.py",
+        "clients/python/leanctx/adapters/__init__.py",
+        "clients/python/leanctx/adapters/_common.py",
+        "clients/python/leanctx/adapters/crewai.py",
+        "clients/python/leanctx/adapters/langchain.py",
+        "clients/python/leanctx/adapters/llamaindex.py",
+        "clients/python/leanctx/adapters/openai.py",
+        "clients/python/leanctx/client.py",
+        "clients/python/leanctx/conformance.py",
+        "clients/python/leanctx/errors.py",
+        "clients/python/leanctx/ocla.py",
+        "clients/python/leanctx/ocla_verify.py",
+        "clients/python/leanctx/tool_text.py",
+        "clients/rust/lean-ctx-client/src/bin/lean-ctx-ocla-verify.rs",
+        "clients/rust/lean-ctx-client/src/client.rs",
+        "clients/rust/lean-ctx-client/src/conformance.rs",
+        "clients/rust/lean-ctx-client/src/error.rs",
+        "clients/rust/lean-ctx-client/src/events.rs",
+        "clients/rust/lean-ctx-client/src/lib.rs",
+        "clients/rust/lean-ctx-client/src/ocla.rs",
+        "clients/rust/lean-ctx-client/src/tool_text.rs",
+        "clients/rust/lean-ctx-client/src/types.rs",
+        "cookbook/examples/knowledge-graph-explorer/src/lib/client.ts",
+        "cookbook/examples/knowledge-graph-explorer/vite.config.ts",
+        "cookbook/sdk/src/client.ts",
+        "go-sdk/client.go",
+        "integrations/hermes-lean-ctx/__init__.py",
+        "integrations/hermes-lean-ctx/config.py",
+        "packages/lean-ctx-bin/postinstall.js",
+        "packages/lean-ctx-bin/preinstall.js",
+        "packages/node-lean-ctx/src/client.ts",
+        "packages/pi-lean-ctx/extensions/config.ts",
+        "packages/pi-lean-ctx/extensions/mcp-bridge.ts",
+        "packages/python-lean-ctx/lean_ctx/__init__.py",
+        "packages/python-lean-ctx/lean_ctx/client.py",
+        "py-sdk/leanctx/__init__.py",
+        "py-sdk/leanctx/client.py",
+        "python-sdk/lean_ctx/__init__.py",
+        "python-sdk/lean_ctx/client.py",
+        "rust/src/bin/gen_mcp_manifest.rs"
+      ],
+      "install_guide_paths": [
+        ".codex/vision-input/01-MARKET-PAIN.md",
+        ".codex/vision-input/02-VISION.md",
+        ".codex/vision-input/03-CONTEXT-KITS.md",
+        ".codex/vision-input/04-ARCHITECTURE.md",
+        ".codex/vision-input/07-PARTNER-STRATEGY.md",
+        ".codex/vision-input/09-MONETIZATION.md",
+        ".codex/vision-input/15-BRANDING.md",
+        ".codex/vision-input/17-GO-TO-MARKET.md",
+        ".codex/vision-output/00-EXECUTIVE-SUMMARY.md",
+        "AGENTS.md",
+        "clients/python/README.md",
+        "clients/rust/lean-ctx-client/README.md",
+        "discord-faq/01-installation-setup.md",
+        "discord-faq/03-shell-hook-issues.md",
+        "discord-faq/04-mcp-tools.md",
+        "discord-faq/05-configuration.md",
+        "docs/comparisons/vs-claude-context.md",
+        "docs/contracts/http-mcp-contract-v1.md",
+        "docs/contracts/ocla-config-tuning-v2.md",
+        "docs/ga/install-guide.md"
+      ],
+      "integration_paths": [
+        ".claude-plugin/manifest.json",
+        ".codex/vision-input/01-MARKET-PAIN.md",
+        ".codex/vision-input/02-VISION.md",
+        ".codex/vision-input/03-CONTEXT-KITS.md",
+        ".codex/vision-input/04-ARCHITECTURE.md",
+        ".codex/vision-input/07-PARTNER-STRATEGY.md",
+        ".codex/vision-input/09-MONETIZATION.md",
+        ".codex/vision-input/15-BRANDING.md",
+        ".codex/vision-input/17-GO-TO-MARKET.md",
+        ".codex/vision-output/00-EXECUTIVE-SUMMARY.md",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/copilot/mcp.json",
+        ".github/hooks/hooks.json",
+        ".github/hooks/pre-push-proprietary-guard.sh",
+        ".github/workflows/jetbrains-plugin.yml",
+        ".github/workflows/publish-clients.yml",
+        ".pre-commit-config.yaml",
+        "AGENTS.md",
+        "bench/agent-task/PROMPT.md",
+        "bench/agent-task/PROTOCOL.md",
+        "bench/agent-task/README.md",
+        "bench/agent-task/config.json",
+        "bench/agent-task/r2/README.md",
+        "bench/agent-task/r2/lean-ctx.toml",
+        "bench/agent-task/r2/pi-config.json",
+        "bench/agent-task/r2/preflight.mjs",
+        "bench/agent-task/requirements.txt",
+        "bench/agent-task/swebench_harness/__init__.py",
+        "bench/agent-task/swebench_harness/collect.py",
+        "bench/agent-task/swebench_harness/preflight.py",
+        "bench/agent-task/swebench_harness/report.py",
+        "bench/agent-task/swebench_harness/run_arm.py",
+        "bench/agent-task/swebench_harness/select_tasks.py",
+        "bench/agent-task/tasks.lock.json",
+        "bench/lifecycle/config.json",
+        "bench/lifecycle/harness/__init__.py",
+        "bench/lifecycle/harness/codex_runner.py",
+        "bench/lifecycle/harness/repo_setup.py",
+        "bench/research/agent-1-information-theory.md",
+        "bench/research/agent-2-neuroscience.md",
+        "bench/research/agent-3-mathematics.md",
+        "bench/research/agent-4-systems-engineering.md",
+        "benchmarks/humaneval-codex-cli-2026-07-29.json",
+        "clients/python/README.md",
+        "clients/python/leanctx/__init__.py",
+        "clients/python/leanctx/adapters/__init__.py",
+        "clients/python/leanctx/adapters/_common.py",
+        "clients/python/leanctx/adapters/crewai.py",
+        "clients/python/leanctx/adapters/langchain.py",
+        "clients/python/leanctx/adapters/llamaindex.py",
+        "clients/python/leanctx/adapters/openai.py",
+        "clients/python/leanctx/client.py",
+        "clients/python/leanctx/conformance.py",
+        "clients/python/leanctx/errors.py",
+        "clients/python/leanctx/ocla.py",
+        "clients/python/leanctx/ocla_verify.py",
+        "clients/python/leanctx/tool_text.py",
+        "clients/python/pyproject.toml",
+        "clients/python/tests/test_adapters.py",
+        "clients/python/tests/test_adapters_live.py"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/workflows/benchmark-study.yml",
+        "BENCHMARKS.md",
+        "assets/leanctx-benchmark.gif",
+        "bench/agent-task/.gitignore",
+        "bench/agent-task/PROMPT.md",
+        "bench/agent-task/PROTOCOL.md",
+        "bench/agent-task/README.md",
+        "bench/agent-task/config.json",
+        "bench/agent-task/r2/README.md",
+        "bench/agent-task/r2/faithful-arm.env",
+        "bench/agent-task/r2/lean-ctx.toml",
+        "bench/agent-task/r2/pi-config.json",
+        "bench/agent-task/r2/preflight.mjs",
+        "bench/agent-task/requirements.txt",
+        "bench/agent-task/swebench_harness/__init__.py",
+        "bench/agent-task/swebench_harness/collect.py",
+        "bench/agent-task/swebench_harness/preflight.py",
+        "bench/agent-task/swebench_harness/report.py",
+        "bench/agent-task/swebench_harness/run_arm.py",
+        "bench/agent-task/swebench_harness/select_tasks.py",
+        "bench/agent-task/tasks.lock.json",
+        "bench/compress/README.md",
+        "bench/compress/benchmark.py",
+        "bench/lifecycle/README.md",
+        "bench/lifecycle/config.json",
+        "bench/lifecycle/harness/__init__.py",
+        "bench/lifecycle/harness/__main__.py",
+        "bench/lifecycle/harness/codex_runner.py",
+        "bench/lifecycle/harness/repo_setup.py",
+        "bench/lifecycle/harness/report.py"
+      ],
+      "representative_files": [
+        {
+          "path": "bench/agent-task/r2/preflight.mjs",
+          "bytes": 9916,
+          "sha256_prefix": "33b92fdba9ce75c0"
+        },
+        {
+          "path": "bench/agent-task/swebench_harness/__init__.py",
+          "bytes": 1443,
+          "sha256_prefix": "c80292ee34833366"
+        },
+        {
+          "path": "bench/agent-task/swebench_harness/collect.py",
+          "bytes": 1697,
+          "sha256_prefix": "615aa87bc571858a"
+        },
+        {
+          "path": "bench/agent-task/swebench_harness/preflight.py",
+          "bytes": 3451,
+          "sha256_prefix": "9ea7577ce520aa75"
+        },
+        {
+          "path": "bench/agent-task/swebench_harness/report.py",
+          "bytes": 5116,
+          "sha256_prefix": "d9a89992dfa6a63c"
+        },
+        {
+          "path": "bench/agent-task/swebench_harness/run_arm.py",
+          "bytes": 9276,
+          "sha256_prefix": "2edabb852134dd9a"
+        },
+        {
+          "path": "bench/agent-task/swebench_harness/select_tasks.py",
+          "bytes": 2421,
+          "sha256_prefix": "8c0d75828b751aa6"
+        },
+        {
+          "path": "bench/lifecycle/harness/__init__.py",
+          "bytes": 372,
+          "sha256_prefix": "8ffe67a137014688"
+        },
+        {
+          "path": "bench/lifecycle/harness/codex_runner.py",
+          "bytes": 8081,
+          "sha256_prefix": "1cabb0fc8704390a"
+        },
+        {
+          "path": "bench/lifecycle/harness/repo_setup.py",
+          "bytes": 4584,
+          "sha256_prefix": "5706f894b2f25389"
+        },
+        {
+          "path": "clients/python/leanctx/__init__.py",
+          "bytes": 1712,
+          "sha256_prefix": "b3107409da40c3dc"
+        },
+        {
+          "path": "clients/python/leanctx/adapters/__init__.py",
+          "bytes": 1028,
+          "sha256_prefix": "e75163f5710236ee"
+        },
+        {
+          "path": "rust/src/dashboard/static/components/cockpit-graph.js",
+          "bytes": 80763,
+          "sha256_prefix": "0af60874e34da60c"
+        },
+        {
+          "path": "rust/src/tools/registered/ctx_read.rs",
+          "bytes": 70155,
+          "sha256_prefix": "bd9e758053fc5fdf"
+        },
+        {
+          "path": "rust/src/core/config/proxy.rs",
+          "bytes": 67425,
+          "sha256_prefix": "c8e50e1588344566"
+        },
+        {
+          "path": "rust/src/dashboard/static/components/cockpit-live.js",
+          "bytes": 61110,
+          "sha256_prefix": "771dca92becb77c2"
+        },
+        {
+          "path": "rust/src/proxy/anthropic.rs",
+          "bytes": 60324,
+          "sha256_prefix": "18e82b73c51f0ee3"
+        },
+        {
+          "path": "rust/src/core/config/sections.rs",
+          "bytes": 58918,
+          "sha256_prefix": "d3060ce0b40618d3"
+        },
+        {
+          "path": "rust/src/core/rules_canonical.rs",
+          "bytes": 58102,
+          "sha256_prefix": "75d8f7d9a93abaef"
+        },
+        {
+          "path": "rust/src/cli/config_cmd.rs",
+          "bytes": 56550,
+          "sha256_prefix": "06a62e42bfb3a249"
+        }
+      ],
+      "dossier": "yvgude-lean-ctx.md",
+      "previously_audited_commit": "adc4e8b2e401d160906a392994c9afd7af3dfffa",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-07-01",
+        "pinned_version": "3.9.19",
+        "releases_since_audit": 20,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "3.9.19",
+          "date": "2026-08-18",
+          "heading": "[3.9.19] \u2014 2026-08-18",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "3.9.0",
+          "date": "2026-07-05",
+          "heading": "[3.9.0] \u2014 2026-07-05",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "[3.9.19] \u2014 2026-08-18",
+          "[3.9.18] \u2014 2026-08-08",
+          "[3.9.17] \u2014 2026-08-04",
+          "[3.9.16] \u2014 2026-08-04",
+          "[3.9.15] \u2014 2026-08-04",
+          "[3.9.14] \u2014 2026-08-03",
+          "[3.9.13] \u2014 2026-07-29",
+          "[3.9.12] \u2014 2026-07-17",
+          "[3.9.11] \u2014 2026-07-16",
+          "[3.9.10] \u2014 2026-07-15",
+          "[3.9.9] \u2014 2026-07-14",
+          "[3.9.8] \u2014 2026-07-12"
+        ]
+      }
+    },
+    {
+      "tool": "ponytail",
+      "release_directory": "ponytail-4.9.0",
+      "version": "4.9.0",
+      "pinned_commit": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+      "checkout_head": "0a4dd63ad4541f4f655c4108a295916f3c1d8fda",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-08T00:13:25+03:00",
+      "release_artifact": {
+        "path": "artifacts/ponytail-v4.9.0-source.tar.gz",
+        "exists": true,
+        "sha256_prefix": "7f45b3fab0b92ae5"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "743044a29ec74de5"
+      },
+      "file_counts": {
+        "total": 156,
+        "integration": 74,
+        "source": 51,
+        "test_or_benchmark": 55,
+        "documentation": 56
+      },
+      "integration_code_paths": [
+        ".opencode/plugins/ponytail-frontmatter.cjs",
+        ".opencode/plugins/ponytail.mjs",
+        "__init__.py",
+        "hooks/ponytail-activate.js",
+        "hooks/ponytail-config.js",
+        "hooks/ponytail-instructions.js",
+        "hooks/ponytail-mode-tracker.js",
+        "hooks/ponytail-runtime.js",
+        "hooks/ponytail-subagent.js",
+        "ponytail-mcp/index.js",
+        "ponytail-mcp/instructions.js",
+        "scripts/build-openclaw-skills.js",
+        "scripts/publish-openclaw-skills.js",
+        "scripts/uninstall.js"
+      ],
+      "install_guide_paths": [
+        ".agents/rules/ponytail.md",
+        ".openclaw/skills/ponytail-audit/SKILL.md",
+        ".openclaw/skills/ponytail-debt/SKILL.md",
+        ".openclaw/skills/ponytail-gain/SKILL.md",
+        ".openclaw/skills/ponytail-help/SKILL.md",
+        ".openclaw/skills/ponytail-review/SKILL.md",
+        ".openclaw/skills/ponytail/SKILL.md",
+        ".opencode/command/ponytail-audit.md",
+        ".opencode/command/ponytail-debt.md",
+        ".opencode/command/ponytail-gain.md",
+        ".opencode/command/ponytail-help.md",
+        ".opencode/command/ponytail-review.md",
+        ".opencode/command/ponytail.md",
+        "AGENTS.md",
+        "after-install.md",
+        "docs/agent-portability.md",
+        "examples/infinite-scroll.md",
+        "ponytail-mcp/README.md",
+        "skills/ponytail-audit/SKILL.md",
+        "skills/ponytail-debt/SKILL.md"
+      ],
+      "integration_paths": [
+        ".agents/plugins/marketplace.json",
+        ".agents/rules/ponytail.md",
+        ".claude-plugin/marketplace.json",
+        ".claude-plugin/plugin.json",
+        ".codex-plugin/plugin.json",
+        ".devin-plugin/plugin.json",
+        ".github/plugin/marketplace.json",
+        ".github/plugin/plugin.json",
+        ".openclaw/skills/ponytail-audit/SKILL.md",
+        ".openclaw/skills/ponytail-debt/SKILL.md",
+        ".openclaw/skills/ponytail-gain/SKILL.md",
+        ".openclaw/skills/ponytail-help/SKILL.md",
+        ".openclaw/skills/ponytail-review/SKILL.md",
+        ".openclaw/skills/ponytail/SKILL.md",
+        ".opencode/command/ponytail-audit.md",
+        ".opencode/command/ponytail-debt.md",
+        ".opencode/command/ponytail-gain.md",
+        ".opencode/command/ponytail-help.md",
+        ".opencode/command/ponytail-review.md",
+        ".opencode/command/ponytail.md",
+        ".opencode/plugins/ponytail-frontmatter.cjs",
+        ".opencode/plugins/ponytail.mjs",
+        ".qoder-plugin/plugin.json",
+        "AGENTS.md",
+        "__init__.py",
+        "after-install.md",
+        "benchmarks/agentic/README.md",
+        "benchmarks/agentic/complete.py",
+        "benchmarks/agentic/judge.py",
+        "benchmarks/agentic/run.py",
+        "benchmarks/agentic/tasks.py",
+        "benchmarks/arms/caveman-SKILL.md",
+        "benchmarks/claude-email.js",
+        "benchmarks/promptfooconfig.gemini.yaml",
+        "benchmarks/promptfooconfig.gpt-newest.yaml",
+        "benchmarks/promptfooconfig.gpt.yaml",
+        "benchmarks/promptfooconfig.yaml",
+        "docs/agent-portability.md",
+        "examples/infinite-scroll.md",
+        "hooks/claude-codex-hooks.json",
+        "hooks/copilot-hooks.json",
+        "hooks/ponytail-activate.js",
+        "hooks/ponytail-config.js",
+        "hooks/ponytail-instructions.js",
+        "hooks/ponytail-mode-tracker.js",
+        "hooks/ponytail-runtime.js",
+        "hooks/ponytail-statusline.ps1",
+        "hooks/ponytail-statusline.sh",
+        "hooks/ponytail-subagent.js",
+        "hooks/qoder-hooks.json",
+        "opencode.json",
+        "plugin.yaml",
+        "ponytail-mcp/README.md",
+        "ponytail-mcp/index.js",
+        "ponytail-mcp/instructions.js",
+        "ponytail-mcp/package.json",
+        "ponytail-mcp/test/instructions.test.js",
+        "scripts/build-openclaw-skills.js",
+        "scripts/publish-openclaw-skills.js",
+        "scripts/uninstall.js"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/workflows/test.yml",
+        "assets/benchmark-3model.svg",
+        "assets/benchmark-agentic.svg",
+        "benchmarks/README.md",
+        "benchmarks/agentic/README.md",
+        "benchmarks/agentic/complete.py",
+        "benchmarks/agentic/judge.py",
+        "benchmarks/agentic/run.py",
+        "benchmarks/agentic/tasks.py",
+        "benchmarks/arms/baseline.js",
+        "benchmarks/arms/caveman-SKILL.md",
+        "benchmarks/arms/caveman.js",
+        "benchmarks/arms/ponytail.js",
+        "benchmarks/behavior.js",
+        "benchmarks/behavior.yaml",
+        "benchmarks/benchmark-local.py",
+        "benchmarks/claude-email.js",
+        "benchmarks/correctness.js",
+        "benchmarks/correctness.test.js",
+        "benchmarks/generate-examples.mjs",
+        "benchmarks/loc.js",
+        "benchmarks/loc.test.js",
+        "benchmarks/model-email.js",
+        "benchmarks/promptfooconfig.gemini.yaml",
+        "benchmarks/promptfooconfig.gpt-newest.yaml",
+        "benchmarks/promptfooconfig.gpt.yaml",
+        "benchmarks/promptfooconfig.yaml",
+        "benchmarks/prompts.json",
+        "benchmarks/results/2026-06-12-caveman-vs-ponytail.md",
+        "benchmarks/results/2026-06-12-v4-hardening-vs-caveman.md"
+      ],
+      "representative_files": [
+        {
+          "path": ".opencode/plugins/ponytail-frontmatter.cjs",
+          "bytes": 1054,
+          "sha256_prefix": "36073b0749a62beb"
+        },
+        {
+          "path": ".opencode/plugins/ponytail.mjs",
+          "bytes": 3773,
+          "sha256_prefix": "e9e2214149ace3e5"
+        },
+        {
+          "path": "__init__.py",
+          "bytes": 7865,
+          "sha256_prefix": "89ded80a6d8af5e4"
+        },
+        {
+          "path": "benchmarks/agentic/complete.py",
+          "bytes": 7944,
+          "sha256_prefix": "2730deb3fd49439c"
+        },
+        {
+          "path": "benchmarks/agentic/judge.py",
+          "bytes": 9987,
+          "sha256_prefix": "c845548290c062da"
+        },
+        {
+          "path": "benchmarks/agentic/run.py",
+          "bytes": 26677,
+          "sha256_prefix": "88c105299b38850c"
+        },
+        {
+          "path": "benchmarks/agentic/tasks.py",
+          "bytes": 50646,
+          "sha256_prefix": "68f473557695f69a"
+        },
+        {
+          "path": "benchmarks/claude-email.js",
+          "bytes": 1952,
+          "sha256_prefix": "cc7522ff336d5a9f"
+        },
+        {
+          "path": "hooks/ponytail-activate.js",
+          "bytes": 3957,
+          "sha256_prefix": "1c428c4ee9687c2f"
+        },
+        {
+          "path": "hooks/ponytail-config.js",
+          "bytes": 5881,
+          "sha256_prefix": "0a8daf96cf9ac703"
+        },
+        {
+          "path": "hooks/ponytail-instructions.js",
+          "bytes": 5487,
+          "sha256_prefix": "23c050103f28dbe6"
+        },
+        {
+          "path": "hooks/ponytail-mode-tracker.js",
+          "bytes": 5318,
+          "sha256_prefix": "5d1a960ff01b73f6"
+        },
+        {
+          "path": "benchmarks/robustness-audit.js",
+          "bytes": 14150,
+          "sha256_prefix": "e9a7e9eb6b087e60"
+        },
+        {
+          "path": "benchmarks/correctness.js",
+          "bytes": 10228,
+          "sha256_prefix": "7a17d8c904eab181"
+        },
+        {
+          "path": "pi-extension/index.js",
+          "bytes": 7171,
+          "sha256_prefix": "67f12660b2279922"
+        }
+      ],
+      "dossier": "dietrichgebert-ponytail.md",
+      "previously_audited_commit": "c4d1925ae9b7",
+      "previously_audited_on": "2026-06-26",
+      "upstream_changes_since_audit": {
+        "available": false,
+        "reason": "release ships no changelog"
+      }
+    },
+    {
+      "tool": "repowise",
+      "release_directory": "repowise-0.45.0",
+      "version": "0.45.0",
+      "pinned_commit": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+      "checkout_head": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-21T22:51:07+05:30",
+      "release_artifact": {
+        "path": "artifacts/repowise-0.45.0-py3-none-any.whl",
+        "exists": true,
+        "sha256_prefix": "c86ec4a505b16dfe"
+      },
+      "official_install_guide": {
+        "path": "source/docs/agent/CODEX.md",
+        "exists": true,
+        "sha256_prefix": "09829e1ebfe73423"
+      },
+      "file_counts": {
+        "total": 3985,
+        "integration": 671,
+        "source": 3430,
+        "test_or_benchmark": 1538,
+        "documentation": 214
+      },
+      "integration_code_paths": [
+        "packages/api-client/src/blast-radius.ts",
+        "packages/api-client/src/c4.ts",
+        "packages/api-client/src/chat.ts",
+        "packages/api-client/src/client.ts",
+        "packages/api-client/src/code-health.ts",
+        "packages/api-client/src/costs.ts",
+        "packages/api-client/src/coupling.ts",
+        "packages/api-client/src/dead-code.ts",
+        "packages/api-client/src/decisions.ts",
+        "packages/api-client/src/episodes.ts",
+        "packages/api-client/src/external-systems.ts",
+        "packages/api-client/src/feedback.ts",
+        "packages/api-client/src/files.ts",
+        "packages/api-client/src/git.ts",
+        "packages/api-client/src/graph.ts",
+        "packages/api-client/src/health.ts",
+        "packages/api-client/src/hosted.ts",
+        "packages/api-client/src/index.ts",
+        "packages/api-client/src/jobs.ts",
+        "packages/api-client/src/knowledge-map.ts",
+        "packages/api-client/src/mcp-tools.ts",
+        "packages/api-client/src/meta.ts",
+        "packages/api-client/src/modules.ts",
+        "packages/api-client/src/overview.ts",
+        "packages/api-client/src/owners.ts",
+        "packages/api-client/src/pages.ts",
+        "packages/api-client/src/pagination.ts",
+        "packages/api-client/src/providers.ts",
+        "packages/api-client/src/refactoring.ts",
+        "packages/api-client/src/repos.ts",
+        "packages/api-client/src/risk.ts",
+        "packages/api-client/src/search.ts",
+        "packages/api-client/src/security.ts",
+        "packages/api-client/src/stats.ts",
+        "packages/api-client/src/symbols.ts",
+        "packages/api-client/src/types.ts",
+        "packages/api-client/src/types/chat.ts",
+        "packages/api-client/src/types/dead-code.ts",
+        "packages/api-client/src/types/decisions.ts",
+        "packages/api-client/src/types/git.ts"
+      ],
+      "install_guide_paths": [
+        "docs/agent/CODEX.md",
+        "docs/agent/DISTILL.md",
+        "docs/agent/HERMES.md",
+        "docs/agent/HOOKS.md",
+        "docs/agent/INTEGRATIONS.md",
+        "docs/agent/MCP_TOOLS.md",
+        "docs/agent/OPENCODE.md",
+        "docs/agent/VSCODE.md",
+        "docs/reference/CONFIG.md",
+        "examples/codex/README.md",
+        "examples/hooks-sync/README.md",
+        "examples/opencode/README.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-ask.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-context.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-coverage.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-dead-code.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-decision.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-doctor.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-export.md",
+        "packages/cli/src/repowise/cli/agent_targets/_data/codex_prompts/repowise-health.md"
+      ],
+      "integration_paths": [
+        ".agents/plugins/marketplace.json",
+        ".claude-plugin/marketplace.json",
+        ".pre-commit-config.yaml",
+        "docs/agent/CODEX.md",
+        "docs/agent/DISTILL.md",
+        "docs/agent/HERMES.md",
+        "docs/agent/HOOKS.md",
+        "docs/agent/INTEGRATIONS.md",
+        "docs/agent/MCP_TOOLS.md",
+        "docs/agent/OPENCODE.md",
+        "docs/agent/VSCODE.md",
+        "docs/reference/CONFIG.md",
+        "examples/codex/README.md",
+        "examples/hooks-sync/README.md",
+        "examples/opencode/README.md",
+        "packages/api-client/package.json",
+        "packages/api-client/src/__fixtures__/hosted/architecture-view.json",
+        "packages/api-client/src/__fixtures__/hosted/architecture.json",
+        "packages/api-client/src/__fixtures__/hosted/c4-l1.json",
+        "packages/api-client/src/__fixtures__/hosted/churn-complexity.json",
+        "packages/api-client/src/__fixtures__/hosted/coupling.json",
+        "packages/api-client/src/__fixtures__/hosted/dead-code.json",
+        "packages/api-client/src/__fixtures__/hosted/decisions.json",
+        "packages/api-client/src/__fixtures__/hosted/docs.json",
+        "packages/api-client/src/__fixtures__/hosted/execution-flows.json",
+        "packages/api-client/src/__fixtures__/hosted/file-detail.json",
+        "packages/api-client/src/__fixtures__/hosted/files-index.json",
+        "packages/api-client/src/__fixtures__/hosted/git-summary.json",
+        "packages/api-client/src/__fixtures__/hosted/health-files.json",
+        "packages/api-client/src/__fixtures__/hosted/health-findings.json",
+        "packages/api-client/src/__fixtures__/hosted/health-overview.json",
+        "packages/api-client/src/__fixtures__/hosted/health-trend.json",
+        "packages/api-client/src/__fixtures__/hosted/hotspots.json",
+        "packages/api-client/src/__fixtures__/hosted/module-graph.json",
+        "packages/api-client/src/__fixtures__/hosted/modules-health.json",
+        "packages/api-client/src/__fixtures__/hosted/overview-summary.json",
+        "packages/api-client/src/__fixtures__/hosted/recommendation-plans.json",
+        "packages/api-client/src/__fixtures__/hosted/refactoring-targets.json",
+        "packages/api-client/src/__fixtures__/hosted/search.json",
+        "packages/api-client/src/__fixtures__/hosted/snapshot-status.json",
+        "packages/api-client/src/__fixtures__/hosted/stats-highlights.json",
+        "packages/api-client/src/blast-radius.ts",
+        "packages/api-client/src/c4.ts",
+        "packages/api-client/src/chat.test.ts",
+        "packages/api-client/src/chat.ts",
+        "packages/api-client/src/client.ts",
+        "packages/api-client/src/code-health.ts",
+        "packages/api-client/src/costs.ts",
+        "packages/api-client/src/coupling.ts",
+        "packages/api-client/src/dead-code.ts",
+        "packages/api-client/src/decisions.ts",
+        "packages/api-client/src/episodes.ts",
+        "packages/api-client/src/external-systems.ts",
+        "packages/api-client/src/feedback.ts",
+        "packages/api-client/src/files.ts",
+        "packages/api-client/src/git.ts",
+        "packages/api-client/src/graph.ts",
+        "packages/api-client/src/health.ts",
+        "packages/api-client/src/hosted.fixtures.test.ts",
+        "packages/api-client/src/hosted.test.ts"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/assets/bench/agent-output-tokens-dark.svg",
+        ".github/assets/bench/agent-output-tokens.svg",
+        ".github/assets/bench/file-coverage-dark.svg",
+        ".github/assets/bench/file-coverage.svg",
+        "docs/BENCHMARKS.md",
+        "docs/layers/TEST_INTELLIGENCE.md",
+        "packages/api-client/src/__fixtures__/hosted/architecture-view.json",
+        "packages/api-client/src/__fixtures__/hosted/architecture.json",
+        "packages/api-client/src/__fixtures__/hosted/c4-l1.json",
+        "packages/api-client/src/__fixtures__/hosted/churn-complexity.json",
+        "packages/api-client/src/__fixtures__/hosted/coupling.json",
+        "packages/api-client/src/__fixtures__/hosted/dead-code.json",
+        "packages/api-client/src/__fixtures__/hosted/decisions.json",
+        "packages/api-client/src/__fixtures__/hosted/docs.json",
+        "packages/api-client/src/__fixtures__/hosted/execution-flows.json",
+        "packages/api-client/src/__fixtures__/hosted/file-detail.json",
+        "packages/api-client/src/__fixtures__/hosted/files-index.json",
+        "packages/api-client/src/__fixtures__/hosted/git-summary.json",
+        "packages/api-client/src/__fixtures__/hosted/health-files.json",
+        "packages/api-client/src/__fixtures__/hosted/health-findings.json",
+        "packages/api-client/src/__fixtures__/hosted/health-overview.json",
+        "packages/api-client/src/__fixtures__/hosted/health-trend.json",
+        "packages/api-client/src/__fixtures__/hosted/hotspots.json",
+        "packages/api-client/src/__fixtures__/hosted/module-graph.json",
+        "packages/api-client/src/__fixtures__/hosted/modules-health.json",
+        "packages/api-client/src/__fixtures__/hosted/overview-summary.json",
+        "packages/api-client/src/__fixtures__/hosted/recommendation-plans.json",
+        "packages/api-client/src/__fixtures__/hosted/refactoring-targets.json",
+        "packages/api-client/src/__fixtures__/hosted/search.json",
+        "packages/api-client/src/__fixtures__/hosted/snapshot-status.json"
+      ],
+      "representative_files": [
+        {
+          "path": "packages/api-client/src/blast-radius.ts",
+          "bytes": 535,
+          "sha256_prefix": "5400f5434fce2ebc"
+        },
+        {
+          "path": "packages/api-client/src/c4.ts",
+          "bytes": 2749,
+          "sha256_prefix": "94e02928005a3128"
+        },
+        {
+          "path": "packages/api-client/src/chat.ts",
+          "bytes": 2277,
+          "sha256_prefix": "97bdb5bca74ea4ac"
+        },
+        {
+          "path": "packages/api-client/src/client.ts",
+          "bytes": 5341,
+          "sha256_prefix": "e27e4c2a62a362f4"
+        },
+        {
+          "path": "packages/api-client/src/code-health.ts",
+          "bytes": 5014,
+          "sha256_prefix": "32412d896dc6d153"
+        },
+        {
+          "path": "packages/api-client/src/costs.ts",
+          "bytes": 2637,
+          "sha256_prefix": "10708ea8e2744848"
+        },
+        {
+          "path": "packages/api-client/src/coupling.ts",
+          "bytes": 608,
+          "sha256_prefix": "616e5eec37bb354d"
+        },
+        {
+          "path": "packages/api-client/src/dead-code.ts",
+          "bytes": 1168,
+          "sha256_prefix": "33f695ae33b0b89f"
+        },
+        {
+          "path": "packages/api-client/src/decisions.ts",
+          "bytes": 2598,
+          "sha256_prefix": "d5ca6bcbcef63ff2"
+        },
+        {
+          "path": "packages/api-client/src/episodes.ts",
+          "bytes": 2852,
+          "sha256_prefix": "7051d408c325d0e7"
+        },
+        {
+          "path": "packages/api-client/src/external-systems.ts",
+          "bytes": 393,
+          "sha256_prefix": "5e449a6b192395f3"
+        },
+        {
+          "path": "packages/api-client/src/feedback.ts",
+          "bytes": 909,
+          "sha256_prefix": "42a00c0a881d5af7"
+        },
+        {
+          "path": "packages/server/src/repowise/server/mcp_server/tool_health.py",
+          "bytes": 93406,
+          "sha256_prefix": "ae52b857baaa5b17"
+        },
+        {
+          "path": "packages/cli/src/repowise/cli/commands/update_cmd/command.py",
+          "bytes": 85199,
+          "sha256_prefix": "be73dcbc8370d80f"
+        },
+        {
+          "path": "packages/core/src/repowise/core/analysis/dead_code/analyzer.py",
+          "bytes": 84753,
+          "sha256_prefix": "be2ce41cb2edbeb5"
+        },
+        {
+          "path": "packages/core/src/repowise/core/pipeline/persist.py",
+          "bytes": 81249,
+          "sha256_prefix": "854ec11206e95321"
+        },
+        {
+          "path": "packages/core/src/repowise/core/persistence/models.py",
+          "bytes": 80947,
+          "sha256_prefix": "c5ca8934202d35ee"
+        },
+        {
+          "path": "packages/core/src/repowise/core/analysis/kg_curation.py",
+          "bytes": 80710,
+          "sha256_prefix": "2ea11ae2490c9c89"
+        },
+        {
+          "path": "packages/core/src/repowise/core/pipeline/incremental.py",
+          "bytes": 77261,
+          "sha256_prefix": "40d465a027c785e1"
+        },
+        {
+          "path": "packages/core/src/repowise/core/ingestion/call_resolver.py",
+          "bytes": 76741,
+          "sha256_prefix": "354d2e184bbdd9cc"
+        }
+      ],
+      "dossier": "repowise-dev-repowise.md",
+      "previously_audited_commit": "a3b6714c5523dc7c45d6bce0522035339bcf3afd",
+      "previously_audited_on": "2026-08-09",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "docs/CHANGELOG.md",
+        "audited_on": "2026-08-09",
+        "pinned_version": "0.45.0",
+        "releases_since_audit": 6,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "0.45.0",
+          "date": "2026-08-21",
+          "heading": "[0.45.0] \u2014 2026-08-21",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "0.40.0",
+          "date": "2026-08-10",
+          "heading": "[0.40.0] \u2014 2026-08-10",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "[0.45.0] \u2014 2026-08-21",
+          "[0.44.0] \u2014 2026-08-18",
+          "[0.43.0] \u2014 2026-08-15",
+          "[0.42.0] \u2014 2026-08-13",
+          "[0.41.0] \u2014 2026-08-11",
+          "[0.40.0] \u2014 2026-08-10"
+        ]
+      }
+    },
+    {
+      "tool": "rtk",
+      "release_directory": "rtk-0.45.0",
+      "version": "0.45.0",
+      "pinned_commit": "b34be37caf3796b69a50952a28e60e32b5daad43",
+      "checkout_head": "b34be37caf3796b69a50952a28e60e32b5daad43",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-07T11:41:16+02:00",
+      "release_artifact": {
+        "path": "artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+        "exists": true,
+        "sha256_prefix": "c4c036fbf181fc55"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "413b3c684d00c36d"
+      },
+      "file_counts": {
+        "total": 412,
+        "integration": 98,
+        "source": 143,
+        "test_or_benchmark": 88,
+        "documentation": 146
+      },
+      "integration_code_paths": [
+        "hooks/hermes/rtk-rewrite/__init__.py",
+        "hooks/opencode/rtk.ts",
+        "hooks/pi/rtk.ts",
+        "src/core/config.rs",
+        "src/hooks/constants.rs",
+        "src/hooks/hook_audit_cmd.rs",
+        "src/hooks/hook_check.rs",
+        "src/hooks/hook_cmd.rs",
+        "src/hooks/init.rs",
+        "src/hooks/integrity.rs",
+        "src/hooks/mod.rs",
+        "src/hooks/permissions.rs",
+        "src/hooks/rewrite_cmd.rs",
+        "src/hooks/trust.rs",
+        "src/hooks/verify_cmd.rs"
+      ],
+      "install_guide_paths": [
+        ".claude/agents/code-reviewer.md",
+        ".claude/agents/debugger.md",
+        ".claude/agents/rust-rtk.md",
+        ".claude/agents/system-architect.md",
+        ".claude/agents/technical-writer.md",
+        ".claude/commands/clean-worktree.md",
+        ".claude/commands/clean-worktrees.md",
+        ".claude/commands/diagnose.md",
+        ".claude/commands/tech/audit-codebase.md",
+        ".claude/commands/tech/clean-worktree.md",
+        ".claude/commands/tech/clean-worktrees.md",
+        ".claude/commands/tech/codereview.md",
+        ".claude/commands/tech/remove-worktree.md",
+        ".claude/commands/tech/worktree-status.md",
+        ".claude/commands/tech/worktree.md",
+        ".claude/commands/worktree-status.md",
+        ".claude/commands/worktree.md",
+        ".claude/rules/rust-patterns.md",
+        ".claude/rules/search-strategy.md",
+        ".claude/skills/code-simplifier/SKILL.md"
+      ],
+      "integration_paths": [
+        ".claude/agents/code-reviewer.md",
+        ".claude/agents/debugger.md",
+        ".claude/agents/rust-rtk.md",
+        ".claude/agents/system-architect.md",
+        ".claude/agents/technical-writer.md",
+        ".claude/commands/clean-worktree.md",
+        ".claude/commands/clean-worktrees.md",
+        ".claude/commands/diagnose.md",
+        ".claude/commands/tech/audit-codebase.md",
+        ".claude/commands/tech/clean-worktree.md",
+        ".claude/commands/tech/clean-worktrees.md",
+        ".claude/commands/tech/codereview.md",
+        ".claude/commands/tech/remove-worktree.md",
+        ".claude/commands/tech/worktree-status.md",
+        ".claude/commands/tech/worktree.md",
+        ".claude/commands/worktree-status.md",
+        ".claude/commands/worktree.md",
+        ".claude/hooks/bash/pre-commit-format.sh",
+        ".claude/hooks/rtk-rewrite.sh",
+        ".claude/hooks/rtk-suggest.sh",
+        ".claude/rules/rust-patterns.md",
+        ".claude/rules/search-strategy.md",
+        ".claude/skills/code-simplifier/SKILL.md",
+        ".claude/skills/design-patterns/SKILL.md",
+        ".claude/skills/issue-triage/SKILL.md",
+        ".claude/skills/issue-triage/templates/issue-comment.md",
+        ".claude/skills/performance/SKILL.md",
+        ".claude/skills/pr-review/SKILL.md",
+        ".claude/skills/pr-triage/SKILL.md",
+        ".claude/skills/pr-triage/templates/review-comment.md",
+        ".claude/skills/repo-recap/SKILL.md",
+        ".claude/skills/rtk-tdd/SKILL.md",
+        ".claude/skills/rtk-triage/SKILL.md",
+        ".claude/skills/security-guardian/SKILL.md",
+        ".claude/skills/ship/SKILL.md",
+        ".claude/skills/tdd-rust/SKILL.md",
+        ".github/hooks/rtk-rewrite.json",
+        "CLAUDE.md",
+        "INSTALL.md",
+        "docs/guide/getting-started/configuration.md",
+        "docs/guide/getting-started/installation.md",
+        "docs/guide/getting-started/supported-agents.md",
+        "hooks/README.md",
+        "hooks/antigravity/README.md",
+        "hooks/antigravity/rules.md",
+        "hooks/claude/README.md",
+        "hooks/claude/rtk-awareness.md",
+        "hooks/claude/rtk-rewrite.sh",
+        "hooks/claude/test-rtk-rewrite.sh",
+        "hooks/cline/README.md",
+        "hooks/cline/rules.md",
+        "hooks/codex/README.md",
+        "hooks/codex/rtk-awareness.md",
+        "hooks/copilot/README.md",
+        "hooks/copilot/rtk-awareness.md",
+        "hooks/copilot/test-rtk-rewrite.sh",
+        "hooks/cursor/README.md",
+        "hooks/cursor/rtk-rewrite.sh",
+        "hooks/hermes/README.md",
+        "hooks/hermes/rtk-rewrite/__init__.py"
+      ],
+      "test_or_benchmark_paths": [
+        ".claude/agents/rtk-testing-specialist.md",
+        ".claude/commands/test-routing.md",
+        ".claude/rules/cli-testing.md",
+        ".claude/skills/rtk-tdd/references/testing-patterns.md",
+        "hooks/claude/test-rtk-rewrite.sh",
+        "hooks/copilot/test-rtk-rewrite.sh",
+        "hooks/hermes/tests/__init__.py",
+        "hooks/hermes/tests/test_rtk_rewrite_plugin.py",
+        "scripts/benchmark-sessions/lib/runner.py",
+        "scripts/benchmark.sh",
+        "scripts/benchmark/cleanup.ts",
+        "scripts/benchmark/cloud-init.yaml",
+        "scripts/benchmark/lib/report.ts",
+        "scripts/benchmark/lib/test.ts",
+        "scripts/benchmark/lib/vm.ts",
+        "scripts/benchmark/rebuild.ts",
+        "scripts/benchmark/run.ts",
+        "scripts/check-test-presence.sh",
+        "scripts/test-all.sh",
+        "scripts/test-aristote.sh",
+        "scripts/test-install.sh",
+        "scripts/test-ruby.sh",
+        "scripts/test-tracking.sh",
+        "src/cmds/js/vitest_cmd.rs",
+        "src/cmds/php/paratest_cmd.rs",
+        "src/cmds/php/test_output.rs",
+        "src/cmds/python/pytest_cmd.rs",
+        "src/cmds/ruby/rspec_cmd.rs",
+        "tests/copilot_selfheal_test.rs",
+        "tests/fixtures/aws_backup_describe_global_settings.json"
+      ],
+      "representative_files": [
+        {
+          "path": "hooks/hermes/rtk-rewrite/__init__.py",
+          "bytes": 2358,
+          "sha256_prefix": "1c211b6248d9277f"
+        },
+        {
+          "path": "hooks/opencode/rtk.ts",
+          "bytes": 1339,
+          "sha256_prefix": "6530c131946c8489"
+        },
+        {
+          "path": "hooks/pi/rtk.ts",
+          "bytes": 2883,
+          "sha256_prefix": "d278508809a5379e"
+        },
+        {
+          "path": "src/core/config.rs",
+          "bytes": 8732,
+          "sha256_prefix": "da11de366d510dbc"
+        },
+        {
+          "path": "src/hooks/constants.rs",
+          "bytes": 3239,
+          "sha256_prefix": "0b15cae3da7d3a6e"
+        },
+        {
+          "path": "src/hooks/hook_audit_cmd.rs",
+          "bytes": 9213,
+          "sha256_prefix": "c53898632b486851"
+        },
+        {
+          "path": "src/hooks/hook_check.rs",
+          "bytes": 11365,
+          "sha256_prefix": "f6d477aaef10d3e5"
+        },
+        {
+          "path": "src/hooks/hook_cmd.rs",
+          "bytes": 74596,
+          "sha256_prefix": "6e6131d0f10ba7be"
+        },
+        {
+          "path": "src/hooks/init.rs",
+          "bytes": 293321,
+          "sha256_prefix": "018a702acd694b9e"
+        },
+        {
+          "path": "src/hooks/integrity.rs",
+          "bytes": 22294,
+          "sha256_prefix": "6e171142bc67535f"
+        },
+        {
+          "path": "src/hooks/mod.rs",
+          "bytes": 1312,
+          "sha256_prefix": "205474b374a30d74"
+        },
+        {
+          "path": "src/hooks/permissions.rs",
+          "bytes": 39836,
+          "sha256_prefix": "252bcec9468a06e1"
+        },
+        {
+          "path": "src/discover/registry.rs",
+          "bytes": 173652,
+          "sha256_prefix": "4f26363cb05db318"
+        },
+        {
+          "path": "src/main.rs",
+          "bytes": 122559,
+          "sha256_prefix": "69f9b2aa5d607d4b"
+        },
+        {
+          "path": "src/cmds/git/git.rs",
+          "bytes": 113289,
+          "sha256_prefix": "28afec6faa88abf6"
+        },
+        {
+          "path": "src/cmds/cloud/aws_cmd.rs",
+          "bytes": 103868,
+          "sha256_prefix": "112bf2dc705b9bde"
+        },
+        {
+          "path": "src/cmds/rust/cargo_cmd.rs",
+          "bytes": 96661,
+          "sha256_prefix": "d75e0d01e2cff678"
+        },
+        {
+          "path": "src/cmds/dotnet/dotnet_cmd.rs",
+          "bytes": 94465,
+          "sha256_prefix": "ed0192fc77b1d7d3"
+        },
+        {
+          "path": "src/cmds/jvm/mvn_cmd.rs",
+          "bytes": 82083,
+          "sha256_prefix": "d729bd149041162a"
+        }
+      ],
+      "dossier": "rtk-ai-rtk.md",
+      "previously_audited_commit": "23aae98c5b29",
+      "previously_audited_on": "2026-06-26",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-06-26",
+        "pinned_version": "0.45.0",
+        "releases_since_audit": 5,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "0.45.0",
+          "date": "2026-08-07",
+          "heading": "[0.45.0](https://github.com/rtk-ai/rtk/compare/v0.44.2...v0.45.0) (2026-08-07)",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "0.43.0",
+          "date": "2026-06-28",
+          "heading": "[0.43.0](https://github.com/rtk-ai/rtk/compare/v0.42.4...v0.43.0) (2026-06-28)",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": true,
+        "recent_headings": [
+          "[0.45.0](https://github.com/rtk-ai/rtk/compare/v0.44.2...v0.45.0) (2026-08-07)",
+          "[0.44.2](https://github.com/rtk-ai/rtk/compare/v0.44.1...v0.44.2) (2026-08-01)",
+          "[0.44.1](https://github.com/rtk-ai/rtk/compare/v0.44.0...v0.44.1) (2026-07-28)",
+          "[0.44.0](https://github.com/rtk-ai/rtk/compare/v0.43.0...v0.44.0) (2026-07-26)",
+          "[0.43.0](https://github.com/rtk-ai/rtk/compare/v0.42.4...v0.43.0) (2026-06-28)"
+        ]
+      }
+    },
+    {
+      "tool": "serena",
+      "release_directory": "serena-1.7.0",
+      "version": "1.7.0",
+      "pinned_commit": "949a27ef1e5fda1a6e7b561e777bcece345c6ffd",
+      "checkout_head": "949a27ef1e5fda1a6e7b561e777bcece345c6ffd",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-09T20:14:37+02:00",
+      "release_artifact": {
+        "path": "artifacts/serena_agent-1.7.0-py3-none-any.whl",
+        "exists": true,
+        "sha256_prefix": "6dbf1459670d96fb"
+      },
+      "official_install_guide": {
+        "path": "source/docs/02-usage/030_clients.md",
+        "exists": true,
+        "sha256_prefix": "62b271277e5ba778"
+      },
+      "file_counts": {
+        "total": 1048,
+        "integration": 136,
+        "source": 471,
+        "test_or_benchmark": 719,
+        "documentation": 61
+      },
+      "integration_code_paths": [
+        "scripts/agno_agent.py",
+        "scripts/mcp_server.py",
+        "src/interprompt/__init__.py",
+        "src/interprompt/util/__init__.py",
+        "src/serena/__init__.py",
+        "src/serena/agent.py",
+        "src/serena/config/__init__.py",
+        "src/serena/config/client_setup.py",
+        "src/serena/config/context_mode.py",
+        "src/serena/config/serena_config.py",
+        "src/serena/hooks.py",
+        "src/serena/jetbrains/jetbrains_plugin_client.py",
+        "src/serena/mcp.py",
+        "src/serena/tools/__init__.py",
+        "src/serena/tools/config_tools.py",
+        "src/solidlsp/__init__.py",
+        "src/solidlsp/initialize_params.py",
+        "src/solidlsp/language_servers/elixir_tools/__init__.py",
+        "src/solidlsp/ls_config.py"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/02-usage/010_installation.md",
+        "docs/02-usage/025_jetbrains_plugin.md",
+        "docs/02-usage/030_clients.md",
+        "docs/02-usage/050_configuration.md"
+      ],
+      "integration_paths": [
+        ".github/ISSUE_TEMPLATE/config.yml",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "docs/02-usage/010_installation.md",
+        "docs/02-usage/025_jetbrains_plugin.md",
+        "docs/02-usage/030_clients.md",
+        "docs/02-usage/050_configuration.md",
+        "docs/03-special-guides/cpp_setup.md",
+        "docs/03-special-guides/custom_agent.md",
+        "docs/03-special-guides/godot_gdscript_setup_guide_for_serena.md",
+        "docs/03-special-guides/groovy_setup_guide_for_serena.md",
+        "docs/03-special-guides/ocaml_setup_guide_for_serena.md",
+        "docs/03-special-guides/scala_setup_guide_for_serena.md",
+        "docs/03-special-guides/unreal_engine_setup_guide_for_serena.md",
+        "docs/_config.yml",
+        "scripts/agno_agent.py",
+        "scripts/mcp_server.py",
+        "src/interprompt/__init__.py",
+        "src/interprompt/util/__init__.py",
+        "src/serena/__init__.py",
+        "src/serena/agent.py",
+        "src/serena/config/__init__.py",
+        "src/serena/config/client_setup.py",
+        "src/serena/config/context_mode.py",
+        "src/serena/config/serena_config.py",
+        "src/serena/hooks.py",
+        "src/serena/jetbrains/jetbrains_plugin_client.py",
+        "src/serena/mcp.py",
+        "src/serena/resources/config/contexts/agent.yml",
+        "src/serena/resources/config/contexts/antigravity.yml",
+        "src/serena/resources/config/contexts/chatgpt.yml",
+        "src/serena/resources/config/contexts/claude-code.yml",
+        "src/serena/resources/config/contexts/codebuddy.yml",
+        "src/serena/resources/config/contexts/codex.yml",
+        "src/serena/resources/config/contexts/context.template.yml",
+        "src/serena/resources/config/contexts/copilot-cli.yml",
+        "src/serena/resources/config/contexts/desktop-app.yml",
+        "src/serena/resources/config/contexts/grok.yml",
+        "src/serena/resources/config/contexts/ide.yml",
+        "src/serena/resources/config/contexts/jb-ai-assistant.yml",
+        "src/serena/resources/config/contexts/jb-copilot-plugin.yml",
+        "src/serena/resources/config/contexts/junie.yml",
+        "src/serena/resources/config/contexts/oaicompat-agent.yml",
+        "src/serena/resources/config/contexts/vscode.yml",
+        "src/serena/resources/config/internal_modes/jetbrains.yml",
+        "src/serena/resources/config/modes/benchmark.yml",
+        "src/serena/resources/config/modes/editing.yml",
+        "src/serena/resources/config/modes/interactive.yml",
+        "src/serena/resources/config/modes/mode.template.yml",
+        "src/serena/resources/config/modes/no-memories.yml",
+        "src/serena/resources/config/modes/no-onboarding.yml",
+        "src/serena/resources/config/modes/onboarding.yml",
+        "src/serena/resources/config/modes/one-shot.yml",
+        "src/serena/resources/config/modes/planning.yml",
+        "src/serena/resources/config/modes/query-projects.yml",
+        "src/serena/resources/config/prompt_templates/info_prompts.yml",
+        "src/serena/resources/config/prompt_templates/simple_tool_outputs.yml",
+        "src/serena/resources/config/prompt_templates/system_prompt.yml",
+        "src/serena/resources/serena_config.template.yml",
+        "src/serena/tools/__init__.py"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/workflows/pytest.yml",
+        "docs/03-special-guides/000_intro.md",
+        "docs/03-special-guides/cpp_setup.md",
+        "docs/03-special-guides/custom_agent.md",
+        "docs/03-special-guides/godot_gdscript_setup_guide_for_serena.md",
+        "docs/03-special-guides/groovy_setup_guide_for_serena.md",
+        "docs/03-special-guides/ocaml_setup_guide_for_serena.md",
+        "docs/03-special-guides/scala_setup_guide_for_serena.md",
+        "docs/03-special-guides/serena_on_chatgpt.md",
+        "docs/03-special-guides/unreal_engine_setup_guide_for_serena.md",
+        "scripts/live_test_grok.py",
+        "src/serena/resources/config/modes/benchmark.yml",
+        "src/serena/util/inspection.py",
+        "test/__init__.py",
+        "test/conftest.py",
+        "test/resources/repos/ada/test_repo/.gitignore",
+        "test/resources/repos/ada/test_repo/default.gpr",
+        "test/resources/repos/ada/test_repo/src/diagnostics_sample.adb",
+        "test/resources/repos/ada/test_repo/src/helper.adb",
+        "test/resources/repos/ada/test_repo/src/helper.ads",
+        "test/resources/repos/ada/test_repo/src/main.adb",
+        "test/resources/repos/al/test_repo/app.json",
+        "test/resources/repos/al/test_repo/src/Codeunits/CustomerMgt.Codeunit.al",
+        "test/resources/repos/al/test_repo/src/Codeunits/PaymentProcessorImpl.Codeunit.al",
+        "test/resources/repos/al/test_repo/src/Enums/CustomerType.Enum.al",
+        "test/resources/repos/al/test_repo/src/Interfaces/IPaymentProcessor.Interface.al",
+        "test/resources/repos/al/test_repo/src/Pages/CustomerCard.Page.al",
+        "test/resources/repos/al/test_repo/src/Pages/CustomerList.Page.al",
+        "test/resources/repos/al/test_repo/src/TableExtensions/Item.TableExt.al",
+        "test/resources/repos/al/test_repo/src/Tables/Customer.Table.al"
+      ],
+      "representative_files": [
+        {
+          "path": "scripts/agno_agent.py",
+          "bytes": 976,
+          "sha256_prefix": "8a5e2574fe210c5a"
+        },
+        {
+          "path": "scripts/mcp_server.py",
+          "bytes": 98,
+          "sha256_prefix": "e5f0d89f972ebc51"
+        },
+        {
+          "path": "src/interprompt/__init__.py",
+          "bytes": 113,
+          "sha256_prefix": "43f5882959baa4ae"
+        },
+        {
+          "path": "src/interprompt/util/__init__.py",
+          "bytes": 0,
+          "sha256_prefix": "e3b0c44298fc1c14"
+        },
+        {
+          "path": "src/serena/__init__.py",
+          "bytes": 766,
+          "sha256_prefix": "f238472c63c6c043"
+        },
+        {
+          "path": "src/serena/agent.py",
+          "bytes": 73290,
+          "sha256_prefix": "54cd183eab556833"
+        },
+        {
+          "path": "src/serena/config/__init__.py",
+          "bytes": 0,
+          "sha256_prefix": "e3b0c44298fc1c14"
+        },
+        {
+          "path": "src/serena/config/client_setup.py",
+          "bytes": 5237,
+          "sha256_prefix": "906cccfc5cbce701"
+        },
+        {
+          "path": "src/serena/config/context_mode.py",
+          "bytes": 11302,
+          "sha256_prefix": "a733108d7f98ed85"
+        },
+        {
+          "path": "src/serena/config/serena_config.py",
+          "bytes": 67336,
+          "sha256_prefix": "8277d32a0f3b6f67"
+        },
+        {
+          "path": "src/serena/hooks.py",
+          "bytes": 28074,
+          "sha256_prefix": "5d204f16fdc00a28"
+        },
+        {
+          "path": "src/serena/jetbrains/jetbrains_plugin_client.py",
+          "bytes": 32031,
+          "sha256_prefix": "ac61882549297384"
+        },
+        {
+          "path": "src/solidlsp/lsp_protocol_handler/lsp_types.py",
+          "bytes": 217456,
+          "sha256_prefix": "0f5c0d86b1ed746d"
+        },
+        {
+          "path": "src/solidlsp/ls.py",
+          "bytes": 155979,
+          "sha256_prefix": "890c5a689b95ad7e"
+        },
+        {
+          "path": "src/serena/resources/dashboard/dashboard.js",
+          "bytes": 96411,
+          "sha256_prefix": "aa15c98381fc01b6"
+        },
+        {
+          "path": "src/serena/resources/dashboard/jquery.min.js",
+          "bytes": 87533,
+          "sha256_prefix": "fc9a93dd241f6b04"
+        },
+        {
+          "path": "src/solidlsp/language_servers/eclipse_jdtls.py",
+          "bytes": 77045,
+          "sha256_prefix": "52557fafaba2913a"
+        },
+        {
+          "path": "src/serena/cli.py",
+          "bytes": 69901,
+          "sha256_prefix": "1620577816b52632"
+        }
+      ],
+      "dossier": "oraios-serena.md",
+      "previously_audited_commit": "103a17072e9b915c9c9980f946902be856695978",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-07-01",
+        "pinned_version": "1.7.0",
+        "releases_since_audit": 3,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "1.7.0",
+          "date": "2026-08-09",
+          "heading": "v1.7.0 (2026-08-09)",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "1.6.0",
+          "date": "2026-07-16",
+          "heading": "v1.6.0 (2026-07-16)",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "v1.7.0 (2026-08-09)",
+          "v1.6.1 (2026-07-21)",
+          "v1.6.0 (2026-07-16)"
+        ]
+      }
+    },
+    {
+      "tool": "sigmap",
+      "release_directory": "sigmap-8.28.0",
+      "version": "8.28.0",
+      "pinned_commit": "3313c3a4e88722e134e5747663c02d5db5ad3032",
+      "checkout_head": "3313c3a4e88722e134e5747663c02d5db5ad3032",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-08-18T11:31:21+05:30",
+      "release_artifact": {
+        "path": "artifacts/sigmap-8.28.0.tgz",
+        "exists": true,
+        "sha256_prefix": "9cd40a02c852ea76"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "5c6d0392b5dcbadd"
+      },
+      "file_counts": {
+        "total": 573,
+        "integration": 42,
+        "source": 339,
+        "test_or_benchmark": 260,
+        "documentation": 106
+      },
+      "integration_code_paths": [
+        "packages/adapters/claude.js",
+        "packages/adapters/codex.js",
+        "packages/adapters/cursor.js",
+        "src/config/defaults.js",
+        "src/config/loader.js",
+        "src/config/tune.js",
+        "src/init/creation-workflow.js",
+        "src/map/config-manifest.js",
+        "src/mcp/handlers.js",
+        "src/mcp/install.js",
+        "src/mcp/server.js",
+        "src/mcp/tools.js",
+        "src/skills/skills.js"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "docs-vp/guide/agents.md",
+        "docs-vp/guide/config.md",
+        "docs-vp/guide/mcp.md",
+        "docs/JETBRAINS_SETUP.md",
+        "docs/readmes/ENTERPRISE_SETUP.md",
+        "docs/readmes/JETBRAINS_SETUP.md",
+        "docs/readmes/MCP_SETUP.md",
+        "docs/readmes/jetbrains-plugin.md"
+      ],
+      "integration_paths": [
+        ".claude/settings.json",
+        "AGENTS.md",
+        "benchmarks/R_LANGUAGE_SETUP.md",
+        "benchmarks/config-overrides.json",
+        "docs-vp/guide/agents.md",
+        "docs-vp/guide/config.md",
+        "docs-vp/guide/mcp.md",
+        "docs/JETBRAINS_SETUP.md",
+        "docs/_config.yml",
+        "docs/readmes/ENTERPRISE_SETUP.md",
+        "docs/readmes/JETBRAINS_SETUP.md",
+        "docs/readmes/MCP_SETUP.md",
+        "docs/readmes/jetbrains-plugin.md",
+        "examples/claude-code-settings.json",
+        "gen-context.config.json",
+        "packages/adapters/claude.js",
+        "packages/adapters/codex.js",
+        "packages/adapters/cursor.js",
+        "src/config/defaults.js",
+        "src/config/loader.js",
+        "src/config/tune.js",
+        "src/init/creation-workflow.js",
+        "src/map/config-manifest.js",
+        "src/mcp/handlers.js",
+        "src/mcp/install.js",
+        "src/mcp/server.js",
+        "src/mcp/tools.js",
+        "src/skills/skills.js",
+        "test/integration/config-loader.test.js",
+        "test/integration/config-output-path.test.js",
+        "test/integration/features/codex-adapter-format.test.js",
+        "test/integration/features/setup-mcp-targets.test.js",
+        "test/integration/init-creation-workflow.test.js",
+        "test/integration/mcp/diff-architecture-tools.test.js",
+        "test/integration/mcp/get-lines.test.js",
+        "test/integration/mcp/install.test.js",
+        "test/integration/mcp/register.test.js",
+        "test/integration/mcp/server.test.js",
+        "test/integration/mcp/tools-v14.test.js",
+        "test/integration/mcp/verify-suggestion.test.js",
+        "test/integration/skills.test.js",
+        "test/regression/mcp-tools-comprehensive.js"
+      ],
+      "test_or_benchmark_paths": [
+        "benchmarks/R_LANGUAGE_BENCHMARKS.md",
+        "benchmarks/R_LANGUAGE_SETUP.md",
+        "benchmarks/config-overrides.json",
+        "benchmarks/latest.json",
+        "benchmarks/llm-ablation-tasks.json",
+        "benchmarks/reports/benchmark-matrix.json",
+        "benchmarks/reports/callgraph-boost.json",
+        "benchmarks/reports/centrality-blend.json",
+        "benchmarks/reports/honest-baseline.json",
+        "benchmarks/reports/quality.json",
+        "benchmarks/reports/retrieval.json",
+        "benchmarks/reports/surface-enrichment.json",
+        "benchmarks/reports/task-benchmark.json",
+        "benchmarks/reports/terse.json",
+        "benchmarks/reports/test-discovery.json",
+        "benchmarks/reports/token-reduction.json",
+        "benchmarks/reports/token-reduction.md",
+        "benchmarks/task-metadata.json",
+        "benchmarks/tasks/abseil-cpp.jsonl",
+        "benchmarks/tasks/akka.jsonl",
+        "benchmarks/tasks/axios.jsonl",
+        "benchmarks/tasks/express.jsonl",
+        "benchmarks/tasks/fastapi.jsonl",
+        "benchmarks/tasks/fastify.jsonl",
+        "benchmarks/tasks/flask.jsonl",
+        "benchmarks/tasks/gin.jsonl",
+        "benchmarks/tasks/laravel.jsonl",
+        "benchmarks/tasks/okhttp.jsonl",
+        "benchmarks/tasks/rails.jsonl",
+        "benchmarks/tasks/retrieval.jsonl"
+      ],
+      "representative_files": [
+        {
+          "path": "packages/adapters/claude.js",
+          "bytes": 3712,
+          "sha256_prefix": "fb3aae53dfed4f6e"
+        },
+        {
+          "path": "packages/adapters/codex.js",
+          "bytes": 2233,
+          "sha256_prefix": "c6d6ca8ffd0cd953"
+        },
+        {
+          "path": "packages/adapters/cursor.js",
+          "bytes": 1581,
+          "sha256_prefix": "e7ba3c8a9543d7ed"
+        },
+        {
+          "path": "src/config/defaults.js",
+          "bytes": 6152,
+          "sha256_prefix": "1afeb481ea19979e"
+        },
+        {
+          "path": "src/config/loader.js",
+          "bytes": 12444,
+          "sha256_prefix": "2ea6623cde0c2ff9"
+        },
+        {
+          "path": "src/config/tune.js",
+          "bytes": 8318,
+          "sha256_prefix": "8e60d15f4eb01d4b"
+        },
+        {
+          "path": "src/init/creation-workflow.js",
+          "bytes": 2569,
+          "sha256_prefix": "fa70ab41c3aa988d"
+        },
+        {
+          "path": "src/map/config-manifest.js",
+          "bytes": 4152,
+          "sha256_prefix": "dcf3f729ac4cfd2f"
+        },
+        {
+          "path": "src/mcp/handlers.js",
+          "bytes": 38329,
+          "sha256_prefix": "ac64811b86f45d02"
+        },
+        {
+          "path": "src/mcp/install.js",
+          "bytes": 5942,
+          "sha256_prefix": "b7680fa92b3d2438"
+        },
+        {
+          "path": "src/mcp/server.js",
+          "bytes": 5067,
+          "sha256_prefix": "f48c3a04f15de538"
+        },
+        {
+          "path": "src/mcp/tools.js",
+          "bytes": 14946,
+          "sha256_prefix": "7ff8558ae95d9014"
+        },
+        {
+          "path": "gen-context.js",
+          "bytes": 1037636,
+          "sha256_prefix": "1967489508f6d62c"
+        },
+        {
+          "path": "scripts/run-strategy-audit.mjs",
+          "bytes": 38141,
+          "sha256_prefix": "41715f3223e2f293"
+        },
+        {
+          "path": "scripts/run-benchmark.mjs",
+          "bytes": 25274,
+          "sha256_prefix": "71646e61b4663df0"
+        },
+        {
+          "path": "src/graph/call-graph.js",
+          "bytes": 25026,
+          "sha256_prefix": "7cc7bfb9fcebed85"
+        },
+        {
+          "path": "src/retrieval/ranker.js",
+          "bytes": 24708,
+          "sha256_prefix": "95e1e622e69b79bc"
+        },
+        {
+          "path": "scripts/run-quality-benchmark.mjs",
+          "bytes": 24181,
+          "sha256_prefix": "86be23b04af63766"
+        },
+        {
+          "path": "src/format/dashboard.js",
+          "bytes": 20280,
+          "sha256_prefix": "c9611898aef6d3ec"
+        }
+      ],
+      "dossier": "manojmallick-sigmap.md",
+      "previously_audited_commit": "569320994751935ab25bf4a9b5bd07aee99cc53b",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-07-01",
+        "pinned_version": "8.28.0",
+        "releases_since_audit": 36,
+        "install_relevant_releases": 0,
+        "newest": {
+          "version": "8.28.0",
+          "date": "2026-08-18",
+          "heading": "[8.28.0] \u2014 2026-08-18",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "7.31.0",
+          "date": "2026-07-02",
+          "heading": "[7.31.0] \u2014 2026-07-02",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": [
+          "[8.28.0] \u2014 2026-08-18",
+          "[8.27.0] \u2014 2026-08-18",
+          "[8.26.2] \u2014 2026-08-18",
+          "[8.26.1] \u2014 2026-08-18",
+          "[8.26.0] \u2014 2026-08-18",
+          "[8.25.0] \u2014 2026-08-18",
+          "[8.24.0] \u2014 2026-07-28",
+          "[8.23.0] \u2014 2026-07-28",
+          "[8.22.0] \u2014 2026-07-28",
+          "[8.21.0] \u2014 2026-07-19",
+          "[8.20.0] \u2014 2026-07-19",
+          "[8.19.0] \u2014 2026-07-19"
+        ]
+      }
+    },
+    {
+      "tool": "snip",
+      "release_directory": "snip-0.24.1",
+      "version": "0.24.1",
+      "pinned_commit": "18a57bc9dc4499f1a00b9c8ff799e982ba25ceba",
+      "checkout_head": "18a57bc9dc4499f1a00b9c8ff799e982ba25ceba",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-07-28T06:32:45+04:00",
+      "release_artifact": {
+        "path": "artifacts/snip_0.24.1_linux_amd64.tar.gz",
+        "exists": true,
+        "sha256_prefix": "6f230ab6d66885b7"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "710e49a20580910a"
+      },
+      "file_counts": {
+        "total": 258,
+        "integration": 46,
+        "source": 98,
+        "test_or_benchmark": 67,
+        "documentation": 16
+      },
+      "integration_code_paths": [
+        "internal/config/config.go",
+        "internal/hook/blockscope.go",
+        "internal/hook/codex.go",
+        "internal/hook/copilot.go",
+        "internal/hook/grok.go",
+        "internal/hook/hook.go",
+        "internal/hook/parse.go",
+        "internal/hook/pi.go",
+        "internal/hook/rewrite.go",
+        "internal/hook/suggest.go",
+        "internal/hook/transparent.go",
+        "internal/hookaudit/hookaudit.go",
+        "internal/initcmd/codex.go",
+        "internal/initcmd/copilot.go",
+        "internal/initcmd/grok.go",
+        "internal/initcmd/init.go",
+        "internal/initcmd/pi.go"
+      ],
+      "install_guide_paths": [
+        "CLAUDE.md",
+        "SKILL.md"
+      ],
+      "integration_paths": [
+        "CLAUDE.md",
+        "SKILL.md",
+        "filters/brew-install.yaml",
+        "filters/bundle-install.yaml",
+        "filters/cargo-install.yaml",
+        "filters/composer-install.yaml",
+        "filters/npm-install.yaml",
+        "filters/pip-install.yaml",
+        "filters/pnpm-install.yaml",
+        "filters/poetry-install.yaml",
+        "filters/yarn-install.yaml",
+        "install.sh",
+        "internal/config/config.go",
+        "internal/config/config_test.go",
+        "internal/hook/blockscope.go",
+        "internal/hook/blockscope_test.go",
+        "internal/hook/codex.go",
+        "internal/hook/codex_test.go",
+        "internal/hook/copilot.go",
+        "internal/hook/copilot_test.go",
+        "internal/hook/grok.go",
+        "internal/hook/grok_test.go",
+        "internal/hook/hook.go",
+        "internal/hook/hook_test.go",
+        "internal/hook/parse.go",
+        "internal/hook/parse_test.go",
+        "internal/hook/pi.go",
+        "internal/hook/pi_test.go",
+        "internal/hook/rewrite.go",
+        "internal/hook/rewrite_bench_test.go",
+        "internal/hook/rewrite_test.go",
+        "internal/hook/suggest.go",
+        "internal/hook/transparent.go",
+        "internal/hook/transparent_test.go",
+        "internal/hookaudit/hookaudit.go",
+        "internal/hookaudit/hookaudit_test.go",
+        "internal/initcmd/codex.go",
+        "internal/initcmd/codex_test.go",
+        "internal/initcmd/copilot.go",
+        "internal/initcmd/copilot_test.go",
+        "internal/initcmd/grok.go",
+        "internal/initcmd/grok_test.go",
+        "internal/initcmd/init.go",
+        "internal/initcmd/init_test.go",
+        "internal/initcmd/pi.go",
+        "internal/initcmd/pi_test.go"
+      ],
+      "test_or_benchmark_paths": [
+        "filters/cargo-nextest.yaml",
+        "filters/cargo-test.yaml",
+        "filters/dotnet-test.yaml",
+        "filters/go-test.yaml",
+        "filters/pytest.yaml",
+        "filters/rspec.yaml",
+        "filters/vitest.yaml",
+        "internal/cli/cli_test.go",
+        "internal/cli/flags_test.go",
+        "internal/config/config_test.go",
+        "internal/discover/discover_test.go",
+        "internal/display/display_test.go",
+        "internal/display/gain_test.go",
+        "internal/economics/economics_test.go",
+        "internal/engine/executor_test.go",
+        "internal/engine/lookpath_unix_test.go",
+        "internal/engine/pipeline_test.go",
+        "internal/engine/summary_test.go",
+        "internal/engine/transparent_test.go",
+        "internal/filter/actions_integration_test.go",
+        "internal/filter/actions_test.go",
+        "internal/filter/loader_test.go",
+        "internal/filter/parser_test.go",
+        "internal/filter/registry_test.go",
+        "internal/filter/types_test.go",
+        "internal/hook/blockscope_test.go",
+        "internal/hook/codex_test.go",
+        "internal/hook/copilot_test.go",
+        "internal/hook/grok_test.go",
+        "internal/hook/hook_test.go"
+      ],
+      "representative_files": [
+        {
+          "path": "internal/config/config.go",
+          "bytes": 10134,
+          "sha256_prefix": "d2a1a17a7c9a8a39"
+        },
+        {
+          "path": "internal/hook/blockscope.go",
+          "bytes": 14819,
+          "sha256_prefix": "28fd0c15fb3f44e2"
+        },
+        {
+          "path": "internal/hook/codex.go",
+          "bytes": 2964,
+          "sha256_prefix": "68a92b68074b27f4"
+        },
+        {
+          "path": "internal/hook/copilot.go",
+          "bytes": 6902,
+          "sha256_prefix": "e457d71c1aa510a4"
+        },
+        {
+          "path": "internal/hook/grok.go",
+          "bytes": 3395,
+          "sha256_prefix": "0942028ea049dc3c"
+        },
+        {
+          "path": "internal/hook/hook.go",
+          "bytes": 3475,
+          "sha256_prefix": "d4189cac1da960ff"
+        },
+        {
+          "path": "internal/hook/parse.go",
+          "bytes": 5242,
+          "sha256_prefix": "f252707d944b3441"
+        },
+        {
+          "path": "internal/hook/pi.go",
+          "bytes": 3185,
+          "sha256_prefix": "fc8ccb9f5d78097d"
+        },
+        {
+          "path": "internal/hook/rewrite.go",
+          "bytes": 11876,
+          "sha256_prefix": "602f2b22b9436e4c"
+        },
+        {
+          "path": "internal/hook/suggest.go",
+          "bytes": 2261,
+          "sha256_prefix": "e0ffea486de7d868"
+        },
+        {
+          "path": "internal/hook/transparent.go",
+          "bytes": 7121,
+          "sha256_prefix": "16a6787126f20872"
+        },
+        {
+          "path": "internal/hookaudit/hookaudit.go",
+          "bytes": 6119,
+          "sha256_prefix": "45021a0aa686b5f4"
+        },
+        {
+          "path": "internal/cli/cli.go",
+          "bytes": 21048,
+          "sha256_prefix": "5fde9cafb2057f9b"
+        },
+        {
+          "path": "internal/engine/pipeline.go",
+          "bytes": 19460,
+          "sha256_prefix": "dc235a038e316c98"
+        },
+        {
+          "path": "internal/filter/actions.go",
+          "bytes": 19209,
+          "sha256_prefix": "cf2df2c66d70752d"
+        },
+        {
+          "path": "internal/initcmd/init.go",
+          "bytes": 17408,
+          "sha256_prefix": "6f42469c36eec3e4"
+        },
+        {
+          "path": "internal/learn/learn.go",
+          "bytes": 15641,
+          "sha256_prefix": "c43a14109f9f9e18"
+        },
+        {
+          "path": "internal/display/gain.go",
+          "bytes": 12368,
+          "sha256_prefix": "c4699e29ba35d664"
+        }
+      ],
+      "dossier": "edouard-claude-snip.md",
+      "previously_audited_commit": "82b741b3ba504a22b609f3ac8122ade94306f6ec",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": false,
+        "reason": "release ships no changelog"
+      }
+    },
+    {
+      "tool": "token-savior",
+      "release_directory": "token-savior-4.21.0",
+      "version": "4.21.0",
+      "pinned_commit": "1e5984b452c5b98e6376a7250b3213f5c3500626",
+      "checkout_head": "1e5984b452c5b98e6376a7250b3213f5c3500626",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-07-28T11:53:46+02:00",
+      "release_artifact": {
+        "path": "artifacts/token_savior_recall-4.21.0-py3-none-any.whl",
+        "exists": true,
+        "sha256_prefix": "36529b132d658225"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "e78f621c63cf9795"
+      },
+      "file_counts": {
+        "total": 444,
+        "integration": 67,
+        "source": 374,
+        "test_or_benchmark": 218,
+        "documentation": 19
+      },
+      "integration_code_paths": [
+        "hooks/__init__.py",
+        "hooks/bash_rewriter_hook.py",
+        "hooks/openclaw/token-savior-memory/handler.js",
+        "hooks/tool_capture_hook.py",
+        "hooks/ts_discipline_guard.py",
+        "scripts/deroot_hooks.py",
+        "scripts/generer_bundles_hooks.py",
+        "src/token_savior/__init__.py",
+        "src/token_savior/bash_rewriter/__init__.py",
+        "src/token_savior/cli_init/__init__.py",
+        "src/token_savior/cli_init/agent_paths.py",
+        "src/token_savior/cli_init/merger.py",
+        "src/token_savior/cli_init/vocabulaire_clients.py",
+        "src/token_savior/code_mode/__init__.py",
+        "src/token_savior/compactors/__init__.py",
+        "src/token_savior/config_analyzer.py",
+        "src/token_savior/daemon_client.py",
+        "src/token_savior/discover/__init__.py",
+        "src/token_savior/memory/__init__.py",
+        "src/token_savior/memory/ledger_hook.py",
+        "src/token_savior/memory/precondition_hook.py",
+        "src/token_savior/memory/preflight_hook.py",
+        "src/token_savior/memory/rules_hook.py",
+        "src/token_savior/server_handlers/__init__.py",
+        "src/token_savior/utils/__init__.py"
+      ],
+      "install_guide_paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "hooks/openclaw/token-savior-memory/HOOK.md",
+        "llms-install.md"
+      ],
+      "integration_paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "benchmarks/__init__.py",
+        "docs/mcp_toolset.example.json",
+        "hooks/__init__.py",
+        "hooks/bash-rewriter-config.json",
+        "hooks/bash_rewriter_hook.py",
+        "hooks/discipline-guard-codex.json",
+        "hooks/discipline-guard-config.json",
+        "hooks/ledger-rules.json",
+        "hooks/memory-codex.json",
+        "hooks/memory-gemini.json",
+        "hooks/memory-hooks-config.json",
+        "hooks/memory-posttooluse.sh",
+        "hooks/memory-precompact.sh",
+        "hooks/memory-pretooluse.sh",
+        "hooks/memory-session-start.sh",
+        "hooks/memory-session-stop.sh",
+        "hooks/memory-userprompt.sh",
+        "hooks/openclaw-config.json",
+        "hooks/openclaw/token-savior-memory/HOOK.md",
+        "hooks/openclaw/token-savior-memory/handler.js",
+        "hooks/preflight.sh",
+        "hooks/rules-enforce.sh",
+        "hooks/tool-capture-codex.json",
+        "hooks/tool-capture-cursor.json",
+        "hooks/tool-capture-gemini.json",
+        "hooks/tool-capture-hooks-config.json",
+        "hooks/tool_capture_hook.py",
+        "hooks/ts_discipline_guard.py",
+        "llms-install.md",
+        "scripts/deroot_hooks.py",
+        "scripts/generer_bundles_hooks.py",
+        "src/token_savior/__init__.py",
+        "src/token_savior/bash_rewriter/__init__.py",
+        "src/token_savior/cli_init/__init__.py",
+        "src/token_savior/cli_init/agent_paths.py",
+        "src/token_savior/cli_init/merger.py",
+        "src/token_savior/cli_init/vocabulaire_clients.py",
+        "src/token_savior/code_mode/__init__.py",
+        "src/token_savior/compactors/__init__.py",
+        "src/token_savior/config_analyzer.py",
+        "src/token_savior/daemon_client.py",
+        "src/token_savior/discover/__init__.py",
+        "src/token_savior/memory/__init__.py",
+        "src/token_savior/memory/ledger_hook.py",
+        "src/token_savior/memory/precondition_hook.py",
+        "src/token_savior/memory/preflight_hook.py",
+        "src/token_savior/memory/rules_hook.py",
+        "src/token_savior/server_handlers/__init__.py",
+        "src/token_savior/utils/__init__.py",
+        "tests/test_cli_init.py",
+        "tests/test_client_roots.py",
+        "tests/test_codex_hook_bundles.py",
+        "tests/test_concurrence_deux_clients.py",
+        "tests/test_config_analyzer.py",
+        "tests/test_config_dispatch.py",
+        "tests/test_config_integration.py",
+        "tests/test_daemon_client.py",
+        "tests/test_gemini_hook_bundles.py"
+      ],
+      "test_or_benchmark_paths": [
+        ".github/workflows/benchmark.yml",
+        ".github/workflows/retrieval-benches.yml",
+        "benchmarks/__init__.py",
+        "benchmarks/run_benchmarks.py",
+        "benchmarks/tool_capture_bench.py",
+        "benchmarks/tool_capture_results.json",
+        "scripts/bench_compactors_real.py",
+        "scripts/bench_compactors_unmatched.py",
+        "scripts/check_bench_gates.py",
+        "scripts/rules_backtest.py",
+        "src/token_savior/compactors/pytest_.py",
+        "src/token_savior/compactors/vitest.py",
+        "src/token_savior/impacted_tests.py",
+        "src/token_savior/server_handlers/tests.py",
+        "tests/benchmarks/code_retrieval/queries.json",
+        "tests/benchmarks/code_retrieval/results/20260423-001104.json",
+        "tests/benchmarks/code_retrieval/results/20260423-001104.md",
+        "tests/benchmarks/code_retrieval/results/20260423-092153.json",
+        "tests/benchmarks/code_retrieval/results/20260423-092153.md",
+        "tests/benchmarks/code_retrieval/results/20260423-092944.json",
+        "tests/benchmarks/code_retrieval/results/20260423-092944.md",
+        "tests/benchmarks/code_retrieval/results/20260423-093403.json",
+        "tests/benchmarks/code_retrieval/results/20260423-093403.md",
+        "tests/benchmarks/code_retrieval/results/20260423-094225.json",
+        "tests/benchmarks/code_retrieval/results/20260423-094225.md",
+        "tests/benchmarks/code_retrieval/results/20260517-001256.json",
+        "tests/benchmarks/code_retrieval/results/20260517-001256.md",
+        "tests/benchmarks/code_retrieval/results/20260517-002528.json",
+        "tests/benchmarks/code_retrieval/results/20260517-002528.md",
+        "tests/benchmarks/code_retrieval/run_bench.py"
+      ],
+      "representative_files": [
+        {
+          "path": "benchmarks/__init__.py",
+          "bytes": 0,
+          "sha256_prefix": "e3b0c44298fc1c14"
+        },
+        {
+          "path": "hooks/__init__.py",
+          "bytes": 275,
+          "sha256_prefix": "ade55316d11472b2"
+        },
+        {
+          "path": "hooks/bash_rewriter_hook.py",
+          "bytes": 3699,
+          "sha256_prefix": "34a315894db062d9"
+        },
+        {
+          "path": "hooks/openclaw/token-savior-memory/handler.js",
+          "bytes": 3365,
+          "sha256_prefix": "8c27d894da1a9ed8"
+        },
+        {
+          "path": "hooks/tool_capture_hook.py",
+          "bytes": 10429,
+          "sha256_prefix": "eecdf40697dee380"
+        },
+        {
+          "path": "hooks/ts_discipline_guard.py",
+          "bytes": 14713,
+          "sha256_prefix": "0388573b0b776b99"
+        },
+        {
+          "path": "scripts/deroot_hooks.py",
+          "bytes": 4877,
+          "sha256_prefix": "758c3d5747033afb"
+        },
+        {
+          "path": "scripts/generer_bundles_hooks.py",
+          "bytes": 3716,
+          "sha256_prefix": "a7cc2657a393b06f"
+        },
+        {
+          "path": "src/token_savior/__init__.py",
+          "bytes": 4041,
+          "sha256_prefix": "c36e503045838db5"
+        },
+        {
+          "path": "src/token_savior/bash_rewriter/__init__.py",
+          "bytes": 1460,
+          "sha256_prefix": "b7795b6b6ae6ae82"
+        },
+        {
+          "path": "src/token_savior/cli_init/__init__.py",
+          "bytes": 14884,
+          "sha256_prefix": "5cdda09b0fc56336"
+        },
+        {
+          "path": "src/token_savior/cli_init/agent_paths.py",
+          "bytes": 7927,
+          "sha256_prefix": "c49eecc5ca29903d"
+        },
+        {
+          "path": "src/token_savior/query_api.py",
+          "bytes": 147286,
+          "sha256_prefix": "2330899b7021bf2f"
+        },
+        {
+          "path": "src/token_savior/project_indexer.py",
+          "bytes": 70897,
+          "sha256_prefix": "303b6e9142554886"
+        },
+        {
+          "path": "src/token_savior/server.py",
+          "bytes": 61777,
+          "sha256_prefix": "a8d177cc173981da"
+        },
+        {
+          "path": "src/token_savior/tool_schemas.py",
+          "bytes": 54835,
+          "sha256_prefix": "a0fd50e468018c00"
+        },
+        {
+          "path": "src/token_savior/server_handlers/memory.py",
+          "bytes": 50434,
+          "sha256_prefix": "fa9b83c816e6174d"
+        },
+        {
+          "path": "src/token_savior/dashboard.py",
+          "bytes": 47178,
+          "sha256_prefix": "8595c7b07ca83dcf"
+        },
+        {
+          "path": "src/token_savior/config_analyzer.py",
+          "bytes": 43207,
+          "sha256_prefix": "e35c6391fd258dd7"
+        },
+        {
+          "path": "src/token_savior/java_annotator.py",
+          "bytes": 42892,
+          "sha256_prefix": "f526484c93b30cad"
+        }
+      ],
+      "dossier": "mibayy-token-savior.md",
+      "previously_audited_commit": "ff42ef14cc97",
+      "previously_audited_on": "2026-06-26",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-06-26",
+        "pinned_version": "4.21.0",
+        "releases_since_audit": 25,
+        "install_relevant_releases": 4,
+        "newest": {
+          "version": "4.21.0",
+          "date": "2026-07-28",
+          "heading": "v4.21.0 \u2014 The server stops keeping what it knows to itself (2026-07-28)",
+          "touches_integration": false
+        },
+        "oldest_after_audit": {
+          "version": "4.5.0",
+          "date": "2026-07-04",
+          "heading": "v4.5.0 \u2014 Adoption-gap pass driven by 5.5-week usage audit (2026-07-04)",
+          "touches_integration": false
+        },
+        "install_relevant_headings": [
+          "v4.18.1 \u2014 Two clients on one repository, now covered by tests (2026-07-26)",
+          "v4.14.0 \u2014 The client tells us which projects are open (2026-07-26)",
+          "v4.12.2 \u2014 `pip install token-savior-recall` produced a server that could not start (2026-07-26)",
+          "v4.8.0 \u2014 Observations as MCP resources (2026-07-04)"
+        ],
+        "titles_are_descriptive": true,
+        "recent_headings": [
+          "v4.21.0 \u2014 The server stops keeping what it knows to itself (2026-07-28)",
+          "v4.20.0 \u2014 What the tools promise, now measured (2026-07-27)",
+          "v4.19.0 \u2014 A memory that always answers is not a memory (2026-07-26)",
+          "v4.18.1 \u2014 Two clients on one repository, now covered by tests (2026-07-26)",
+          "v4.18.0 \u2014 Recall found 4 queries out of 6 (2026-07-26)",
+          "v4.17.1 \u2014 `min_lines` looked broken, and the cache answered for another threshold (2026-07-26)",
+          "v4.17.0 \u2014 `get_routes` answered `[]` on FastAPI and Flask (2026-07-26)",
+          "v4.16.1 \u2014 A Java signature no longer starts with `def` (2026-07-26)",
+          "v4.16.0 \u2014 A class defined in two languages returned one of them, silently (2026-07-26)",
+          "v4.15.2 \u2014 `move_symbol` failed every single time (2026-07-26)",
+          "v4.15.1 \u2014 The alias fix that did nothing, and the edits that overwrote themselves (2026-07-26)",
+          "v4.15.0 \u2014 Accept what we can resolve (2026-07-26)"
+        ]
+      }
+    },
+    {
+      "tool": "tokenjuice",
+      "release_directory": "tokenjuice-0.8.1",
+      "version": "0.8.1",
+      "pinned_commit": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+      "checkout_head": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+      "checkout_head_matches_pin": true,
+      "commit_date": "2026-06-18T18:53:11+08:00",
+      "release_artifact": {
+        "path": "artifacts/tokenjuice-0.8.1.tgz",
+        "exists": true,
+        "sha256_prefix": "73ab34ce0d5c0bf3"
+      },
+      "official_install_guide": {
+        "path": "source/README.md",
+        "exists": true,
+        "sha256_prefix": "e5c9807e8b6ac3cc"
+      },
+      "file_counts": {
+        "total": 764,
+        "integration": 89,
+        "source": 301,
+        "test_or_benchmark": 277,
+        "documentation": 103
+      },
+      "integration_code_paths": [
+        "scripts/analyze-codex-logs.mjs",
+        "scripts/build-opencode-runtime.mjs",
+        "src/cli/install-output.ts",
+        "src/core/cli-client.ts",
+        "src/hosts/agent-layer/index.ts",
+        "src/hosts/agentinit/index.ts",
+        "src/hosts/agentlink/index.ts",
+        "src/hosts/agentloom/index.ts",
+        "src/hosts/agents-cli/index.ts",
+        "src/hosts/agents-md/index.ts",
+        "src/hosts/agentsge/index.ts",
+        "src/hosts/agentsmesh/index.ts",
+        "src/hosts/anywhere-agents/index.ts",
+        "src/hosts/claude-code/index.ts",
+        "src/hosts/coder-agents/index.ts",
+        "src/hosts/codex/index.ts",
+        "src/hosts/copilot-agent/index.ts",
+        "src/hosts/cursor/index.ts",
+        "src/hosts/deepagents/index.ts",
+        "src/hosts/docker-agent/index.ts",
+        "src/hosts/dot-agents/index.ts",
+        "src/hosts/mcp-agent/index.ts",
+        "src/hosts/mini-swe-agent/index.ts",
+        "src/hosts/opencode/extension/runtime.ts",
+        "src/hosts/opencode/index.ts",
+        "src/hosts/shared/hook-command-doctor.ts",
+        "src/hosts/shared/hook-command.ts",
+        "src/hosts/shared/hook-doctor.ts",
+        "src/hosts/shared/hook-output.ts",
+        "src/hosts/shared/hooks-json-file.ts",
+        "src/hosts/swe-agent/index.ts"
+      ],
+      "install_guide_paths": [
+        ".agents/skills/autoreview/SKILL.md",
+        "AGENTS.md",
+        "docs/agent-layer-integration.md",
+        "docs/agentinit-integration.md",
+        "docs/agentlink-integration.md",
+        "docs/agentloom-integration.md",
+        "docs/agents-cli-integration.md",
+        "docs/agents-md-integration.md",
+        "docs/agentsge-integration.md",
+        "docs/agentsmesh-integration.md",
+        "docs/anywhere-agents-integration.md",
+        "docs/coder-agents-integration.md",
+        "docs/copilot-agent-integration.md",
+        "docs/cursor-integration.md",
+        "docs/deepagents-integration.md",
+        "docs/docker-agent-integration.md",
+        "docs/dot-agents-integration.md",
+        "docs/mcp-agent-integration.md",
+        "docs/mini-swe-agent-integration.md",
+        "docs/swe-agent-integration.md"
+      ],
+      "integration_paths": [
+        ".agents/skills/autoreview/SKILL.md",
+        "AGENTS.md",
+        "docs/agent-layer-integration.md",
+        "docs/agentinit-integration.md",
+        "docs/agentlink-integration.md",
+        "docs/agentloom-integration.md",
+        "docs/agents-cli-integration.md",
+        "docs/agents-md-integration.md",
+        "docs/agentsge-integration.md",
+        "docs/agentsmesh-integration.md",
+        "docs/anywhere-agents-integration.md",
+        "docs/coder-agents-integration.md",
+        "docs/copilot-agent-integration.md",
+        "docs/cursor-integration.md",
+        "docs/deepagents-integration.md",
+        "docs/docker-agent-integration.md",
+        "docs/dot-agents-integration.md",
+        "docs/mcp-agent-integration.md",
+        "docs/mini-swe-agent-integration.md",
+        "docs/swe-agent-integration.md",
+        "scripts/analyze-codex-logs.mjs",
+        "scripts/build-opencode-runtime.mjs",
+        "src/cli/install-output.ts",
+        "src/core/cli-client.ts",
+        "src/hosts/agent-layer/index.ts",
+        "src/hosts/agentinit/index.ts",
+        "src/hosts/agentlink/index.ts",
+        "src/hosts/agentloom/index.ts",
+        "src/hosts/agents-cli/index.ts",
+        "src/hosts/agents-md/index.ts",
+        "src/hosts/agentsge/index.ts",
+        "src/hosts/agentsmesh/index.ts",
+        "src/hosts/anywhere-agents/index.ts",
+        "src/hosts/claude-code/index.ts",
+        "src/hosts/coder-agents/index.ts",
+        "src/hosts/codex/index.ts",
+        "src/hosts/copilot-agent/index.ts",
+        "src/hosts/cursor/index.ts",
+        "src/hosts/deepagents/index.ts",
+        "src/hosts/docker-agent/index.ts",
+        "src/hosts/dot-agents/index.ts",
+        "src/hosts/mcp-agent/index.ts",
+        "src/hosts/mini-swe-agent/index.ts",
+        "src/hosts/opencode/extension/runtime.ts",
+        "src/hosts/opencode/index.ts",
+        "src/hosts/shared/hook-command-doctor.ts",
+        "src/hosts/shared/hook-command.ts",
+        "src/hosts/shared/hook-doctor.ts",
+        "src/hosts/shared/hook-output.ts",
+        "src/hosts/shared/hooks-json-file.ts",
+        "src/hosts/swe-agent/index.ts",
+        "src/rules/install/bun-install.json",
+        "src/rules/install/npm-ci.json",
+        "src/rules/install/npm-install.json",
+        "src/rules/install/pnpm-install.json",
+        "src/rules/install/yarn-install.json",
+        "src/rules/package/apt-install.json",
+        "src/rules/package/brew-install.json",
+        "src/rules/package/dnf-install.json",
+        "src/rules/package/yum-install.json"
+      ],
+      "test_or_benchmark_paths": [
+        ".agents/skills/autoreview/scripts/test-review-harness",
+        "docs/spec.md",
+        "scripts/bench.mjs",
+        "src/core/fixtures.ts",
+        "src/core/reduce-inspection-summary.ts",
+        "src/rules/fixtures/archive/tar.fixture.json",
+        "src/rules/fixtures/archive/unzip.fixture.json",
+        "src/rules/fixtures/archive/zip.fixture.json",
+        "src/rules/fixtures/cloud/aws.fixture.json",
+        "src/rules/fixtures/cloud/az.fixture.json",
+        "src/rules/fixtures/cloud/flyctl.fixture.json",
+        "src/rules/fixtures/cloud/gcloud.fixture.json",
+        "src/rules/fixtures/cloud/gh.fixture.json",
+        "src/rules/fixtures/cloud/vercel.fixture.json",
+        "src/rules/fixtures/database/mongosh.fixture.json",
+        "src/rules/fixtures/database/mysql.fixture.json",
+        "src/rules/fixtures/database/psql.fixture.json",
+        "src/rules/fixtures/database/redis-cli.fixture.json",
+        "src/rules/fixtures/database/sqlite3.fixture.json",
+        "src/rules/fixtures/devops/docker-build.fixture.json",
+        "src/rules/fixtures/devops/docker-compose.fixture.json",
+        "src/rules/fixtures/devops/docker-images.fixture.json",
+        "src/rules/fixtures/devops/docker-logs.fixture.json",
+        "src/rules/fixtures/devops/docker-ps.fixture.json",
+        "src/rules/fixtures/devops/helm.fixture.json",
+        "src/rules/fixtures/devops/kubectl-describe.fixture.json",
+        "src/rules/fixtures/devops/kubectl-get.fixture.json",
+        "src/rules/fixtures/devops/kubectl-logs.fixture.json",
+        "src/rules/fixtures/devops/pulumi.fixture.json",
+        "src/rules/fixtures/devops/terraform.fixture.json"
+      ],
+      "representative_files": [
+        {
+          "path": "scripts/analyze-codex-logs.mjs",
+          "bytes": 17238,
+          "sha256_prefix": "b169534ce0f8b8ca"
+        },
+        {
+          "path": "scripts/build-opencode-runtime.mjs",
+          "bytes": 511,
+          "sha256_prefix": "7c9703fb064a0d1d"
+        },
+        {
+          "path": "src/cli/install-output.ts",
+          "bytes": 558,
+          "sha256_prefix": "0d5daf1a0793d23b"
+        },
+        {
+          "path": "src/core/cli-client.ts",
+          "bytes": 4097,
+          "sha256_prefix": "7da5616c278ba7d7"
+        },
+        {
+          "path": "src/hosts/agent-layer/index.ts",
+          "bytes": 8978,
+          "sha256_prefix": "f8f2d68a8930bf0f"
+        },
+        {
+          "path": "src/hosts/agentinit/index.ts",
+          "bytes": 12571,
+          "sha256_prefix": "d737790429d1db79"
+        },
+        {
+          "path": "src/hosts/agentlink/index.ts",
+          "bytes": 15146,
+          "sha256_prefix": "80df2992169f0919"
+        },
+        {
+          "path": "src/hosts/agentloom/index.ts",
+          "bytes": 7172,
+          "sha256_prefix": "c339db838e4e72fe"
+        },
+        {
+          "path": "src/hosts/agents-cli/index.ts",
+          "bytes": 8092,
+          "sha256_prefix": "66312b6e1e53a906"
+        },
+        {
+          "path": "src/hosts/agents-md/index.ts",
+          "bytes": 11832,
+          "sha256_prefix": "f9b67bbf2de92987"
+        },
+        {
+          "path": "src/hosts/agentsge/index.ts",
+          "bytes": 5572,
+          "sha256_prefix": "18afd500e2bef1d8"
+        },
+        {
+          "path": "src/hosts/agentsmesh/index.ts",
+          "bytes": 15472,
+          "sha256_prefix": "936641ec629348f8"
+        },
+        {
+          "path": "src/cli/main.ts",
+          "bytes": 276481,
+          "sha256_prefix": "f87e94adb71fced8"
+        },
+        {
+          "path": "src/hosts/codex/index.ts",
+          "bytes": 36434,
+          "sha256_prefix": "06cbc5f532ab8f81"
+        },
+        {
+          "path": "src/hosts/shared/hook-doctor.ts",
+          "bytes": 32913,
+          "sha256_prefix": "519391eb35732c27"
+        },
+        {
+          "path": "src/index.ts",
+          "bytes": 30342,
+          "sha256_prefix": "54ea1c56151d453a"
+        },
+        {
+          "path": "src/hosts/aether/index.ts",
+          "bytes": 30191,
+          "sha256_prefix": "323d7ad953a138c0"
+        },
+        {
+          "path": "src/hosts/coderabbit/index.ts",
+          "bytes": 27602,
+          "sha256_prefix": "6631113aee5cd838"
+        },
+        {
+          "path": "src/hosts/ona/index.ts",
+          "bytes": 25610,
+          "sha256_prefix": "237cf55d5a82380d"
+        },
+        {
+          "path": "src/hosts/qodo/index.ts",
+          "bytes": 25333,
+          "sha256_prefix": "816c40851e9df1c8"
+        }
+      ],
+      "dossier": "vincentkoc-tokenjuice.md",
+      "previously_audited_commit": "49bdcf1755833ff1e02e44e6e7fe91c0fb44c16e",
+      "previously_audited_on": "2026-07-01",
+      "upstream_changes_since_audit": {
+        "available": true,
+        "source": "CHANGELOG.md",
+        "audited_on": "2026-07-01",
+        "pinned_version": "0.8.1",
+        "releases_since_audit": 0,
+        "install_relevant_releases": 0,
+        "newest": null,
+        "oldest_after_audit": null,
+        "install_relevant_headings": [],
+        "titles_are_descriptive": false,
+        "recent_headings": []
+      }
+    }
+  ]
+}

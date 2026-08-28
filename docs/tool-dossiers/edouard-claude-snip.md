@@ -4,17 +4,17 @@
 
 - Repository: `edouard-claude/snip`
 - URL: https://github.com/edouard-claude/snip
-- Version/ref inspected: local shallow clone `82b741b3ba50`, 2026-07-01
+- Version/ref inspected: `0.24.1` release at commit `18a57bc9dc4499f1a00b9c8ff799e982ba25ceba`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 82b741b3ba504a22b609f3ac8122ade94306f6ec
-- Commit URL: https://github.com/edouard-claude/snip/commit/82b741b3ba504a22b609f3ac8122ade94306f6ec
-- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
-- Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
-- Stars at inspection: 347
-- Forks at inspection: None
+- Commit inspected: 18a57bc9dc4499f1a00b9c8ff799e982ba25ceba
+- Commit URL: https://github.com/edouard-claude/snip/commit/18a57bc9dc4499f1a00b9c8ff799e982ba25ceba
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 0.24.1 release checkout from the batch release corpus, the same bytes its lanes install; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Stars at inspection (2026-07-01, not refreshed offline): 347
+- Forks at inspection (2026-07-01, not refreshed offline): None
 - License: UNKNOWN-local-clone
-- Updated at: local shallow clone 2026-06-26
+- Updated at (2026-07-01, not refreshed offline): local shallow clone 2026-06-26
 
 ## Summary
 
@@ -25,56 +25,52 @@ Snip rewrites agent shell commands so supported producers run through command-sp
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API where available; local shallow clone fallback for rate-limited repos | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
-| Runtime/source content | `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
+| Source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Used to identify source, hook, MCP, test, benchmark, and runtime paths beyond README. |
+| Runtime/source content | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Representative files fetched from raw GitHub or read from local clones with SHA-256 prefixes and behavior excerpts. |
 | README/docs | README/docs paths identified when present. | README claims are not used as behavior evidence. |
 | Tests/benchmarks | Paths identified where present. | Full benchmark-method review remains open. |
 
 ## Initial source-structure finding
 
-Repository tree inspection found 242 files and 100 files matching integration, source, test, benchmark, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `0.24.1` release checkout found 258 files: 98 source, 16 documentation, 67 test/benchmark, and 46 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
-- `internal/utils/utils.go`
-- `internal/utils/regex_test.go`
-- `internal/utils/regex.go`
-- `internal/utils/utils_test.go`
-- `internal/tee/tee_test.go`
-- `internal/tee/tee.go`
-- `internal/hook/codex_test.go`
-- `internal/hook/hook_test.go`
-- `internal/hook/transparent.go`
-- `internal/hook/rewrite_test.go`
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `internal/config/config.go`
+- `internal/hook/blockscope.go`
 - `internal/hook/codex.go`
-- `internal/hook/rewrite.go`
-- `internal/hook/pi_test.go`
+- `internal/hook/copilot.go`
+- `internal/hook/grok.go`
 - `internal/hook/hook.go`
-- `internal/hook/pi.go`
 - `internal/hook/parse.go`
-- `internal/hook/parse_test.go`
-- `internal/hook/transparent_test.go`
-- `internal/display/display_test.go`
-- `internal/display/gain.go`
-- `internal/display/display.go`
-- `internal/display/gain_test.go`
-- `internal/learn/learn.go`
-- `internal/learn/learn_test.go`
-- `internal/initcmd/codex_test.go`
-- `internal/initcmd/init_test.go`
-- `internal/initcmd/init.go`
+- `internal/hook/pi.go`
+- `internal/hook/rewrite.go`
+- `internal/hook/suggest.go`
+- `internal/hook/transparent.go`
+- `internal/hookaudit/hookaudit.go`
 - `internal/initcmd/codex.go`
-- `internal/initcmd/pi_test.go`
+- `internal/initcmd/copilot.go`
+- `internal/initcmd/grok.go`
+- `internal/initcmd/init.go`
 - `internal/initcmd/pi.go`
-- `internal/verify/verify.go`
-- `internal/verify/verify_test.go`
+
+Host-integration documentation shipped in the release:
+
+- `CLAUDE.md`
+- `SKILL.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
 
-### Fresh pinned-source refresh
+This dossier previously described `82b741b3ba50`, read from GitHub HEAD on 2026-07-01. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **0.24.1** release at `18a57bc9dc44`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
 
-The 2026-07-01 refresh pins the inspected source to `82b741b3ba504a22b609f3ac8122ade94306f6ec` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `internal/hook/codex.go`, `internal/hook/codex_test.go`, `internal/hook/hook_test.go`, `internal/hook/rewrite.go`, `internal/hook/rewrite_test.go`, `internal/hook/transparent.go`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
+No release-by-release delta is available (release ships no changelog), so the gap between the audited commit and this pin is not enumerable from the release bytes alone.
+
+The official install guide this tool is evaluated against is `source/README.md` at sha256 `710e49a20580910a…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
 
 
 - `internal/hook/rewrite.go` splits compound commands on shell boundaries and rewrites only eligible producer stages so filters apply before downstream pipes.

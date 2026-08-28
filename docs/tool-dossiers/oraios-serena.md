@@ -4,17 +4,17 @@
 
 - Repository: `oraios/serena`
 - URL: https://github.com/oraios/serena
-- Version/ref inspected: local shallow clone `103a17072e9b`, 2026-07-01
+- Version/ref inspected: `1.7.0` release at commit `949a27ef1e5fda1a6e7b561e777bcece345c6ffd`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 103a17072e9b915c9c9980f946902be856695978
-- Commit URL: https://github.com/oraios/serena/commit/103a17072e9b915c9c9980f946902be856695978
-- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
-- Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
-- Stars at inspection: 25,797
-- Forks at inspection: 1,717
+- Commit inspected: 949a27ef1e5fda1a6e7b561e777bcece345c6ffd
+- Commit URL: https://github.com/oraios/serena/commit/949a27ef1e5fda1a6e7b561e777bcece345c6ffd
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 1.7.0 release checkout from the batch release corpus, the same bytes its lanes install; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Stars at inspection (2026-07-01, not refreshed offline): 25,797
+- Forks at inspection (2026-07-01, not refreshed offline): 1,717
 - License: MIT
-- Updated at: 2026-06-26T07:03:50Z
+- Updated at (2026-07-01, not refreshed offline): 2026-06-26T07:03:50Z
 
 ## Summary
 
@@ -25,7 +25,7 @@ Serena is an MCP toolkit providing code retrieval and editing capabilities using
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
 | Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
@@ -33,59 +33,58 @@ Serena is an MCP toolkit providing code retrieval and editing capabilities using
 
 ## Initial source-structure finding
 
-Repository tree inspection found 961 files and 888 files matching integration, source, test, benchmark, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `1.7.0` release checkout found 1048 files: 471 source, 61 documentation, 719 test/benchmark, and 136 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
-- `.github/ISSUE_TEMPLATE/config.yml`
-- `.github/workflows/pytest.yml`
-- `.github/workflows/test-parallel.yml`
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `scripts/agno_agent.py`
+- `scripts/mcp_server.py`
+- `src/interprompt/__init__.py`
+- `src/interprompt/util/__init__.py`
+- `src/serena/__init__.py`
+- `src/serena/agent.py`
+- `src/serena/config/__init__.py`
+- `src/serena/config/client_setup.py`
+- `src/serena/config/context_mode.py`
+- `src/serena/config/serena_config.py`
+- `src/serena/hooks.py`
+- `src/serena/jetbrains/jetbrains_plugin_client.py`
+- `src/serena/mcp.py`
+- `src/serena/tools/__init__.py`
+- `src/serena/tools/config_tools.py`
+- `src/solidlsp/__init__.py`
+- `src/solidlsp/initialize_params.py`
+- `src/solidlsp/language_servers/elixir_tools/__init__.py`
+- `src/solidlsp/ls_config.py`
+
+Host-integration documentation shipped in the release:
+
 - `AGENTS.md`
-- `docs/.gitignore`
-- `docs/01-about/.gitignore`
-- `docs/01-about/020_programming-languages.md`
-- `docs/01-about/030_serena-in-action.md`
-- `docs/01-about/050_acknowledgements.md`
-- `docs/02-usage/000_intro.md`
+- `CLAUDE.md`
 - `docs/02-usage/010_installation.md`
-- `docs/02-usage/020_running.md`
 - `docs/02-usage/025_jetbrains_plugin.md`
 - `docs/02-usage/030_clients.md`
-- `docs/02-usage/040_workflow.md`
-- `docs/02-usage/045_memories.md`
 - `docs/02-usage/050_configuration.md`
-- `docs/02-usage/060_dashboard.md`
-- `docs/02-usage/065_logs.md`
-- `docs/02-usage/070_security.md`
-- `docs/02-usage/999_additional-usage.md`
-- `docs/03-special-guides/000_intro.md`
-- `docs/03-special-guides/cpp_setup.md`
-- `docs/03-special-guides/custom_agent.md`
-- `docs/03-special-guides/godot_gdscript_setup_guide_for_serena.md`
-- `docs/03-special-guides/groovy_setup_guide_for_serena.md`
-- `docs/03-special-guides/ocaml_setup_guide_for_serena.md`
-- `docs/03-special-guides/scala_setup_guide_for_serena.md`
-- `docs/03-special-guides/serena_on_chatgpt.md`
-- `docs/03-special-guides/unreal_engine_setup_guide_for_serena.md`
-- `docs/04-evaluation/000_evaluation-intro.md`
-- `docs/04-evaluation/010_methodology.md`
-- `docs/04-evaluation/020_prompts/000_prompts.md`
-- `docs/04-evaluation/020_prompts/010_evaluation-prompt.md`
-- `docs/04-evaluation/020_prompts/020_summary-prompt.md`
-- `docs/04-evaluation/030_results/000_evaluation-results.md`
-- `docs/04-evaluation/030_results/010_cc_on_tianshou.md`
-- `docs/04-evaluation/030_results/020_codex_on_jbplugin.md`
-- `docs/04-evaluation/030_results/030_copilot_cli_on_ente.md`
-- `docs/04-evaluation/030_results/040_glm_on_tianshou.md`
-
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
 
-### Fresh pinned-source refresh
+This dossier previously described `103a17072e9b`, read from GitHub HEAD on 2026-07-01. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **1.7.0** release at `949a27ef1e5f`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
 
-The 2026-07-01 refresh pins the inspected source to `103a17072e9b915c9c9980f946902be856695978` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `AGENTS.md`, `docs/01-about/020_programming-languages.md`, `docs/01-about/030_serena-in-action.md`, `docs/01-about/050_acknowledgements.md`, `docs/02-usage/000_intro.md`, `docs/02-usage/010_installation.md`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
- The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+Upstream shipped **3 releases** between 2026-07-01 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+This project's changelog headings carry no descriptive titles, so which of those releases touched an install surface cannot be read off the headings. The most recent are:
+
+- v1.7.0 (2026-08-09)
+- v1.6.1 (2026-07-21)
+- v1.6.0 (2026-07-16)
+
+The official install guide this tool is evaluated against is `source/docs/02-usage/030_clients.md` at sha256 `62b271277e5ba778…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
 
 - `src/serena/mcp.py` wraps Serena tools into FastMCP tools, builds schemas from tool metadata, and includes OpenAI-tool schema sanitization when needed.
 - `src/serena/agent.py` manages the exposed tool set, project activation, language-server manager, modes, and memory/tool availability boundaries.

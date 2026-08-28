@@ -5,13 +5,13 @@
 - Repository: `jrollin/cartog`
 - URL: https://github.com/jrollin/cartog
 - Local clone inspected: `/tmp/token-leads-20260629/jrollin__cartog`
-- Version/ref inspected: local shallow clone `890d15b66b52`, 2026-06-29
+- Version/ref inspected: `0.32.2` release at commit `2eeb61a3eb57f8011573bb3117aa02c5b6906b08`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 890d15b66b52
-- Commit URL: https://github.com/jrollin/cartog/commit/890d15b66b52
-- Source artifact path: `sources/discovery/2026-06-29-graph-leads-b-source-logic.json`
-- Date inspected: 2026-06-29
-- Evidence stage: source-logic (local shallow clone; representative Cargo workspace, CLI, MCP server/tools, indexer, database query layer, RAG search/context, LSP gate, plugin hooks, and tests inspected)
+- Commit inspected: 2eeb61a3eb57f8011573bb3117aa02c5b6906b08
+- Commit URL: https://github.com/jrollin/cartog/commit/2eeb61a3eb57f8011573bb3117aa02c5b6906b08
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 0.32.2 release checkout from the batch release corpus, the same bytes its lanes install; representative Cargo workspace, CLI, MCP server/tools, indexer, database query layer, RAG search/context, LSP gate, plugin hooks, and tests inspected)
 
 ## Summary
 
@@ -31,7 +31,7 @@ Cartog is a Rust code-graph/indexing toolkit with CLI, MCP server, RAG search/co
 
 - Cargo workspace builds multiple crates: CLI (`cartog`), MCP (`cartog-mcp`), indexer, DB, RAG, LSP, watcher, language extractors, process lock, and core schema.
 - `crates/cartog/src/cli.rs` exposes `--json`, `--tokens`, `--compact`, and `--db` globally; subcommands cover index, outline, search, refs, callees, impact, trace, context, deps, map, changes, watch, init, install/ide, serve, and rag setup/index/search.
-- `main.rs` resolves DB path from CLI/env/config/project root, enforces a consent gate before creating a fresh `.cartog/` index, warns on rejected configs, and dispatches `serve` into `cartog_mcp::run_server`.
+- `crates/cartog/src/main.rs` resolves DB path from CLI/env/config/project root, enforces a consent gate before creating a fresh `.cartog/` index, warns on rejected configs, and dispatches `serve` into `cartog_mcp::run_server`.
 - `skills/cartog/scripts/ensure_indexed.sh` is a Claude/plugin SessionStart hook: it surfaces prior background errors, checks binary drift, runs foreground incremental `cartog index .`, and backgrounds RAG setup/index tasks.
 - IDE install paths and editor integration are present under `commands/ide`, `editors/vscode`, and plugin skills; full installer mutation review remains open.
 
@@ -57,7 +57,7 @@ Cartog is a Rust code-graph/indexing toolkit with CLI, MCP server, RAG search/co
 
 | Claim area | Source inspected | Reviewed method | Caveats |
 |---|---|---|---|
-| Token-bounded MCP output and context bundling. | `cartog-mcp/src/lib.rs`, `tools/rag.rs`, `cartog-rag/src/context.rs`, `cartog-rag/src/search.rs`. | Source-logic; implementation paths inspected. | No provider-billed accounting or task-quality benchmark inspected. |
+| Token-bounded MCP output and context bundling. | `crates/cartog-mcp/src/lib.rs`, `crates/cartog-mcp/src/tools/rag.rs`, `crates/cartog-rag/src/context.rs`, `crates/cartog-rag/src/search.rs`. | Source-logic; implementation paths inspected. | No provider-billed accounting or task-quality benchmark inspected. |
 | Bench/fixture files exist. | `crates/cartog/benches/*.rs`, `crates/cartog-indexer/benches/indexing.rs`, `benchmarks/fixtures/*` paths identified. | Not benchmark-audit. | Do not treat as measured effectiveness evidence until harness/scoring/raw outputs are reviewed. |
 
 ## Compatibility notes
@@ -85,3 +85,17 @@ Cartog is a Rust code-graph/indexing toolkit with CLI, MCP server, RAG search/co
 - [ ] Inspect migration/schema tables and compact/byte-cap response code end-to-end.
 - [ ] Run a sandbox indexing smoke test on a small repo and verify `cartog_context`, `refs`, and stale-index warnings.
 - [ ] Audit benchmark harnesses only after locating task definitions, scoring, token accounting, and raw outputs.
+
+## Code-detail inspection findings
+
+### Path drift at this pin
+
+Between the commit this dossier used to describe and the pinned 0.32.2 release, the crate layout moved into a Cargo workspace under `crates/`. Every path below was cited by the readings in this dossier and no longer resolves as written:
+
+- `crates/cartog-mcp/src/lib.rs` → `crates/cartog-mcp/src/lib.rs`
+- `crates/cartog-rag/src/context.rs` → `crates/cartog-rag/src/context.rs`
+- `crates/cartog-rag/src/search.rs` → `crates/cartog-rag/src/search.rs`
+- `crates/cartog/src/main.rs` → `crates/cartog/src/main.rs`
+- `crates/cartog-mcp/src/tools/rag.rs` → `crates/cartog-mcp/src/tools/rag.rs`
+
+The paths are corrected here; the **behavioural claims attached to them were not re-verified** against the pinned release. A file that moved during a restructure can also have changed what it does, so treat those specific readings as carried over from the older commit rather than as current source-logic evidence.

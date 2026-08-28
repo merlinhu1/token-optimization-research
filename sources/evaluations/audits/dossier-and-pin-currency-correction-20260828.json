@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-28",
+  "action": "dossier-and-profile-pin-currency-correction",
+  "question": "Did the retained treatment runs use older tool versions than the dossiers audited?",
+  "answer": "No, the reverse. Every retained treatment session ran the newest release as of the 2026-08-22 batch; the dossiers, profile pins, and runner constants named older versions, so the recorded metadata read backwards.",
+  "trigger": "Experiment-owner observation that treatment runs appeared to use versions older than the audited dossiers.",
+  "finding": {
+    "direction": "inverted",
+    "evidence": "Each retained treatment session's own run.json records source_identity.git_head. All 26 match the BATCH_RELEASES commit exactly, which is the newest published release per treatment-version-currency-20260822.json. None matches the dossier commit.",
+    "verified_from": "sources/evaluations/workflow-sessions/*/run.json, not from documentation",
+    "per_tool": {
+      "caveman": {"dossier_audited": "25d22f864ad6", "ran": "9aa63945a349", "release": "2.2.0"},
+      "ponytail": {"dossier_audited": "c4d1925ae9b7", "ran": "0a4dd63ad454", "release": "4.9.0"},
+      "rtk": {"dossier_audited": "23aae98c5b29", "ran": "b34be37caf37", "release": "0.45.0"},
+      "serena": {"dossier_audited": "103a17072e9b", "ran": "949a27ef1e5f", "release": "1.7.0"},
+      "snip": {"dossier_audited": "82b741b3ba50", "ran": "18a57bc9dc44", "release": "0.24.1"},
+      "codegraph": {"dossier_audited": "4077ed19b7d8", "ran": "ea72e1b19092", "release": "1.5.0"}
+    },
+    "no_rerun_required": "The token evidence is unaffected. No retained session installed stale code, so no result is invalidated by version currency."
+  },
+  "real_defect": {
+    "summary": "Three surfaces recorded a version that was not the version that installs, all of them pointing at older code.",
+    "surfaces": [
+      "data/evaluation-profiles.json source_snapshot: 14 active profiles pinned a pre-batch version, e.g. retrieval-jcodemunch-codex-mcp-v2 at 1.108.114 against an installed 1.108.290.",
+      "docs/tool-dossiers/*.md: 14 dossiers described commits read from GitHub HEAD between 2026-06-26 and 2026-07-01, six to eight weeks behind the pinned releases.",
+      "scripts/run_codex_fixture_evaluation.py: pre-batch path constants carry June 2026 version strings and are silently rewritten onto BATCH_RELEASES at import, so grepping the runner reports the wrong version."
+    ],
+    "why_it_matters": "A protocol derived from a stale reading is how the 2026-08-22 review found five protocol drifts and one blocking repowise defect. The risk is a wrong install protocol, not a wrong token number."
+  },
+  "corrections": {
+    "dossiers_refreshed": 14,
+    "dossier_basis": "Pinned source/ checkouts in the batch release corpus, each verified to sit at the BATCH_RELEASES commit. Chosen over a fresh network fetch because upstream HEAD keeps moving while the pinned checkout does not, so the reading stays reproducible and describes the bytes a lane installs.",
+    "dossiers_left_current": ["vincentkoc-tokenjuice.md", "onur-gokyildiz-bhi-codescope.md"],
+    "discovery_artifact": "sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json",
+    "generator": "scripts/refresh_batch_dossiers.py",
+    "profile_pins_corrected": 14,
+    "registries_repointed": ["data/repositories.json", "data/tool-analysis-backlog.json"],
+    "protocol_identity_cost": "None. Every profile carrying a stale pin holds zero retained sessions, so no protocol identity that has been used changes. Profiles with status historical-profile, excluded, or invalid-profile were deliberately left alone: their pins record what they actually were."
+  },
+  "upstream_drift_since_dossier_audit": {
+    "method": "Shipped changelog sliced by the dossier's own inspection date. Git cannot answer this because the corpus checkouts are built from release tarballs, so the audited commit is not an ancestor of the pinned commit.",
+    "releases_since_audit": {
+      "jcodemunch": 199,
+      "graphify": 46,
+      "sigmap": 36,
+      "token-savior": 25,
+      "leanctx": 20,
+      "codegraph": 11,
+      "headroom": 11,
+      "cartog": 6,
+      "repowise": 6,
+      "rtk": 5,
+      "serena": 3,
+      "codescope": 0,
+      "tokenjuice": 0
+    },
+    "no_changelog_shipped": ["caveman", "ponytail", "snip"]
+  },
+  "path_drift_found": {
+    "note": "Paths cited by dossier readings that no longer resolve at the pinned release. Corrected in place; the behavioural claims attached to them were NOT re-verified and remain carried over from the older commit.",
+    "repowise": "Tree restructured into a packages/{cli,core,server} monorepo; 11 cited paths moved, and .codex/config.toml no longer exists anywhere in the release.",
+    "cartog": "Crates moved into a Cargo workspace under crates/; 5 cited paths moved.",
+    "leanctx": "Rust tool modules moved behind a registered/ layer; 1 cited path moved.",
+    "headroom": "The agent-evals subproject was removed outright; 1 cited path has no successor.",
+    "unaffected": ["rtk", "snip", "serena", "sigmap", "token-savior", "ponytail", "caveman", "codegraph", "jcodemunch", "graphify"]
+  },
+  "jcodemunch_specific": {
+    "reason_examined_first": "Owner asked for jcodemunch to be updated and evaluated; it holds zero sessions and zero protocols, so its pin was free to correct.",
+    "pinned": "1.108.290 at 9e76d6320c01, from 1.108.114 at fbc14e40c705",
+    "guidance_unchanged": "AGENT_INSTALL_UNIVERSAL.md is byte-identical across the bump (sha256 2026d09f4af85e97...), so the verbatim product-authored guidance this profile installs did not change.",
+    "readme_changed": "README.md moved from 09ba2669b4535546... to d331109d2df6fa3f...",
+    "install_relevant_releases": "14 of the 199 releases name an install surface in their own title, including 1.108.283 'A config in the wrong shape is a client that reports success and registers nothing' and 1.108.255 'Hook output on channels the model never sees'."
+  },
+  "claude_code_adapter_identity_defect": {
+    "status": "fixed-under-owner-direction",
+    "found": "run_codex_workflow_evaluation.SUPPORTED_WORKFLOW_TOOL_PROFILES named each Claude Code profile's historical base tool config, while run_codex_fixture_evaluation.PROFILE_TOOL_CONFIG_OVERRIDES resolved the real claude-code config for execution.",
+    "extent": "11 profiles, all Claude Code. Only codegraph, serena and snip hold retained sessions (2 each); the other 8 including jcodemunch were unrun. ponytail and caveman were never affected: their Claude lanes genuinely run the base config, so the two maps already agreed.",
+    "severity": "Execution was correct. The lanes installed the official product surface, confirmed from CodeGraph's retained tool-host-install-1.txt showing `codegraph install --target claude` running and writing .claude.json, settings.json and CLAUDE.md. What was wrong is the record: the identity map feeds tool_adapter_identity, whose tool_config is hashed into tool_config_sha256 and through the execution descriptor into protocol identity, so run.json bound each session to an apparatus it did not use. For jcodemunch the named config was retrieval-jcodemunch-mcp, a deleted-invalid uv-launcher profile.",
+    "second_defect": "The Claude configs are deep-copied from their base entry and inherited its display_name, so an official-surface lane recorded names like 'Snip (historical PATH-only profile)'. _claude_readme_config now re-labels from the product name.",
+    "fix": "Both maps repointed to the claude-code configs; an import-time assertion in run_codex_workflow_evaluation refuses to load if they ever disagree again, plus two contract tests in ToolIdentityMatchesExecutionTest.",
+    "cost_accepted_by_owner": "The three profiles holding sessions get a new protocol identity, so a second replicate of codegraph, serena or snip on Claude Code mints a new protocol rather than reusing r0. Retained sessions are untouched and remain internally consistent: validate_tool_adapter_identity compares each record against its own descriptor, not against a recomputed one.",
+    "retained_sessions_affected": [
+      "retrieval-codegraph-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0",
+      "retrieval-codegraph-claude-code-mcp-beets-20260828-p-e257557e288c-r0",
+      "retrieval-serena-claude-code-mcp-fastify-20260827-p-94cb0f4a5c49-r0",
+      "retrieval-serena-claude-code-mcp-beets-20260827-p-e257557e288c-r0",
+      "terminal-snip-claude-code-hook-fastify-20260827-p-94cb0f4a5c49-r0",
+      "terminal-snip-claude-code-hook-beets-20260827-p-e257557e288c-r0"
+    ],
+    "retained_session_disposition": "Left as frozen evidence. Their token results stand; their recorded tool_config names the historical base rather than the Claude surface that was installed, and this receipt is the correction of record."
+  },
+  "corpus_integrity_finding": {
+    "tool": "lean-ctx",
+    "finding": "The pinned lean-ctx-3.9.19 source checkout is dirty: aur/lean-ctx-bin is deleted relative to its commit. The directory was modified on 2026-08-23, after the 2026-08-22 corpus fetch and before this review.",
+    "effect": "path_identity fails closed on a dirty treatment source artifact, so a lean-ctx run refuses to launch rather than silently measuring modified bytes. All 15 other corpus checkouts are clean.",
+    "action": "Reported, not repaired. Rebuilding it is scripts/fetch_batch_releases.py's job and no lean-ctx run is pending."
+  },
+  "outstanding": {
+    "behavioural_reverification": "Dossier readings for moved paths in repowise, cartog, leanctx and headroom are carried over rather than re-derived. A file that moved during a restructure can also have changed what it does."
+  }
+}

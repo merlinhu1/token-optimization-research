@@ -4,13 +4,13 @@
 
 - Repository: `rtk-ai/rtk`
 - URL: https://github.com/rtk-ai/rtk
-- Version/ref inspected: local shallow clone `23aae98c5b29`, 2026-06-26
+- Version/ref inspected: `0.45.0` release at commit `b34be37caf3796b69a50952a28e60e32b5daad43`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 23aae98c5b29
-- Commit URL: https://github.com/rtk-ai/rtk/commit/23aae98c5b29
-- Source artifact path: `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json`
-- Date inspected: 2026-06-26
-- Evidence stage: source-logic (local shallow clone; representative runner, filter, tee, hook rewrite/init, discovery, formatter, and guard tests inspected)
+- Commit inspected: b34be37caf3796b69a50952a28e60e32b5daad43
+- Commit URL: https://github.com/rtk-ai/rtk/commit/b34be37caf3796b69a50952a28e60e32b5daad43
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 0.45.0 release checkout from the batch release corpus, the same bytes its lanes install; representative runner, filter, tee, hook rewrite/init, discovery, formatter, and guard tests inspected)
 
 ## Summary
 
@@ -20,48 +20,70 @@ RTK is a shell and tool-output compaction layer for AI coding agents. Source ins
 
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
-| Repository source tree | `sources/discovery/2026-06-26-source-logic-uplift-source-structures.json` | Local shallow clone tree used to identify source, hook, MCP, test, benchmark, and runtime paths. |
-| Runtime/source content | `sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json` | Representative implementation files read from local clone with byte counts, SHA-256 prefixes, and behavior excerpts. |
+| Repository source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Local shallow clone tree used to identify source, hook, MCP, test, benchmark, and runtime paths. |
+| Runtime/source content | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Representative implementation files read from local clone with byte counts, SHA-256 prefixes, and behavior excerpts. |
 | README/docs | README/docs and skill files where present. | README claims remain discovery evidence; source findings below control this evidence stage. |
 | Tests/benchmarks | Test and benchmark paths identified; representative tests inspected where listed. | Benchmark-method review remains benchmark-audit work. |
 
 ## Initial source-structure finding
 
-Local tree inspection found 380 files and 293 files matching integration, source, test, benchmark, hook, MCP, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `0.45.0` release checkout found 412 files: 143 source, 146 documentation, 88 test/benchmark, and 98 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
-- `src/core/utils.rs`
-- `src/core/runner.rs`
-- `src/core/toml_filter.rs`
-- `src/core/stream.rs`
-- `src/core/args_utils.rs`
-- `src/core/README.md`
-- `src/core/mod.rs`
-- `src/core/telemetry_cmd.rs`
-- `src/core/telemetry.rs`
-- `src/core/constants.rs`
-- `src/core/guard.rs`
-- `src/core/tracking.rs`
-- `src/core/tee.rs`
-- `src/core/filter.rs`
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
+
+- `hooks/hermes/rtk-rewrite/__init__.py`
+- `hooks/opencode/rtk.ts`
+- `hooks/pi/rtk.ts`
 - `src/core/config.rs`
-- `src/core/display_helpers.rs`
-- `src/core/truncate.rs`
-- `src/hooks/trust.rs`
-- `src/hooks/integrity.rs`
-- `src/hooks/hook_audit_cmd.rs`
-- `src/hooks/README.md`
-- `src/hooks/mod.rs`
 - `src/hooks/constants.rs`
-- `src/hooks/permissions.rs`
+- `src/hooks/hook_audit_cmd.rs`
+- `src/hooks/hook_check.rs`
 - `src/hooks/hook_cmd.rs`
 - `src/hooks/init.rs`
+- `src/hooks/integrity.rs`
+- `src/hooks/mod.rs`
+- `src/hooks/permissions.rs`
 - `src/hooks/rewrite_cmd.rs`
-- `src/hooks/hook_check.rs`
+- `src/hooks/trust.rs`
+- `src/hooks/verify_cmd.rs`
+
+Host-integration documentation shipped in the release:
+
+- `.claude/agents/code-reviewer.md`
+- `.claude/agents/debugger.md`
+- `.claude/agents/rust-rtk.md`
+- `.claude/agents/system-architect.md`
+- `.claude/agents/technical-writer.md`
+- `.claude/commands/clean-worktree.md`
+- `.claude/commands/clean-worktrees.md`
+- `.claude/commands/diagnose.md`
+- `.claude/commands/tech/audit-codebase.md`
+- `.claude/commands/tech/clean-worktree.md`
+- `.claude/commands/tech/clean-worktrees.md`
+- `.claude/commands/tech/codereview.md`
+- `.claude/commands/tech/remove-worktree.md`
+- `.claude/commands/tech/worktree-status.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-06-26-source-logic-uplift-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
+
+This dossier previously described `23aae98c5b29`, read from GitHub HEAD on 2026-06-26. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **0.45.0** release at `b34be37caf37`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
+
+Upstream shipped **5 releases** between 2026-06-26 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+This project's changelog headings carry no descriptive titles, so which of those releases touched an install surface cannot be read off the headings. The most recent are:
+
+- [0.45.0](https://github.com/rtk-ai/rtk/compare/v0.44.2...v0.45.0) (2026-08-07)
+- [0.44.2](https://github.com/rtk-ai/rtk/compare/v0.44.1...v0.44.2) (2026-08-01)
+- [0.44.1](https://github.com/rtk-ai/rtk/compare/v0.44.0...v0.44.1) (2026-07-28)
+- [0.44.0](https://github.com/rtk-ai/rtk/compare/v0.43.0...v0.44.0) (2026-07-26)
+- [0.43.0](https://github.com/rtk-ai/rtk/compare/v0.42.4...v0.43.0) (2026-06-28)
+
+The official install guide this tool is evaluated against is `source/README.md` at sha256 `413b3c684d00c36d…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
 
 - `src/core/runner.rs` composes filtered output with optional recovery hints, applies a `never_worse` guard against raw output, and emits tee hints when applicable.
 - `src/core/filter.rs` defines filter levels and source/comment-stripping behavior used for compaction modes.

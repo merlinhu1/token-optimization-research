@@ -4,13 +4,13 @@
 
 - Repository: `safishamsi/graphify`
 - URL: https://github.com/safishamsi/graphify
-- Version/ref inspected: local shallow clone `199061207f66`, 2026-06-29
+- Version/ref inspected: `0.9.48` release at commit `b2cd36267456c166788c95be6e68574064a92a42`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 199061207f66
-- Commit URL: https://github.com/safishamsi/graphify/commit/199061207f66
-- Source artifact path: `sources/discovery/2026-06-29-graph-leads-a-source-logic.json`
-- Date inspected: 2026-06-29
-- Evidence stage: source-logic (local source inspection of CLI, installer, extraction, graph build/query, MCP server, hooks, and representative tests)
+- Commit inspected: b2cd36267456c166788c95be6e68574064a92a42
+- Commit URL: https://github.com/safishamsi/graphify/commit/b2cd36267456c166788c95be6e68574064a92a42
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 0.9.48 release checkout from the batch release corpus, the same bytes its lanes install; CLI, installer, extraction, graph build/query, MCP server, hooks, and representative tests)
 - License: package metadata points to `LICENSE`
 
 ## Summary

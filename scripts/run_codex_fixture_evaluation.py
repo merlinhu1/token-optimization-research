@@ -162,6 +162,18 @@ CODESCOPE_NEUTRAL_MCP = "{repository_root}/scripts/run_codescope_neutral_mcp.py"
 SWARMVAULT_ROOT = Path("/opt/data/tool-candidates/swarmvault")
 SWARMVAULT_CLI = SWARMVAULT_ROOT / "packages" / "cli" / "dist" / "index.js"
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
+# The paths and versions in the block below are PRE-BATCH PLACEHOLDERS, not what runs.
+# ``_BATCH_REWRITES`` substitutes each one onto its BATCH_RELEASES path at import, so a
+# lane installs the pinned release (jcodemunch 1.108.290, repowise 0.45.0, graphify
+# 0.9.48, ...) no matter what version string appears here. They survive only as rewrite
+# keys: the value has to match the string embedded in each tool config for the
+# substitution to find it.
+#
+# Read a version off BATCH_RELEASES, never off these names. Grepping here reports the
+# version that was current in June 2026 and has misled at least one reader into
+# believing the treatment corpus ran on stale tools. A constant NOT covered by
+# ``_BATCH_REWRITES`` points into the deleted pre-batch corpus and fails at install
+# with 127 rather than silently running something old.
 TOKEN_SAVIOR_ROOT = Path("/opt/data/tool-candidates/token-savior")
 GRAPHIFY_ROOT = Path("/opt/data/tool-candidates/graphify")
 SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
@@ -2264,8 +2276,15 @@ def _claude_readme_config(
 ) -> dict[str, Any]:
     """Clone a historical adapter and bind the pinned README's Claude surface."""
     config = copy.deepcopy(TOOL_CONFIGS[base_name])
+    # The clone inherits the base entry's display_name, which for most of these bases
+    # is something like "Snip (historical PATH-only profile)". Carried onto a lane that
+    # installs the product's official Claude surface, that label reads in run.json as
+    # though the retired profile ran. Re-label from the product name, dropping the
+    # base's parenthetical qualifier.
+    product = re.sub(r"\s*\(.*\)\s*$", "", str(config.get("display_name", base_name)))
     config.update(
         {
+            "display_name": f"{product} official Claude Code integration",
             "lane_name": lane_name,
             "surface": surface,
             "diff_exclude_paths": diff_exclude_paths,

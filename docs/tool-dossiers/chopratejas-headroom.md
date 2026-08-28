@@ -4,17 +4,17 @@
 
 - Repository: `chopratejas/headroom`
 - URL: https://github.com/chopratejas/headroom
-- Version/ref inspected: local shallow clone `715ed7d200cb`, 2026-07-01
+- Version/ref inspected: `0.36.3` release at commit `87e71dd10057ff3cbe826bde617682971339e4f8`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f
-- Commit URL: https://github.com/chopratejas/headroom/commit/715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f
-- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
-- Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
-- Stars at inspection: 51,329
-- Forks at inspection: 3,642
+- Commit inspected: 87e71dd10057ff3cbe826bde617682971339e4f8
+- Commit URL: https://github.com/chopratejas/headroom/commit/87e71dd10057ff3cbe826bde617682971339e4f8
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 0.36.3 release checkout from the batch release corpus, the same bytes its lanes install; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Stars at inspection (2026-07-01, not refreshed offline): 51,329
+- Forks at inspection (2026-07-01, not refreshed offline): 3,642
 - License: Apache-2.0
-- Updated at: 2026-06-26T07:44:25Z
+- Updated at (2026-07-01, not refreshed offline): 2026-06-26T07:44:25Z
 
 ## Summary
 
@@ -25,7 +25,7 @@ Headroom is a broad compression layer for tool outputs, logs, files, RAG chunks,
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
 | Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
@@ -33,59 +33,89 @@ Headroom is a broad compression layer for tool outputs, logs, files, RAG chunks,
 
 ## Initial source-structure finding
 
-Repository tree inspection found 3,427 files and 2,479 files matching integration, source, test, benchmark, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `0.36.3` release checkout found 2311 files: 1759 source, 147 documentation, 1209 test/benchmark, and 426 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
-- `.github/ISSUE_TEMPLATE/copilot-subscription-test-report.md`
-- `Cargo.toml`
-- `REALIGNMENT/11-phase-I-test-infra.md`
-- `TESTING-copilot-subscription.md`
-- `agent-evals/.gitignore`
-- `agent-evals/Makefile`
-- `agent-evals/README.md`
-- `agent-evals/pyproject.toml`
-- `agent-evals/src/agent_evals/__init__.py`
-- `agent-evals/src/agent_evals/arms.py`
-- `agent-evals/src/agent_evals/benchmarks/__init__.py`
-- `agent-evals/src/agent_evals/cli.py`
-- `agent-evals/src/agent_evals/config.py`
-- `agent-evals/src/agent_evals/harnesses/__init__.py`
-- `agent-evals/src/agent_evals/judge/__init__.py`
-- `agent-evals/src/agent_evals/logging.py`
-- `agent-evals/src/agent_evals/manifest.py`
-- `agent-evals/src/agent_evals/metrics/__init__.py`
-- `agent-evals/src/agent_evals/metrics/savings.py`
-- `agent-evals/src/agent_evals/models.py`
-- `agent-evals/src/agent_evals/orchestrator.py`
-- `agent-evals/src/agent_evals/probes/__init__.py`
-- `agent-evals/src/agent_evals/protocols.py`
-- `agent-evals/src/agent_evals/report/__init__.py`
-- `agent-evals/src/agent_evals/report/scorecard.py`
-- `agent-evals/src/agent_evals/stats/__init__.py`
-- `agent-evals/tests/__init__.py`
-- `agent-evals/tests/conftest.py`
-- `agent-evals/tests/test_arms.py`
-- `agent-evals/tests/test_config.py`
-- `agent-evals/tests/test_integration_phase0.py`
-- `agent-evals/tests/test_live_integration.py`
-- `agent-evals/tests/test_manifest.py`
-- `agent-evals/tests/test_models.py`
-- `agent-evals/tests/test_orchestrator.py`
-- `agent-evals/tests/test_savings.py`
-- `agent-evals/tests/test_scorecard.py`
-- `benchmarks/__init__.py`
-- `benchmarks/adversarial_ccr_tests.py`
-- `benchmarks/agent_cost_benchmark.py`
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
 
+- `claude_analysis_ttl.py`
+- `crates/headroom-core/src/transforms/pipeline/config.rs`
+- `crates/headroom-core/src/transforms/smart_crusher/config.rs`
+- `crates/headroom-core/src/transforms/text_crusher/config.rs`
+- `crates/headroom-proxy/src/config.rs`
+- `crates/headroom-simulators/src/config.rs`
+- `docs/next.config.mjs`
+- `docs/postcss.config.mjs`
+- `docs/source.config.ts`
+- `e2e/__init__.py`
+- `e2e/_lib/__init__.py`
+- `e2e/init/run.py`
+- `examples/langchain_demo/__init__.py`
+- `examples/mcp_demo/__init__.py`
+- `examples/mcp_demo/mock_mcp_servers.py`
+- `examples/mcp_demo/run_agent_eval.py`
+- `examples/mcp_demo/show_before_after.py`
+- `examples/mcp_demo/show_compression.py`
+- `headroom/__init__.py`
+- `headroom/agent_savings.py`
+- `headroom/audit/__init__.py`
+- `headroom/audit/codex.py`
+- `headroom/backends/__init__.py`
+- `headroom/cache/__init__.py`
+- `headroom/cache/backends/__init__.py`
+- `headroom/capture/__init__.py`
+- `headroom/ccr/__init__.py`
+- `headroom/ccr/mcp_http.py`
+
+Host-integration documentation shipped in the release:
+
+- `docs/claude-code-bedrock-headroom.md`
+- `docs/content/docs/agent-orchestration.mdx`
+- `docs/content/docs/claude-code-azure-foundry.mdx`
+- `docs/content/docs/claude-code-vertex.mdx`
+- `docs/content/docs/codex-recovery.mdx`
+- `docs/content/docs/configuration.mdx`
+- `docs/content/docs/docker-install.mdx`
+- `docs/content/docs/installation.mdx`
+- `docs/content/docs/mcp.mdx`
+- `docs/content/docs/opencode-deepseek.mdx`
+- `docs/content/docs/opencode.mdx`
+- `docs/content/docs/persistent-installs.mdx`
+- `docs/content/docs/vscode-claude-code.mdx`
+- `examples/deployment/macos-launchagent/README.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+### Path drift at this pin
 
-### Fresh pinned-source refresh
+Between the commit this dossier used to describe and the pinned 0.36.3 release, one cited component was removed outright. Every path below was cited by the readings in this dossier and no longer resolves as written:
 
-The 2026-07-01 refresh pins the inspected source to `715ed7d200cb62c43e6ee3976ce8d3aa639ccf9f` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `Cargo.toml`, `REALIGNMENT/11-phase-I-test-infra.md`, `TESTING-copilot-subscription.md`, `agent-evals/README.md`, `agent-evals/pyproject.toml`, `agent-evals/src/agent_evals/__init__.py`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
- The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+- `agent-evals/src/agent_evals/metrics/savings.py` — removed: the whole `agent-evals` subproject is absent from this release; the nearest surviving code is `headroom/cli/savings.py`, which is a different component
+
+The paths are corrected here; the **behavioural claims attached to them were not re-verified** against the pinned release. A file that moved during a restructure can also have changed what it does, so treat those specific readings as carried over from the older commit rather than as current source-logic evidence.
+
+### Pinned-release refresh (2026-08-28)
+
+This dossier previously described `715ed7d200cb`, read from GitHub HEAD on 2026-07-01. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **0.36.3** release at `87e71dd10057`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
+
+Upstream shipped **11 releases** between 2026-07-01 and this pin (`CHANGELOG.md`). A protocol derived from the older reading is how the 2026-08-22 review found five drifts and one blocking defect, so any integration step below is worth re-checking against the pinned release rather than trusted.
+
+This project's changelog headings carry no descriptive titles, so which of those releases touched an install surface cannot be read off the headings. The most recent are:
+
+- [0.36.3](https://github.com/headroomlabs-ai/headroom/compare/v0.36.2...v0.36.3) (2026-08-21)
+- [0.36.2](https://github.com/headroomlabs-ai/headroom/compare/v0.36.1...v0.36.2) (2026-08-21)
+- [0.36.1](https://github.com/headroomlabs-ai/headroom/compare/v0.36.0...v0.36.1) (2026-08-20)
+- [0.36.0](https://github.com/headroomlabs-ai/headroom/compare/v0.35.0...v0.36.0) (2026-08-20)
+- [0.35.0](https://github.com/headroomlabs-ai/headroom/compare/v0.34.0...v0.35.0) (2026-08-12)
+- [0.34.0](https://github.com/headroomlabs-ai/headroom/compare/v0.33.0...v0.34.0) (2026-08-05)
+- [0.33.0](https://github.com/headroomlabs-ai/headroom/compare/v0.32.0...v0.33.0) (2026-07-29)
+- [0.32.0](https://github.com/headroomlabs-ai/headroom/compare/v0.31.0...v0.32.0) (2026-07-17)
+- …and 3 further releases; see `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
+The official install guide this tool is evaluated against is `source/README.md` at sha256 `fee6ad17c8df5d69…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
 
 - `crates/headroom-core/src/transforms/pipeline/orchestrator.rs` implements a compression pipeline combining reformat and offload transforms, tracking `steps_applied`, `bytes_saved`, and `cache_keys`.
 - The orchestrator comments and code emphasize fail-open behavior: transform failures are recorded/skipped and the pipeline must return some output rather than panic inside a tool-call response path.

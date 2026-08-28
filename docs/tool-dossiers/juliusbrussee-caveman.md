@@ -4,17 +4,17 @@
 
 - Repository: `JuliusBrussee/caveman`
 - URL: https://github.com/JuliusBrussee/caveman
-- Version/ref inspected: local shallow clone `25d22f864ad6`, 2026-07-01
+- Version/ref inspected: `2.2.0` release at commit `9aa63945a349bef17206540650db48c30fafbdf2`, pinned batch release corpus, 2026-08-28
 - Snapshot status: pinned-commit
-- Commit inspected: 25d22f864ad68cc447a4cb93aefde918aa4aec9f
-- Commit URL: https://github.com/JuliusBrussee/caveman/commit/25d22f864ad68cc447a4cb93aefde918aa4aec9f
-- Source artifact path: `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json`
-- Date inspected: 2026-07-01
-- Evidence stage: source-logic (fresh pinned shallow clone; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
-- Stars at inspection: 77,013
-- Forks at inspection: 4,360
+- Commit inspected: 9aa63945a349bef17206540650db48c30fafbdf2
+- Commit URL: https://github.com/JuliusBrussee/caveman/commit/9aa63945a349bef17206540650db48c30fafbdf2
+- Source artifact path: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`
+- Date inspected: 2026-08-28
+- Evidence stage: source-logic (pinned 2.2.0 release checkout from the batch release corpus, the same bytes its lanes install; representative source/config/test files inspected; benchmark-audit and reproduction still required for measured savings)
+- Stars at inspection (2026-07-01, not refreshed offline): 77,013
+- Forks at inspection (2026-07-01, not refreshed offline): 4,360
 - License: MIT
-- Updated at: 2026-06-26T07:42:50Z
+- Updated at (2026-07-01, not refreshed offline): 2026-06-26T07:42:50Z
 
 ## Summary
 
@@ -25,7 +25,7 @@ Caveman is a cross-agent terse-output skill/plugin. It primarily reduces assista
 | Evidence type | Files/URLs inspected | Notes |
 |---|---|---|
 | Repository metadata | GitHub API repository metadata | Popularity and license signals only; not effectiveness evidence. |
-| Source tree | `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
+| Source tree | `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json` | Used to identify installer, plugin, MCP, test, and benchmark paths beyond README. |
 | README/docs | README path identified when present. | README claims require source and benchmark follow-up. |
 | Installer/config/plugin files | Paths identified below. | Integration review started. |
 | Runtime source | Representative implementation files inspected; see code-detail section. | Source-logic review is recorded for representative modules; uninspected modules remain benchmark-audit/reproduction follow-up. |
@@ -33,59 +33,69 @@ Caveman is a cross-agent terse-output skill/plugin. It primarily reduces assista
 
 ## Initial source-structure finding
 
-Repository tree inspection found 148 files and 116 files matching integration, source, test, benchmark, or documentation patterns. Relevant paths include:
+Tree inspection of the pinned `2.2.0` release checkout found 1412 files: 888 source, 189 documentation, 634 test/benchmark, and 373 matching installer, host-integration, hook, plugin, skill, MCP, or configuration patterns.
 
-- `.claude-plugin/marketplace.json`
-- `.claude-plugin/plugin.json`
-- `plugins/caveman/.codex-plugin/plugin.json`
-- `plugins/caveman/agents/cavecrew-builder.md`
-- `plugins/caveman/agents/cavecrew-investigator.md`
-- `plugins/caveman/agents/cavecrew-reviewer.md`
-- `plugins/caveman/assets/caveman-small.svg`
-- `plugins/caveman/assets/caveman.svg`
-- `plugins/caveman/skills/cavecrew/SKILL.md`
-- `plugins/caveman/skills/caveman-compress/SKILL.md`
-- `plugins/caveman/skills/caveman-compress/scripts/__init__.py`
-- `plugins/caveman/skills/caveman-compress/scripts/__main__.py`
-- `plugins/caveman/skills/caveman-compress/scripts/benchmark.py`
-- `plugins/caveman/skills/caveman-compress/scripts/cli.py`
-- `plugins/caveman/skills/caveman-compress/scripts/compress.py`
-- `plugins/caveman/skills/caveman-compress/scripts/detect.py`
-- `plugins/caveman/skills/caveman-compress/scripts/validate.py`
-- `plugins/caveman/skills/caveman-stats/SKILL.md`
-- `plugins/caveman/skills/caveman/SKILL.md`
-- `plugins/caveman/skills/caveman/agents/openai.yaml`
-- `plugins/caveman/skills/caveman/assets/caveman-small.svg`
-- `plugins/caveman/skills/caveman/assets/caveman.svg`
-- `src/plugins/opencode/README.md`
-- `src/plugins/opencode/commands/caveman-commit.md`
-- `src/plugins/opencode/commands/caveman-compress.md`
-- `src/plugins/opencode/commands/caveman-help.md`
-- `src/plugins/opencode/commands/caveman-review.md`
-- `src/plugins/opencode/commands/caveman-stats.md`
-- `src/plugins/opencode/commands/caveman.md`
-- `src/plugins/opencode/package.json`
-- `src/plugins/opencode/plugin.js`
-- `.codex/hooks.json`
-- `src/hooks/README.md`
-- `src/hooks/caveman-activate.js`
-- `src/hooks/caveman-config.js`
-- `src/hooks/caveman-mode-tracker.js`
-- `src/hooks/caveman-stats.js`
-- `src/hooks/caveman-statusline.ps1`
-- `src/hooks/caveman-statusline.sh`
-- `src/hooks/checksums.sha256`
+Integration code — what actually performs a host install, and therefore what an install protocol must be written against:
 
+- `agents/compile.mjs`
+- `agents/delegate/caveman-delegate-mcp.mjs`
+- `agents/delegate/portable-process.mjs`
+- `agents/drift-report.mjs`
+- `agents/probe-installed.mjs`
+- `bin/install.js`
+- `bin/lib/opencode-agent.js`
+- `bin/lib/owned-install.js`
+- `browse/bin/binary-installer.generated.mjs`
+- `browse/scripts/copy-binary-installer.mjs`
+- `cli/install.js`
+- `engine/compressors/config.go`
+- `extension/playwright.config.mjs`
+- `mcp/bin/binary-installer.generated.mjs`
+- `mcp/bin/caveman-mcp.mjs`
+- `mcp/bin/release.generated.mjs`
+- `mcp/cmd/caveman-mcp/main.go`
+- `mcp/engine_tools.go`
+- `mcp/protocol.go`
+- `mcp/server.go`
+- `packages/agent/src/adapters.ts`
+- `packages/agent/src/breakers.ts`
+- `packages/agent/src/budget.ts`
+- `packages/agent/src/build.ts`
+- `packages/agent/src/catalog.ts`
+- `packages/agent/src/claude-runtime.ts`
+- `packages/agent/src/claude.ts`
+- `packages/agent/src/cli.ts`
+
+Host-integration documentation shipped in the release:
+
+- `AGENTS.md`
+- `CLAUDE.md`
+- `INSTALL.md`
+- `agents/cavecrew-builder.md`
+- `agents/cavecrew-investigator.md`
+- `agents/cavecrew-reviewer.md`
+- `agents/docs/AGENTS.md`
+- `agents/docs/CLAUDE.md`
+- `browse/CLAUDE.md`
+- `cacheengine/CLAUDE.md`
+- `commands/caveman-init.md`
+- `docs/install-windows.md`
+- `docs/plans/cavemem-multi-agent.md`
+- `docs/technical/agent-wrapping.md`
 
 
 ## Code-detail inspection findings
 
-Evidence artifact: `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`.
+### Pinned-release refresh (2026-08-28)
 
-### Fresh pinned-source refresh
+This dossier previously described `25d22f864ad6`, read from GitHub HEAD on 2026-07-01. That is not the code any lane runs. `BATCH_RELEASES` pins this tool to the **2.2.0** release at `9aa63945a349`, and the runner rewrites every lane path onto it, so the reading below is now taken from that pinned checkout instead. Inspecting the corpus checkout rather than a fresh network fetch keeps the reading reproducible after upstream HEAD moves again.
 
-The 2026-07-01 refresh pins the inspected source to `25d22f864ad68cc447a4cb93aefde918aa4aec9f` and records a fresh tree plus selected implementation excerpts in `sources/discovery/2026-07-01-pinned-dossier-refresh-source-structures.json` and `sources/discovery/2026-07-01-pinned-dossier-refresh-code-inspection.json`. Representative files captured for this refresh include `plugins/caveman/.codex-plugin/plugin.json`, `plugins/caveman/agents/cavecrew-builder.md`, `plugins/caveman/agents/cavecrew-investigator.md`, `plugins/caveman/agents/cavecrew-reviewer.md`, `plugins/caveman/skills/cavecrew/SKILL.md`, `plugins/caveman/skills/caveman-compress/SKILL.md`. Treat benchmark, savings, and deployment claims below as source-logic only unless a benchmark-audit or reproduction artifact is explicitly cited.
- The artifact contains raw GitHub file paths, byte sizes, SHA-256 prefixes, and behavior-line excerpts from the inspected implementation files.
+No release-by-release delta is available (release ships no changelog), so the gap between the audited commit and this pin is not enumerable from the release bytes alone.
+
+The official install guide this tool is evaluated against is `source/INSTALL.md` at sha256 `3eac1c3f79c09a84…` in the pinned release.
+
+Evidence artifact: `sources/discovery/2026-08-28-batch-pinned-dossier-refresh.json`.
+
 
 - SessionStart activation is implemented in `src/hooks/caveman-activate.js`. It checks mode state, handles `off`, independent modes such as `commit`, `review`, and `compress`, and emits a full caveman ruleset as hidden session context rather than relying only on a short instruction.
 - `src/hooks/caveman-mode-tracker.js` is a `UserPromptSubmit` hook that parses user prompts for activation/deactivation and brevity phrases, then updates local mode state under the Claude config directory.
