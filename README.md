@@ -12,9 +12,9 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lane
 | `beets-lifecycle-sequence-v2` | Beets | 6 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry contains 38 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 24 individual-tool treatments. By sequence: 19 `beets-lifecycle-sequence-v2`, 19 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 16, Codex CLI 18, OpenCode CLI 4.
+The active registry contains 40 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 26 individual-tool treatments. By sequence: 20 `beets-lifecycle-sequence-v2`, 20 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 18, Codex CLI 18, OpenCode CLI 4.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 7 replicates (71, 52, 52, 74, 72, 89, 58 agent steps, spread 71.2%); weighted cost per step spread 43.4%; `c86863838e8b` holds 10 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 10 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71 agent steps, spread 115.6%); weighted cost per step spread 67.9%; `e257557e288c` holds 7 replicates (66, 36, 35, 50, 45, 51, 52 agent steps, spread 88.6%); weighted cost per step spread 71.6%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 8 replicates (71, 52, 52, 74, 72, 89, 58, 86 agent steps, spread 71.2%); weighted cost per step spread 72.6%; `c86863838e8b` holds 10 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 10 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71 agent steps, spread 115.6%); weighted cost per step spread 67.9%; `e257557e288c` holds 8 replicates (66, 36, 35, 50, 45, 51, 52, 50 agent steps, spread 88.6%); weighted cost per step spread 98.5%.
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
