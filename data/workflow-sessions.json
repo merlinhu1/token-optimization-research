@@ -51721,6 +51721,1876 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 6
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "jcodemunch-fastify-20260828-p-dc16afea3ad5-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-retrieval-jcodemunch-codex-mcp-v2-dc16afea3ad5-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v2-retrieval-jcodemunch-codex-mcp-v2-cac60a1416f2",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-jcodemunch-codex-mcp-v2-cac60a1416f2.json",
+        "sha256": "b6bfaa8ed460763aa7d8fd574ed82b972bbdf35eb981a5b86f4d99115fdb7dae"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "dc16afea3ad5",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "e147634932b1008793181c20f02cc09fb7f5d93719eafe49b9f324b5dad2dcb0",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-jcodemunch-codex-mcp-v2"
+            ],
+            "enabled_surfaces": [
+              "retrieval-context",
+              "mcp",
+              "codex-global-instructions",
+              "warm-index"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "fad6481f904f8ab4edc4e88621fbc44cb71a342526a05c079b6fddbd243da06d",
+            "registry_entry": {
+              "id": "retrieval-jcodemunch-codex-mcp-v2",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "retrieval-context",
+                "mcp",
+                "codex-global-instructions",
+                "warm-index"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-jcodemunch-codex-mcp-v2",
+                  "surface": "retrieval-context+mcp+product-authored-codex-guidance+warm-index",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Install the pinned 1.108.290 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
+              },
+              "reset": {
+                "policy": "Delete the lane-private venv, CODE_INDEX_PATH, CODEX_HOME, MCP config, install receipt, and index after evidence capture; verify no guidance or generated state survives into another lane."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "warm-index",
+                "integration_state": "pinned-direct-binary-mcp-with-product-authored-codex-guidance",
+                "instruction_policy": "verbatim-product-authored-guidance",
+                "assignment_proof": "provider-free direct-binary probe, guidance provenance receipt, warm-index receipt, and initialize-plus-tools-list required"
+              },
+              "source_snapshot": {
+                "repository": "jgravelle/jcodemunch-mcp",
+                "commit": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                "version": "1.108.290",
+                "wheel": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "wheel_sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+                "readme_sha256": "d331109d2df6fa3f7ed1f0a7838477d6e31e5df888cf0574a3d70616b53c839b",
+                "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+                "release_directory": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290",
+                "artifact": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "official_install_guide": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs",
+                "guidance_unchanged_since_1.108.114": true
+              },
+              "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "fastify-trailer-duplicate-callback-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+              },
+              {
+                "task_id": "fastify-nested-prefix-join-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+              },
+              {
+                "task_id": "fastify-serializer-compiler-flag-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+              },
+              {
+                "task_id": "fastify-sync-validator-throw-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+              },
+              {
+                "task_id": "fastify-duplicated-route-method-array-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+              },
+              {
+                "task_id": "fastify-head-route-web-stream-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "jcodemunch-codex-mcp-v2",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "c994dc839e28efc0fcc86ce09db7f9dcb28c9ca9ff027ea51e284247b891d428",
+            "tool_config": {
+              "display_name": "jcodemunch guide-faithful Codex MCP v2",
+              "lane_name": "retrieval-jcodemunch-codex-mcp-v2",
+              "surface": "retrieval/context-mcp+product-authored-codex-guidance",
+              "mcp_server": "jcodemunch",
+              "allowed_terms": [
+                "jcodemunch",
+                "jcodemunch-mcp"
+              ],
+              "data_dir_name": "jcodemunch-codex-mcp-v2",
+              "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "mcp_args": [],
+              "env": {
+                "CODE_INDEX_PATH": "{tool_data_dir}/index",
+                "JCODEMUNCH_LOG_LEVEL": "ERROR"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+              ],
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/opt/data/opt/uv/uv",
+                    "venv",
+                    "{tool_data_dir}/venv",
+                    "--python",
+                    "python3"
+                  ],
+                  [
+                    "/opt/data/opt/uv/uv",
+                    "pip",
+                    "install",
+                    "--python",
+                    "{tool_data_dir}/venv/bin/python",
+                    "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+                  ],
+                  [
+                    "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                    "init",
+                    "--client",
+                    "codex",
+                    "--yes",
+                    "--minimal",
+                    "--no-backup",
+                    "--no-share-savings"
+                  ],
+                  [
+                    "python3",
+                    "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                    "--source-root",
+                    "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                    "--expected-commit",
+                    "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                    "--codex-home",
+                    "{codex_home}",
+                    "--receipt",
+                    "{tool_data_dir}/jcodemunch-guidance-install.json"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                    "--version"
+                  ]
+                ],
+                "required_files": [
+                  "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                  "{codex_home}/AGENTS.md",
+                  "{tool_data_dir}/jcodemunch-guidance-install.json",
+                  "{codex_home}/config.toml"
+                ],
+                "timeout_seconds": 600,
+                "home_dot_codex_alias": true
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 60
+              },
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "product-native-code-index-build",
+                "command": [
+                  "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                  "index",
+                  "{repo}"
+                ],
+                "output_name": "jcodemunch-warmup-output.txt",
+                "metadata_name": "jcodemunch-warmup-metadata.json",
+                "timeout_seconds": 1200
+              },
+              "path_entries": [
+                "{tool_data_dir}/venv/bin"
+              ],
+              "required_source_artifacts": [
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+              ],
+              "clean_source_roots": [
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source"
+              ],
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                  "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+                  "kind": "official-release-artifact"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                  "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d",
+                  "kind": "official-install-guide"
+                }
+              ],
+              "tool_manifest_identity": "current-file-v1",
+              "mcp_config_via_host_integration": true
+            },
+            "tool_config_sha256": "243b1fe45b6cc15ec9188f27474663f00be11e1a4299c96f36ac17eef0c7c400",
+            "tool_state": "warm-index",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+              ]
+            },
+            "binary_identity": {
+              "kind": "generated-by-host-integration",
+              "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "install_commands": [
+                [
+                  "/opt/data/opt/uv/uv",
+                  "venv",
+                  "{tool_data_dir}/venv",
+                  "--python",
+                  "python3"
+                ],
+                [
+                  "/opt/data/opt/uv/uv",
+                  "pip",
+                  "install",
+                  "--python",
+                  "{tool_data_dir}/venv/bin/python",
+                  "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+                ],
+                [
+                  "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                  "init",
+                  "--client",
+                  "codex",
+                  "--yes",
+                  "--minimal",
+                  "--no-backup",
+                  "--no-share-savings"
+                ],
+                [
+                  "python3",
+                  "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                  "--source-root",
+                  "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                  "--expected-commit",
+                  "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                  "--codex-home",
+                  "{codex_home}",
+                  "--receipt",
+                  "{tool_data_dir}/jcodemunch-guidance-install.json"
+                ]
+              ],
+              "install_contract_sha256": "92839fc2ff167127b3c16f65f7b7e3a24758d676596f678ca3503766424c3f84"
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "exists": true,
+                "kind": "file",
+                "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                "git_clean": true
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                "exists": true,
+                "kind": "file",
+                "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d"
+              },
+              {
+                "path": "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "8a166d38229d1f69d530af9b0f302f6a22ed97e34f90695c128091255821c1ed"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "c994dc839e28efc0fcc86ce09db7f9dcb28c9ca9ff027ea51e284247b891d428",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+            "agent_runtime_id": "codex-cli",
+            "model_condition": {
+              "id": "codex-openai-gpt-5-6-sol-medium",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_codex_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "reasoning_effort": "medium",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "dc16afea3ad5",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "registry_status": "active-default",
+            "launcher": {
+              "path": "scripts/run_codex_workflow_model_condition.py",
+              "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "jcodemunch-codex-mcp-v2",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "c994dc839e28efc0fcc86ce09db7f9dcb28c9ca9ff027ea51e284247b891d428",
+        "tool_config": {
+          "display_name": "jcodemunch guide-faithful Codex MCP v2",
+          "lane_name": "retrieval-jcodemunch-codex-mcp-v2",
+          "surface": "retrieval/context-mcp+product-authored-codex-guidance",
+          "mcp_server": "jcodemunch",
+          "allowed_terms": [
+            "jcodemunch",
+            "jcodemunch-mcp"
+          ],
+          "data_dir_name": "jcodemunch-codex-mcp-v2",
+          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "mcp_args": [],
+          "env": {
+            "CODE_INDEX_PATH": "{tool_data_dir}/index",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+          ],
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+              ],
+              [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "init",
+                "--client",
+                "codex",
+                "--yes",
+                "--minimal",
+                "--no-backup",
+                "--no-share-savings"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                "--source-root",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "--expected-commit",
+                "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                "--codex-home",
+                "{codex_home}",
+                "--receipt",
+                "{tool_data_dir}/jcodemunch-guidance-install.json"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "{codex_home}/AGENTS.md",
+              "{tool_data_dir}/jcodemunch-guidance-install.json",
+              "{codex_home}/config.toml"
+            ],
+            "timeout_seconds": 600,
+            "home_dot_codex_alias": true
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "product-native-code-index-build",
+            "command": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "index",
+              "{repo}"
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
+          ],
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+            "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+              "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+              "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "mcp_config_via_host_integration": true
+        },
+        "tool_config_sha256": "243b1fe45b6cc15ec9188f27474663f00be11e1a4299c96f36ac17eef0c7c400",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+          ]
+        },
+        "binary_identity": {
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
+            ],
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+            ],
+            [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "init",
+              "--client",
+              "codex",
+              "--yes",
+              "--minimal",
+              "--no-backup",
+              "--no-share-savings"
+            ],
+            [
+              "python3",
+              "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+              "--source-root",
+              "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+              "--expected-commit",
+              "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+              "--codex-home",
+              "{codex_home}",
+              "--receipt",
+              "{tool_data_dir}/jcodemunch-guidance-install.json"
+            ]
+          ],
+          "install_contract_sha256": "92839fc2ff167127b3c16f65f7b7e3a24758d676596f678ca3503766424c3f84"
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+            "git_clean": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d"
+          },
+          {
+            "path": "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "8a166d38229d1f69d530af9b0f302f6a22ed97e34f90695c128091255821c1ed"
+          }
+        ]
+      },
+      "date": "2026-08-28",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "fastify-trailer-duplicate-callback-v2",
+          "fastify-nested-prefix-join-v2",
+          "fastify-serializer-compiler-flag-v2",
+          "fastify-sync-validator-throw-v2",
+          "fastify-duplicated-route-method-array-v2",
+          "fastify-head-route-web-stream-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-global-instructions",
+          "warm-index"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "retrieval-jcodemunch-codex-mcp-v2"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.147.0",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 177447,
+        "cached_input_tokens": 5821184,
+        "cache_write_tokens": 0,
+        "output_tokens": 13788,
+        "reasoning_tokens": 3631,
+        "total_provider_tokens": 6012419,
+        "weighted_token_cost": 842293.4,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 106,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "agent_message": 26,
+          "mcp_tool_call": 50,
+          "file_change": 6,
+          "command_execution": 24
+        },
+        "weighted_token_cost_per_step": 7946.2,
+        "provider_usage_details": {
+          "runtime": "codex-cli",
+          "accounting_mode": "final-cumulative-total-per-thread",
+          "raw_token_field_totals": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 5821184,
+            "input_tokens": 5998631,
+            "output_tokens": 13788,
+            "reasoning_output_tokens": 3631
+          },
+          "incremental_raw_token_field_totals": {
+            "cached_input_tokens": 5821184,
+            "input_tokens": 5998631,
+            "output_tokens": 13788,
+            "reasoning_output_tokens": 3631
+          },
+          "fresh_input_formula": "input_tokens - cached_input_tokens",
+          "reasoning_tokens_available": true
+        },
+        "accounting_basis": "Codex CLI telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-trailer-duplicate-callback-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-nested-prefix-join-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-serializer-compiler-flag-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-sync-validator-throw-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-duplicated-route-method-array-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-head-route-web-stream-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a0480d-3eb8-7d02-b034-bd61b6d5ac60",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/task-06-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0",
+        "run_record": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/jcodemunch-fastify-20260828-p-dc16afea3ad5-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-fastify-20260821-p-dc16afea3ad5-r0",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "jcodemunch-beets-20260828-p-c86863838e8b-r0",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-retrieval-jcodemunch-codex-mcp-v2-c86863838e8b-sequential-workflow-r0",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 0,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v2-retrieval-jcodemunch-codex-mcp-v2-13fd58e5449a",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-jcodemunch-codex-mcp-v2-13fd58e5449a.json",
+        "sha256": "b3bac713cec5118f7d18c7b343ad9f99b423cc030afdd3adf830345d8301e698"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "c86863838e8b",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "c416187961a14bc719a9ed2120c61a5820c8f6b66ebe158a9105a45bff6d3226",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-jcodemunch-codex-mcp-v2"
+            ],
+            "enabled_surfaces": [
+              "retrieval-context",
+              "mcp",
+              "codex-global-instructions",
+              "warm-index"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "fad6481f904f8ab4edc4e88621fbc44cb71a342526a05c079b6fddbd243da06d",
+            "registry_entry": {
+              "id": "retrieval-jcodemunch-codex-mcp-v2",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-shortlist",
+              "enabled_surfaces": [
+                "retrieval-context",
+                "mcp",
+                "codex-global-instructions",
+                "warm-index"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-jcodemunch-codex-mcp-v2",
+                  "surface": "retrieval-context+mcp+product-authored-codex-guidance+warm-index",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Install the pinned 1.108.290 wheel into a lane-private venv, point Codex directly at the resolved jcodemunch-mcp binary with no launcher or arguments, install verbatim product-authored guidance excerpts into the lane-private Codex AGENTS.md, build a product-native warm index, and require initialize plus tools/list before provider use."
+              },
+              "reset": {
+                "policy": "Delete the lane-private venv, CODE_INDEX_PATH, CODEX_HOME, MCP config, install receipt, and index after evidence capture; verify no guidance or generated state survives into another lane."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "warm-index",
+                "integration_state": "pinned-direct-binary-mcp-with-product-authored-codex-guidance",
+                "instruction_policy": "verbatim-product-authored-guidance",
+                "assignment_proof": "provider-free direct-binary probe, guidance provenance receipt, warm-index receipt, and initialize-plus-tools-list required"
+              },
+              "source_snapshot": {
+                "repository": "jgravelle/jcodemunch-mcp",
+                "commit": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                "version": "1.108.290",
+                "wheel": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "wheel_sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+                "readme_sha256": "d331109d2df6fa3f7ed1f0a7838477d6e31e5df888cf0574a3d70616b53c839b",
+                "universal_guide_sha256": "2026d09f4af85e972a5c4a9874d91bd8a8675ab7fbb44a283911fd06afd0abb2",
+                "release_directory": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290",
+                "artifact": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "official_install_guide": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs",
+                "guidance_unchanged_since_1.108.114": true
+              },
+              "notes": "Guide-faithful replacement for the deleted direct-v1 treatment. The evaluator adds no prompt steering: the lane installs verbatim jcodemunch policy and universal-guide excerpts into Codex AGENTS.md and records their source hashes."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "beets-unique-path-counter-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+              },
+              {
+                "task_id": "beets-empty-string-field-split-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+              },
+              {
+                "task_id": "beets-date-query-alternation-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+              },
+              {
+                "task_id": "beets-membership-query-hashable-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+              },
+              {
+                "task_id": "beets-spotify-uri-extraction-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+              },
+              {
+                "task_id": "beets-lyrics-keep-synced-override-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "jcodemunch-codex-mcp-v2",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "c994dc839e28efc0fcc86ce09db7f9dcb28c9ca9ff027ea51e284247b891d428",
+            "tool_config": {
+              "display_name": "jcodemunch guide-faithful Codex MCP v2",
+              "lane_name": "retrieval-jcodemunch-codex-mcp-v2",
+              "surface": "retrieval/context-mcp+product-authored-codex-guidance",
+              "mcp_server": "jcodemunch",
+              "allowed_terms": [
+                "jcodemunch",
+                "jcodemunch-mcp"
+              ],
+              "data_dir_name": "jcodemunch-codex-mcp-v2",
+              "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "mcp_args": [],
+              "env": {
+                "CODE_INDEX_PATH": "{tool_data_dir}/index",
+                "JCODEMUNCH_LOG_LEVEL": "ERROR"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+              ],
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/opt/data/opt/uv/uv",
+                    "venv",
+                    "{tool_data_dir}/venv",
+                    "--python",
+                    "python3"
+                  ],
+                  [
+                    "/opt/data/opt/uv/uv",
+                    "pip",
+                    "install",
+                    "--python",
+                    "{tool_data_dir}/venv/bin/python",
+                    "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+                  ],
+                  [
+                    "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                    "init",
+                    "--client",
+                    "codex",
+                    "--yes",
+                    "--minimal",
+                    "--no-backup",
+                    "--no-share-savings"
+                  ],
+                  [
+                    "python3",
+                    "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                    "--source-root",
+                    "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                    "--expected-commit",
+                    "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                    "--codex-home",
+                    "{codex_home}",
+                    "--receipt",
+                    "{tool_data_dir}/jcodemunch-guidance-install.json"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                    "--version"
+                  ]
+                ],
+                "required_files": [
+                  "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                  "{codex_home}/AGENTS.md",
+                  "{tool_data_dir}/jcodemunch-guidance-install.json",
+                  "{codex_home}/config.toml"
+                ],
+                "timeout_seconds": 600,
+                "home_dot_codex_alias": true
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 60
+              },
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "product-native-code-index-build",
+                "command": [
+                  "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                  "index",
+                  "{repo}"
+                ],
+                "output_name": "jcodemunch-warmup-output.txt",
+                "metadata_name": "jcodemunch-warmup-metadata.json",
+                "timeout_seconds": 1200
+              },
+              "path_entries": [
+                "{tool_data_dir}/venv/bin"
+              ],
+              "required_source_artifacts": [
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+              ],
+              "clean_source_roots": [
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source"
+              ],
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                  "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+                  "kind": "official-release-artifact"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                  "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d",
+                  "kind": "official-install-guide"
+                }
+              ],
+              "tool_manifest_identity": "current-file-v1",
+              "mcp_config_via_host_integration": true
+            },
+            "tool_config_sha256": "243b1fe45b6cc15ec9188f27474663f00be11e1a4299c96f36ac17eef0c7c400",
+            "tool_state": "warm-index",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+              ]
+            },
+            "binary_identity": {
+              "kind": "generated-by-host-integration",
+              "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "install_commands": [
+                [
+                  "/opt/data/opt/uv/uv",
+                  "venv",
+                  "{tool_data_dir}/venv",
+                  "--python",
+                  "python3"
+                ],
+                [
+                  "/opt/data/opt/uv/uv",
+                  "pip",
+                  "install",
+                  "--python",
+                  "{tool_data_dir}/venv/bin/python",
+                  "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+                ],
+                [
+                  "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                  "init",
+                  "--client",
+                  "codex",
+                  "--yes",
+                  "--minimal",
+                  "--no-backup",
+                  "--no-share-savings"
+                ],
+                [
+                  "python3",
+                  "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                  "--source-root",
+                  "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                  "--expected-commit",
+                  "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                  "--codex-home",
+                  "{codex_home}",
+                  "--receipt",
+                  "{tool_data_dir}/jcodemunch-guidance-install.json"
+                ]
+              ],
+              "install_contract_sha256": "92839fc2ff167127b3c16f65f7b7e3a24758d676596f678ca3503766424c3f84"
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "exists": true,
+                "kind": "file",
+                "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                "git_clean": true
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+                "exists": true,
+                "kind": "file",
+                "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d"
+              },
+              {
+                "path": "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "8a166d38229d1f69d530af9b0f302f6a22ed97e34f90695c128091255821c1ed"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "c994dc839e28efc0fcc86ce09db7f9dcb28c9ca9ff027ea51e284247b891d428",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "codex_web_search": "disabled",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+            "agent_runtime_id": "codex-cli",
+            "model_condition": {
+              "id": "codex-openai-gpt-5-6-sol-medium",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_codex_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "uv sync --group test --frozen",
+            "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+            "lockfiles": [
+              {
+                "path": "uv.lock",
+                "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "reasoning_effort": "medium",
+            "codex_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "c86863838e8b",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+            "runtime_id": "codex-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "registry_status": "active-default",
+            "launcher": {
+              "path": "scripts/run_codex_workflow_model_condition.py",
+              "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "jcodemunch-codex-mcp-v2",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "c994dc839e28efc0fcc86ce09db7f9dcb28c9ca9ff027ea51e284247b891d428",
+        "tool_config": {
+          "display_name": "jcodemunch guide-faithful Codex MCP v2",
+          "lane_name": "retrieval-jcodemunch-codex-mcp-v2",
+          "surface": "retrieval/context-mcp+product-authored-codex-guidance",
+          "mcp_server": "jcodemunch",
+          "allowed_terms": [
+            "jcodemunch",
+            "jcodemunch-mcp"
+          ],
+          "data_dir_name": "jcodemunch-codex-mcp-v2",
+          "mcp_command": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "mcp_args": [],
+          "env": {
+            "CODE_INDEX_PATH": "{tool_data_dir}/index",
+            "JCODEMUNCH_LOG_LEVEL": "ERROR"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+          ],
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+              ],
+              [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "init",
+                "--client",
+                "codex",
+                "--yes",
+                "--minimal",
+                "--no-backup",
+                "--no-share-savings"
+              ],
+              [
+                "python3",
+                "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+                "--source-root",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+                "--expected-commit",
+                "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+                "--codex-home",
+                "{codex_home}",
+                "--receipt",
+                "{tool_data_dir}/jcodemunch-guidance-install.json"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "{codex_home}/AGENTS.md",
+              "{tool_data_dir}/jcodemunch-guidance-install.json",
+              "{codex_home}/config.toml"
+            ],
+            "timeout_seconds": 600,
+            "home_dot_codex_alias": true
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 60
+          },
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "product-native-code-index-build",
+            "command": [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "index",
+              "{repo}"
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
+          ],
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+            "{repository_root}/scripts/install_jcodemunch_codex_guidance.py"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source"
+          ],
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+              "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+              "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "mcp_config_via_host_integration": true
+        },
+        "tool_config_sha256": "243b1fe45b6cc15ec9188f27474663f00be11e1a4299c96f36ac17eef0c7c400",
+        "tool_state": "warm-index",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "{tool_data_dir}/venv/bin/jcodemunch-mcp"
+          ]
+        },
+        "binary_identity": {
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
+            ],
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl"
+            ],
+            [
+              "{tool_data_dir}/venv/bin/jcodemunch-mcp",
+              "init",
+              "--client",
+              "codex",
+              "--yes",
+              "--minimal",
+              "--no-backup",
+              "--no-share-savings"
+            ],
+            [
+              "python3",
+              "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+              "--source-root",
+              "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+              "--expected-commit",
+              "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+              "--codex-home",
+              "{codex_home}",
+              "--receipt",
+              "{tool_data_dir}/jcodemunch-guidance-install.json"
+            ]
+          ],
+          "install_contract_sha256": "92839fc2ff167127b3c16f65f7b7e3a24758d676596f678ca3503766424c3f84"
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "9e76d6320c017b774d54bb31d79dd4b8a5876aff",
+            "git_clean": true
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source/CLIENTS.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "19e87ba818c8efadb3f26d728bfb33ecdd5e262eac48cade9cccea221d73335d"
+          },
+          {
+            "path": "{repository_root}/scripts/install_jcodemunch_codex_guidance.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "8a166d38229d1f69d530af9b0f302f6a22ed97e34f90695c128091255821c1ed"
+          }
+        ]
+      },
+      "date": "2026-08-28",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/project/repo",
+        "initial_snapshot": {
+          "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "beets-unique-path-counter-v2",
+          "beets-empty-string-field-split-v2",
+          "beets-date-query-alternation-v2",
+          "beets-membership-query-hashable-v2",
+          "beets-spotify-uri-extraction-v2",
+          "beets-lyrics-keep-synced-override-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-jcodemunch-codex-mcp-v2",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-global-instructions",
+          "warm-index"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "retrieval-jcodemunch-codex-mcp-v2"
+        ]
+      },
+      "agent": {
+        "runtime_id": "codex-cli",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "name": "Codex CLI",
+        "version": "codex-cli 0.147.0",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "codex-jsonl-usage-events",
+        "fresh_input_tokens": 185487,
+        "cached_input_tokens": 5709824,
+        "cache_write_tokens": 0,
+        "output_tokens": 14510,
+        "reasoning_tokens": 3825,
+        "total_provider_tokens": 5909821,
+        "weighted_token_cost": 843529.4,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 100,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "agent_message": 24,
+          "mcp_tool_call": 49,
+          "command_execution": 21,
+          "file_change": 6
+        },
+        "weighted_token_cost_per_step": 8435.3,
+        "provider_usage_details": {
+          "runtime": "codex-cli",
+          "accounting_mode": "final-cumulative-total-per-thread",
+          "raw_token_field_totals": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 5709824,
+            "input_tokens": 5895311,
+            "output_tokens": 14510,
+            "reasoning_output_tokens": 3825
+          },
+          "incremental_raw_token_field_totals": {
+            "cached_input_tokens": 5709824,
+            "input_tokens": 5895311,
+            "output_tokens": 14510,
+            "reasoning_output_tokens": 3825
+          },
+          "fresh_input_formula": "input_tokens - cached_input_tokens",
+          "reasoning_tokens_available": true
+        },
+        "accounting_basis": "Codex CLI telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-unique-path-counter-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-empty-string-field-split-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-date-query-alternation-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-membership-query-hashable-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-spotify-uri-extraction-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lyrics-keep-synced-override-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "01a04817-f190-7562-bf2a-38aafd341b11",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/task-06-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0",
+        "run_record": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/jcodemunch-beets-20260828-p-c86863838e8b-r0/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-beets-20260822-p-c86863838e8b-r0",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
     }
   ]
 }
