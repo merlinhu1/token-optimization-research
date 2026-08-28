@@ -2492,10 +2492,29 @@ TOOL_CONFIGS.update(
             lane_name="retrieval-jcodemunch-claude-code-mcp-v1",
             surface="claude-code-readme-init+mcp+policy+hooks+index",
             install_commands=[
+                # AGENT_INSTALL_UNIVERSAL.md names `jcm install claude-code --skills`
+                # as THE Claude Code command, twice, and tells an agent not to fall
+                # through to the universal prompt for a listed environment. The lane
+                # previously ran generic `init --client claude-code`, which cannot
+                # write the skill at all: `--skills` exists only on `install`, and
+                # run_init defaults skills=False.
+                #
+                # Not a cosmetic omission for a token study. The product's own words
+                # for what the skill buys are "Claude loads the skill on demand for
+                # code-navigation tasks instead of carrying the policy block in
+                # baseline context every turn" -- so omitting it leaves the policy in
+                # baseline context on every turn and biases measured cost upward
+                # against the setup the author actually recommends.
+                #
+                # `install` also puts CLAUDE.md at global scope rather than the
+                # evaluator-chosen `--claude-md project`. Global is the product's
+                # default and lands in the lane-private config dir, since ~/.claude
+                # is symlinked to CLAUDE_CONFIG_DIR. `--index` is dropped because the
+                # declared warm-index state is built by this profile's own warmup
+                # step, not by the installer.
                 [
-                    str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp", "init",
-                    "--client", "claude-code", "--claude-md", "project", "--hooks", "--index", "--audit",
-                    "--yes", "--no-share-savings",
+                    str(UV_BIN), "tool", "run", "--from", str(JCODEMUNCH_WHEEL), "jcodemunch-mcp",
+                    "install", "claude-code", "--skills", "--no-backup", "--no-share-savings",
                 ],
                 [
                     "/bin/bash", "-lc",
@@ -2514,7 +2533,14 @@ TOOL_CONFIGS.update(
             required_files=[
                 "{codex_home}/claude-config/.claude.json",
                 "{codex_home}/claude-config/settings.json",
-                "{repo}/CLAUDE.md",
+                # `install claude-code` writes the policy at global scope, which
+                # resolves into the lane-private config dir through the ~/.claude
+                # symlink, rather than into the repository.
+                "{codex_home}/claude-config/CLAUDE.md",
+                # Fails the lane closed if the skill bundle ever stops being written:
+                # a silently skill-less install is the reduced setup this profile is
+                # not allowed to be.
+                "{codex_home}/claude-config/skills/jcodemunch/SKILL.md",
                 "{repo}/AGENTS.md",
                 "{codex_home}/home/.code-index/config.jsonc",
             ],

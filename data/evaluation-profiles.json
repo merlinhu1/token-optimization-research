@@ -4192,7 +4192,7 @@
         }
       ],
       "install": {
-        "policy": "Use the pinned jCodeMunch source snapshot from retrieval-jcodemunch-codex-mcp-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+        "policy": "Run the product's own documented Claude Code command against the pinned 1.108.290 wheel: `jcodemunch-mcp install claude-code --skills`, which AGENT_INSTALL_UNIVERSAL.md names as THE Claude Code installer and which writes the MCP registration, the global CLAUDE.md Code Exploration Policy, the repository AGENTS.md, the Claude Agent Skill bundle, and the worktree plus enforcement hooks into the lane-private CLAUDE_CONFIG_DIR. Re-point the MCP registration at the pinned wheel rather than the `uvx jcodemunch-mcp` the installer writes, then build the declared warm index. Require provider-free artifact, configuration, skill, and handshake proofs before any Anthropic request."
       },
       "reset": {
         "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
@@ -4207,7 +4207,11 @@
       "source_profiles": [
         "retrieval-jcodemunch-codex-mcp-v2"
       ],
-      "notes": "Claude Code preparation profile for jCodeMunch; source profile retrieval-jcodemunch-codex-mcp-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+      "notes": "Claude Code preparation profile for jCodeMunch; source profile retrieval-jcodemunch-codex-mcp-v2. Corrected 2026-08-28: the lane previously ran generic `init --client claude-code --claude-md project`, which cannot install the Claude Agent Skill bundle at all -- `--skills` exists only on `install`, and run_init defaults skills=False. That made the lane a reduced setup rather than the canonical product treatment, and biased it against the product: the skill's stated purpose is to let Claude load the policy on demand instead of carrying it in baseline context every turn, so omitting it pays for the policy block on every turn of a token measurement. The profile now runs the author's documented command and fails closed on a missing SKILL.md.",
+      "source_snapshot": {
+        "pinned_release_version": "1.108.290"
+      },
+      "compatibility_deviation": "MCP registration is re-pointed from the installer's `uvx jcodemunch-mcp` to the pinned wheel. Required for version pinning and offline execution, and CLIENTS.md itself deprecates uvx for strict-handshake hosts."
     },
     {
       "id": "retrieval-sdl-mcp-claude-code-product-v1",
