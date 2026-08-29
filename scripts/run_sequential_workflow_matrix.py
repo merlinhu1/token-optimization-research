@@ -108,6 +108,66 @@ def acquire_production_lock() -> int:
     return fd
 
 
+def claude_oauth_expiry(root: Path = ROOT) -> tuple[Path, dt.datetime] | None:
+    """Read the expiry of the Claude OAuth file the lane will copy, if one is readable."""
+    del root
+    source_home = workflow.fixture.claude_account_home()
+    if source_home is None:
+        return None
+    credential = workflow.fixture._claude_account_credential(source_home)
+    if credential is None:
+        return None
+    try:
+        oauth = json.loads(credential.read_text()).get("claudeAiOauth")
+    except (OSError, json.JSONDecodeError, AttributeError):
+        return None
+    expires_at = (oauth or {}).get("expiresAt")
+    if not isinstance(expires_at, (int, float)) or isinstance(expires_at, bool):
+        return None
+    return credential, dt.datetime.fromtimestamp(expires_at / 1000, dt.UTC)
+
+
+def assert_claude_credential_usable(model_condition: dict[str, str] | None, *, spending: bool) -> None:
+    """Refuse to start Claude Code lanes on a credential that has already expired.
+
+    ``claude auth status`` reports ``loggedIn: true`` for a token that is present but past
+    refresh, and the lane preflight makes no provider request, so a stale credential reads as
+    healthy right up to the first real call. A whole Beets lane was set up, dependency-installed
+    and prompted before the provider answered 401 and the run ended with zero usage. That cost
+    no provider budget, but it is an hour of apparatus time and an evidence bundle that has to
+    be diagnosed and written off, and the expiry is sitting in the file the runner is about to
+    copy.
+
+    This fails closed only on a definitively expired token. A missing, unreadable, or
+    differently shaped credential returns no opinion rather than blocking a run, because the
+    supported paths include API-key and environment credentials that carry no such field.
+    """
+    if not spending or not isinstance(model_condition, dict):
+        return
+    if model_condition.get("runtime_id") != "claude-code":
+        return
+    found = claude_oauth_expiry()
+    if found is None:
+        return
+    credential, expires_at = found
+    now = dt.datetime.now(dt.UTC)
+    if expires_at <= now:
+        raise SystemExit(
+            f"Claude OAuth credential expired at {expires_at.isoformat()} "
+            f"({now - expires_at} ago): {credential}\n"
+            "Refresh the login before launching paid Claude Code lanes; the lane preflight "
+            "cannot detect this because it makes no provider request."
+        )
+    remaining = expires_at - now
+    if remaining < dt.timedelta(minutes=30):
+        print(
+            f"warning: Claude OAuth credential expires in {remaining} at {expires_at.isoformat()}; "
+            "a multi-lane matrix may outlive it",
+            file=sys.stderr,
+            flush=True,
+        )
+
+
 def active_sequences() -> list[str]:
     doc = load_json(ROOT / "data/workflow-task-sequences.json")
     return [seq["id"] for seq in doc.get("sequences", []) if seq.get("status") == "active"]
@@ -707,10 +767,29 @@ def production_lane_output_declared(result: dict[str, Any]) -> bool:
     )
 
 
-def publication_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
-    return not prepare_only and all(
-        production_lane_output_declared(result) for result in lane_results
-    )
+def publishable_sequences(prepare_only: bool, lane_results: list[dict[str, Any]]) -> list[str]:
+    """Sequences whose own lane produced a retained measurement.
+
+    Publication used to be matrix-wide: any one lane failing withheld the comparison artifact
+    for every sibling, including lanes that were accepted, merged, and already published in the
+    registry. That is the same asymmetry ``artifact_merge_allowed`` exists to prevent one step
+    earlier -- the session evidence was kept while the derived view of it was silently dropped.
+    It has now happened twice, once when an account session limit killed a sibling Beets lane
+    and once when an expired OAuth token did, and both times the artifact had to be published
+    by hand afterwards from a receipt describing the defect.
+
+    Comparability is a property of a (sequence, profile, replicate) pair, not of the batch a
+    lane happened to be launched in, and ``publish_ready_comparisons`` re-resolves each pair
+    against the registry before writing anything. A lane that failed has no reusable record
+    there and is skipped on its own merits.
+    """
+    if prepare_only:
+        return []
+    return sorted({
+        str(result["sequence_id"])
+        for result in lane_results
+        if production_lane_output_declared(result) and result.get("sequence_id")
+    })
 
 
 def artifact_merge_allowed(prepare_only: bool, lane_results: list[dict[str, Any]]) -> bool:
@@ -2031,6 +2110,7 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     published_launch_commit = None
     if not args.prepare_only and not args.dry_run:
+        assert_claude_credential_usable(model_condition, spending=True)
         published_launch_commit = workflow.certified_published_launch_commit(ROOT)
     validation_python = None if args.dry_run else controller_validation_python()
     if not args.dry_run and not ensure_nonsymlink_directory_ancestry(args.lane_root):
@@ -2108,7 +2188,7 @@ def main(argv: list[str] | None = None) -> int:
         else {}
     )
     lanes_passed = all(result["exit_code"] == 0 for result in lane_results)
-    publish_allowed = publication_allowed(args.prepare_only, lane_results)
+    publish_sequences = publishable_sequences(args.prepare_only, lane_results)
     merge_allowed = artifact_merge_allowed(args.prepare_only, lane_results)
     merge_summary = {
         "merged_session_count": 0,
@@ -2139,10 +2219,12 @@ def main(argv: list[str] | None = None) -> int:
             lane_results=lane_results,
             merge_summary=merge_summary,
         )
-        publish_allowed = publish_allowed and authoritative_outputs_complete
-        if publish_allowed:
+        # Deliberately not gated on authoritative_outputs_complete: that is the matrix-wide
+        # acceptance signal below, and letting it gate publication is what withheld accepted
+        # lanes' comparisons when a sibling died.
+        if publish_sequences:
             publish_ready_comparisons(
-                sequences,
+                publish_sequences,
                 treatment_profiles,
                 args.replicate_index,
                 published_comparisons,

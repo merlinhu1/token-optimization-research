@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import copy
+import datetime as dt
 import functools
 import gzip
 import hashlib
@@ -5530,24 +5531,79 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual(run_probe.call_args.args[0], ["/prepared/python", "-c", "import jsonschema"])
 
     def test_failed_lane_cannot_publish(self) -> None:
-        self.assertFalse(
-            matrix.publication_allowed(False, [{"exit_code": 1, "produced_session_ids": ["failed"]}])
+        self.assertEqual(
+            matrix.publishable_sequences(
+                False, [{"exit_code": 1, "sequence_id": "seq-a", "produced_session_ids": ["failed"]}]
+            ),
+            [],
         )
-        self.assertFalse(
-            matrix.publication_allowed(True, [{"exit_code": 0, "produced_session_ids": ["prepared"]}])
+        self.assertEqual(
+            matrix.publishable_sequences(
+                True, [{"exit_code": 0, "sequence_id": "seq-a", "produced_session_ids": ["prepared"]}]
+            ),
+            [],
         )
-        self.assertTrue(
-            matrix.publication_allowed(False, [{"exit_code": 0, "produced_session_ids": ["valid"]}])
+        self.assertEqual(
+            matrix.publishable_sequences(
+                False, [{"exit_code": 0, "sequence_id": "seq-a", "produced_session_ids": ["valid"]}]
+            ),
+            ["seq-a"],
         )
 
-    def test_completed_sessions_merge_even_when_a_sibling_lane_fails(self) -> None:
+    def test_completed_sessions_merge_and_publish_even_when_a_sibling_lane_fails(self) -> None:
+        """A sibling's failure must not withhold an accepted lane's comparison artifact.
+
+        This asserted the opposite until an expired OAuth token killed one Beets lane and
+        silently suppressed the accepted Fastify lane's comparison for the second time.
+        """
         results = [
-            {"exit_code": 0, "produced_session_ids": ["successful-session"]},
-            {"exit_code": 1, "produced_session_ids": ["hard-baseline-session"]},
+            {"exit_code": 0, "sequence_id": "seq-a", "produced_session_ids": ["successful-session"]},
+            {"exit_code": 1, "sequence_id": "seq-b", "produced_session_ids": ["hard-baseline-session"]},
         ]
         self.assertTrue(matrix.artifact_merge_allowed(False, results))
         self.assertFalse(matrix.artifact_merge_allowed(True, results))
-        self.assertFalse(matrix.publication_allowed(False, results))
+        self.assertEqual(matrix.publishable_sequences(False, results), ["seq-a"])
+
+    def test_expired_claude_oauth_refuses_a_paid_launch(self) -> None:
+        condition = {"runtime_id": "claude-code", "id": "claude-code-anthropic-opus-5-medium"}
+        stale = (Path("/tmp/creds.json"), dt.datetime.now(dt.UTC) - dt.timedelta(minutes=5))
+        with mock.patch.object(matrix, "claude_oauth_expiry", return_value=stale):
+            with self.assertRaises(SystemExit) as caught:
+                matrix.assert_claude_credential_usable(condition, spending=True)
+            self.assertIn("expired", str(caught.exception))
+            # A dry run or prepare-only pass spends nothing and must not be blocked.
+            matrix.assert_claude_credential_usable(condition, spending=False)
+            # Codex lanes do not use this credential at all.
+            matrix.assert_claude_credential_usable({"runtime_id": "codex-cli"}, spending=True)
+
+    def test_claude_credential_guard_fails_open_when_it_cannot_tell(self) -> None:
+        """API-key and environment credentials carry no expiry; absence is not a failure."""
+        condition = {"runtime_id": "claude-code"}
+        with mock.patch.object(matrix, "claude_oauth_expiry", return_value=None):
+            matrix.assert_claude_credential_usable(condition, spending=True)
+        fresh = (Path("/tmp/creds.json"), dt.datetime.now(dt.UTC) + dt.timedelta(hours=8))
+        with mock.patch.object(matrix, "claude_oauth_expiry", return_value=fresh):
+            matrix.assert_claude_credential_usable(condition, spending=True)
+
+    def test_uninitialized_gitlink_placeholder_is_repaired(self) -> None:
+        """A missing submodule placeholder made a byte-correct pinned checkout read as dirty."""
+        import fetch_batch_releases as fetch  # type: ignore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp) / "source"
+            repo.mkdir()
+            listing = "100644 abc 0\tREADME.md\n160000 def 0\taur/lean-ctx-bin\n"
+            with mock.patch.object(
+                fetch.subprocess, "run", return_value=mock.Mock(stdout=listing)
+            ):
+                repaired = fetch.ensure_gitlink_placeholders(repo)
+            self.assertEqual(repaired, ["aur/lean-ctx-bin"])
+            self.assertTrue((repo / "aur/lean-ctx-bin").is_dir())
+            self.assertFalse((repo / "README.md").exists())
+            with mock.patch.object(
+                fetch.subprocess, "run", return_value=mock.Mock(stdout=listing)
+            ):
+                self.assertEqual(fetch.ensure_gitlink_placeholders(repo), [])
 
     def test_missing_baseline_collapses_treatments_to_one_baseline_lane(self) -> None:
         jobs = matrix.plan_workflow_jobs(
@@ -5803,7 +5859,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             "produced_session_ids": [],
             "expected_session_binding": {},
         }
-        self.assertFalse(matrix.publication_allowed(False, [empty_lane]))
+        self.assertEqual(matrix.publishable_sequences(False, [empty_lane]), [])
         self.assertFalse(
             matrix.matrix_outputs_complete(
                 prepare_only=False,
@@ -5828,6 +5884,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             {
                 "checkout": "/tmp/valid-lane",
                 "lane_id": "valid-lane",
+                "sequence_id": "seq-valid",
                 "exit_code": 0,
                 "produced_session_ids": [valid["session_id"]],
                 "expected_session_binding": {},
@@ -5835,6 +5892,7 @@ class MatrixLifecycleContractTest(unittest.TestCase):
             {
                 "checkout": "/tmp/empty-lane",
                 "lane_id": "empty-lane",
+                "sequence_id": "seq-empty",
                 "exit_code": 0,
                 "produced_session_ids": [],
                 "expected_session_binding": {},
@@ -5855,7 +5913,9 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertEqual(merged, [valid])
         self.assertEqual(summary["merged_session_ids"], [valid["session_id"]])
         self.assertTrue(summary["rejected_lane_errors"])
-        self.assertFalse(matrix.publication_allowed(False, lane_results))
+        # The zero-output lane still publishes nothing of its own; what changed is that it no
+        # longer suppresses the sibling that did produce a measurement.
+        self.assertEqual(matrix.publishable_sequences(False, lane_results), ["seq-valid"])
         self.assertFalse(
             matrix.matrix_outputs_complete(
                 prepare_only=False,

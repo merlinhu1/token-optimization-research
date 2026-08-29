@@ -163,10 +163,43 @@ def install_npm_package(artifact_path: Path, runtime: Path) -> None:
         raise RuntimeError(f"npm install failed for {artifact_path.name}: {result.stderr.strip()[-500:]}")
 
 
+def ensure_gitlink_placeholders(destination: Path) -> list[str]:
+    """Recreate the empty directories an uninitialized submodule is supposed to leave behind.
+
+    These checkouts are shallow, single-commit, non-recursive fetches, so a submodule recorded
+    as a gitlink is never populated -- and for LeanCTX one of them points at an AUR packaging
+    repo over ssh that this environment cannot reach anyway. Git represents that state as an
+    empty placeholder directory. When the placeholder goes missing, `git status` reports the
+    gitlink as deleted, and the treatment-source integrity gate in the workflow controller
+    refuses the run with "dirty treatment source artifact" for a checkout whose tracked file
+    content is byte-for-byte correct.
+
+    That is a false positive, and it blocked a paid LeanCTX launch until the directory was
+    recreated by hand. Repairing it here keeps the fix at the cause: a pinned checkout is
+    supposed to be reproducible, so this makes it match what a plain checkout produces instead
+    of loosening the gate that noticed the difference. Returns the paths it repaired.
+    """
+    listing = subprocess.run(
+        ["git", "-C", str(destination), "ls-files", "-s"],
+        check=True, text=True, capture_output=True,
+    ).stdout
+    repaired: list[str] = []
+    for line in listing.splitlines():
+        meta, _, path = line.partition("\t")
+        if not path or not meta.startswith("160000 "):
+            continue
+        placeholder = destination / path
+        if not placeholder.exists():
+            placeholder.mkdir(parents=True, exist_ok=True)
+            repaired.append(path)
+    return repaired
+
+
 def fetch_source(name: str, commit: str, destination: Path) -> None:
     """Check the source out at the exact commit the guide sha was read from."""
     repo = f"https://github.com/{REPOS[name]}"
     if destination.exists():
+        ensure_gitlink_placeholders(destination)
         return
     destination.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(["git", "init", "-q", str(destination)], check=True)
@@ -176,6 +209,7 @@ def fetch_source(name: str, commit: str, destination: Path) -> None:
         check=True,
     )
     subprocess.run(["git", "-C", str(destination), "checkout", "-q", "--detach", "FETCH_HEAD"], check=True)
+    ensure_gitlink_placeholders(destination)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -197,6 +231,19 @@ def main(argv: list[str] | None = None) -> int:
                 if state != "ok":
                     failures.append(f"{name}: {path.relative_to(fixture.BATCH_RELEASE_ROOT)} {state}")
                 print(f"  {state:<15} {name:<14} {path.relative_to(fixture.BATCH_RELEASE_ROOT)}")
+            # The workflow controller refuses to launch against a dirty pinned checkout, so a
+            # digest-only report can pass while a run is still blocked. Surface it here without
+            # mutating anything; `--only <tool>` without --verify-only repairs placeholders.
+            source = root / "source"
+            if (source / ".git").exists():
+                status = subprocess.run(
+                    ["git", "-C", str(source), "status", "--porcelain", "--untracked-files=all"],
+                    check=False, text=True, capture_output=True,
+                ).stdout.strip()
+                state = "ok" if not status else "DIRTY CHECKOUT"
+                if status:
+                    failures.append(f"{name}: source checkout dirty\n{status}")
+                print(f"  {state:<15} {name:<14} {source.relative_to(fixture.BATCH_RELEASE_ROOT)}")
             continue
 
         if not (artifact_path.is_file() and sha256(artifact_path.read_bytes()) == artifact_sha):
