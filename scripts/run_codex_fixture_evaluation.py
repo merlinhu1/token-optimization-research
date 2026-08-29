@@ -49,6 +49,14 @@ CLAUDE_ACCOUNT_HOME_ENV = "TOKEN_EVAL_CLAUDE_ACCOUNT_HOME"
 # already sitting where the CLI keeps them; the override still wins when it is set.
 DEFAULT_CLAUDE_ACCOUNT_HOME = Path("/opt/data/home/.claude")
 
+# The container mount points claude_code_workflow_adapter gives the model. They are neutral by
+# design, so no treatment or session identifier appears in the model's HOME, config, or cwd.
+# Anything launched inside that container -- an MCP server, a hook -- must be addressed by these
+# paths rather than by the lane's host paths, and the handshake probe must use the same layout
+# or it proves a configuration the model never receives.
+CLAUDE_CONTAINER_HOME = Path("/agent-home")
+CLAUDE_CONTAINER_REPO = Path("/workspace")
+
 
 def claude_account_home() -> Path | None:
     configured = os.environ.get(CLAUDE_ACCOUNT_HOME_ENV)
@@ -2833,6 +2841,45 @@ def render_mcp_args(record: dict[str, Any], codex_home: Path, cfg: dict[str, Any
     return [render_tool_value(arg, record, codex_home, cfg) for arg in cfg.get("mcp_args", [])]
 
 
+def claude_container_path_text(value: str, record: dict[str, Any], claude_home: Path) -> str:
+    """Rewrite host lane paths in an already-rendered string onto their container mount points."""
+    host_repo = rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT
+    for host, container in (
+        (str(host_repo), str(CLAUDE_CONTAINER_REPO)),
+        (str(claude_home), str(CLAUDE_CONTAINER_HOME)),
+    ):
+        value = value.replace(host, container)
+    return value
+
+
+def claude_container_tool_value(
+    value: str,
+    record: dict[str, Any],
+    claude_home: Path,
+    cfg: dict[str, Any],
+) -> str:
+    """Render an MCP launch string against the paths the model's container actually has.
+
+    Claude Code starts its MCP servers inside the lane container, where
+    ``claude_code_workflow_adapter`` mounts the agent home at ``/agent-home`` and the repository
+    at ``/workspace`` -- deliberately, so no treatment or session identifier is visible in the
+    model's HOME, config, or cwd. Rendering ``{repo}`` to the host path therefore produced a
+    server command that cannot run there: ``cd <host repo> && exec ...`` exits immediately and
+    Claude reports the server as ``failed`` with none of its tools registered.
+
+    The out-of-container handshake probe did not catch it, because it mounted the repository at
+    its host path instead. So the probe proved a configuration the model was never given, which
+    is the "runner preflight is not proof of the model-visible environment" trap in the protocol
+    skill. Both jCodeMunch Claude Code lanes were measured this way and are not product results;
+    see the audit receipt for that correction.
+    """
+    # Substitute on the rendered string so composite paths (a tool data dir nested under the
+    # agent home, for example) are translated as a whole rather than needing their own token.
+    return claude_container_path_text(
+        render_tool_value(value, record, claude_home, cfg), record, claude_home
+    )
+
+
 def prepare_claude_mcp_config(
     record: dict[str, Any],
     pid: str,
@@ -2843,26 +2890,34 @@ def prepare_claude_mcp_config(
     server = str((cfg or {}).get("mcp_server") or "")
     if not cfg or not server:
         return None
-    command = render_tool_value(str(cfg.get("mcp_command", "")), record, claude_home, cfg)
+    command = claude_container_tool_value(str(cfg.get("mcp_command", "")), record, claude_home, cfg)
     if not command:
         raise ValueError(f"Claude MCP profile {pid} has no server command")
     config_path = claude_home / "claude-config" / "mcp.json"
     # This writer runs before claude_env in some orderings, and claude_env is what usually
     # creates the lane-private config directory. Own the directory rather than assume it.
     config_path.parent.mkdir(parents=True, exist_ok=True)
+    # Call render_tool_env for its side effect of creating the host-side tool data directory
+    # before it is mounted, then translate its values onto the container paths the server sees.
+    host_env = render_tool_env(
+        claude_home,
+        cfg,
+        rel_or_abs(record["target"]["repository_path"]) if record.get("target") else ROOT,
+    )
+    container_env = {
+        key: claude_container_path_text(value, record, claude_home)
+        for key, value in host_env.items()
+    }
     config_path.write_text(json.dumps({
         "mcpServers": {
             server: {
                 "type": "stdio",
                 "command": command,
-                "args": render_mcp_args(record, claude_home, cfg),
-                "env": render_tool_env(
-                    claude_home,
-                    cfg,
-                    rel_or_abs(record["target"]["repository_path"])
-                    if record.get("target")
-                    else ROOT,
-                ),
+                "args": [
+                    claude_container_tool_value(arg, record, claude_home, cfg)
+                    for arg in cfg.get("mcp_args", [])
+                ],
+                "env": container_env,
             }
         }
     }, indent=2) + "\n")
@@ -3984,26 +4039,45 @@ def probe_mcp_handshake(
         else codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     )
     env.update(tool_env_for_record(record, pid, codex_home))
-    mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
     probe_script = ROOT / "scripts" / "probe_mcp_stdio.py"
+    if runtime_id == "claude-code" and backend == "docker":
+        # Prove the server the model will actually be given. Mounting the repository at its host
+        # path here made the probe pass for configurations whose server could not start inside
+        # the model's container, where the repository is at /workspace: Cartog was caught this
+        # way, and both jCodeMunch Claude Code lanes were measured with a server Claude reported
+        # as `failed`. Mirror the adapter's neutral layout instead.
+        mounts = container_mounts_for_record(record, codex_home, include_repo=False, cfg=cfg)
+        add_mount(mounts, codex_home, target=CLAUDE_CONTAINER_HOME, mode="rw")
+        add_mount(mounts, rel_or_abs(record["target"]["repository_path"]), target=CLAUDE_CONTAINER_REPO, mode="rw")
+        probe_cwd = CLAUDE_CONTAINER_REPO
+        probe_command = claude_container_tool_value(cfg["mcp_command"], record, codex_home, cfg)
+        probe_args = [
+            claude_container_tool_value(arg, record, codex_home, cfg)
+            for arg in cfg.get("mcp_args", [])
+        ]
+    else:
+        mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
+        probe_cwd = rel_or_abs(record["target"]["repository_path"])
+        probe_command = render_tool_value(cfg["mcp_command"], record, codex_home, cfg)
+        probe_args = render_mcp_args(record, codex_home, cfg)
     add_mount(mounts, probe_script, mode="ro")
     command = [
         "python3",
         str(probe_script),
         "--command",
-        render_tool_value(cfg["mcp_command"], record, codex_home, cfg),
+        probe_command,
         "--cwd",
-        str(rel_or_abs(record["target"]["repository_path"])),
+        str(probe_cwd),
         "--timeout",
         str(handshake.get("timeout_seconds", 30)),
     ]
-    for arg in render_mcp_args(record, codex_home, cfg):
+    for arg in probe_args:
         command.append(f"--arg={arg}")
     proc = run_backend(
         command,
         backend=backend,
         docker_image=docker_image,
-        cwd=rel_or_abs(record["target"]["repository_path"]),
+        cwd=probe_cwd,
         env=env,
         stdout_path=receipt_path,
         timeout=int(handshake.get("timeout_seconds", 30)) + 10,

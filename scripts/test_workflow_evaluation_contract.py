@@ -5585,6 +5585,52 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         with mock.patch.object(matrix, "claude_oauth_expiry", return_value=fresh):
             matrix.assert_claude_credential_usable(condition, spending=True)
 
+    def test_claude_mcp_config_addresses_container_paths_not_host_paths(self) -> None:
+        """A Claude MCP server runs in the model's container, where the repo is /workspace.
+
+        Rendering {repo} to the lane's host path produced `cd <host repo> && exec ...`, which
+        exits immediately; Claude reported the server as `failed` with no tools registered. The
+        out-of-container handshake probe mounted the repo at its host path and passed anyway,
+        so nothing caught it until a session-init event was read directly.
+        """
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        record = {"target": {"repository_path": "/lane/sessions/s0/project/repo"}}
+        home = Path("/lane/sessions/s0/codex-homes/profile")
+        for config_name in ("cartog-claude-code-product-v1", "jcodemunch-claude-code-mcp-v1"):
+            cfg = fixture_runner.TOOL_CONFIGS[config_name]
+            rendered = " ".join(
+                fixture_runner.claude_container_tool_value(arg, record, home, cfg)
+                for arg in cfg.get("mcp_args", [])
+            )
+            self.assertIn(str(fixture_runner.CLAUDE_CONTAINER_REPO), rendered, config_name)
+            self.assertNotIn("/lane/sessions/s0/project/repo", rendered, config_name)
+            self.assertNotIn(str(home), rendered, config_name)
+
+    def test_every_claude_mcp_profile_launches_on_container_paths(self) -> None:
+        """No Claude MCP profile may embed a host lane path in its launch command."""
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        record = {"target": {"repository_path": "/lane/sessions/s0/project/repo"}}
+        home = Path("/lane/sessions/s0/codex-homes/profile")
+        offenders = []
+        for pid, config_name in sorted(fixture_runner.PROFILE_TOOL_CONFIG_OVERRIDES.items()):
+            if "claude" not in pid:
+                continue
+            cfg = fixture_runner.TOOL_CONFIGS.get(config_name) or {}
+            if not cfg.get("mcp_server"):
+                continue
+            launch = " ".join(
+                [fixture_runner.claude_container_tool_value(str(cfg.get("mcp_command", "")), record, home, cfg)]
+                + [
+                    fixture_runner.claude_container_tool_value(arg, record, home, cfg)
+                    for arg in cfg.get("mcp_args", [])
+                ]
+            )
+            if "/lane/sessions/s0" in launch:
+                offenders.append(f"{pid}: {launch}")
+        self.assertEqual(offenders, [])
+
     def test_uninitialized_gitlink_placeholder_is_repaired(self) -> None:
         """A missing submodule placeholder made a byte-correct pinned checkout read as dirty."""
         import fetch_batch_releases as fetch  # type: ignore

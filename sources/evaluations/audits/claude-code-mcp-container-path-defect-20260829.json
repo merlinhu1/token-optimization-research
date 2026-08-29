@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-29",
+  "action": "apparatus-defect-finding-and-claim-correction",
+  "verdict": "claude-code-mcp-servers-launched-on-host-paths-could-not-start-in-the-model-container",
+  "discovered_while": "Preparing the Cartog Claude Code r0 lane; the running lane was stopped at task-01 before it could spend a full budget on a treatment that had not loaded.",
+  "defect": {
+    "summary": "Claude Code MCP server configurations were rendered with the lane's host paths, but Claude Code starts its MCP servers inside the lane container, where the repository is mounted at /workspace and the agent home at /agent-home. Any profile whose launch command referenced the repository path therefore ran `cd <host repo> && exec ...`, exited immediately, and was reported by Claude Code as `status: failed` with none of its tools registered.",
+    "why_it_was_not_caught": "The out-of-container handshake probe mounted the repository at its host path (`include_repo=True`), so it validated a configuration the model was never given. It reported `passed: true`, `tools_list_passed: true`, `treatment_degradation: false` and a full tool list for servers that could not start in the model's container. This is the failure mode the benchmark-protocol skill names: treating runner preflight as proof that the model-visible environment can use a treatment tool.",
+    "affected_shape": "Profiles whose MCP command or args embed the repository path. Profiles that reference only /opt/data paths mounted identically inside the container, or that resolve the project from cwd, were unaffected."
+  },
+  "evidence": {
+    "method": "Read the `system/init` event of the first task stream of every retained Claude Code session, which reports `mcp_servers[].status` and the tool list actually offered to the model.",
+    "sessions_audited": [
+      {"session_id": "integrated-leanctx-claude-code-hybrid-fastify-20260829-p-94cb0f4a5c49-r0", "server": "lean-ctx", "status": "connected", "mcp_tools_offered": 12},
+      {"session_id": "integrated-leanctx-claude-code-hybrid-beets-20260829-p-e257557e288c-r0", "server": "lean-ctx", "status": "connected", "mcp_tools_offered": 12},
+      {"session_id": "retrieval-serena-claude-code-mcp-fastify-20260827-p-94cb0f4a5c49-r0", "server": "serena", "status": "connected", "mcp_tools_offered": 14},
+      {"session_id": "retrieval-serena-claude-code-mcp-beets-20260827-p-e257557e288c-r0", "server": "serena", "status": "connected", "mcp_tools_offered": 14},
+      {"session_id": "retrieval-codegraph-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0", "server": "codegraph", "status": "connected", "mcp_tools_offered": 1},
+      {"session_id": "retrieval-codegraph-claude-code-mcp-beets-20260828-p-e257557e288c-r0", "server": "codegraph", "status": "connected", "mcp_tools_offered": 1},
+      {"session_id": "retrieval-jcodemunch-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0", "server": "jcodemunch", "status": "failed", "mcp_tools_offered": 0},
+      {"session_id": "retrieval-jcodemunch-claude-code-mcp-beets-20260828-p-e257557e288c-r0", "server": "jcodemunch", "status": "failed", "mcp_tools_offered": 0}
+    ],
+    "unaffected": "LeanCTX, Serena and CodeGraph Claude Code lanes all registered a connected server and were offered their tools. No published result from those lanes is affected by this defect."
+  },
+  "claim_correction": {
+    "false_claim": "The roadmap described the two jCodeMunch Claude Code lanes as 'non-adoption under a working integration rather than a broken one', citing the pre-prompt MCP handshake and the session-init skill listing as proof that both surfaces were 'present and reachable', and built on it the corpus's 'sharpest counterexample to reading direction off adoption'.",
+    "why_it_is_false": "The model made zero MCP calls on those lanes because the server had failed and its tools were not offered, not because it declined to use them. The handshake cited as proof ran under a different mount layout than the model's.",
+    "status_of_the_numbers": "The weighted token costs themselves are real and were measured correctly: 524,327.7 over 86 steps on Fastify and 259,926.1 over 50 steps on Beets. What they measure is a lane whose MCP treatment never loaded. They cannot be reported as a jCodeMunch product effect.",
+    "residual_surface": "The jCodeMunch Claude Code profile also installs a skill and hooks, which are not affected by the MCP launch defect. So the lanes are not pure baselines either; they are an unnamed partial-installation ablation. That is not a condition this study declared, and an ablation has to be declared rather than discovered after the fact.",
+    "consequence_for_other_claims": "The cross-runtime 'adoption does not predict direction' argument rested on pairing this broken Claude Code half against a working Codex half. It is withdrawn. The Codex half is unaffected and stands on its own."
+  },
+  "disposition": {
+    "records_retained": true,
+    "records_deleted": false,
+    "reason": "Deleting or excluding accepted production records requires explicit experiment-owner direction. The defect is disclosed here and the dependent claims are corrected in place; the disposition of the two sessions is an owner decision.",
+    "recommended_owner_decision": "Either re-run jCodeMunch Claude Code r0 under the corrected apparatus and supersede these two sessions, or keep them explicitly relabelled as a partial-installation ablation rather than a jCodeMunch product result.",
+    "affected_sessions": [
+      "retrieval-jcodemunch-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0",
+      "retrieval-jcodemunch-claude-code-mcp-beets-20260828-p-e257557e288c-r0"
+    ]
+  },
+  "fix": {
+    "rendering": "prepare_claude_mcp_config now renders the server command, args and env through claude_container_tool_value, which rewrites the lane's host repository and agent-home paths onto the container mount points the adapter provides (/workspace and /agent-home).",
+    "probe": "probe_mcp_handshake now mirrors that neutral mount layout for claude-code runs instead of mounting the repository at its host path, so a passing handshake proves the configuration the model receives.",
+    "constants": "CLAUDE_CONTAINER_HOME and CLAUDE_CONTAINER_REPO are defined once in the fixture runner and describe the adapter's existing mounts; the adapter's behaviour is unchanged.",
+    "regression_tests": [
+      "test_claude_mcp_config_addresses_container_paths_not_host_paths",
+      "test_every_claude_mcp_profile_launches_on_container_paths"
+    ],
+    "identity_effect": "The fixture runner is hashed into tool_manifest_sha256 for profiles declaring current-file-v1, so those profiles resolve to new protocol identities. That is the designed signal that the apparatus changed. Cartog held no sessions or protocols at the time of this change, so no replicate pool is split by it."
+  },
+  "cartog_status": {
+    "claude_code_lane": "Stopped at task-01 after the session-init event showed cartog status failed with zero tools. Nothing was merged; the registry stayed at 52 sessions and no protocol was written.",
+    "install_was_correct": "cartog init, cartog ide --client claude-code --scope all --no-watch, and cartog index all exited 0, wrote .cartog.toml, the repo .mcp.json, the user settings.json and a 338-file/7,706-symbol graph. The defect was in how the controller addressed the server, not in the product's installation."
+  }
+}
