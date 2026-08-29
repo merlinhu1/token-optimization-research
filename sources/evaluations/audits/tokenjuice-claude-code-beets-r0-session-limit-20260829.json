@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-29",
+  "action": "operational-validity-finding",
+  "session_id": "terminal-tokenjuice-claude-code-hook-beets-20260828-p-e257557e288c-r0",
+  "profile_id": "terminal-tokenjuice-claude-code-hook-v1",
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "replicate_index": 0,
+  "registry_status": "failed",
+  "verdict": "operationally-invalid-interrupted-execution",
+  "finding": {
+    "summary": "The Anthropic account hit its session limit during task-06, so the workflow never completed and this replicate has no comparable weighted token cost.",
+    "evidence": "task-06-claude-events.jsonl records api_error_status 429, terminal_reason api_error, and result 'You've hit your session limit · resets 9:50pm (UTC)'. The agent completed 3 turns on task-06 before the cutoff; codex_exit_codes are [0,0,0,0,0,1].",
+    "tasks_reached": 6,
+    "tasks_completed_by_agent": 5,
+    "note_on_task_04": "task-04 exited 2 with the same test/conftest.py pytest_make_parametrize_id OSError that every Claude Code Beets session hits. That is the pre-existing fixture defect, unrelated to the session limit."
+  },
+  "why_not_a_retained_token_result": {
+    "rule": "Weighted token cost is defined across the complete persistent workflow. Interrupted execution and incomplete provider usage are named invalidity conditions.",
+    "distinction": "This is NOT a replicate dropped for the number it produced, which the repository forbids. The trajectory was truncated by an account quota external to the treatment, so there is no complete workflow to price. The partial telemetry (354,181.8 over 43 steps) is retained inside the record as an incident receipt and must not be published, compared, or ranked as a jCodeMunch-style lane result.",
+    "spend_disclosure": "This replicate did consume provider budget; it is not a zero-spend receipt."
+  },
+  "disposition": {
+    "record": "retained in data/workflow-sessions.json with status failed",
+    "deleted": false,
+    "deletion_policy": "Rejected or excluded records may be deleted only by explicit experiment-owner direction, together with their artifact roots and unreferenced protocols. No such direction was given, so the record stands.",
+    "replicate_slot": "r0 is occupied for this sequence/profile pool; find_pool_profile_record reports reuse state 'occupied'. A repeat Beets measurement must therefore run at r1.",
+    "precedent": "sources/evaluations/audits/ holds the comparable Serena Codex r0 operationally-invalid recording; the corpus has also previously replaced a rate-limited Claude Code Beets replicate under owner direction."
+  },
+  "sibling_lane": {
+    "session_id": "terminal-tokenjuice-claude-code-hook-fastify-20260828-p-94cb0f4a5c49-r0",
+    "status": "completed",
+    "unaffected": "Fastify ran to completion before the quota was exhausted, passed all six task verifiers and the final project compile, and is a valid retained r0."
+  },
+  "comparison_publication_defect": {
+    "observed": "run_sequential_workflow_matrix gates comparison publication on authoritative_outputs_complete, which is matrix-wide. One lane's provider interruption therefore suppressed the other lane's comparison even though that lane was accepted and its sample was merged into the registry.",
+    "resolution": "publish_ready_comparisons was re-run for this profile after configuring the Claude Code model condition; it published the Fastify comparison and correctly skipped Beets as occupied. No new evidence was produced, only the derived artifact the matrix withheld.",
+    "note": "Calling publish_ready_comparisons without first configuring the model condition silently resolves no baseline at all and returns an empty list, which reads identically to 'nothing was ready'."
+  }
+}

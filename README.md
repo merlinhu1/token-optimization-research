@@ -12,9 +12,9 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lane
 | `beets-lifecycle-sequence-v2` | Beets | 6 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry contains 42 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 28 individual-tool treatments. By sequence: 21 `beets-lifecycle-sequence-v2`, 21 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 18, Codex CLI 20, OpenCode CLI 4.
+The active registry contains 43 accepted provider-backed sessions: 10 baselines, 4 replacement-runtime controls, 29 individual-tool treatments. By sequence: 21 `beets-lifecycle-sequence-v2`, 22 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 19, Codex CLI 20, OpenCode CLI 4.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 8 replicates (71, 52, 52, 74, 72, 89, 58, 86 agent steps, spread 71.2%); weighted cost per step spread 72.6%; `c86863838e8b` holds 11 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78, 100 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 11 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71, 106 agent steps, spread 115.6%); weighted cost per step spread 67.9%; `e257557e288c` holds 8 replicates (66, 36, 35, 50, 45, 51, 52, 50 agent steps, spread 88.6%); weighted cost per step spread 98.5%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 9 replicates (71, 52, 52, 74, 72, 89, 58, 86, 110 agent steps, spread 111.5%); weighted cost per step spread 72.6%; `c86863838e8b` holds 11 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78, 100 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 11 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71, 106 agent steps, spread 115.6%); weighted cost per step spread 67.9%; `e257557e288c` holds 8 replicates (66, 36, 35, 50, 45, 51, 52, 50 agent steps, spread 88.6%); weighted cost per step spread 98.5%.
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
