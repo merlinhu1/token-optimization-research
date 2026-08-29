@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-29",
+  "action": "zero-spend-pre-provider-boundary-failure-receipt",
+  "attempted_session_id": "integrated-leanctx-claude-code-hybrid-beets-20260829-p-e257557e288c-r0",
+  "profile_id": "integrated-leanctx-claude-code-hybrid-v1",
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "replicate_index": 0,
+  "registry_status": "never-merged",
+  "verdict": "failed-before-the-provider-boundary",
+  "finding": {
+    "summary": "The lane-copied Anthropic OAuth token expired between the Fastify lane and the Beets lane, so every Anthropic request on the Beets lane was rejected and the workflow produced no measurement.",
+    "evidence": "task-01-claude-events.jsonl records system/api_retry with error_status 401 and error authentication_failed, then a synthetic assistant message 'Failed to authenticate: OAuth session expired and could not be refreshed', then result with terminal_reason api_error and total_cost_usd 0. codex_exit_codes are [1]; tasks 2-6 were never delivered.",
+    "tasks_reached": 1,
+    "tasks_completed_by_agent": 0,
+    "provider_tokens": {
+      "fresh_input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "weighted_token_cost": 0.0
+    }
+  },
+  "why_this_is_a_replacement_rather_than_a_retained_replicate": {
+    "rule": "AGENTS.md: 'Only a replicate that failed before the provider boundary produced no measurement; replace it and retain its zero-spend receipt.'",
+    "distinction": "This is NOT a replicate dropped for the number it produced, which the repository forbids. There was no number. The provider rejected authentication before any inference occurred, so no weighted token cost exists to retain, publish, or compare.",
+    "spend_disclosure": "Zero provider spend. The stream's own result event reports total_cost_usd 0 and all six canonical usage components are 0."
+  },
+  "why_the_preflight_did_not_catch_it": {
+    "observed": "claude-code-preflight.json for this lane recorded authentication.passed true, logged_in true, auth_method claude.ai, subscription_type pro, and provider_request_made false.",
+    "cause": "The preflight checks local login state without issuing a provider request, so a token that is present but past refresh still reads as authenticated. The credential expired at a point that the local check cannot distinguish from a healthy one.",
+    "scope": "This is a detection-latency note about the preflight, not a defect in the treatment or the fixture. It is recorded so the zero-spend claim is auditable rather than inferred."
+  },
+  "disposition": {
+    "record": "no data/workflow-sessions.json entry was ever created; strict compact artifact ingress validation refused the bundle at run_codex_workflow_evaluation.py:810 because the run record could not match a session under the current contract",
+    "artifacts_retained_in_corpus": false,
+    "protocol_minted": false,
+    "replicate_slot": "r0 for this sequence/profile pool remains vacant and is used by the replacement run",
+    "registry_count": "unchanged at 49 sessions"
+  },
+  "sibling_lane": {
+    "session_id": "integrated-leanctx-claude-code-hybrid-fastify-20260829-p-94cb0f4a5c49-r0",
+    "status": "completed",
+    "unaffected": "Fastify ran to completion before the token expired, passed all six task verifiers and the final project compile, and is a valid retained r0."
+  },
+  "comparison_publication_defect": {
+    "observed": "run_sequential_workflow_matrix gates comparison publication on a matrix-wide completeness check, so the Beets lane's authentication failure again suppressed the Fastify lane's comparison artifact even though Fastify was accepted and merged.",
+    "resolution": "publish_ready_comparisons was re-run for this profile after configuring the Claude Code model condition, publishing baseline-fastify-20260829-vs-integrated-leanctx-claude-code-hybrid-p-94cb0f4a5c49-r0.json. No new evidence was produced, only the derived artifact the matrix withheld.",
+    "recurrence": "This is the second occurrence of the same defect; the first is recorded in tokenjuice-claude-code-beets-r0-session-limit-20260829.json. It is a reporting-path defect, not a measurement defect."
+  },
+  "pinned_source_integrity_note": {
+    "observed": "The first dry-run refused with 'dirty treatment source artifact' for /opt/data/tool-candidates/releases/lean-ctx-3.9.19/source, reporting 'D aur/lean-ctx-bin'.",
+    "cause": "aur/lean-ctx-bin is an uninitialized gitlink (mode 160000, commit c260e620842312d74d3ec5f2b6f6067532ea2b22) pointing at ssh://aur@aur.archlinux.org/lean-ctx-bin.git. Its placeholder working directory was absent, so Git reported the gitlink as deleted.",
+    "resolution": "The empty placeholder directory was recreated, which is the state a non-recursive checkout leaves. No tracked file content changed; the checkout is clean at the pinned commit 8a3d23b317c98b39704543c9acb8b7cc8992c63d and fetch_batch_releases.py --verify-only still reports ok for both the pinned binary artifact and the pinned source/README.md install guide."
+  },
+  "superseded_by_measurement": "pending replacement run of beets-lifecycle-sequence-v2 under integrated-leanctx-claude-code-hybrid-v1 at replicate_index 0"
+}
