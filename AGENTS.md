@@ -89,6 +89,14 @@ There is no minimum, no parity requirement, no cap, and nothing to register in a
   replicate whose agent performed badly produced a real token count. Only a replicate that failed
   *before* the provider boundary produced no measurement; replace it and retain its zero-spend
   receipt.
+- **A run invalidated by an apparatus defect must not occupy a replicate slot.** If the declared
+  treatment was not operating — a tool server that never started, an integration installed to a
+  path the model could not reach — the run measured something the study never declared. Delete it
+  with its artifact root and unreferenced protocols, free its slot for the replacement, and keep a
+  receipt disclosing its numbers and its spend. This is not a licence to drop a replicate for the
+  number it produced: the trigger is that the treatment was absent, never the result it returned.
+  Establish that from the model-visible surface, not from a preflight — a handshake probe can pass
+  against a configuration the model was never given.
 - **State how many replicates each arm holds** in any comparison. Optional stopping is managed by
   disclosure rather than by a registered N, so the count is part of the result.
 - **Where ranges overlap at the counts held, report the tools as indistinguishable** rather than

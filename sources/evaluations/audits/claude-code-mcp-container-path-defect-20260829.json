@@ -31,14 +31,34 @@
     "consequence_for_other_claims": "The cross-runtime 'adoption does not predict direction' argument rested on pairing this broken Claude Code half against a working Codex half. It is withdrawn. The Codex half is unaffected and stands on its own."
   },
   "disposition": {
-    "records_retained": true,
-    "records_deleted": false,
-    "reason": "Deleting or excluding accepted production records requires explicit experiment-owner direction. The defect is disclosed here and the dependent claims are corrected in place; the disposition of the two sessions is an owner decision.",
-    "recommended_owner_decision": "Either re-run jCodeMunch Claude Code r0 under the corrected apparatus and supersede these two sessions, or keep them explicitly relabelled as a partial-installation ablation rather than a jCodeMunch product result.",
-    "affected_sessions": [
-      "retrieval-jcodemunch-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0",
-      "retrieval-jcodemunch-claude-code-mcp-beets-20260828-p-e257557e288c-r0"
-    ]
+    "records_retained": false,
+    "records_deleted": true,
+    "deletion_authority": "explicit experiment-owner direction on 2026-08-30 (\"rerun defect evaluation and delete defect record. defect runs should not occupy record slot such as r0\")",
+    "deleted_artifacts": [
+      "data/workflow-sessions.json entry for retrieval-jcodemunch-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0",
+      "data/workflow-sessions.json entry for retrieval-jcodemunch-claude-code-mcp-beets-20260828-p-e257557e288c-r0",
+      "sources/evaluations/workflow-sessions/retrieval-jcodemunch-claude-code-mcp-fastify-20260828-p-94cb0f4a5c49-r0/ (run.json, changes.diff, evidence.jsonl.gz, manifest.sha256)",
+      "sources/evaluations/workflow-sessions/retrieval-jcodemunch-claude-code-mcp-beets-20260828-p-e257557e288c-r0/ (run.json, changes.diff, evidence.jsonl.gz, manifest.sha256)",
+      "sources/evaluations/workflow-sessions/baseline-fastify-20260828-vs-retrieval-jcodemunch-claude-code-mcp-p-94cb0f4a5c49-r0.json",
+      "sources/evaluations/workflow-sessions/baseline-beets-20260828-vs-retrieval-jcodemunch-claude-code-mcp-p-e257557e288c-r0.json",
+      "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-jcodemunch-claude-code-mcp-v1-a7e866a77ce4.json",
+      "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-jcodemunch-claude-code-mcp-v1-c562aa24e156.json"
+    ],
+    "protocols_deleted_because_unreferenced": "Both protocols were referenced only by the two deleted sessions, so they were removed with them as the retention rule requires. The replacement run derives its own.",
+    "registry_count": "56 -> 54 sessions",
+    "replicate_slot": "r0 for both sequence/profile pools is vacant and is taken by the replacement run. This differs from the TokenJuice Beets deletion, where the replacement kept replicate_index 1 because a valid retained measurement already occupied r0. Here nothing valid was ever measured, so nothing is renumbered.",
+    "disclosed_numbers_from_the_deleted_records": {
+      "note": "Recorded for disclosure only. These must never be published, compared, or ranked; after this deletion the receipt is the only place they survive.",
+      "fastify": {"weighted_token_cost": 524327.7, "agent_steps": 86, "weighted_token_cost_per_step": 6096.8, "tasks_passed": 6},
+      "beets": {"weighted_token_cost": 259926.1, "agent_steps": 50, "weighted_token_cost_per_step": 5198.5, "tasks_passed": 5},
+      "spend_disclosure": "Both replicates consumed provider budget. They are not zero-spend receipts. What they priced is a lane whose MCP treatment never started."
+    }
+  },
+  "slot_policy_set_by_owner": {
+    "rule": "A run invalidated by an apparatus defect must not occupy a replicate slot. Its slot is freed by deletion and reused by the replacement, so the corpus never reads as though a defective attempt was a measured replicate of the product.",
+    "authority": "experiment-owner direction on 2026-08-30",
+    "distinction_from_retention_policy": "This does not weaken the rule that a replicate is never dropped for the number it produced. The trigger here is that the declared treatment was not operating, which is an apparatus-validity condition, not an outcome the run happened to produce.",
+    "recorded_in": "AGENTS.md, under the estimator rules"
   },
   "fix": {
     "rendering": "prepare_claude_mcp_config now renders the server command, args and env through claude_container_tool_value, which rewrites the lane's host repository and agent-home paths onto the container mount points the adapter provides (/workspace and /agent-home).",
