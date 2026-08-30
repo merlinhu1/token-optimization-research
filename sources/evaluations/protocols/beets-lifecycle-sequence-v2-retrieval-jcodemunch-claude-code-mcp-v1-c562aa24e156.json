@@ -1,0 +1,717 @@
+{
+  "protocol_schema_version": 3,
+  "protocol_id": "beets-lifecycle-sequence-v2-retrieval-jcodemunch-claude-code-mcp-v1-c562aa24e156",
+  "status": "frozen-ready-not-run",
+  "outcome": "Frozen retrieval-jcodemunch-claude-code-mcp-v1 protocol for beets-lifecycle-sequence-v2; no provider/model run has occurred.",
+  "frozen_at": "2026-08-22",
+  "hypothesis": "retrieval-jcodemunch-claude-code-mcp-v1 produces reproducible weighted token cost and software-quality evidence for beets-lifecycle-sequence-v2",
+  "evidence_stage_target": "reproduction",
+  "task_fixture": {
+    "fixture_id": "medium-beetbox-beets",
+    "sequence_id": "beets-lifecycle-sequence-v2",
+    "task_family_generation": "lifecycle-v2",
+    "repository": "https://github.com/beetbox/beets.git",
+    "snapshot": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+    "qualification_path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+    "qualification_sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911",
+    "timeout_seconds_per_task": 3600
+  },
+  "baseline": {
+    "profile_id": "baseline-claude-code-no-mcp",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "command": ""
+  },
+  "comparison_baseline": {
+    "profile_id": "baseline-claude-code-no-mcp",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "command": ""
+  },
+  "treatment": {
+    "profile_id": "retrieval-jcodemunch-claude-code-mcp-v1",
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "command": "python3 scripts/run_claude_code_workflow_model_condition.py --workflow-model-condition-id claude-code-anthropic-opus-5-medium --workflow-model claude-opus-5 --workflow-reasoning-effort medium --sequence-id beets-lifecycle-sequence-v2 --profile-id retrieval-jcodemunch-claude-code-mcp-v1 --timeout-per-task 3600 --protocol sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-jcodemunch-claude-code-mcp-v1-c562aa24e156.json --docker-image token-eval-codex:latest"
+  },
+  "token_accounting_boundary": {
+    "metric": "weighted_token_cost",
+    "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "fields": [
+      "weighted_token_cost"
+    ],
+    "provider_telemetry_inputs": [
+      "fresh_input_tokens",
+      "cached_input_tokens",
+      "cache_write_tokens",
+      "output_tokens",
+      "reasoning_tokens",
+      "total_provider_tokens"
+    ],
+    "raw_totals_are_metrics": false
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "e257557e288c",
+    "descriptor": {
+      "version": "baseline-pool-v1",
+      "task_family_generation": "lifecycle-v2",
+      "runner_contract_version": "workflow-runner-v10",
+      "runner_sha256": "8deba56b436c6db61df416b61c7e4b751dafd6a34ffe5c5f01b6d98ac092e48a",
+      "qualification_generator_sha256": "30229f3b7e848ef621b1a2b2d7c3aba78d58d6723dd543838c0a3515cc856e20",
+      "validator_sha256": "2294684a849e59a9fd2664090e454289bdd0822fca894dc6beb221a2b75e1fb4",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "sequence_contract": "bounded-defect-repair-series",
+      "fixture_id": "medium-beetbox-beets",
+      "fixture_scale": "medium-project",
+      "initial_snapshot": {
+        "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+        "upstream": "https://github.com/beetbox/beets.git",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ]
+      },
+      "objective": "individual_tool_effectiveness",
+      "primary_metric": "weighted_token_cost",
+      "acceptance_design": "compile-plus-essential-smoke",
+      "acceptance_policy": {
+        "gate": "compile-plus-essential-smoke-for-coding-tasks",
+        "visibility": "controller-only",
+        "coding_task_classes": [
+          "defect-repair"
+        ],
+        "review_task_gate": "not-applicable",
+        "quality_diagnostics_gate": false,
+        "broader_tests_required": false,
+        "source_review_required": false
+      },
+      "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+      "tasks": [
+        {
+          "id": "beets-unique-path-counter-v2",
+          "order": 1,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/agent-prompt.txt",
+          "prompt_sha256": "0338f9af2e63a4807949125a93016b8be5ad6cb088c983e5ba1dfa139eea1053",
+          "seed_patch_sha256": "389887a516de22d73c74e6e7343926b8a03265145931dce078ef151efa2081f9",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-unique-path-counter-v2/verify.sh",
+          "verifier_sha256": "8b71484d47416d050d7603f5245abeab9b8dc438a9cd3e8c9e071ac71044bb56",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/__init__.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/test_util.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/util/__init__.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-empty-string-field-split-v2",
+          "order": 2,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/agent-prompt.txt",
+          "prompt_sha256": "eeea034bc7ce0374de1f09af4b5371ce6228f6d2d78d0f7aade55bcc7e5653a6",
+          "seed_patch_sha256": "c043f380ac2a9bf55daaa87d942dc38ad512f748aa60a6129cddf789ff04938e",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-empty-string-field-split-v2/verify.sh",
+          "verifier_sha256": "62f73de90085a7cc77d85dd77597aca50db00d55b1a40b9af8173a624c055c33",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/autotag/hooks.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/autotag/test_hooks.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/autotag/hooks.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-date-query-alternation-v2",
+          "order": 3,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/agent-prompt.txt",
+          "prompt_sha256": "a4bff3579e9e1c44b6a5f8c59491b08589b06f02aeafc413b6f4b989a5bb9dbf",
+          "seed_patch_sha256": "f513faa82863d106df17b31c7598a9ff4353a192f8b716d19fd320fb071cb4af",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-date-query-alternation-v2/verify.sh",
+          "verifier_sha256": "2b8fdb3443268e96db976aa95ad345115aebd86986fedab2cc09c933841be184",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_datequery.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-membership-query-hashable-v2",
+          "order": 4,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/agent-prompt.txt",
+          "prompt_sha256": "cd6002b41853aaca802dab6ef8d2a202d2ca351d1cb6e97798b80847f319a0f6",
+          "seed_patch_sha256": "ae732cba3535faefacbf756c2fcbdaa8b7b2f17d68d116057c51553804a65d19",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-membership-query-hashable-v2/verify.sh",
+          "verifier_sha256": "7f3a21db5310007ded0580124ad357a84626adde932e12e06cd9e4aef0a9c948",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/dbcore/query.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/dbcore/test_query.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/dbcore/query.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-spotify-uri-extraction-v2",
+          "order": 5,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/agent-prompt.txt",
+          "prompt_sha256": "c878c706b7aa2da8fea308156f07911c7cfcf84644561cc0371c9636ffe9490c",
+          "seed_patch_sha256": "a099d9854485494c8967f80bf9a29ec1cef7946c5248124cd474982eeb1b39e1",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-spotify-uri-extraction-v2/verify.sh",
+          "verifier_sha256": "7e6c0c5dc76ab9537c75cc1109d2302d2ba51f380cd5d2c7dfed8696c5930a53",
+          "compile_command": "uv run --offline --frozen python -m py_compile beets/util/id_extractors.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/util/test_id_extractors.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beets/util/id_extractors.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        },
+        {
+          "id": "beets-lyrics-keep-synced-override-v2",
+          "order": 6,
+          "task_class": "defect-repair",
+          "prompt_path": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/agent-prompt.txt",
+          "prompt_sha256": "77cd8cf5b1d6cbff3a5be16f6d7ac512a8d04bf7f073a20dafd68641f570531b",
+          "seed_patch_sha256": "aafbf8f90a56275c87da43d9790dc73d54a159e3068ab9862667815d8676b06d",
+          "verifier_command": "sources/evaluations/fixtures/medium/beetbox-beets/task-generations/lifecycle-v2/beets-lyrics-keep-synced-override-v2/verify.sh",
+          "verifier_sha256": "e58464136109a44b20ef71f6b1e64c02c11d827de80371f437c2a635ff6eae34",
+          "compile_command": "uv run --offline --frozen python -m py_compile beetsplug/lyrics.py",
+          "essential_smoke_command": "uv run --offline --frozen pytest -q test/plugins/test_lyrics.py",
+          "acceptance_visibility": "controller-only-compile-plus-essential-smoke",
+          "expected_changed_paths": [
+            "beetsplug/lyrics.py"
+          ],
+          "controller_visible_acceptance_assets": [],
+          "upstream_test_paths": [],
+          "compatibility_rebased_test_paths": [],
+          "expected_model_concealed_paths": [],
+          "model_concealed_paths": []
+        }
+      ],
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "qualification": {
+        "path": "sources/evaluations/fixtures/medium/beetbox-beets/qualification-lifecycle-v2-20260822.json",
+        "sha256": "29f213cf2ef1b4972c2ebdd0d726774a382736ec7ef7b0fd77bdc7655907d911"
+      },
+      "baseline_profile": {
+        "profile_id": "baseline-claude-code-no-mcp",
+        "profile_type": "control",
+        "enabled_surfaces": [
+          "claude-code-native-shell-edit",
+          "project-claude-md-instruction-discovery"
+        ],
+        "disabled_overlaps": [
+          "all MCP servers",
+          "all token-saving surfaces",
+          "global Claude instructions",
+          "hooks",
+          "skills/plugins",
+          "warm indexes"
+        ]
+      },
+      "agent": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "runtime_inputs": {
+        "timeout_seconds_per_task": 3600,
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "dependency_command": "uv sync --group test --frozen",
+        "dependency_lockfiles": [
+          {
+            "path": "uv.lock",
+            "sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f"
+          }
+        ],
+        "claude_runtime_condition": "claude-code-anthropic-opus-5-medium",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "model_condition_launcher": "scripts/run_claude_code_workflow_model_condition.py"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "acceptance_design": "compile-plus-essential-smoke",
+        "acceptance_policy": {
+          "gate": "compile-plus-essential-smoke-for-coding-tasks",
+          "visibility": "controller-only",
+          "coding_task_classes": [
+            "defect-repair"
+          ],
+          "review_task_gate": "not-applicable",
+          "quality_diagnostics_gate": false,
+          "broader_tests_required": false,
+          "source_review_required": false
+        },
+        "git_baseline_true_root_at_lane_start": true,
+        "controller_verification": "final-only",
+        "prompt_sanitizer": "sanitize_task_prompt-v1",
+        "concealment": "declared-model-concealed-paths-removed-before-root-commit",
+        "model_concealed_paths": []
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  },
+  "selected_execution": {
+    "descriptor_sha256": "e5e4ac119692aa91217dad89430556d990bd470136bcaf9aa3bf41250f12b89a",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-jcodemunch-claude-code-mcp-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-jcodemunch-claude-code-mcp-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+mcp+product-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "registry_entry_sha256": "7ca642d4d653c001099a9894bcc608055214e75ab187448920e810ac8cc8b5eb",
+        "registry_entry": {
+          "id": "retrieval-jcodemunch-claude-code-mcp-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "integration-qualified-provider-free",
+          "enabled_surfaces": [
+            "claude-code-retrieval/context+mcp+product-guidance"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "direct-account transport"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-jcodemunch-claude-code-mcp-v1",
+              "surface": "retrieval/context+mcp+product-guidance",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run the product's own documented Claude Code command against the pinned 1.108.290 wheel: `jcodemunch-mcp install claude-code --skills`, which AGENT_INSTALL_UNIVERSAL.md names as THE Claude Code installer and which writes the MCP registration, the global CLAUDE.md Code Exploration Policy, the repository AGENTS.md, the Claude Agent Skill bundle, and the worktree plus enforcement hooks into the lane-private CLAUDE_CONFIG_DIR. Re-point the MCP registration at the pinned wheel rather than the `uvx jcodemunch-mcp` the installer writes, then build the declared warm index. Require provider-free artifact, configuration, skill, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualified-provider-free",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "retrieval-jcodemunch-codex-mcp-v2"
+          ],
+          "notes": "Claude Code preparation profile for jCodeMunch; source profile retrieval-jcodemunch-codex-mcp-v2. Corrected 2026-08-28: the lane previously ran generic `init --client claude-code --claude-md project`, which cannot install the Claude Agent Skill bundle at all -- `--skills` exists only on `install`, and run_init defaults skills=False. That made the lane a reduced setup rather than the canonical product treatment, and biased it against the product: the skill's stated purpose is to let Claude load the policy on demand instead of carrying it in baseline context every turn, so omitting it pays for the policy block on every turn of a token measurement. The profile now runs the author's documented command and fails closed on a missing SKILL.md.",
+          "source_snapshot": {
+            "pinned_release_version": "1.108.290"
+          },
+          "compatibility_deviation": "MCP registration is re-pointed from the installer's `uvx jcodemunch-mcp` to the pinned wheel. Required for version pinning and offline execution, and CLIENTS.md itself deprecates uvx for strict-handshake hosts."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "jcodemunch-claude-code-mcp-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "tool_config": {
+          "display_name": "jcodemunch MCP official Claude Code integration",
+          "lane_name": "retrieval-jcodemunch-claude-code-mcp-v1",
+          "surface": "claude-code-readme-init+mcp+policy+hooks+index",
+          "mcp_server": "jcodemunch",
+          "allowed_terms": [
+            "jcodemunch",
+            "jcodemunch-mcp"
+          ],
+          "data_dir_name": "jcodemunch-mcp",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/uv/uv tool run --from /opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl jcodemunch-mcp serve --transport stdio --log-level ERROR"
+          ],
+          "env": {
+            "JCODEMUNCH_LOG_LEVEL": "ERROR"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "code-index-build",
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "tool",
+              "run",
+              "--from",
+              "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+              "jcodemunch-mcp",
+              "index",
+              "{repo}"
+            ],
+            "output_name": "jcodemunch-warmup-output.txt",
+            "metadata_name": "jcodemunch-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "diff_exclude_paths": [
+            ".code-index",
+            ".jcodemunch",
+            ".mcp.json",
+            "CLAUDE.md",
+            "AGENTS.md",
+            ".claude"
+          ],
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "jcodemunch-mcp",
+                "install",
+                "claude-code",
+                "--skills",
+                "--no-backup",
+                "--no-share-savings"
+              ],
+              [
+                "/bin/bash",
+                "-lc",
+                "set -euo pipefail; claude mcp remove --scope local jcodemunch >/dev/null 2>&1 || true; claude mcp remove --scope user jcodemunch >/dev/null 2>&1 || true; claude mcp remove --scope project jcodemunch >/dev/null 2>&1 || true; exec claude mcp add --scope user jcodemunch -- /opt/data/opt/uv/uv tool run --from /opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl jcodemunch-mcp serve --transport stdio --log-level ERROR"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+                "jcodemunch-mcp",
+                "--help"
+              ],
+              [
+                "claude",
+                "mcp",
+                "get",
+                "jcodemunch"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/claude-config/.claude.json",
+              "{codex_home}/claude-config/settings.json",
+              "{codex_home}/claude-config/CLAUDE.md",
+              "{codex_home}/claude-config/skills/jcodemunch/SKILL.md",
+              "{repo}/AGENTS.md",
+              "{codex_home}/home/.code-index/config.jsonc"
+            ],
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "hooks": true,
+            "mcp": true,
+            "guidance_append": "Code Exploration Policy"
+          },
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "b32d167560c62ed89721901b01938816eda4c3fc1eefca2c5c964fb879db0005",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo} && exec /opt/data/opt/uv/uv tool run --from /opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl jcodemunch-mcp serve --transport stdio --log-level ERROR"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/.local/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/artifacts/jcodemunch_mcp-1.108.290-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "9408996309f127bd3f14c8c9c19c73e9b069ed845561512c3cdda92406fa700c"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/jcodemunch-mcp-1.108.290/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "9e76d6320c017b774d54bb31d79dd4b8a5876aff"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "e257557e288c",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  }
+}
