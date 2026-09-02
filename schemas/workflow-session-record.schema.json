@@ -982,6 +982,49 @@
               "minimum": 0
             }
           }
+        },
+        "runtime_version_confound": {
+          "type": "object",
+          "description": "Declared agent-CLI drift between this session and its comparison baseline. Present only when the two arms ran on different builds of the same runtime; requires usable_for_primary_objective_token_comparison false.",
+          "required": [
+            "baseline_runtime_version",
+            "treatment_runtime_version",
+            "baseline_session_id",
+            "receipt"
+          ],
+          "properties": {
+            "baseline_runtime_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "treatment_runtime_version": {
+              "type": "string",
+              "minLength": 1
+            },
+            "baseline_session_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "detected": {
+              "type": "string"
+            },
+            "effect": {
+              "type": "string"
+            },
+            "measurement_status": {
+              "type": "string"
+            },
+            "resolution": {
+              "type": "string"
+            },
+            "receipt": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "usable_for_primary_objective_token_comparison": {
+          "type": "boolean"
         }
       }
     },

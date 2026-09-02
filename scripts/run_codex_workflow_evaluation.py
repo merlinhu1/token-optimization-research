@@ -4200,6 +4200,15 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "delta_percent": percent_delta(delta, b_tokens),
         "baseline_accepted": baseline.get("interpretation", {}).get("accepted_for_objective"),
         "treatment_accepted": treatment.get("interpretation", {}).get("accepted_for_objective"),
+        # Both arms' CLI builds travel with the delta. An auto-updating agent CLI drifted under
+        # fourteen published comparisons without any of them recording it, so the version is part
+        # of the comparison record rather than something a reader has to go and reconstruct.
+        "baseline_runtime_version": (baseline.get("agent") or {}).get("version"),
+        "treatment_runtime_version": (treatment.get("agent") or {}).get("version"),
+        "runtime_version_matched": (
+            (baseline.get("agent") or {}).get("runtime_id") != (treatment.get("agent") or {}).get("runtime_id")
+            or (baseline.get("agent") or {}).get("version") == (treatment.get("agent") or {}).get("version")
+        ),
         "model_behavior_diagnostics": {
             "baseline_tasks_passed": baseline.get("software_quality", {}).get("tasks_passed"),
             "treatment_tasks_passed": treatment.get("software_quality", {}).get("tasks_passed"),

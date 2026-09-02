@@ -127,6 +127,70 @@ def claude_oauth_expiry(root: Path = ROOT) -> tuple[Path, dt.datetime] | None:
     return credential, dt.datetime.fromtimestamp(expires_at / 1000, dt.UTC)
 
 
+def live_claude_runtime_version() -> str | None:
+    """Ask the installed Claude CLI what build it is, without making a provider request."""
+    try:
+        proc = subprocess.run(["claude", "--version"], text=True, capture_output=True, timeout=60)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return proc.stdout.strip() if proc.returncode == 0 and proc.stdout.strip() else None
+
+
+def warn_on_claude_runtime_drift(
+    sequences: list[str],
+    treatment_profiles: list[str],
+    model_condition: dict[str, str] | None,
+    replicate_index: int,
+    *,
+    spending: bool,
+) -> None:
+    """Say so before spending when the installed CLI differs from the baseline a lane will pair with.
+
+    The Claude CLI auto-updates. Between 2026-08-23 and 2026-08-30 it moved 2.1.241 -> 2.1.247 ->
+    2.1.250 -> 2.1.251 while the baselines stayed on 2.1.241, and nothing said anything: the
+    descriptor promised the version was "captured-at-run-and-bound-to-record" but no gate read it,
+    so fourteen treatment comparisons were assembled across a drifting apparatus. The comparison
+    gate now refuses that after the fact; this warns before the money is spent, while the operator
+    can still decide to re-baseline instead.
+
+    A warning rather than a refusal: which baseline a lane pairs with is resolved later, and
+    running a screen on a newer build is legitimate as long as it is not then compared to an older
+    one. The refusal belongs where the comparison is actually assembled.
+    """
+    if not spending or not isinstance(model_condition, dict):
+        return
+    if model_condition.get("runtime_id") != "claude-code":
+        return
+    live = live_claude_runtime_version()
+    if not live:
+        return
+    registry = load_json(ROOT / "data/workflow-sessions.json")
+    seen: set[tuple[str, str]] = set()
+    for sequence_id in sequences:
+        try:
+            sequence = workflow.load_sequence(sequence_id)
+        except (OSError, ValueError, KeyError):
+            continue
+        for profile in treatment_profiles or []:
+            baseline = workflow.find_comparison_baseline_record(
+                registry, sequence, profile, replicate_index
+            )
+            baseline_version = ((baseline or {}).get("agent") or {}).get("version")
+            if not baseline_version or baseline_version == live:
+                continue
+            key = (sequence_id, str(baseline_version))
+            if key in seen:
+                continue
+            seen.add(key)
+            print(
+                f"warning: {sequence_id} would pair a treatment on Claude CLI {live} against baseline "
+                f"{baseline.get('session_id')} captured on {baseline_version}; that comparison is "
+                "confounded by agent-runtime drift and will have to be declared or re-baselined",
+                file=sys.stderr,
+                flush=True,
+            )
+
+
 def assert_claude_credential_usable(model_condition: dict[str, str] | None, *, spending: bool) -> None:
     """Refuse to start Claude Code lanes on a credential that has already expired.
 
@@ -2111,6 +2175,9 @@ def main(argv: list[str] | None = None) -> int:
     published_launch_commit = None
     if not args.prepare_only and not args.dry_run:
         assert_claude_credential_usable(model_condition, spending=True)
+        warn_on_claude_runtime_drift(
+            sequences, treatment_profiles, model_condition, args.replicate_index, spending=True
+        )
         published_launch_commit = workflow.certified_published_launch_commit(ROOT)
     validation_python = None if args.dry_run else controller_validation_python()
     if not args.dry_run and not ensure_nonsymlink_directory_ancestry(args.lane_root):

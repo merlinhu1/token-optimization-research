@@ -31420,14 +31420,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.247 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -33120,14 +33130,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.247 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -38853,14 +38873,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.247 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -40553,14 +40583,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.247 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -43994,14 +44034,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.250 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -45777,14 +45827,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.250 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -52133,14 +52193,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.250 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -55572,14 +55642,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r1",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r1",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -57764,14 +57844,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -59703,14 +59793,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -63528,14 +63628,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -65232,14 +65342,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -69332,14 +69452,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-fastify-20260823-p-94cb0f4a5c49-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     },
     {
@@ -71304,14 +71434,24 @@
         "claim_status": "token-accounting-eligible",
         "comparison_baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
         "standalone_runtime_control": false,
-        "exclusion_reason": "",
+        "exclusion_reason": "agent-runtime version drift between treatment and comparison baseline",
         "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
         "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
         "evaluation_validity": "valid",
         "primary_objective_hard_baseline": false,
-        "usable_for_primary_objective_token_comparison": true,
+        "usable_for_primary_objective_token_comparison": false,
         "operationally_completed": true,
-        "agent_declared_task_completion_count": 6
+        "agent_declared_task_completion_count": 6,
+        "runtime_version_confound": {
+          "baseline_runtime_version": "2.1.241 (Claude Code)",
+          "treatment_runtime_version": "2.1.251 (Claude Code)",
+          "baseline_session_id": "baseline-claude-code-beets-20260823-p-e257557e288c-r0",
+          "detected": "2026-09-02",
+          "effect": "The two arms ran on different Claude Code CLI builds, so this pair confounds the treatment with agent-runtime drift.",
+          "measurement_status": "The weighted token cost itself is a valid observation of this session; only the paired delta is confounded.",
+          "resolution": "Pair against a baseline captured on the same CLI build.",
+          "receipt": "sources/evaluations/audits/claude-code-runtime-drift-20260902.json"
+        }
       }
     }
   ]

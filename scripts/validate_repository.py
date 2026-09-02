@@ -2549,6 +2549,52 @@ _APPARATUS_SAME_RUNTIME_KEYS = ("network_isolation", "isolation_policy")
 _APPARATUS_AGENT_KEYS = ("provider", "model", "model_condition_id", "reasoning_effort")
 
 
+def declared_runtime_version_confound(session: dict[str, Any]) -> bool:
+    """Has this session disclosed that it was measured on a drifted CLI build?
+
+    A confound that is written down, excluded from the primary objective, and reported with the
+    two versions it spans is a disclosed limitation. The same confound left silent is a false
+    comparison. This distinguishes the two so the gate below can refuse only the silent kind.
+    """
+    interpretation = session.get("interpretation")
+    if not isinstance(interpretation, dict):
+        return False
+    confound = interpretation.get("runtime_version_confound")
+    return (
+        isinstance(confound, dict)
+        and isinstance(confound.get("baseline_runtime_version"), str)
+        and isinstance(confound.get("treatment_runtime_version"), str)
+        and bool(confound["baseline_runtime_version"])
+        and bool(confound["treatment_runtime_version"])
+        and confound["baseline_runtime_version"] != confound["treatment_runtime_version"]
+        and interpretation.get("usable_for_primary_objective_token_comparison") is False
+    )
+
+
+def runtime_version_divergence(
+    treatment: dict[str, Any],
+    baseline: dict[str, Any],
+) -> str | None:
+    """Report a CLI-build difference between two arms that share a runtime.
+
+    The descriptor promises ``runtime_version_condition: captured-at-run-and-bound-to-record``,
+    but the captured value lives in ``agent.version`` and no gate ever read it, so an agent CLI
+    that auto-updates between a baseline and a treatment silently changed the apparatus mid-study.
+    That is exactly the confound the frozen protocol used to prevent. It is checked only within a
+    runtime: a replacement-runtime treatment swaps the CLI on purpose, and its version is not
+    supposed to match.
+    """
+    left, right = treatment.get("agent") or {}, baseline.get("agent") or {}
+    if not isinstance(left, dict) or not isinstance(right, dict):
+        return None
+    if left.get("runtime_id") != right.get("runtime_id"):
+        return None
+    treatment_version, baseline_version = left.get("version"), right.get("version")
+    if not treatment_version or not baseline_version or treatment_version == baseline_version:
+        return None
+    return f"agent.version ({baseline_version} -> {treatment_version})"
+
+
 def comparison_apparatus_divergences(
     treatment: dict[str, Any],
     baseline: dict[str, Any],
@@ -2797,6 +2843,14 @@ def validate_workflow_sessions(session_doc: dict, sequence_ids: set[str], fixtur
                 errors.append(
                     f"workflow session {sid} and its comparison baseline {comparison_id} were produced by "
                     f"different measurement apparatus: {', '.join(divergences)}"
+                )
+            version_drift = runtime_version_divergence(session, baseline) if baseline else None
+            if version_drift and not declared_runtime_version_confound(session):
+                errors.append(
+                    f"workflow session {sid} and its comparison baseline {comparison_id} ran on different "
+                    f"agent CLI builds: {version_drift}. Either pair it with a version-matched baseline or "
+                    "declare interpretation.runtime_version_confound and set "
+                    "usable_for_primary_objective_token_comparison false."
                 )
         agent = session.get("agent", {})
         if isinstance(agent, dict):

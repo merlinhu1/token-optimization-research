@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-02",
+  "action": "apparatus-drift-finding-gate-repair-and-claim-qualification",
+  "verdict": "fourteen-claude-code-treatment-comparisons-span-two-cli-builds",
+  "reported_by": "experiment owner, external review",
+  "finding": {
+    "summary": "The Claude Code CLI auto-updates. Between 2026-08-23 and 2026-08-30 it moved 2.1.241 -> 2.1.247 -> 2.1.250 -> 2.1.251 while every Claude Code baseline stayed on 2.1.241. Fourteen treatment comparisons therefore pair a treatment measured on one CLI build against a baseline measured on another.",
+    "why_nothing_caught_it": "The execution descriptor asserts `agent_condition.runtime_version_condition: captured-at-run-and-bound-to-record`, and the version is indeed captured into the session record's `agent.version`. But the comparison gate, `comparison_apparatus_divergences`, compares only descriptor fields, and its agent key tuple is (provider, model, model_condition_id, reasoning_effort). No gate ever read the captured version, so the descriptor made a promise the apparatus did not keep.",
+    "registry_was_also_wrong": "data/evaluation-agent-runtimes.json declared `runtime_version: 2.1.220` for the Claude condition. No retained run used that build; the value was stale from the moment the first Claude session was recorded and matched nothing."
+  },
+  "verification": {
+    "method": "Read agent.version from every retained Claude Code session and compared each treatment against the baseline its own interpretation.comparison_baseline_session_id names.",
+    "claude_sessions_total": 24,
+    "baselines": {"count": 4, "runtime_version": "2.1.241 (Claude Code)"},
+    "treatments_matched_to_baseline_build": {
+      "count": 6,
+      "profiles": ["behavior-caveman-claude-code-skill-v1", "artifact-ponytail-claude-code-plugin-v1", "terminal-rtk-claude-code-hook-v1"],
+      "runtime_version": "2.1.241 (Claude Code)"
+    },
+    "treatments_confounded": {
+      "count": 14,
+      "by_build": {
+        "2.1.247 (Claude Code)": ["retrieval-serena-claude-code-mcp-v1", "terminal-snip-claude-code-hook-v1"],
+        "2.1.250 (Claude Code)": ["retrieval-codegraph-claude-code-mcp-v1", "terminal-tokenjuice-claude-code-hook-v1 (fastify lane only)"],
+        "2.1.251 (Claude Code)": ["integrated-leanctx-claude-code-hybrid-v1", "retrieval-cartog-claude-code-product-v1", "retrieval-jcodemunch-claude-code-mcp-v1", "terminal-tokenjuice-claude-code-hook-v1 (beets r1 lane only)"]
+      }
+    },
+    "internally_split_pair": "terminal-tokenjuice-claude-code-hook-v1 is worse than confounded against its baseline: its two retained lanes ran on different builds from each other, Fastify on 2.1.250 and Beets r1 on 2.1.251, so its own two-lane story also spans a CLI change.",
+    "count_confirms_report": "The externally reported figure of 14 confounded comparisons is exactly reproduced."
+  },
+  "status_of_the_measurements": {
+    "raw_observations": "Valid. Each session's weighted token cost is a correct measurement of what that session did, and every one was produced by complete provider usage over the full workflow.",
+    "paired_deltas": "Confounded. A delta against a baseline on a different CLI build cannot separate the treatment from the runtime change, so none of the fourteen may be reported as a product effect or ranked.",
+    "not_a_retention_question": "Nothing is deleted. This is not an apparatus-absence defect of the kind that voided the jCodeMunch lanes: the declared treatments were installed and operating. Only the comparison is unsound, so the measurements stay and the pairing is qualified."
+  },
+  "repairs": {
+    "comparison_gate": "validate_repository.runtime_version_divergence compares agent.version between two arms that share a runtime_id, and the session validator now errors on an undeclared divergence. Runtimes are still allowed to differ across a replacement-runtime comparison, which is what that profile type exists to change.",
+    "disclosure_path": "validate_repository.declared_runtime_version_confound accepts a divergence that is written down: interpretation.runtime_version_confound naming both builds, plus usable_for_primary_objective_token_comparison false. A declared confound is a disclosed limitation; a silent one is a false comparison. Declaring the confound while still claiming the pair for the primary objective is rejected as a contradiction.",
+    "annotated_sessions": "All fourteen now carry interpretation.runtime_version_confound and usable_for_primary_objective_token_comparison false. The schema records the new shape.",
+    "launch_warning": "run_sequential_workflow_matrix.warn_on_claude_runtime_drift reads the installed CLI version before a spending launch and names any baseline it would pair against on a different build, so drift is visible before the money is spent rather than only after. It warns rather than refuses, because running a screen on a newer build is legitimate as long as it is not then compared against an older one; the refusal belongs where the comparison is assembled.",
+    "comparison_artifacts": "write_comparison_if_ready now records baseline_runtime_version, treatment_runtime_version and runtime_version_matched on every new comparison, so the builds travel with the delta instead of having to be reconstructed.",
+    "registry": "The stale `runtime_version: 2.1.220` is removed. An auto-updating CLI cannot have a single build truthfully asserted for it, so the condition now carries runtime_version_policy and the list of builds actually observed.",
+    "regression_tests": [
+      "test_agent_cli_drift_between_arms_is_caught",
+      "test_runtime_version_confound_must_be_declared_to_be_tolerated",
+      "test_every_confounded_claude_comparison_is_declared"
+    ]
+  },
+  "what_is_still_owed": {
+    "requirement": "Matched-build baselines. Un-confounding the fourteen needs Claude Code baselines captured on the build each treatment ran under, or re-runs of those treatments on 2.1.241.",
+    "cost": "Two lanes per baseline build. Three builds are involved (2.1.247, 2.1.250, 2.1.251), and the CLI will have moved again by the time any are run, which is the underlying problem rather than an accident of timing.",
+    "cheaper_alternative": "Pin the Claude Code CLI to a fixed build for the study and re-baseline once against that pin. That removes the drift at its source instead of chasing it; without a pin, every future Claude comparison inherits this defect.",
+    "decision": "Owner's. No new baseline or re-run has been launched under this receipt.",
+    "unaffected": "Codex and OpenCode lanes are not implicated. Their comparisons were not checked against this failure before and are now covered by the same gate."
+  },
+  "claims_qualified_in_place": "docs/research/roadmap.md now states the confound where the affected numbers are read, rather than presenting them as clean treatment effects. Caveman, ponytail and RTK are explicitly excluded from the qualification because their lanes did share the baseline build."
+}

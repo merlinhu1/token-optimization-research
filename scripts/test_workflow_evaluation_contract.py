@@ -1394,6 +1394,72 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             ["selected_execution.descriptor"],
         )
 
+    def test_agent_cli_drift_between_arms_is_caught(self) -> None:
+        """An auto-updating agent CLI silently changed the apparatus under 14 comparisons.
+
+        The descriptor promised runtime_version_condition "captured-at-run-and-bound-to-record",
+        but the captured value sat in agent.version and no gate read it.
+        """
+        import validate_repository as validator  # type: ignore
+
+        def arm(version, runtime="claude-code"):
+            return {"agent": {"runtime_id": runtime, "version": version}}
+
+        base = arm("2.1.241 (Claude Code)")
+        self.assertIsNone(validator.runtime_version_divergence(arm("2.1.241 (Claude Code)"), base))
+        self.assertIn(
+            "2.1.247", validator.runtime_version_divergence(arm("2.1.247 (Claude Code)"), base) or ""
+        )
+        # A replacement-runtime treatment swaps the CLI on purpose; its version is not meant to match.
+        self.assertIsNone(
+            validator.runtime_version_divergence(arm("0.147.0", runtime="codex-cli"), base)
+        )
+        # An arm that never captured a version cannot be judged either way.
+        self.assertIsNone(validator.runtime_version_divergence(arm(None), base))
+
+    def test_runtime_version_confound_must_be_declared_to_be_tolerated(self) -> None:
+        import validate_repository as validator  # type: ignore
+
+        declared = {
+            "interpretation": {
+                "usable_for_primary_objective_token_comparison": False,
+                "runtime_version_confound": {
+                    "baseline_runtime_version": "2.1.241 (Claude Code)",
+                    "treatment_runtime_version": "2.1.247 (Claude Code)",
+                },
+            }
+        }
+        self.assertTrue(validator.declared_runtime_version_confound(declared))
+        # Declaring the confound while still claiming the pair for the primary objective is not a
+        # disclosure, it is a contradiction.
+        still_usable = copy.deepcopy(declared)
+        still_usable["interpretation"]["usable_for_primary_objective_token_comparison"] = True
+        self.assertFalse(validator.declared_runtime_version_confound(still_usable))
+        self.assertFalse(validator.declared_runtime_version_confound({"interpretation": {}}))
+        same_version = copy.deepcopy(declared)
+        same_version["interpretation"]["runtime_version_confound"]["treatment_runtime_version"] = (
+            "2.1.241 (Claude Code)"
+        )
+        self.assertFalse(validator.declared_runtime_version_confound(same_version))
+
+    def test_every_confounded_claude_comparison_is_declared(self) -> None:
+        """No retained comparison may span two CLI builds without saying so."""
+        import validate_repository as validator  # type: ignore
+
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        by_id = {s["session_id"]: s for s in registry["sessions"]}
+        undeclared = []
+        for session in registry["sessions"]:
+            baseline_id = (session.get("interpretation") or {}).get("comparison_baseline_session_id")
+            baseline = by_id.get(baseline_id) if baseline_id else None
+            if not baseline:
+                continue
+            if validator.runtime_version_divergence(session, baseline) and not (
+                validator.declared_runtime_version_confound(session)
+            ):
+                undeclared.append(session["session_id"])
+        self.assertEqual(undeclared, [])
+
     def test_session_schema_does_not_require_a_frozen_protocol(self) -> None:
         """A run records the configuration it used inline, so the protocol reference is optional."""
         schema = json.loads((ROOT / "schemas/workflow-session-record.schema.json").read_text())
