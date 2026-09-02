@@ -195,6 +195,24 @@ FIXED_CURRENT_TOOL_MANIFEST_SHA256 = {
 }
 
 
+def agent_runtime_pin_identity(runtime_id: str | None) -> dict[str, Any] | None:
+    """Name the frozen CLI build a run used, for the run record.
+
+    Returns None when the runtime is unpinned, which the launch gate refuses for a spending run;
+    a provider-free prepare can still proceed and simply records nothing here.
+    """
+    if not runtime_id:
+        return None
+    try:
+        import pin_agent_runtime  # type: ignore
+    except ImportError:
+        return None
+    pin = pin_agent_runtime.recorded_pin(pin_agent_runtime.load_registry(), runtime_id)
+    if not isinstance(pin, dict):
+        return None
+    return {key: pin.get(key) for key in ("version", "sha256", "entrypoint", "pinned_on")}
+
+
 def build_profile_meta() -> dict[str, dict[str, Any]]:
     catalog_path = ROOT / "data/evaluation-profiles.json"
     catalog = json.loads(catalog_path.read_text())
@@ -4658,6 +4676,11 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "timeout_seconds": args.timeout_per_task * len(ordered_tasks),
         "codex_version": agent_runtime_version if profile_runtime_id(profile_id) == "codex-cli" else "",
         "agent_runtime_version": agent_runtime_version,
+        # Which frozen CLI build produced this measurement. Recorded as evidence rather than folded
+        # into the pool fingerprint: the fingerprint decides which baseline a treatment may pair
+        # with, and changing it would orphan every retained baseline. Comparability across builds is
+        # enforced by validate_repository.runtime_version_divergence, which is more precise anyway.
+        "agent_runtime_pin": agent_runtime_pin_identity(profile_runtime_id(profile_id)),
         "token_usage": {
             "measurement_source": usage.get("measurement_source"),
             **{key: usage.get(key) for key in PILOT_PROVIDER_USAGE_FIELDS},

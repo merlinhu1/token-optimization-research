@@ -29,14 +29,51 @@ DEFAULT_DOCKER_IMAGE = "token-eval-codex:latest"
 DEFAULT_DOCKERFILE = ROOT / "sources" / "evaluations" / "fixtures" / "container" / "Dockerfile"
 MODEL_NETWORK_DENIED_SHELL = "/usr/local/bin/eval-network-denied-shell"
 MODEL_NETWORK_DENIED_BIN = "/opt/data/model-network-bin"
-CODEX_RUNTIME_ROOT = Path(os.environ.get(
-    "TOKEN_EVAL_CODEX_RUNTIME_ROOT",
-    "/opt/data/.local/lib/node_modules/@openai/codex",
-))
-CODEX_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CODEX_EXECUTABLE", "/opt/data/.local/bin/codex"))
+def _pinned_agent_entrypoint(runtime_id: str) -> Path | None:
+    """Resolve the frozen build for a runtime from the registry, if one is pinned.
+
+    Both CLIs install as npm symlinks into a directory that auto-updates. Mounting that path meant
+    every lane ran whatever build was current, which is how fourteen Claude Code comparisons ended
+    up spanning 2.1.241 through 2.1.251 with nothing recording it. The pin is the durable fix; the
+    registry owns it, and `scripts/pin_agent_runtime.py` writes it.
+    """
+    registry_path = ROOT / "data/evaluation-agent-runtimes.json"
+    try:
+        registry = json.loads(registry_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    for value in registry.values():
+        if not isinstance(value, list):
+            continue
+        for entry in value:
+            if not isinstance(entry, dict) or entry.get("runtime_id") != runtime_id:
+                continue
+            pin = entry.get("runtime_pin")
+            if isinstance(pin, dict) and pin.get("entrypoint"):
+                return Path(str(pin["entrypoint"]))
+    return None
+
+
+# The pinned build wins over the live install. An explicit operator override still wins over both,
+# so a one-off can be run deliberately, but the launch gate verifies whatever is resolved.
+CLAUDE_HOST_EXECUTABLE = Path(
+    os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE")
+    or _pinned_agent_entrypoint("claude-code")
+    or "/opt/data/.local/bin/claude"
+)
+_PINNED_CODEX_ENTRYPOINT = _pinned_agent_entrypoint("codex-cli")
+CODEX_RUNTIME_ROOT = Path(
+    os.environ.get("TOKEN_EVAL_CODEX_RUNTIME_ROOT")
+    or (_PINNED_CODEX_ENTRYPOINT.parent.parent if _PINNED_CODEX_ENTRYPOINT else None)
+    or "/opt/data/.local/lib/node_modules/@openai/codex"
+)
+CODEX_HOST_EXECUTABLE = Path(
+    os.environ.get("TOKEN_EVAL_CODEX_EXECUTABLE")
+    or _PINNED_CODEX_ENTRYPOINT
+    or "/opt/data/.local/bin/codex"
+)
 CODEX_CONTAINER_RUNTIME_ROOT = Path("/opt/data/codex-runtime")
 CODEX_CONTAINER_BIN_ROOT = Path("/opt/data/codex-entry")
-CLAUDE_HOST_EXECUTABLE = Path(os.environ.get("TOKEN_EVAL_CLAUDE_EXECUTABLE", "/opt/data/.local/bin/claude"))
 CLAUDE_CONTAINER_BIN = Path("/opt/data/claude-entry/claude")
 # The agent CLI must be authenticated first-party on the account this study measures, never
 # through a reselling gateway. An allowlist is used rather than a denylist so a provider that is
@@ -3258,6 +3295,11 @@ def claude_env(
     env.pop("CLAUDE_CODE_SIMPLE", None)
     env.setdefault("CLAUDE_CODE_MAX_OUTPUT_TOKENS", "8000")
     env["CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"] = "1"
+    # Belt and braces for the pin: the lane copies the frozen binary to /tmp and executes that, so
+    # an in-run self-update cannot reach the pinned file, but a CLI that updates itself mid-session
+    # would still change the apparatus underneath the measurement it is producing.
+    env["DISABLE_AUTOUPDATER"] = "1"
+    env["CLAUDE_CODE_DISABLE_AUTOUPDATER"] = "1"
     isolated_bin = agent_home / "runtime-bin"
     isolated_bin.mkdir(parents=True, exist_ok=True)
     if not containerized:
@@ -3334,6 +3376,8 @@ DOCKER_ENV_KEYS = [
     "CLAUDE_CONFIG_DIR",
     "CLAUDE_CODE_SIMPLE",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "DISABLE_AUTOUPDATER",
+    "CLAUDE_CODE_DISABLE_AUTOUPDATER",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS",
     "ANTHROPIC_BASE_URL",
     "ANTHROPIC_AUTH_TOKEN",

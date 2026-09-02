@@ -47,6 +47,40 @@
       "test_every_confounded_claude_comparison_is_declared"
     ]
   },
+  "durable_fix": {
+    "date": "2026-09-02",
+    "authority": "experiment-owner direction: make a durable fix so this cannot happen again",
+    "root_cause": "Both agent CLIs are installed as npm symlinks (/opt/data/.local/bin/claude -> ../lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe) and the lane mounted that path directly, so every run used whatever build was current at launch. Detection alone was insufficient: by the time drift is visible the budget is spent and the comparison is unusable.",
+    "pin": {
+      "tool": "scripts/pin_agent_runtime.py",
+      "mechanism": "Copies the build out of the mutable npm install into an immutable content-addressed root under /opt/data/tool-candidates/agent-runtimes/, then records version and SHA-256 in data/evaluation-agent-runtimes.json. A self-contained executable is pinned as a file; a package whose entrypoint needs its siblings is pinned as a tree and hashed as an ordered manifest of its file hashes.",
+      "pinned": [
+        {"runtime_id": "claude-code", "version": "2.1.258 (Claude Code)", "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976"},
+        {"runtime_id": "codex-cli", "version": "codex-cli 0.147.0", "sha256": "92ddff8a8d13ce94a2f2afbf236404177da2ca9320902a6e576f89d03cb907b3"}
+      ],
+      "codex_included_though_it_had_not_drifted": "All 28 Codex sessions ran on 0.147.0, but the exposure is identical -- its own doctor reports 0.151.0 available -- so it is pinned before it bites rather than after."
+    },
+    "enforcement": {
+      "resolution": "run_codex_fixture_evaluation resolves CLAUDE_HOST_EXECUTABLE, CODEX_HOST_EXECUTABLE and CODEX_RUNTIME_ROOT from the registry pin instead of the live install. An explicit TOKEN_EVAL_*_EXECUTABLE override still wins, so a deliberate one-off remains possible.",
+      "gate": "run_sequential_workflow_matrix.assert_agent_runtime_pinned runs before any spending launch and raises SystemExit when the runtime is unpinned or the pinned build no longer hashes to the recorded value. It fails closed rather than warning, because a warning is what this failure already survived.",
+      "in_lane_autoupdate": "DISABLE_AUTOUPDATER and CLAUDE_CODE_DISABLE_AUTOUPDATER are set in the lane environment and passed into the container, so a CLI cannot update itself mid-session underneath the measurement it is producing.",
+      "evidence": "Each run record now carries agent_runtime_pin with the build's version, hash, entrypoint and pin date."
+    },
+    "deliberately_not_done": {
+      "pool_fingerprint": "The pinned build is NOT folded into runtime_inputs. That dict feeds baseline_protocol_fingerprint, which decides which baseline a treatment may pair with, so adding the CLI hash there would orphan every retained baseline at once. Comparability across builds is enforced by runtime_version_divergence instead, which is more precise: it passes the caveman/ponytail/RTK pairs that legitimately shared a build and fails only the pairs that did not."
+    },
+    "verification": {
+      "pins_verify": "scripts/pin_agent_runtime.py --verify-only reports ok for both runtimes.",
+      "lane_resolution": "The fixture runner resolves both entrypoints under the pinned root, with no path through /.local/bin/ remaining.",
+      "tamper_test": "Appending a single byte to the pinned Claude binary made the launch gate refuse with 'pinned claude-code build 2.1.258 (Claude Code) no longer verifies'; restoring the file returned both pins to ok.",
+      "regression_tests": [
+        "test_both_agent_runtimes_are_pinned_and_verify",
+        "test_unpinned_or_altered_runtime_refuses_a_paid_launch",
+        "test_lane_resolves_the_pinned_build_not_the_live_install"
+      ]
+    },
+    "consequence_for_future_baselines": "The pinned Claude build is 2.1.258, which no retained session used. Any new Claude baseline runs on the pin, and every future treatment compared against it runs on the same pin, so new work is internally consistent from here. The fourteen historical confounds are unaffected by the pin and still need matched-build baselines or acceptance as declared limitations."
+  },
   "what_is_still_owed": {
     "requirement": "Matched-build baselines. Un-confounding the fourteen needs Claude Code baselines captured on the build each treatment ran under, or re-runs of those treatments on 2.1.241.",
     "cost": "Two lanes per baseline build. Three builds are involved (2.1.247, 2.1.250, 2.1.251), and the CLI will have moved again by the time any are run, which is the underlying problem rather than an accident of timing.",

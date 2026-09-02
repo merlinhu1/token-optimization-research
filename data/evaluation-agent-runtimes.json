@@ -61,7 +61,17 @@
       "provider": "openai",
       "model": "gpt-5.6-sol",
       "reasoning_effort": "medium",
-      "usage_accounting": "provider-reported Codex JSONL usage extracted by scripts/extract_codex_usage.py"
+      "usage_accounting": "provider-reported Codex JSONL usage extracted by scripts/extract_codex_usage.py",
+      "runtime_pin": {
+        "kind": "package",
+        "package_root": "/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package",
+        "entrypoint": "/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin/codex.js",
+        "version": "codex-cli 0.147.0",
+        "sha256": "92ddff8a8d13ce94a2f2afbf236404177da2ca9320902a6e576f89d03cb907b3",
+        "pinned_on": "2026-09-02",
+        "source_install": "/opt/data/.local/bin/codex",
+        "policy": "Lanes run this pinned build, never the live install. The runner verifies this hash before every spending launch and refuses to run when it does not match, so an auto-update cannot change the measurement apparatus mid-study."
+      }
     },
     {
       "id": "opencode-openai-gpt-5-6-sol-medium",
@@ -89,7 +99,16 @@
         "2.1.247",
         "2.1.250",
         "2.1.251"
-      ]
+      ],
+      "runtime_pin": {
+        "kind": "file",
+        "entrypoint": "/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258/claude",
+        "version": "2.1.258 (Claude Code)",
+        "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+        "pinned_on": "2026-09-02",
+        "source_install": "/opt/data/.local/bin/claude",
+        "policy": "Lanes run this pinned build, never the live install. The runner verifies this hash before every spending launch and refuses to run when it does not match, so an auto-update cannot change the measurement apparatus mid-study."
+      }
     }
   ]
 }

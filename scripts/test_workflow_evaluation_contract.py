@@ -5630,6 +5630,53 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertFalse(matrix.artifact_merge_allowed(True, results))
         self.assertEqual(matrix.publishable_sequences(False, results), ["seq-a"])
 
+    def test_both_agent_runtimes_are_pinned_and_verify(self) -> None:
+        """The registry must pin every agent CLI, and each pin must still hash-match on disk.
+
+        The CLIs install as npm symlinks into an auto-updating tree, so without a pin a lane runs
+        whatever build is current. That is what put 14 Claude Code comparisons across four builds.
+        """
+        import pin_agent_runtime  # type: ignore
+
+        registry = pin_agent_runtime.load_registry()
+        for runtime_id in sorted(pin_agent_runtime.SOURCES):
+            pin = pin_agent_runtime.recorded_pin(registry, runtime_id)
+            self.assertIsNotNone(pin, f"{runtime_id} has no runtime_pin recorded")
+            self.assertTrue(pin.get("sha256"), f"{runtime_id} pin has no hash")
+            self.assertEqual(pin_agent_runtime.verify_pin(pin), [], f"{runtime_id} pin does not verify")
+
+    def test_unpinned_or_altered_runtime_refuses_a_paid_launch(self) -> None:
+        """Fails closed: a warning is exactly what this failure already survived once."""
+        import pin_agent_runtime  # type: ignore
+
+        condition = {"runtime_id": "claude-code"}
+        with mock.patch.object(pin_agent_runtime, "recorded_pin", return_value=None):
+            with self.assertRaises(SystemExit) as unpinned:
+                matrix.assert_agent_runtime_pinned(condition, spending=True)
+            self.assertIn("not pinned", str(unpinned.exception))
+            # A provider-free pass spends nothing and must not be blocked.
+            matrix.assert_agent_runtime_pinned(condition, spending=False)
+        with (
+            mock.patch.object(pin_agent_runtime, "recorded_pin", return_value={"version": "2.1.258"}),
+            mock.patch.object(pin_agent_runtime, "verify_pin", return_value=["pinned build hash changed"]),
+        ):
+            with self.assertRaises(SystemExit) as altered:
+                matrix.assert_agent_runtime_pinned(condition, spending=True)
+            self.assertIn("no longer verifies", str(altered.exception))
+
+    def test_lane_resolves_the_pinned_build_not_the_live_install(self) -> None:
+        import pin_agent_runtime  # type: ignore
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        registry = pin_agent_runtime.load_registry()
+        for runtime_id, resolved in (
+            ("claude-code", fixture_runner.CLAUDE_HOST_EXECUTABLE),
+            ("codex-cli", fixture_runner.CODEX_HOST_EXECUTABLE),
+        ):
+            pin = pin_agent_runtime.recorded_pin(registry, runtime_id)
+            self.assertEqual(str(resolved), pin["entrypoint"], runtime_id)
+            self.assertNotIn("/.local/bin/", str(resolved), f"{runtime_id} still points at the live install")
+
     def test_expired_claude_oauth_refuses_a_paid_launch(self) -> None:
         condition = {"runtime_id": "claude-code", "id": "claude-code-anthropic-opus-5-medium"}
         stale = (Path("/tmp/creds.json"), dt.datetime.now(dt.UTC) - dt.timedelta(minutes=5))

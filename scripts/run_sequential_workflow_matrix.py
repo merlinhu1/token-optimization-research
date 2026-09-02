@@ -127,6 +127,45 @@ def claude_oauth_expiry(root: Path = ROOT) -> tuple[Path, dt.datetime] | None:
     return credential, dt.datetime.fromtimestamp(expires_at / 1000, dt.UTC)
 
 
+def assert_agent_runtime_pinned(model_condition: dict[str, str] | None, *, spending: bool) -> None:
+    """Refuse to spend on an unpinned or altered agent CLI.
+
+    This is the control that makes runtime drift impossible rather than merely visible. Both CLIs
+    install as npm symlinks into a tree that auto-updates, so before the pin every lane ran
+    whatever build happened to be current: fourteen Claude Code comparisons were assembled across
+    2.1.241, 2.1.247, 2.1.250 and 2.1.251 and nothing anywhere said so. Detecting that afterwards
+    is not enough, because the money is already spent and the comparison already unusable.
+
+    Fails closed on purpose. An unpinned runtime is refused rather than warned about, because a
+    warning is exactly what this failure already survived.
+    """
+    if not spending or not isinstance(model_condition, dict):
+        return
+    runtime_id = model_condition.get("runtime_id")
+    if not runtime_id:
+        return
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import pin_agent_runtime  # type: ignore
+
+    if runtime_id not in pin_agent_runtime.SOURCES:
+        return
+    pin = pin_agent_runtime.recorded_pin(pin_agent_runtime.load_registry(), runtime_id)
+    if pin is None:
+        raise SystemExit(
+            f"agent runtime {runtime_id} is not pinned, so this run could silently use a different "
+            "CLI build than the baseline it will be compared against.\n"
+            f"Pin it first: python3 scripts/pin_agent_runtime.py --runtime {runtime_id}"
+        )
+    problems = pin_agent_runtime.verify_pin(pin)
+    if problems:
+        raise SystemExit(
+            f"pinned {runtime_id} build {pin.get('version')} no longer verifies:\n  "
+            + "\n  ".join(problems)
+            + "\nThe frozen build was altered or replaced. Restore it, or pin the new build "
+            "deliberately and re-baseline against it."
+        )
+
+
 def live_claude_runtime_version() -> str | None:
     """Ask the installed Claude CLI what build it is, without making a provider request."""
     try:
@@ -2174,6 +2213,7 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit("owner-authorized current baseline replication requires --max-parallel 1")
     published_launch_commit = None
     if not args.prepare_only and not args.dry_run:
+        assert_agent_runtime_pinned(model_condition, spending=True)
         assert_claude_credential_usable(model_condition, spending=True)
         warn_on_claude_runtime_drift(
             sequences, treatment_profiles, model_condition, args.replicate_index, spending=True

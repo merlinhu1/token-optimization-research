@@ -56,6 +56,22 @@ Fixture work additionally needs `node`/`npm` (Fastify) and `uv` (Beets). Fixture
 `sources/evaluations/fixtures/*/*/repo/` are gitignored and materialized locally by each
 fixture's `setup.sh`.
 
+**Agent CLIs must be pinned before any provider run.** Both install as npm symlinks into a tree
+that auto-updates, so an unpinned lane runs whatever build happens to be current that day. That is
+not hypothetical: it drifted 2.1.241 → 2.1.247 → 2.1.250 → 2.1.251 mid-study and confounded
+fourteen Claude Code comparisons before anything noticed
+([receipt](sources/evaluations/audits/claude-code-runtime-drift-20260902.json)).
+
+```bash
+python3 scripts/pin_agent_runtime.py                 # freeze the installed builds
+python3 scripts/pin_agent_runtime.py --verify-only   # check the pins still hash-match
+```
+
+`data/evaluation-agent-runtimes.json` owns the pin; the runner resolves it instead of the live
+install, and a spending launch is **refused** when a runtime is unpinned or its build no longer
+hashes to the recorded value. Re-pinning is a deliberate act: the new build is a new apparatus, so
+re-baseline against it rather than comparing across the change.
+
 ## Measurement and inference
 
 ### The metric
@@ -131,6 +147,7 @@ before it could. Removing a control silently is how a study stops measuring what
 | An unbounded task lets one task dominate and swamp the effect | Bounded tasks with closed stopping conditions ([ADR 0008](docs/architecture/decision-records/0008-bounded-task-family-and-cost-decomposition.md)) |
 | Rerunning until the number looks right | First valid sample retained; acceptance never gates retention; replicate counts disclosed with every comparison |
 | Reduced tool setups flatter or penalize a product | Faithful installation of every author-recommended surface; reduced setups are declared ablations |
+| An agent CLI auto-updates between a baseline and a treatment | Agent runtimes are pinned to a frozen build and hash-verified before every spending launch; a comparison across two builds is refused unless declared |
 
 ## Evaluation contract
 
