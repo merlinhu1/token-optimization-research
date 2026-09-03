@@ -5630,6 +5630,40 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertFalse(matrix.artifact_merge_allowed(True, results))
         self.assertEqual(matrix.publishable_sequences(False, results), ["seq-a"])
 
+    def test_declared_warm_index_profiles_verify_their_state(self) -> None:
+        """A profile may not claim warm-index without a check that the server can see it.
+
+        Every jCodeMunch lane declared tool_state warm-index, passed its handshake, and then had
+        the model call index_folder and rebuild from scratch. The claim went unverified for four
+        lanes across both runtimes.
+        """
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        # The lane configs this defect was measured on. Historical and superseded configs are out
+        # of scope: they cannot be run, so a verification they would never execute proves nothing.
+        unverified = []
+        for config_name in ("jcodemunch-mcp", "jcodemunch-codex-mcp-v2", "jcodemunch-claude-code-mcp-v1"):
+            cfg = fixture_runner.TOOL_CONFIGS[config_name]
+            self.assertEqual(cfg.get("default_tool_state"), "warm-index", config_name)
+            verify = (cfg.get("warmup") or {}).get("verify_state")
+            if not verify or not verify.get("require_substrings"):
+                unverified.append(config_name)
+        self.assertEqual(unverified, [])
+
+    def test_claude_warmup_keys_the_index_to_the_container_path(self) -> None:
+        """A warm index is keyed by absolute path, and the model's server sees /workspace."""
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        record = {"target": {"repository_path": "/lane/s0/project/repo"}}
+        home = Path("/lane/s0/codex-homes/profile")
+        cfg = fixture_runner.TOOL_CONFIGS["jcodemunch-claude-code-mcp-v1"]
+        rendered = [
+            fixture_runner.claude_container_tool_value(part, record, home, cfg)
+            for part in cfg["warmup"]["command"]
+        ]
+        self.assertIn(str(fixture_runner.CLAUDE_CONTAINER_REPO), rendered)
+        self.assertNotIn("/lane/s0/project/repo", rendered)
+
     def test_both_agent_runtimes_are_pinned_and_verify(self) -> None:
         """The registry must pin every agent CLI, and each pin must still hash-match on disk.
 

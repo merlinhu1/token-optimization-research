@@ -808,6 +808,12 @@ TOOL_CONFIGS: dict[str, dict[str, Any]] = {
             "output_name": "jcodemunch-warmup-output.txt",
             "metadata_name": "jcodemunch-warmup-metadata.json",
             "timeout_seconds": 1200,
+            "verify_state": {
+                "tool": "order",
+                "arguments": {"action": "resolve_repo", "args": {"path": "{server_cwd}"}},
+                "require_substrings": ["\"indexed\":true", "\"loadable\":true"],
+                "receipt_name": "jcodemunch-warm-state-verification.json",
+            },
         },
     },
     "snip": {
@@ -1262,6 +1268,12 @@ TOOL_CONFIGS.update({
             "output_name": "jcodemunch-warmup-output.txt",
             "metadata_name": "jcodemunch-warmup-metadata.json",
             "timeout_seconds": 1200,
+            "verify_state": {
+                "tool": "order",
+                "arguments": {"action": "resolve_repo", "args": {"path": "{server_cwd}"}},
+                "require_substrings": ["\"indexed\":true", "\"loadable\":true"],
+                "receipt_name": "jcodemunch-warm-state-verification.json",
+            },
         },
     },
     "ponytail-codex-plugin-v1": {
@@ -4040,6 +4052,80 @@ def prepare_profile_integration(
     return result
 
 
+def verify_declared_warm_state(
+    verify_state: dict[str, Any],
+    *,
+    probe_command: str,
+    probe_args: list[str],
+    probe_cwd: Path,
+    env: dict[str, str],
+    mounts: list[tuple[Path, Path, str]],
+    backend: str,
+    docker_image: str,
+    run_dir: Path,
+    timeout_seconds: int,
+) -> dict[str, Any]:
+    """Ask the running server whether the state the profile declares is actually there.
+
+    Written as a config-driven tool call rather than a jCodeMunch special case, so any profile
+    claiming a prepared state can be held to it. Failing this fails the lane before provider spend:
+    a warm-index claim that the model then rebuilds in-session is a treatment measuring something
+    other than what the profile says it measures.
+    """
+    receipt_path = run_dir / str(verify_state.get("receipt_name", "declared-state-verification.json"))
+    arguments = json.dumps(verify_state.get("arguments", {}), separators=(",", ":"))
+    arguments = arguments.replace("{server_cwd}", str(probe_cwd))
+    # A separate script from the handshake probe on purpose: probe_mcp_stdio.py's hash is part of
+    # every execution descriptor, so editing it re-identifies every protocol in the corpus.
+    state_probe = ROOT / "scripts" / "probe_mcp_declared_state.py"
+    mounts = list(mounts)
+    add_mount(mounts, state_probe, mode="ro")
+    command = [
+        "python3",
+        str(state_probe),
+        "--command", probe_command,
+        "--cwd", str(probe_cwd),
+        "--timeout", str(timeout_seconds),
+        "--call-tool", str(verify_state["tool"]),
+        "--call-arguments", arguments,
+    ]
+    for needle in verify_state.get("require_substrings", []):
+        command.append(f"--require={needle}")
+    for arg in probe_args:
+        command.append(f"--arg={arg}")
+    proc = run_backend(
+        command,
+        backend=backend,
+        docker_image=docker_image,
+        cwd=probe_cwd,
+        env=env,
+        stdout_path=receipt_path,
+        timeout=timeout_seconds + 10,
+        mounts=mounts,
+    )
+    try:
+        receipt = json.loads(receipt_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return {"passed": False, "reason": "verification probe emitted no valid receipt", "exit_code": proc.returncode}
+    text = str(receipt.get("result_text") or "")
+    missing = [
+        needle for needle in verify_state.get("require_substrings", []) if needle not in text
+    ]
+    return {
+        "passed": proc.returncode == 0 and bool(receipt.get("passed")) and not missing,
+        "tool": verify_state["tool"],
+        "arguments": json.loads(arguments),
+        "missing_required_substrings": missing,
+        "result_text": text[:2000],
+        "exit_code": proc.returncode,
+        "reason": (
+            "probe failed" if proc.returncode != 0 or not receipt.get("passed")
+            else f"server did not report {missing}" if missing else ""
+        ),
+        "receipt": str(receipt_path.name),
+    }
+
+
 def probe_mcp_handshake(
     record: dict[str, Any],
     pid: str,
@@ -4132,6 +4218,30 @@ def probe_mcp_handshake(
     except (OSError, json.JSONDecodeError):
         result = {"passed": False, "errors": ["MCP handshake probe did not emit a valid JSON receipt"]}
     activation_passed = bool(result.get("passed")) and proc.returncode == 0
+    # A handshake proves the server starts. It does not prove the state the profile claims it has.
+    # Every jCodeMunch lane declared tool_state warm-index, passed its handshake, and then had the
+    # model rebuild the index in-session because the controller's warm state was keyed somewhere the
+    # server never looked. Verify the claim through the same surface the model will use.
+    verify_state = ((cfg.get("warmup") or {}).get("verify_state") or {}) if activation_passed else {}
+    if verify_state:
+        verification = verify_declared_warm_state(
+            verify_state,
+            probe_command=probe_command,
+            probe_args=probe_args,
+            probe_cwd=probe_cwd,
+            env=env,
+            mounts=mounts,
+            backend=backend,
+            docker_image=docker_image,
+            run_dir=run_dir,
+            timeout_seconds=int(handshake.get("timeout_seconds", 30)),
+        )
+        result["declared_state_verification"] = verification
+        if not verification.get("passed"):
+            activation_passed = False
+            result.setdefault("errors", []).append(
+                f"declared tool_state was not observable through the server: {verification.get('reason')}"
+            )
     result["profile_id"] = pid
     result["required"] = required
     result["attempted"] = True
@@ -4577,8 +4687,23 @@ def prepare_profile_workspace(record: dict[str, Any], pid: str, codex_home: Path
 
     env = codex_env(codex_home, containerized=backend == "docker", cfg=cfg)
     env.update(tool_env_for_record(record, pid, codex_home))
-    mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
-    command = [render_tool_value(part, record, codex_home, cfg) for part in warmup["command"]]
+    if str((record.get("agent") or {}).get("runtime_id") or "codex-cli") == "claude-code" and backend == "docker":
+        # Warm the state under the paths the model's server will actually resolve. A warm index is
+        # keyed by the absolute path it was built for, and Claude Code's MCP servers run in the
+        # container where the repository is /workspace -- so warming at the host path produced an
+        # index the server could never find, and every jCodeMunch lane rebuilt it in-session while
+        # still reporting tool_state warm-index. Same root cause as the MCP launch-path defect.
+        mounts = container_mounts_for_record(record, codex_home, include_repo=False, cfg=cfg)
+        add_mount(mounts, codex_home, target=CLAUDE_CONTAINER_HOME, mode="rw")
+        add_mount(mounts, repo, target=CLAUDE_CONTAINER_REPO, mode="rw")
+        warmup_cwd = CLAUDE_CONTAINER_REPO
+        command = [
+            claude_container_tool_value(part, record, codex_home, cfg) for part in warmup["command"]
+        ]
+    else:
+        mounts = container_mounts_for_record(record, codex_home, include_repo=True, cfg=cfg)
+        warmup_cwd = repo
+        command = [render_tool_value(part, record, codex_home, cfg) for part in warmup["command"]]
     output_name = warmup.get("output_name", "tool-warmup-output.txt")
     metadata_name = warmup.get("metadata_name", "tool-warmup-metadata.json")
     started = dt.datetime.now(dt.UTC)
@@ -4586,7 +4711,7 @@ def prepare_profile_workspace(record: dict[str, Any], pid: str, codex_home: Path
         command,
         backend=backend,
         docker_image=docker_image,
-        cwd=repo,
+        cwd=warmup_cwd,
         env=env,
         stdout_path=run_dir / output_name,
         timeout=int(warmup.get("timeout_seconds", 900)),
