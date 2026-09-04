@@ -1,0 +1,904 @@
+{
+  "session_id": "retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-retrieval-cartog-claude-code-product-v1-e257557e288c-sequential-workflow-r2",
+  "replicate_index": 2,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-ed84317bdd75",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-ed84317bdd75.json",
+    "sha256": "67fb4ca3768daba504e83efcb21d330145392043aae3d963935880b9f0a61bb7"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "e257557e288c",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "4c6bf1f7eff5c5b66f6c8276b1aee5a89e1fafaafe9518d0a5fa85f386794c3a",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-cartog-claude-code-product-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-cartog-claude-code-product-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+mcp+product-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "registry_entry_sha256": "7742ff32dec14854506b6fae507105f50086bf9a9f2a7feb6a59bf6fe42e7633",
+        "registry_entry": {
+          "id": "retrieval-cartog-claude-code-product-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "integration-qualified-provider-free",
+          "enabled_surfaces": [
+            "claude-code-retrieval/context+mcp+product-guidance"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "direct-account transport"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-cartog-claude-code-product-v1",
+              "surface": "retrieval/context+mcp+product-guidance",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned Cartog source snapshot from retrieval-cartog-codex-product-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualified-provider-free",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "retrieval-cartog-codex-product-v2"
+          ],
+          "notes": "Claude Code preparation profile for Cartog; source profile retrieval-cartog-codex-product-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "cartog-claude-code-product-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "tool_config": {
+          "display_name": "Cartog official Claude Code integration",
+          "lane_name": "retrieval-cartog-claude-code-product-v1",
+          "surface": "claude-code-readme-product-init+index+ide+mcp",
+          "mcp_server": "cartog",
+          "allowed_terms": [
+            "cartog"
+          ],
+          "data_dir_name": "cartog",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+          ],
+          "env": {
+            "CARTOG_AUTO_INIT": "1",
+            "CARTOG_MCP_COMPACT": "1"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts"
+          ],
+          "diff_exclude_paths": [
+            ".cartog",
+            ".cartog.toml",
+            ".mcp.json",
+            ".claude",
+            "CLAUDE.md"
+          ],
+          "preflight_command": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "--version"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "code-graph-build",
+            "command": [
+              "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+              "index",
+              "{repo}"
+            ],
+            "cleanup_paths": [
+              ".cartog"
+            ],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "init"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "ide",
+                "--client",
+                "claude-code",
+                "--scope",
+                "all",
+                "--no-watch"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "index"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{repo}/.cartog.toml",
+              "{repo}/.mcp.json",
+              "{repo}/.cartog/db.sqlite",
+              "{codex_home}/claude-config/settings.json"
+            ],
+            "timeout_seconds": 1200
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "mcp": true
+          },
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime"
+          ],
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "76bf1431b65606170a10a0b9b675e5802e163be2a3beb8a5cf82c6638c2804aa",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/cartog-0.32.2/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "e257557e288c",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "cartog-claude-code-product-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+    "tool_config": {
+      "display_name": "Cartog official Claude Code integration",
+      "lane_name": "retrieval-cartog-claude-code-product-v1",
+      "surface": "claude-code-readme-product-init+index+ide+mcp",
+      "mcp_server": "cartog",
+      "allowed_terms": [
+        "cartog"
+      ],
+      "data_dir_name": "cartog",
+      "mcp_command": "/bin/bash",
+      "mcp_args": [
+        "-lc",
+        "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+      ],
+      "env": {
+        "CARTOG_AUTO_INIT": "1",
+        "CARTOG_MCP_COMPACT": "1"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+        "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+        "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts"
+      ],
+      "diff_exclude_paths": [
+        ".cartog",
+        ".cartog.toml",
+        ".mcp.json",
+        ".claude",
+        "CLAUDE.md"
+      ],
+      "preflight_command": [
+        "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+        "--version"
+      ],
+      "default_tool_state": "warm-index",
+      "warmup": {
+        "kind": "code-graph-build",
+        "command": [
+          "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+          "index",
+          "{repo}"
+        ],
+        "cleanup_paths": [
+          ".cartog"
+        ],
+        "output_name": "cartog-warmup-output.txt",
+        "metadata_name": "cartog-warmup-metadata.json",
+        "timeout_seconds": 1200
+      },
+      "host_integration_backend": "docker",
+      "host_integration": {
+        "install_commands": [
+          [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "init"
+          ],
+          [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "ide",
+            "--client",
+            "claude-code",
+            "--scope",
+            "all",
+            "--no-watch"
+          ],
+          [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "index"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "--version"
+          ]
+        ],
+        "required_files": [
+          "{repo}/.cartog.toml",
+          "{repo}/.mcp.json",
+          "{repo}/.cartog/db.sqlite",
+          "{codex_home}/claude-config/settings.json"
+        ],
+        "timeout_seconds": 1200
+      },
+      "mcp_handshake": {
+        "required": true,
+        "method": "initialize-and-tools-list",
+        "timeout_seconds": 120
+      },
+      "claude_features": {
+        "mcp": true
+      },
+      "path_entries": [
+        "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime"
+      ],
+      "artifact_identities": []
+    },
+    "tool_config_sha256": "76bf1431b65606170a10a0b9b675e5802e163be2a3beb8a5cf82c6638c2804aa",
+    "tool_state": "qualified-provider-free",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/bin/bash",
+        "-lc",
+        "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/bin/bash",
+      "resolved_path": "/bin/bash",
+      "realpath": "/usr/bin/bash",
+      "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+      "metadata": {
+        "size": 1298416,
+        "mode": "-rwxr-xr-x",
+        "uid": 0,
+        "gid": 0,
+        "mtime_ns": 1772983313000000000
+      },
+      "version": {
+        "command": [
+          "/usr/bin/bash",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/cartog-0.32.2/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"
+      }
+    ]
+  },
+  "profile_id": "retrieval-cartog-claude-code-product-v1",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v2",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/project/repo",
+  "codex_exit_codes": [
+    1
+  ],
+  "final_verifier_exit_code": 1,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": false,
+  "timeout_seconds": 21600,
+  "codex_version": "",
+  "agent_runtime_version": "2.1.258 (Claude Code)",
+  "agent_runtime_pin": {
+    "version": "2.1.258 (Claude Code)",
+    "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+    "entrypoint": "/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258/claude",
+    "pinned_on": "2026-09-02"
+  },
+  "token_usage": {
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "fresh_input_tokens": 17304,
+    "cached_input_tokens": 82250,
+    "cache_write_tokens": 17296,
+    "output_tokens": 21,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 99575,
+    "weighted_token_cost": 25655.0,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 8,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "text": 3,
+      "tool_use": 5
+    },
+    "weighted_token_cost_per_step": 3206.9,
+    "provider_usage_details": {
+      "runtime": "claude-code",
+      "accounting_mode": "sum-unique-assistant-message-usage",
+      "accounting_note": "",
+      "assistant_usage_block_count": 5,
+      "result_usage_block_count": 1,
+      "result_usage_counted": false,
+      "reasoning_tokens_available": false,
+      "canonical_components": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 17296,
+        "cache_read_input_tokens": 82250,
+        "output_tokens": 21,
+        "reasoning_tokens": 0
+      },
+      "raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 17296,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 17296,
+        "cache_read_input_tokens": 82250,
+        "input_tokens": 8,
+        "output_tokens": 21
+      },
+      "result_raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 17296,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 17296,
+        "cache_read_input_tokens": 82250,
+        "input_tokens": 8,
+        "output_tokens": 750,
+        "output_tokens_details.thinking_tokens": 62
+      },
+      "raw_model_usage_token_field_totals": {},
+      "result_raw_model_usage_token_field_totals": {
+        "claude-opus-5.cacheCreationInputTokens": 17296,
+        "claude-opus-5.cacheReadInputTokens": 82250,
+        "claude-opus-5.inputTokens": 8,
+        "claude-opus-5.outputTokens": 750,
+        "claude-opus-5.thinkingTokens": 62
+      },
+      "raw_usage_blocks": [
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeiZgbeCzDxZgaDarbjL5",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 11903,
+            "cache_read_input_tokens": 9239,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 11903
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeiZh3RzmhCEFTx5abFkq",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 4518,
+            "cache_read_input_tokens": 21142,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4518
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeiZhD2CcVUwSrctn7LZY",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 549,
+            "cache_read_input_tokens": 25660,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 549
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeiZhSxMHouXySpP2yKGe",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 326,
+            "cache_read_input_tokens": 26209,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 326
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "7ca3b43f-0171-4a18-94a4-8676e5585dda",
+          "usage": {
+            "output_tokens_details": null,
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": null,
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 0,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": null,
+            "iterations": null,
+            "speed": null
+          },
+          "model_usage": {}
+        }
+      ],
+      "result_raw_usage_blocks": [
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 8,
+            "cache_creation_input_tokens": 17296,
+            "cache_read_input_tokens": 82250,
+            "output_tokens": 750,
+            "output_tokens_details": {
+              "thinking_tokens": 62
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 17296,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 8,
+              "outputTokens": 750,
+              "cacheReadInputTokens": 82250,
+              "cacheCreationInputTokens": 17296,
+              "webSearchRequests": 0,
+              "costUSD": 0.232875,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 62,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        }
+      ],
+      "provider_reported_total_tokens": null,
+      "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+      "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 1,
+      "thread_continuity_passed": true,
+      "thread_id": "6c84bde6-94b1-4775-8c24-4d1c9b3fbed5",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/task-01-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": false,
+      "codex_exit_code": null,
+      "controller_verification": "failed",
+      "accepted": false,
+      "task_delta": null,
+      "usage_events": null,
+      "operational_retry_count": 0,
+      "verifier_exit_code": 1,
+      "verifier_passed": false
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": false,
+      "codex_exit_code": null,
+      "controller_verification": "failed",
+      "accepted": false,
+      "task_delta": null,
+      "usage_events": null,
+      "operational_retry_count": 0,
+      "verifier_exit_code": 1,
+      "verifier_passed": false
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": false,
+      "codex_exit_code": null,
+      "controller_verification": "failed",
+      "accepted": false,
+      "task_delta": null,
+      "usage_events": null,
+      "operational_retry_count": 0,
+      "verifier_exit_code": 1,
+      "verifier_passed": false
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": false,
+      "codex_exit_code": null,
+      "controller_verification": "failed",
+      "accepted": false,
+      "task_delta": null,
+      "usage_events": null,
+      "operational_retry_count": 0,
+      "verifier_exit_code": 1,
+      "verifier_passed": false
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": false,
+      "codex_exit_code": null,
+      "controller_verification": "failed",
+      "accepted": false,
+      "task_delta": null,
+      "usage_events": null,
+      "operational_retry_count": 0,
+      "verifier_exit_code": 1,
+      "verifier_passed": false
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "6c84bde6-94b1-4775-8c24-4d1c9b3fbed5",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2",
+    "run_record": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2"
+}

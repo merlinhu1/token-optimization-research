@@ -1,0 +1,16 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/beets/util/__init__.py b/beets/util/__init__.py
+index 850adc9..159fbc3 100644
+--- a/beets/util/__init__.py
++++ b/beets/util/__init__.py
+@@ -648,7 +648,7 @@ def unique_path(path: AnyStr) -> AnyStr:
+ 
+     byte_path = os.fsencode(path)
+     base, ext = os.path.splitext(byte_path)
+-    match = re.search(rb"\.(\d)+$", base)
++    match = re.search(rb"\.(\d+)$", base)
+     if match:
+         num = int(match.group(1))
+         base = base[: match.start()]

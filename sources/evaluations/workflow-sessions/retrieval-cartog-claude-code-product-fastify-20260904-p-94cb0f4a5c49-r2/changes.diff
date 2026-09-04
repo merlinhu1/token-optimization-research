@@ -1,0 +1,409 @@
+# Ordered cumulative source checkpoints. Every section is relative to the one composite broken-start root.
+
+# --- task-01-agent ---
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..f073ed4 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -901,9 +901,13 @@ function sendTrailer (payload, res, reply) {
+     skipped = false
+     handled--
+ 
++    let called = false
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      // a trailer handler may mix a callback with an async return,
++      // which calls back more than once. Only the first invocation
++      // counts, otherwise the `handled` bookkeeping is wrong.
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+
+# --- task-02-agent ---
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..f36e786 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -79,9 +79,11 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   }
+ 
+   // Ensure that there is a '/' between the prefixes
+-  if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+-    // Remove the extra '/' to avoid: '/first//second'
+-    pluginPrefix = pluginPrefix.slice(1)
++  if (instancePrefix.endsWith('/')) {
++    if (pluginPrefix[0] === '/') {
++      // Remove the extra '/' to avoid: '/first//second'
++      pluginPrefix = pluginPrefix.slice(1)
++    }
+   } else if (pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..f073ed4 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -901,9 +901,13 @@ function sendTrailer (payload, res, reply) {
+     skipped = false
+     handled--
+ 
++    let called = false
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      // a trailer handler may mix a callback with an async return,
++      // which calls back more than once. Only the first invocation
++      // counts, otherwise the `handled` bookkeeping is wrong.
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+
+# --- task-03-agent ---
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..f36e786 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -79,9 +79,11 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   }
+ 
+   // Ensure that there is a '/' between the prefixes
+-  if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+-    // Remove the extra '/' to avoid: '/first//second'
+-    pluginPrefix = pluginPrefix.slice(1)
++  if (instancePrefix.endsWith('/')) {
++    if (pluginPrefix[0] === '/') {
++      // Remove the extra '/' to avoid: '/first//second'
++      pluginPrefix = pluginPrefix.slice(1)
++    }
+   } else if (pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..f073ed4 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -901,9 +901,13 @@ function sendTrailer (payload, res, reply) {
+     skipped = false
+     handled--
+ 
++    let called = false
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      // a trailer handler may mix a callback with an async return,
++      // which calls back more than once. Only the first invocation
++      // counts, otherwise the `handled` bookkeeping is wrong.
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+
+# --- task-04-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402..bfb7141 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -97,7 +97,17 @@ function preValidationCallback (err, request, reply) {
+     return
+   }
+ 
+-  const validationErr = validateSchema(reply[kRouteContext], request)
++  let validationErr
++  try {
++    validationErr = validateSchema(reply[kRouteContext], request)
++  } catch (error) {
++    // a validator that throws is a server-side fault rather than a
++    // validation failure, so it is reported through the error path
++    // instead of being attached as a validation result
++    reply[kReplyIsError] = true
++    reply.send(error)
++    return
++  }
+   const isAsync = (validationErr && typeof validationErr.then === 'function') || false
+ 
+   if (isAsync) {
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..f36e786 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -79,9 +79,11 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   }
+ 
+   // Ensure that there is a '/' between the prefixes
+-  if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+-    // Remove the extra '/' to avoid: '/first//second'
+-    pluginPrefix = pluginPrefix.slice(1)
++  if (instancePrefix.endsWith('/')) {
++    if (pluginPrefix[0] === '/') {
++      // Remove the extra '/' to avoid: '/first//second'
++      pluginPrefix = pluginPrefix.slice(1)
++    }
+   } else if (pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..f073ed4 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -901,9 +901,13 @@ function sendTrailer (payload, res, reply) {
+     skipped = false
+     handled--
+ 
++    let called = false
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      // a trailer handler may mix a callback with an async return,
++      // which calls back more than once. Only the first invocation
++      // counts, otherwise the `handled` bookkeeping is wrong.
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+
+# --- task-05-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402..bfb7141 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -97,7 +97,17 @@ function preValidationCallback (err, request, reply) {
+     return
+   }
+ 
+-  const validationErr = validateSchema(reply[kRouteContext], request)
++  let validationErr
++  try {
++    validationErr = validateSchema(reply[kRouteContext], request)
++  } catch (error) {
++    // a validator that throws is a server-side fault rather than a
++    // validation failure, so it is reported through the error path
++    // instead of being attached as a validation result
++    reply[kReplyIsError] = true
++    reply.send(error)
++    return
++  }
+   const isAsync = (validationErr && typeof validationErr.then === 'function') || false
+ 
+   if (isAsync) {
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..f36e786 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -79,9 +79,11 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   }
+ 
+   // Ensure that there is a '/' between the prefixes
+-  if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+-    // Remove the extra '/' to avoid: '/first//second'
+-    pluginPrefix = pluginPrefix.slice(1)
++  if (instancePrefix.endsWith('/')) {
++    if (pluginPrefix[0] === '/') {
++      // Remove the extra '/' to avoid: '/first//second'
++      pluginPrefix = pluginPrefix.slice(1)
++    }
+   } else if (pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..f073ed4 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -901,9 +901,13 @@ function sendTrailer (payload, res, reply) {
+     skipped = false
+     handled--
+ 
++    let called = false
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      // a trailer handler may mix a callback with an async return,
++      // which calls back more than once. Only the first invocation
++      // counts, otherwise the `handled` bookkeeping is wrong.
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/route.js b/lib/route.js
+index 7d7b5de..b0769b5 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -362,9 +362,12 @@ function buildRouting (options) {
+         // any route insertion error created by fastify can be safely ignore
+         // because it only duplicate route for head
+         if (!context[kRouteByFastify]) {
+-          const isDuplicatedRoute = error.message.includes(`Method '${opts.method}' already declared for route`)
+-          if (isDuplicatedRoute) {
+-            throw new FST_ERR_DUPLICATED_ROUTE(opts.method, opts.url)
++          // a route may be registered for several methods at once, and the
++          // router reports the single method that collided
++          const methods = Array.isArray(opts.method) ? opts.method : [opts.method]
++          const duplicatedMethod = methods.find(method => error.message.includes(`Method '${method}' already declared for route`))
++          if (duplicatedMethod !== undefined) {
++            throw new FST_ERR_DUPLICATED_ROUTE(duplicatedMethod, opts.url)
+           }
+ 
+           throw error
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)
+
+# --- task-06-agent ---
+diff --git a/lib/handle-request.js b/lib/handle-request.js
+index dce3402..bfb7141 100644
+--- a/lib/handle-request.js
++++ b/lib/handle-request.js
+@@ -97,7 +97,17 @@ function preValidationCallback (err, request, reply) {
+     return
+   }
+ 
+-  const validationErr = validateSchema(reply[kRouteContext], request)
++  let validationErr
++  try {
++    validationErr = validateSchema(reply[kRouteContext], request)
++  } catch (error) {
++    // a validator that throws is a server-side fault rather than a
++    // validation failure, so it is reported through the error path
++    // instead of being attached as a validation result
++    reply[kReplyIsError] = true
++    reply.send(error)
++    return
++  }
+   const isAsync = (validationErr && typeof validationErr.then === 'function') || false
+ 
+   if (isAsync) {
+diff --git a/lib/head-route.js b/lib/head-route.js
+index c7496e2..b1219d6 100644
+--- a/lib/head-route.js
++++ b/lib/head-route.js
+@@ -16,6 +16,15 @@ function headRouteOnSendHandler (req, reply, payload, done) {
+     return
+   }
+ 
++  if (typeof payload.getReader === 'function') {
++    // a web stream cannot be resumed, so we discard it by cancelling
++    payload.cancel('Stream cancelled by HEAD route').catch((err) => {
++      reply.log.error({ err }, 'Error on Stream found for HEAD route')
++    })
++    done(null, null)
++    return
++  }
++
+   const size = '' + Buffer.byteLength(payload)
+ 
+   reply.header('content-length', size)
+diff --git a/lib/plugin-override.js b/lib/plugin-override.js
+index 4eef325..f36e786 100644
+--- a/lib/plugin-override.js
++++ b/lib/plugin-override.js
+@@ -79,9 +79,11 @@ function buildRoutePrefix (instancePrefix, pluginPrefix) {
+   }
+ 
+   // Ensure that there is a '/' between the prefixes
+-  if (instancePrefix.endsWith('/') && pluginPrefix[0] === '/') {
+-    // Remove the extra '/' to avoid: '/first//second'
+-    pluginPrefix = pluginPrefix.slice(1)
++  if (instancePrefix.endsWith('/')) {
++    if (pluginPrefix[0] === '/') {
++      // Remove the extra '/' to avoid: '/first//second'
++      pluginPrefix = pluginPrefix.slice(1)
++    }
+   } else if (pluginPrefix[0] !== '/') {
+     pluginPrefix = '/' + pluginPrefix
+   }
+diff --git a/lib/reply.js b/lib/reply.js
+index a6a6070..f073ed4 100644
+--- a/lib/reply.js
++++ b/lib/reply.js
+@@ -901,9 +901,13 @@ function sendTrailer (payload, res, reply) {
+     skipped = false
+     handled--
+ 
++    let called = false
+     function cb (err, value) {
+-      // TODO: we may protect multiple callback calls
+-      //       or mixing async-await with callback
++      // a trailer handler may mix a callback with an async return,
++      // which calls back more than once. Only the first invocation
++      // counts, otherwise the `handled` bookkeeping is wrong.
++      if (called) return
++      called = true
+       handled++
+ 
+       // we can safely ignore error for trailer
+diff --git a/lib/route.js b/lib/route.js
+index 7d7b5de..b0769b5 100644
+--- a/lib/route.js
++++ b/lib/route.js
+@@ -362,9 +362,12 @@ function buildRouting (options) {
+         // any route insertion error created by fastify can be safely ignore
+         // because it only duplicate route for head
+         if (!context[kRouteByFastify]) {
+-          const isDuplicatedRoute = error.message.includes(`Method '${opts.method}' already declared for route`)
+-          if (isDuplicatedRoute) {
+-            throw new FST_ERR_DUPLICATED_ROUTE(opts.method, opts.url)
++          // a route may be registered for several methods at once, and the
++          // router reports the single method that collided
++          const methods = Array.isArray(opts.method) ? opts.method : [opts.method]
++          const duplicatedMethod = methods.find(method => error.message.includes(`Method '${method}' already declared for route`))
++          if (duplicatedMethod !== undefined) {
++            throw new FST_ERR_DUPLICATED_ROUTE(duplicatedMethod, opts.url)
+           }
+ 
+           throw error
+diff --git a/lib/schema-controller.js b/lib/schema-controller.js
+index a805c85..273ed5a 100644
+--- a/lib/schema-controller.js
++++ b/lib/schema-controller.js
+@@ -31,7 +31,7 @@ function buildSchemaController (parentSchemaCtrl, opts) {
+     bucket: (opts && opts.bucket) || buildSchemas,
+     compilersFactory,
+     isCustomValidatorCompiler: typeof opts?.compilersFactory?.buildValidator === 'function',
+-    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildValidator === 'function'
++    isCustomSerializerCompiler: typeof opts?.compilersFactory?.buildSerializer === 'function'
+   }
+ 
+   return new SchemaController(undefined, option)

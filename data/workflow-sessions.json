@@ -78622,6 +78622,3099 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 6
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "fastify-fastify-retrieval-cartog-claude-code-product-v1-94cb0f4a5c49-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "fastify-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-7a23e33645c6",
+        "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-7a23e33645c6.json",
+        "sha256": "81c94c8c1c77a113c22baf9c8a95dfb569df967a8270c8d5e928a0c13f7725cc"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "94cb0f4a5c49",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "2a5548dda68c354a80e7978195c9c8a5f8eb9cef38658038e466142c2d41eeca",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "fastify-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-cartog-claude-code-product-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-cartog-claude-code-product-v1"
+            ],
+            "enabled_surfaces": [
+              "claude-code-retrieval/context+mcp+product-guidance"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "other token-saving tools",
+              "direct-account transport"
+            ],
+            "registry_entry_sha256": "7742ff32dec14854506b6fae507105f50086bf9a9f2a7feb6a59bf6fe42e7633",
+            "registry_entry": {
+              "id": "retrieval-cartog-claude-code-product-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "substrate": "claude-code",
+              "status": "integration-qualified-provider-free",
+              "enabled_surfaces": [
+                "claude-code-retrieval/context+mcp+product-guidance"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces",
+                "other token-saving tools",
+                "direct-account transport"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-cartog-claude-code-product-v1",
+                  "surface": "retrieval/context+mcp+product-guidance",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Use the pinned Cartog source snapshot from retrieval-cartog-codex-product-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+              },
+              "reset": {
+                "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "qualified-provider-free",
+                "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+                "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+                "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+              },
+              "source_profiles": [
+                "retrieval-cartog-codex-product-v2"
+              ],
+              "notes": "Claude Code preparation profile for Cartog; source profile retrieval-cartog-codex-product-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "fastify-trailer-duplicate-callback-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+              },
+              {
+                "task_id": "fastify-nested-prefix-join-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+              },
+              {
+                "task_id": "fastify-serializer-compiler-flag-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+              },
+              {
+                "task_id": "fastify-sync-validator-throw-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+              },
+              {
+                "task_id": "fastify-duplicated-route-method-array-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+              },
+              {
+                "task_id": "fastify-head-route-web-stream-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "cartog-claude-code-product-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+            "tool_config": {
+              "display_name": "Cartog official Claude Code integration",
+              "lane_name": "retrieval-cartog-claude-code-product-v1",
+              "surface": "claude-code-readme-product-init+index+ide+mcp",
+              "mcp_server": "cartog",
+              "allowed_terms": [
+                "cartog"
+              ],
+              "data_dir_name": "cartog",
+              "mcp_command": "/bin/bash",
+              "mcp_args": [
+                "-lc",
+                "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+              ],
+              "env": {
+                "CARTOG_AUTO_INIT": "1",
+                "CARTOG_MCP_COMPACT": "1"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts"
+              ],
+              "diff_exclude_paths": [
+                ".cartog",
+                ".cartog.toml",
+                ".mcp.json",
+                ".claude",
+                "CLAUDE.md"
+              ],
+              "preflight_command": [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "--version"
+              ],
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "code-graph-build",
+                "command": [
+                  "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                  "index",
+                  "{repo}"
+                ],
+                "cleanup_paths": [
+                  ".cartog"
+                ],
+                "output_name": "cartog-warmup-output.txt",
+                "metadata_name": "cartog-warmup-metadata.json",
+                "timeout_seconds": 1200
+              },
+              "host_integration_backend": "docker",
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "init"
+                  ],
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "ide",
+                    "--client",
+                    "claude-code",
+                    "--scope",
+                    "all",
+                    "--no-watch"
+                  ],
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "index"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "--version"
+                  ]
+                ],
+                "required_files": [
+                  "{repo}/.cartog.toml",
+                  "{repo}/.mcp.json",
+                  "{repo}/.cartog/db.sqlite",
+                  "{codex_home}/claude-config/settings.json"
+                ],
+                "timeout_seconds": 1200
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 120
+              },
+              "claude_features": {
+                "mcp": true
+              },
+              "path_entries": [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime"
+              ],
+              "artifact_identities": []
+            },
+            "tool_config_sha256": "76bf1431b65606170a10a0b9b675e5802e163be2a3beb8a5cf82c6638c2804aa",
+            "tool_state": "qualified-provider-free",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "/bin/bash",
+                "-lc",
+                "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/bin/bash",
+              "resolved_path": "/bin/bash",
+              "realpath": "/usr/bin/bash",
+              "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+              "metadata": {
+                "size": 1298416,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1772983313000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/bash",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/cartog-0.32.2/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+            "agent_runtime_id": "claude-code",
+            "model_condition": {
+              "id": "claude-code-anthropic-opus-5-medium",
+              "provider": "anthropic",
+              "model": "claude-opus-5",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "npm install --ignore-scripts --no-audit --no-fund",
+            "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+            "lockfiles": [
+              {
+                "path": "package.json",
+                "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "reasoning_effort": "medium",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "94cb0f4a5c49",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "reasoning_effort": "medium",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_claude_code_workflow_model_condition.py",
+              "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "cartog-claude-code-product-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "tool_config": {
+          "display_name": "Cartog official Claude Code integration",
+          "lane_name": "retrieval-cartog-claude-code-product-v1",
+          "surface": "claude-code-readme-product-init+index+ide+mcp",
+          "mcp_server": "cartog",
+          "allowed_terms": [
+            "cartog"
+          ],
+          "data_dir_name": "cartog",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+          ],
+          "env": {
+            "CARTOG_AUTO_INIT": "1",
+            "CARTOG_MCP_COMPACT": "1"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts"
+          ],
+          "diff_exclude_paths": [
+            ".cartog",
+            ".cartog.toml",
+            ".mcp.json",
+            ".claude",
+            "CLAUDE.md"
+          ],
+          "preflight_command": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "--version"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "code-graph-build",
+            "command": [
+              "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+              "index",
+              "{repo}"
+            ],
+            "cleanup_paths": [
+              ".cartog"
+            ],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "init"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "ide",
+                "--client",
+                "claude-code",
+                "--scope",
+                "all",
+                "--no-watch"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "index"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{repo}/.cartog.toml",
+              "{repo}/.mcp.json",
+              "{repo}/.cartog/db.sqlite",
+              "{codex_home}/claude-config/settings.json"
+            ],
+            "timeout_seconds": 1200
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "mcp": true
+          },
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime"
+          ],
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "76bf1431b65606170a10a0b9b675e5802e163be2a3beb8a5cf82c6638c2804aa",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/cartog-0.32.2/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"
+          }
+        ]
+      },
+      "date": "2026-09-04",
+      "target": {
+        "fixture_id": "medium-fastify-fastify",
+        "fixture_scale": "medium-project",
+        "project_id": "fastify-fastify",
+        "repository_path": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "94bcbcc6e2ef3b8e8f8e8797fe551ccbe7b942fd",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "fastify-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "fastify-trailer-duplicate-callback-v2",
+          "fastify-nested-prefix-join-v2",
+          "fastify-serializer-compiler-flag-v2",
+          "fastify-sync-validator-throw-v2",
+          "fastify-duplicated-route-method-array-v2",
+          "fastify-head-route-web-stream-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-cartog-claude-code-product-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+mcp+product-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "component_ids": [
+          "retrieval-cartog-claude-code-product-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "claude-code",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "name": "Claude Code",
+        "version": "2.1.258 (Claude Code)",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "fresh_input_tokens": 263704,
+        "cached_input_tokens": 2782618,
+        "cache_write_tokens": 263584,
+        "output_tokens": 665,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 3046987,
+        "weighted_token_cost": 545955.8,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 68,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "text": 10,
+          "tool_use": 58
+        },
+        "weighted_token_cost_per_step": 8028.8,
+        "provider_usage_details": {
+          "runtime": "claude-code",
+          "accounting_mode": "sum-unique-assistant-message-usage",
+          "accounting_note": "",
+          "assistant_usage_block_count": 60,
+          "result_usage_block_count": 6,
+          "result_usage_counted": false,
+          "reasoning_tokens_available": false,
+          "canonical_components": {
+            "input_tokens": 120,
+            "cache_creation_input_tokens": 263584,
+            "cache_read_input_tokens": 2782618,
+            "output_tokens": 665,
+            "reasoning_tokens": 0
+          },
+          "raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 263584,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 263584,
+            "cache_read_input_tokens": 2782618,
+            "input_tokens": 120,
+            "output_tokens": 665
+          },
+          "result_raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 263584,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 263584,
+            "cache_read_input_tokens": 2782618,
+            "input_tokens": 120,
+            "output_tokens": 14824,
+            "output_tokens_details.thinking_tokens": 4136
+          },
+          "raw_model_usage_token_field_totals": {},
+          "result_raw_model_usage_token_field_totals": {
+            "claude-opus-5.cacheCreationInputTokens": 263584,
+            "claude-opus-5.cacheReadInputTokens": 2782618,
+            "claude-opus-5.inputTokens": 120,
+            "claude-opus-5.outputTokens": 14824,
+            "claude-opus-5.thinkingTokens": 4136
+          },
+          "raw_usage_blocks": [
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiY1iKM5FsMBM1gfrxUb",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 21142,
+                "cache_read_input_tokens": 0,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 21142
+                },
+                "output_tokens": 1,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiY2FoS5QKp2R4XRrg1S",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 4489,
+                "cache_read_input_tokens": 21142,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 4489
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiY2Th3zxAVyPS1s95dK",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1169,
+                "cache_read_input_tokens": 25631,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1169
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiY2tVYvUuFBUCzteWwJ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 525,
+                "cache_read_input_tokens": 26800,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 525
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiY7tFZKZ6gh5xS4Giqb",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 752,
+                "cache_read_input_tokens": 27325,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 752
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiY8D6dWDvt33QvLLfiJ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 525,
+                "cache_read_input_tokens": 28077,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 525
+                },
+                "output_tokens": 1,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYAiAuvrfjRsymZ2GoE",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1293,
+                "cache_read_input_tokens": 28602,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1293
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYD9D7L2GwqoLBCZdFy",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 310,
+                "cache_read_input_tokens": 29895,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 310
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYFYX872qkFfmjSHnZP",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 395,
+                "cache_read_input_tokens": 30205,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 395
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYFovaj9WJpSTYF6MfA",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 502,
+                "cache_read_input_tokens": 30600,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 502
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYGP2A79R1zotL92rkZ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 22941,
+                "cache_read_input_tokens": 9239,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 22941
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYGyjiB9YanC9wbZTY6",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 4591,
+                "cache_read_input_tokens": 32180,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 4591
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYHLPgDhnp8UKpVzRpk",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 642,
+                "cache_read_input_tokens": 36771,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 642
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYHdSr15vgf9RR5vPDA",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 438,
+                "cache_read_input_tokens": 37413,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 438
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYHqMTQkV3iZckfA85Z",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 423,
+                "cache_read_input_tokens": 37851,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 423
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYs8cD6QydYNBWqmAXZ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 469,
+                "cache_read_input_tokens": 38274,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 469
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYsPtU2ErDnefXfXZmP",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 234,
+                "cache_read_input_tokens": 38743,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 234
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYtKCxmaTFSvU5LrGXz",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 336,
+                "cache_read_input_tokens": 38977,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 336
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYtYVg2hjpqut3ACmPx",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 236,
+                "cache_read_input_tokens": 39313,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 236
+                },
+                "output_tokens": 6,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYuNSxd5fMDTgrPAgUM",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 31609,
+                "cache_read_input_tokens": 9239,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 31609
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYucfUEeANcgKawBb1B",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 558,
+                "cache_read_input_tokens": 40848,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 558
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYungUXRczzsUqjYziG",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 528,
+                "cache_read_input_tokens": 41406,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 528
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYv2m4cMHzm8WCgb9yu",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 281,
+                "cache_read_input_tokens": 41934,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 281
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYvDAde54CqFEQusG3t",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 366,
+                "cache_read_input_tokens": 42215,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 366
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYxgFcGF1mHQvQf8tb4",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 279,
+                "cache_read_input_tokens": 42581,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 279
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYyTDZDvxgPEMsNZMqs",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 34694,
+                "cache_read_input_tokens": 9239,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 34694
+                },
+                "output_tokens": 33,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYz32JG4B7dVEsBWVWR",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 4129,
+                "cache_read_input_tokens": 43933,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 4129
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYzDFhVeEYYdZPgztHJ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1860,
+                "cache_read_input_tokens": 48062,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1860
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYzZHiqNRF1qfvFoPhZ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 2295,
+                "cache_read_input_tokens": 49922,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 2295
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiYzyVzUXSWiYoNmA5U2",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 884,
+                "cache_read_input_tokens": 52217,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 884
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ1EKiossm9SASGthqQ",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 423,
+                "cache_read_input_tokens": 53101,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 423
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ1Pj24aNUxoccVFCfm",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1039,
+                "cache_read_input_tokens": 53524,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1039
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ2FFojXnk9398M7dCi",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1048,
+                "cache_read_input_tokens": 54563,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1048
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ2h7p345ioT5MWCbJD",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 699,
+                "cache_read_input_tokens": 55611,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 699
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ3YuUTVQmFYHTeB7qH",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1200,
+                "cache_read_input_tokens": 56310,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1200
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ3sKzt3QsAwThrY6ZD",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 410,
+                "cache_read_input_tokens": 57510,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 410
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZ48gEB7MMbNSdH5Mfi",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 249,
+                "cache_read_input_tokens": 57920,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 249
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZMb2inzyGLtA2cjQFq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 288,
+                "cache_read_input_tokens": 58169,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 288
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZNcuMsSSGTw9ZUVach",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 310,
+                "cache_read_input_tokens": 58457,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 310
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZPkbFYX72SQTMHJipo",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 51082,
+                "cache_read_input_tokens": 9239,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 51082
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZQ7FiQXmobTAKXiVNw",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1517,
+                "cache_read_input_tokens": 60321,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1517
+                },
+                "output_tokens": 14,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZQHY6CStLiR1VQstvN",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 627,
+                "cache_read_input_tokens": 61838,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 627
+                },
+                "output_tokens": 3,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZQduh17mkKcs39ddEk",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1138,
+                "cache_read_input_tokens": 62465,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1138
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZR6RdbvBKJpPMmEjm3",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 563,
+                "cache_read_input_tokens": 63603,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 563
+                },
+                "output_tokens": 17,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZRWmbwocShPP71fHYS",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 218,
+                "cache_read_input_tokens": 64166,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 218
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZU2LQKGGbjsaLz9dHd",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 190,
+                "cache_read_input_tokens": 64384,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 190
+                },
+                "output_tokens": 4,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZUhco5Ro12cxKdxnbC",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 56509,
+                "cache_read_input_tokens": 9239,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 56509
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZUyFtawNcGozkTaXLr",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 530,
+                "cache_read_input_tokens": 65748,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 530
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZVArtXbDZVxPpLt7HS",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 564,
+                "cache_read_input_tokens": 66278,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 564
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZVKCSXK1J4CuqZYG9M",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 523,
+                "cache_read_input_tokens": 66842,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 523
+                },
+                "output_tokens": 5,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZVXUsaBdkzwsYjt9Ya",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1438,
+                "cache_read_input_tokens": 67365,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1438
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZVgjzSmjKG13ufRMPq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 128,
+                "cache_read_input_tokens": 68803,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 128
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZVpii6LFWKX4FvAXK5",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 116,
+                "cache_read_input_tokens": 68931,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 116
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZVz9F8NQCtvXu8cGgm",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 1369,
+                "cache_read_input_tokens": 69047,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 1369
+                },
+                "output_tokens": 21,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZWAGCxH8atfSZsdrET",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 607,
+                "cache_read_input_tokens": 70416,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 607
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZWjpooGgm4G6mcckie",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 780,
+                "cache_read_input_tokens": 71023,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 780
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZX69gBEnT4K8ZkFkgR",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 415,
+                "cache_read_input_tokens": 71803,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 415
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZXJS7Gv1Qw7WJSJHyc",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 228,
+                "cache_read_input_tokens": 72218,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 228
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZZjXHZHRjt19xQtgvo",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 198,
+                "cache_read_input_tokens": 72446,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 198
+                },
+                "output_tokens": 20,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZc7onaDwrg2MicdAhp",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 283,
+                "cache_read_input_tokens": 72644,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 283
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            }
+          ],
+          "result_raw_usage_blocks": [
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 20,
+                "cache_creation_input_tokens": 31102,
+                "cache_read_input_tokens": 248277,
+                "output_tokens": 1898,
+                "output_tokens_details": {
+                  "thinking_tokens": 379
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 31102,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 20,
+                  "outputTokens": 1898,
+                  "cacheReadInputTokens": 248277,
+                  "cacheCreationInputTokens": 31102,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.4827085,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 379,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 18,
+                "cache_creation_input_tokens": 30310,
+                "cache_read_input_tokens": 308761,
+                "output_tokens": 2196,
+                "output_tokens_details": {
+                  "thinking_tokens": 443
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 30310,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 18,
+                  "outputTokens": 2196,
+                  "cacheReadInputTokens": 308761,
+                  "cacheCreationInputTokens": 30310,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.5124704999999999,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 443,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 12,
+                "cache_creation_input_tokens": 33621,
+                "cache_read_input_tokens": 218223,
+                "output_tokens": 1137,
+                "output_tokens_details": {
+                  "thinking_tokens": 0
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 33621,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 12,
+                  "outputTokens": 1137,
+                  "cacheReadInputTokens": 218223,
+                  "cacheCreationInputTokens": 33621,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.4738065,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 0,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 28,
+                "cache_creation_input_tokens": 49528,
+                "cache_read_input_tokens": 708538,
+                "output_tokens": 4963,
+                "output_tokens_details": {
+                  "thinking_tokens": 2332
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 49528,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 28,
+                  "outputTokens": 4963,
+                  "cacheReadInputTokens": 708538,
+                  "cacheCreationInputTokens": 49528,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.9737640000000001,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 2332,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 14,
+                "cache_creation_input_tokens": 55335,
+                "cache_read_input_tokens": 386016,
+                "output_tokens": 1897,
+                "output_tokens_details": {
+                  "thinking_tokens": 412
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 55335,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 14,
+                  "outputTokens": 1897,
+                  "cacheReadInputTokens": 386016,
+                  "cacheCreationInputTokens": 55335,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.7938530000000001,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 412,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            },
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 28,
+                "cache_creation_input_tokens": 63688,
+                "cache_read_input_tokens": 912803,
+                "output_tokens": 2733,
+                "output_tokens_details": {
+                  "thinking_tokens": 570
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 63688,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 28,
+                  "outputTokens": 2733,
+                  "cacheReadInputTokens": 912803,
+                  "cacheCreationInputTokens": 63688,
+                  "webSearchRequests": 0,
+                  "costUSD": 1.1617465,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 570,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            }
+          ],
+          "provider_reported_total_tokens": null,
+          "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+          "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+        },
+        "accounting_basis": "Claude Code telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "fastify-trailer-duplicate-callback-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-01-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-nested-prefix-join-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-02-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-serializer-compiler-flag-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-03-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-sync-validator-throw-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-04-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-duplicated-route-method-array-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-05-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "fastify-head-route-web-stream-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "20346979-7544-4fd7-bc26-dfb0cc453fdc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/task-06-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "find lib -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check && node --check fastify.js",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2",
+        "run_record": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-fastify-20260904-p-94cb0f4a5c49-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "baseline-claude-code-fastify-20260903-p-94cb0f4a5c49-r2",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-retrieval-cartog-claude-code-product-v1-e257557e288c-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "failed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-ed84317bdd75",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-ed84317bdd75.json",
+        "sha256": "67fb4ca3768daba504e83efcb21d330145392043aae3d963935880b9f0a61bb7"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "e257557e288c",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "4c6bf1f7eff5c5b66f6c8276b1aee5a89e1fafaafe9518d0a5fa85f386794c3a",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "retrieval-cartog-claude-code-product-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "retrieval-cartog-claude-code-product-v1"
+            ],
+            "enabled_surfaces": [
+              "claude-code-retrieval/context+mcp+product-guidance"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces",
+              "other token-saving tools",
+              "direct-account transport"
+            ],
+            "registry_entry_sha256": "7742ff32dec14854506b6fae507105f50086bf9a9f2a7feb6a59bf6fe42e7633",
+            "registry_entry": {
+              "id": "retrieval-cartog-claude-code-product-v1",
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "substrate": "claude-code",
+              "status": "integration-qualified-provider-free",
+              "enabled_surfaces": [
+                "claude-code-retrieval/context+mcp+product-guidance"
+              ],
+              "disabled_overlaps": [
+                "all unlisted surfaces",
+                "other token-saving tools",
+                "direct-account transport"
+              ],
+              "components": [
+                {
+                  "component_id": "retrieval-cartog-claude-code-product-v1",
+                  "surface": "retrieval/context+mcp+product-guidance",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Use the pinned Cartog source snapshot from retrieval-cartog-codex-product-v2 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+              },
+              "reset": {
+                "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "qualified-provider-free",
+                "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+                "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+                "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+              },
+              "source_profiles": [
+                "retrieval-cartog-codex-product-v2"
+              ],
+              "notes": "Claude Code preparation profile for Cartog; source profile retrieval-cartog-codex-product-v2. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "beets-unique-path-counter-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+              },
+              {
+                "task_id": "beets-empty-string-field-split-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+              },
+              {
+                "task_id": "beets-date-query-alternation-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+              },
+              {
+                "task_id": "beets-membership-query-hashable-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+              },
+              {
+                "task_id": "beets-spotify-uri-extraction-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+              },
+              {
+                "task_id": "beets-lyrics-keep-synced-override-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "cartog-claude-code-product-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+            "tool_config": {
+              "display_name": "Cartog official Claude Code integration",
+              "lane_name": "retrieval-cartog-claude-code-product-v1",
+              "surface": "claude-code-readme-product-init+index+ide+mcp",
+              "mcp_server": "cartog",
+              "allowed_terms": [
+                "cartog"
+              ],
+              "data_dir_name": "cartog",
+              "mcp_command": "/bin/bash",
+              "mcp_args": [
+                "-lc",
+                "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+              ],
+              "env": {
+                "CARTOG_AUTO_INIT": "1",
+                "CARTOG_MCP_COMPACT": "1"
+              },
+              "mounts": [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts"
+              ],
+              "diff_exclude_paths": [
+                ".cartog",
+                ".cartog.toml",
+                ".mcp.json",
+                ".claude",
+                "CLAUDE.md"
+              ],
+              "preflight_command": [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "--version"
+              ],
+              "default_tool_state": "warm-index",
+              "warmup": {
+                "kind": "code-graph-build",
+                "command": [
+                  "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                  "index",
+                  "{repo}"
+                ],
+                "cleanup_paths": [
+                  ".cartog"
+                ],
+                "output_name": "cartog-warmup-output.txt",
+                "metadata_name": "cartog-warmup-metadata.json",
+                "timeout_seconds": 1200
+              },
+              "host_integration_backend": "docker",
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "init"
+                  ],
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "ide",
+                    "--client",
+                    "claude-code",
+                    "--scope",
+                    "all",
+                    "--no-watch"
+                  ],
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "index"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                    "--version"
+                  ]
+                ],
+                "required_files": [
+                  "{repo}/.cartog.toml",
+                  "{repo}/.mcp.json",
+                  "{repo}/.cartog/db.sqlite",
+                  "{codex_home}/claude-config/settings.json"
+                ],
+                "timeout_seconds": 1200
+              },
+              "mcp_handshake": {
+                "required": true,
+                "method": "initialize-and-tools-list",
+                "timeout_seconds": 120
+              },
+              "claude_features": {
+                "mcp": true
+              },
+              "path_entries": [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime"
+              ],
+              "artifact_identities": []
+            },
+            "tool_config_sha256": "76bf1431b65606170a10a0b9b675e5802e163be2a3beb8a5cf82c6638c2804aa",
+            "tool_state": "qualified-provider-free",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "mcp_command",
+              "command": [
+                "/bin/bash",
+                "-lc",
+                "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/bin/bash",
+              "resolved_path": "/bin/bash",
+              "realpath": "/usr/bin/bash",
+              "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+              "metadata": {
+                "size": 1298416,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1772983313000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/bash",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/cartog-0.32.2/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 3600,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+            "agent_runtime_id": "claude-code",
+            "model_condition": {
+              "id": "claude-code-anthropic-opus-5-medium",
+              "provider": "anthropic",
+              "model": "claude-opus-5",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "uv sync --group test --frozen",
+            "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+            "lockfiles": [
+              {
+                "path": "uv.lock",
+                "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "reasoning_effort": "medium",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "e257557e288c",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "claude-code-anthropic-opus-5-medium",
+            "runtime_id": "claude-code",
+            "provider": "anthropic",
+            "model": "claude-opus-5",
+            "reasoning_effort": "medium",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_claude_code_workflow_model_condition.py",
+              "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "cartog-claude-code-product-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "628c7082e57d39a6eb2ffcea7b854633dd201145c55107083864580bb659df14",
+        "tool_config": {
+          "display_name": "Cartog official Claude Code integration",
+          "lane_name": "retrieval-cartog-claude-code-product-v1",
+          "surface": "claude-code-readme-product-init+index+ide+mcp",
+          "mcp_server": "cartog",
+          "allowed_terms": [
+            "cartog"
+          ],
+          "data_dir_name": "cartog",
+          "mcp_command": "/bin/bash",
+          "mcp_args": [
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+          ],
+          "env": {
+            "CARTOG_AUTO_INIT": "1",
+            "CARTOG_MCP_COMPACT": "1"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts"
+          ],
+          "diff_exclude_paths": [
+            ".cartog",
+            ".cartog.toml",
+            ".mcp.json",
+            ".claude",
+            "CLAUDE.md"
+          ],
+          "preflight_command": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+            "--version"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "code-graph-build",
+            "command": [
+              "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+              "index",
+              "{repo}"
+            ],
+            "cleanup_paths": [
+              ".cartog"
+            ],
+            "output_name": "cartog-warmup-output.txt",
+            "metadata_name": "cartog-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "init"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "ide",
+                "--client",
+                "claude-code",
+                "--scope",
+                "all",
+                "--no-watch"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "index"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{repo}/.cartog.toml",
+              "{repo}/.mcp.json",
+              "{repo}/.cartog/db.sqlite",
+              "{codex_home}/claude-config/settings.json"
+            ],
+            "timeout_seconds": 1200
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "mcp": true
+          },
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime"
+          ],
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "76bf1431b65606170a10a0b9b675e5802e163be2a3beb8a5cf82c6638c2804aa",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/bin/bash",
+            "-lc",
+            "cd {repo} && exec /opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog serve"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/bin/bash",
+          "resolved_path": "/bin/bash",
+          "realpath": "/usr/bin/bash",
+          "sha256": "223fe8564b60636bc738b6178d3ba9a50ef7d791266b0efae6363bb716e4c47f",
+          "metadata": {
+            "size": 1298416,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1772983313000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/bash",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/cartog-0.32.2/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)\nCopyright (C) 2022 Free Software Foundation, Inc.\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n\nThis is free software; you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/cartog-0.32.2/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "2eeb61a3eb57f8011573bb3117aa02c5b6906b08"
+          }
+        ]
+      },
+      "date": "2026-09-04",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "beets-unique-path-counter-v2",
+          "beets-empty-string-field-split-v2",
+          "beets-date-query-alternation-v2",
+          "beets-membership-query-hashable-v2",
+          "beets-spotify-uri-extraction-v2",
+          "beets-lyrics-keep-synced-override-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "6c84bde6-94b1-4775-8c24-4d1c9b3fbed5",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "retrieval-cartog-claude-code-product-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+mcp+product-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "component_ids": [
+          "retrieval-cartog-claude-code-product-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "claude-code",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "name": "Claude Code",
+        "version": "2.1.258 (Claude Code)",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 21600
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "claude-code-stream-json-assistant-usage",
+        "fresh_input_tokens": 17304,
+        "cached_input_tokens": 82250,
+        "cache_write_tokens": 17296,
+        "output_tokens": 21,
+        "reasoning_tokens": 0,
+        "total_provider_tokens": 99575,
+        "weighted_token_cost": 25655.0,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 8,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "text": 3,
+          "tool_use": 5
+        },
+        "weighted_token_cost_per_step": 3206.9,
+        "provider_usage_details": {
+          "runtime": "claude-code",
+          "accounting_mode": "sum-unique-assistant-message-usage",
+          "accounting_note": "",
+          "assistant_usage_block_count": 5,
+          "result_usage_block_count": 1,
+          "result_usage_counted": false,
+          "reasoning_tokens_available": false,
+          "canonical_components": {
+            "input_tokens": 8,
+            "cache_creation_input_tokens": 17296,
+            "cache_read_input_tokens": 82250,
+            "output_tokens": 21,
+            "reasoning_tokens": 0
+          },
+          "raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 17296,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 17296,
+            "cache_read_input_tokens": 82250,
+            "input_tokens": 8,
+            "output_tokens": 21
+          },
+          "result_raw_token_field_totals": {
+            "cache_creation.ephemeral_1h_input_tokens": 17296,
+            "cache_creation.ephemeral_5m_input_tokens": 0,
+            "cache_creation_input_tokens": 17296,
+            "cache_read_input_tokens": 82250,
+            "input_tokens": 8,
+            "output_tokens": 750,
+            "output_tokens_details.thinking_tokens": 62
+          },
+          "raw_model_usage_token_field_totals": {},
+          "result_raw_model_usage_token_field_totals": {
+            "claude-opus-5.cacheCreationInputTokens": 17296,
+            "claude-opus-5.cacheReadInputTokens": 82250,
+            "claude-opus-5.inputTokens": 8,
+            "claude-opus-5.outputTokens": 750,
+            "claude-opus-5.thinkingTokens": 62
+          },
+          "raw_usage_blocks": [
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZgbeCzDxZgaDarbjL5",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 11903,
+                "cache_read_input_tokens": 9239,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 11903
+                },
+                "output_tokens": 1,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZh3RzmhCEFTx5abFkq",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 4518,
+                "cache_read_input_tokens": 21142,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 4518
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZhD2CcVUwSrctn7LZY",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 549,
+                "cache_read_input_tokens": 25660,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 549
+                },
+                "output_tokens": 2,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "msg_011CeiZhSxMHouXySpP2yKGe",
+              "usage": {
+                "input_tokens": 2,
+                "cache_creation_input_tokens": 326,
+                "cache_read_input_tokens": 26209,
+                "cache_creation": {
+                  "ephemeral_5m_input_tokens": 0,
+                  "ephemeral_1h_input_tokens": 326
+                },
+                "output_tokens": 16,
+                "service_tier": "standard",
+                "inference_geo": "not_available"
+              },
+              "model_usage": {}
+            },
+            {
+              "event_type": "assistant",
+              "message_id": "7ca3b43f-0171-4a18-94a4-8676e5585dda",
+              "usage": {
+                "output_tokens_details": null,
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "cache_creation_input_tokens": 0,
+                "cache_read_input_tokens": 0,
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": null,
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 0,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": null,
+                "iterations": null,
+                "speed": null
+              },
+              "model_usage": {}
+            }
+          ],
+          "result_raw_usage_blocks": [
+            {
+              "event_type": "result",
+              "message_id": null,
+              "usage": {
+                "input_tokens": 8,
+                "cache_creation_input_tokens": 17296,
+                "cache_read_input_tokens": 82250,
+                "output_tokens": 750,
+                "output_tokens_details": {
+                  "thinking_tokens": 62
+                },
+                "server_tool_use": {
+                  "web_search_requests": 0,
+                  "web_fetch_requests": 0
+                },
+                "service_tier": "standard",
+                "cache_creation": {
+                  "ephemeral_1h_input_tokens": 17296,
+                  "ephemeral_5m_input_tokens": 0
+                },
+                "inference_geo": "not_available",
+                "iterations": [],
+                "speed": "standard"
+              },
+              "model_usage": {
+                "claude-opus-5": {
+                  "inputTokens": 8,
+                  "outputTokens": 750,
+                  "cacheReadInputTokens": 82250,
+                  "cacheCreationInputTokens": 17296,
+                  "webSearchRequests": 0,
+                  "costUSD": 0.232875,
+                  "contextWindow": 1000000,
+                  "maxOutputTokens": 64000,
+                  "thinkingTokens": 62,
+                  "canonicalModel": "claude-opus-5",
+                  "provider": "firstParty",
+                  "costBasis": "list"
+                }
+              }
+            }
+          ],
+          "provider_reported_total_tokens": null,
+          "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+          "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+        },
+        "accounting_basis": "Claude Code telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-unique-path-counter-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 1,
+          "thread_continuity_passed": true,
+          "thread_id": "6c84bde6-94b1-4775-8c24-4d1c9b3fbed5",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/task-01-claude-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-empty-string-field-split-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": false,
+          "codex_exit_code": null,
+          "controller_verification": "failed",
+          "accepted": false,
+          "task_delta": null,
+          "usage_events": null,
+          "operational_retry_count": 0,
+          "verifier_exit_code": 1,
+          "verifier_passed": false
+        },
+        {
+          "task_id": "beets-date-query-alternation-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": false,
+          "codex_exit_code": null,
+          "controller_verification": "failed",
+          "accepted": false,
+          "task_delta": null,
+          "usage_events": null,
+          "operational_retry_count": 0,
+          "verifier_exit_code": 1,
+          "verifier_passed": false
+        },
+        {
+          "task_id": "beets-membership-query-hashable-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": false,
+          "codex_exit_code": null,
+          "controller_verification": "failed",
+          "accepted": false,
+          "task_delta": null,
+          "usage_events": null,
+          "operational_retry_count": 0,
+          "verifier_exit_code": 1,
+          "verifier_passed": false
+        },
+        {
+          "task_id": "beets-spotify-uri-extraction-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": false,
+          "codex_exit_code": null,
+          "controller_verification": "failed",
+          "accepted": false,
+          "task_delta": null,
+          "usage_events": null,
+          "operational_retry_count": 0,
+          "verifier_exit_code": 1,
+          "verifier_passed": false
+        },
+        {
+          "task_id": "beets-lyrics-keep-synced-override-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": false,
+          "codex_exit_code": null,
+          "controller_verification": "failed",
+          "accepted": false,
+          "task_delta": null,
+          "usage_events": null,
+          "operational_retry_count": 0,
+          "verifier_exit_code": 1,
+          "verifier_passed": false
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 1,
+        "tasks_agent_claimed_complete": 0,
+        "tasks_passed": 1,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/verify-workflow.sh",
+        "final_verifier_passed": false,
+        "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+        "project_compile_passed": true,
+        "functional_verifier_passed": false,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": [
+          "one or more workflow verifiers failed"
+        ]
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2",
+        "run_record": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": false,
+        "accepted_for_objective": false,
+        "claim_status": "operationally-invalid",
+        "comparison_baseline_session_id": "baseline-claude-code-beets-20260903-p-e257557e288c-r2",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "codex_exit_codes=[1]; audit_exit=0; thread_continuity_errors=[]; usage_warnings=[]",
+        "notes": "Lane did not complete operationally; exclude it from token accounting.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "operationally-invalid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": false,
+        "operationally_completed": false,
+        "agent_declared_task_completion_count": 0
+      }
     }
   ]
 }
