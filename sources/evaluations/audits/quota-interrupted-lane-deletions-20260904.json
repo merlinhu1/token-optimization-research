@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-04",
+  "action": "owner-authorized-deletion-of-quota-interrupted-lanes",
+  "deletion_authority": "explicit experiment-owner direction on 2026-09-04 (\"delete failed records\")",
+  "verdict": "three-lanes-were-cut-off-by-provider-quota-and-priced-no-complete-workflow",
+  "rule": "Weighted token cost is defined across the complete persistent workflow, and interrupted execution with incomplete provider usage is a named invalidity condition. None of these is a replicate dropped for the number it produced: each was truncated by an account limit external to the treatment, so there was no complete trajectory to price.",
+  "distinction_from_the_apparatus_defect_policy": "The 2026-08-30 slot policy in AGENTS.md is about runs whose declared treatment was not operating. That is not what happened here: every treatment was installed, and in the Cartog case the MCP server was connected with its tools registered before the provider cut the session off. These are provider interruptions, which is why the deletion needed explicit owner direction rather than following automatically. The effect on slots is the same -- an invalid run does not keep a replicate index.",
+  "deleted": [
+    {
+      "session_id": "serena-fastify-20260827-p-dc16afea3ad5-r0",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v2",
+      "replicate_index": 0,
+      "runtime": "codex-cli",
+      "cause": "OpenAI usage limit during task-05. task-05 events end with type error and turn.failed carrying \"You've hit your usage limit... try again at 4:12 PM.\"",
+      "codex_exit_codes": [0, 0, 0, 0, 1],
+      "tasks_attempted": 5,
+      "tasks_passed": 5,
+      "disclosed_partial_telemetry": {"weighted_token_cost": 596532.4, "agent_steps": 58},
+      "spend_disclosure": "Consumed provider budget. Not a zero-spend receipt."
+    },
+    {
+      "session_id": "serena-beets-20260827-p-c86863838e8b-r0",
+      "profile_id": "retrieval-serena-codex-mcp-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "replicate_index": 0,
+      "runtime": "codex-cli",
+      "cause": "OpenAI usage limit during task-06, same message as the Fastify lane.",
+      "codex_exit_codes": [0, 0, 0, 0, 0, 1],
+      "tasks_attempted": 6,
+      "tasks_passed": 6,
+      "disclosed_partial_telemetry": {"weighted_token_cost": 542467.6, "agent_steps": 65},
+      "spend_disclosure": "Consumed provider budget. Not a zero-spend receipt."
+    },
+    {
+      "session_id": "retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2",
+      "profile_id": "retrieval-cartog-claude-code-product-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "replicate_index": 2,
+      "runtime": "claude-code",
+      "cause": "Anthropic account session limit during task-01: HTTP 429 with result \"You've hit your session limit, resets 6:50pm (UTC)\". Tasks 2-6 were never delivered.",
+      "codex_exit_codes": [1],
+      "tasks_attempted": 1,
+      "tasks_passed": 1,
+      "disclosed_partial_telemetry": {"weighted_token_cost": 25655.0, "agent_steps": 8},
+      "spend_disclosure": "Consumed provider budget. Not a zero-spend receipt.",
+      "assignment_note": "The cartog MCP server was connected with all 16 tools registered before the interruption, so this is not the container-path defect recorded in claude-code-mcp-container-path-defect-20260829.json."
+    }
+  ],
+  "disclosed_numbers_policy": "The partial telemetry above is recorded for disclosure only. It must never be published, compared, or ranked as a lane result; after this deletion the receipt is the only place it survives. Without it the corpus would read as though these lanes were never attempted.",
+  "artifacts_removed": [
+    "data/workflow-sessions.json entries for all three sessions",
+    "sources/evaluations/workflow-sessions/serena-fastify-20260827-p-dc16afea3ad5-r0/",
+    "sources/evaluations/workflow-sessions/serena-beets-20260827-p-c86863838e8b-r0/",
+    "sources/evaluations/workflow-sessions/retrieval-cartog-claude-code-product-beets-20260904-p-e257557e288c-r2/",
+    "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-cartog-claude-code-product-v1-ed84317bdd75.json"
+  ],
+  "protocols_retained": {
+    "fastify-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-2533dcc93d42": "still referenced by serena-fastify-20260827-p-dc16afea3ad5-r1",
+    "beets-lifecycle-sequence-v2-retrieval-serena-codex-mcp-v1-4dd37681b37e": "still referenced by serena-beets-20260827-p-c86863838e8b-r1",
+    "rule": "The retention policy removes unreferenced protocols only. Only the Cartog Beets protocol became unreferenced."
+  },
+  "no_dependants": "No comparison artifact and no other session named any of the three as a comparison baseline, so nothing was orphaned by the deletion. None of them had a published comparison, which is correct: the runner had already marked all three operationally-invalid and excluded them from token accounting on its own.",
+  "registry_count": "62 -> 59 sessions",
+  "slots_freed": {
+    "retrieval-serena-codex-mcp-v1": "r0 is vacant on both sequences. The retained Serena Codex measurements keep replicate_index 1: they are accepted immutable evidence and renumbering them would rewrite a frozen record to tidy an index.",
+    "retrieval-cartog-claude-code-product-v1": "r2 is vacant on beets-lifecycle-sequence-v2 and is taken by the replacement run, which pairs against the version-matched r2 baseline."
+  },
+  "what_this_does_not_change": "Serena's retained Codex r1 lanes on both sequences remain valid, as does Cartog's Claude Code Fastify r2. The Serena Codex arm now holds one replicate per lane rather than appearing to hold two."
+}
