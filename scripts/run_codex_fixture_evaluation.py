@@ -4126,6 +4126,50 @@ def verify_declared_warm_state(
     }
 
 
+def claude_mcp_activation(events_path: Path, cfg: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Did the model's own session actually get the MCP surface this profile declares?
+
+    Claude Code announces its resolved tool surface in the `system/init` event of every session:
+    which MCP servers connected and which tools it was offered. That is the only statement of what
+    the model could actually reach, and nothing was reading it. Both jCodeMunch Claude Code lanes
+    were measured with `status: failed` and zero tools offered -- published as the largest drop in
+    the corpus until the streams were read by hand -- and Cartog was caught the same way one task
+    into a paid run.
+
+    Availability only. A model that is offered its tools and declines them is a valid observed
+    outcome under the natural-use policy, so this must never assert that a tool was *called*.
+    Returns None when the profile declares no MCP server, or for runtimes whose stream carries no
+    such event (Codex emits none; its handshake receipt is what exists there).
+    """
+    server = str((cfg or {}).get("mcp_server") or "")
+    if not server or not events_path.is_file():
+        return None
+    for line in events_path.read_text(errors="replace").splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if event.get("type") != "system" or event.get("subtype") != "init":
+            continue
+        servers = event.get("mcp_servers") or []
+        entry = next((s for s in servers if isinstance(s, dict) and s.get("name") == server), None)
+        offered = [
+            name for name in (event.get("tools") or [])
+            if isinstance(name, str) and name.startswith(f"mcp__{server}__")
+        ]
+        status = (entry or {}).get("status")
+        return {
+            "server": server,
+            "status": status,
+            "connected": status == "connected",
+            "tools_offered": len(offered),
+            "tool_names": sorted(offered),
+            "passed": status == "connected" and bool(offered),
+            "declared_servers": servers,
+        }
+    return None
+
+
 def probe_mcp_handshake(
     record: dict[str, Any],
     pid: str,

@@ -5630,6 +5630,45 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertFalse(matrix.artifact_merge_allowed(True, results))
         self.assertEqual(matrix.publishable_sequences(False, results), ["seq-a"])
 
+    def test_declared_mcp_surface_must_be_live_in_the_model_stream(self) -> None:
+        """A declared MCP treatment whose server never started is not a low-adoption result.
+
+        Both jCodeMunch Claude Code lanes were published as the largest drop in the corpus while
+        their session-init event reported status failed with zero tools offered. Claude Code states
+        its resolved surface in that event; nothing was reading it.
+        """
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        def stream(**init):
+            path = Path(tempfile.mkdtemp()) / "task-01-claude-events.jsonl"
+            path.write_text(json.dumps({"type": "system", "subtype": "init", **init}) + "\n")
+            return path
+
+        dead = stream(mcp_servers=[{"name": "srv", "status": "failed"}], tools=["Bash", "Read"])
+        self.assertFalse(fixture_runner.claude_mcp_activation(dead, {"mcp_server": "srv"})["passed"])
+
+        # Connected but offering nothing is equally dead from the model's point of view.
+        empty = stream(mcp_servers=[{"name": "srv", "status": "connected"}], tools=["Bash"])
+        self.assertFalse(fixture_runner.claude_mcp_activation(empty, {"mcp_server": "srv"})["passed"])
+
+        live = stream(
+            mcp_servers=[{"name": "srv", "status": "connected"}],
+            tools=["Bash", "mcp__srv__search", "mcp__srv__read"],
+        )
+        result = fixture_runner.claude_mcp_activation(live, {"mcp_server": "srv"})
+        self.assertTrue(result["passed"])
+        self.assertEqual(result["tools_offered"], 2)
+
+        # Availability only: a model offered its tools and declining them still passes, because
+        # zero natural use is a valid observed outcome under the natural-use policy.
+        self.assertTrue(fixture_runner.claude_mcp_activation(live, {"mcp_server": "srv"})["passed"])
+
+        # No opinion where the check does not apply.
+        self.assertIsNone(fixture_runner.claude_mcp_activation(live, {}))
+        self.assertIsNone(
+            fixture_runner.claude_mcp_activation(Path("/nonexistent"), {"mcp_server": "srv"})
+        )
+
     def test_declared_warm_index_profiles_verify_their_state(self) -> None:
         """A profile may not claim warm-index without a check that the server can see it.
 

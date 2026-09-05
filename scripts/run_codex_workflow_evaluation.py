@@ -4512,6 +4512,32 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
             operational_retries=operational_retries,
         )
         codex_exit_codes.append(code)
+        if runtime_id == "claude-code" and order == 1:
+            # Read the model's own resolved tool surface before buying five more tasks against it.
+            # A declared MCP treatment whose server did not start is not a low-adoption result, it
+            # is a lane measuring something the profile does not claim; both jCodeMunch Claude Code
+            # lanes were published that way. Availability only -- a model that is offered its tools
+            # and declines them is a valid outcome and must still pass here.
+            mcp_activation = fixture.claude_mcp_activation(
+                events_path, fixture.active_tool_config(record, profile_id)
+            )
+            if mcp_activation is not None:
+                (run_dir / "mcp-activation.json").write_text(
+                    json.dumps(mcp_activation, indent=2) + "\n"
+                )
+                if not mcp_activation.get("passed"):
+                    return finalize_failed_attempt(
+                        {
+                            "session_id": session_id,
+                            "profile_id": profile_id,
+                            "accepted": False,
+                            "stage": "mcp-activation",
+                            "run_dir": rel(run_dir),
+                            "mcp_activation": mcp_activation,
+                        },
+                        record,
+                        run_dir,
+                    )
         if runtime_id == "claude-code" and code == 0:
             sync_copied_claude_auth_back(
                 codex_home,
