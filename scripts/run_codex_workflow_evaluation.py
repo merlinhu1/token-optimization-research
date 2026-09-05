@@ -4131,6 +4131,66 @@ def atomic_create_json(path: Path, data: Any) -> None:
             temporary_path.unlink(missing_ok=True)
 
 
+def same_build_baseline_pool(
+    registry: dict[str, Any], baseline: dict[str, Any], seq: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Every retained baseline sharing this one's pool, profile and agent CLI build.
+
+    A delta against one baseline draw is not the effect; it is the effect plus wherever that draw
+    happened to land. Two Claude Code Beets baselines on the *same* pinned build came in at
+    330,528.7 and 450,781.4, a 36.4% spread, and LeanCTX reads -26.2% or -45.9% depending only on
+    which one it is paired against. Restricted to one build so this cannot quietly reintroduce the
+    version confound it sits next to.
+    """
+    fingerprint = (baseline.get("baseline_pool") or {}).get("protocol_fingerprint")
+    profile_id = (baseline.get("profile") or {}).get("profile_id")
+    version = (baseline.get("agent") or {}).get("version")
+    pool = []
+    for session in registry.get("sessions", []):
+        if (session.get("baseline_pool") or {}).get("protocol_fingerprint") != fingerprint:
+            continue
+        if (session.get("profile") or {}).get("profile_id") != profile_id:
+            continue
+        if (session.get("agent") or {}).get("version") != version:
+            continue
+        if session.get("task_sequence", {}).get("sequence_id") != seq["id"]:
+            continue
+        if session.get("status") not in (None, "completed"):
+            continue
+        cost = (session.get("cumulative_token_usage") or {}).get("weighted_token_cost")
+        if isinstance(cost, (int, float)) and not isinstance(cost, bool):
+            pool.append(session)
+    return pool
+
+
+def baseline_pool_spread(
+    registry: dict[str, Any], baseline: dict[str, Any], seq: dict[str, Any], treatment_cost: Any
+) -> dict[str, Any]:
+    """Report the treatment against the whole same-build baseline pool, not one member of it."""
+    pool = same_build_baseline_pool(registry, baseline, seq)
+    costs = sorted(
+        float((s.get("cumulative_token_usage") or {}).get("weighted_token_cost")) for s in pool
+    )
+    if not costs:
+        return {"replicates": 0}
+    middle = len(costs) // 2
+    median = costs[middle] if len(costs) % 2 else (costs[middle - 1] + costs[middle]) / 2
+    out: dict[str, Any] = {
+        "replicates": len(costs),
+        "runtime_version": (baseline.get("agent") or {}).get("version"),
+        "weighted_token_costs": costs,
+        "median": median,
+        "spread_percent": round((max(costs) / min(costs) - 1) * 100, 2) if min(costs) else None,
+        "session_ids": sorted(s["session_id"] for s in pool),
+    }
+    if isinstance(treatment_cost, (int, float)) and not isinstance(treatment_cost, bool):
+        out["delta_percent_vs_median"] = percent_delta(treatment_cost - median, median)
+        out["delta_percent_range"] = sorted(
+            percent_delta(treatment_cost - c, c) for c in (min(costs), max(costs))
+        )
+    return out
+
+
 def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_index: int, treatment_profile_id: str) -> dict[str, Any] | None:
     registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
     project_id = PROJECT_META[seq["fixture_id"]]["project_id"]
@@ -4205,6 +4265,10 @@ def write_comparison_if_ready(seq: dict[str, Any], study_id: str, replicate_inde
         "baseline_protocol_fingerprint": protocol_fingerprint,
         "replicate_count": 1,
         "uncertainty": None,
+        # The single delta above is against one baseline draw. Where the pool holds more than one
+        # sample on the same build, this reports the treatment against all of them, because which
+        # draw a comparison happens to meet can move the answer further than the effect does.
+        "baseline_pool_spread": baseline_pool_spread(registry, baseline, seq, t_tokens),
         "claim_status": "single-run-screening",
         "eligible_for_ranking": False,
         "sequence_id": seq["id"],

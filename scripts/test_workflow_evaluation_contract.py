@@ -5630,6 +5630,39 @@ class MatrixLifecycleContractTest(unittest.TestCase):
         self.assertFalse(matrix.artifact_merge_allowed(True, results))
         self.assertEqual(matrix.publishable_sequences(False, results), ["seq-a"])
 
+    def test_comparison_reports_the_whole_same_build_baseline_pool(self) -> None:
+        """A delta against one baseline draw is the effect plus wherever that draw landed.
+
+        Two Claude Code Beets baselines on the same pinned build differ by 36.4%, and LeanCTX
+        reads -26.2% or -45.9% depending only on which it meets.
+        """
+        seq = {"id": "seq"}
+        def baseline(sid, cost, version="2.1.258 (Claude Code)"):
+            return {
+                "session_id": sid,
+                "status": "completed",
+                "baseline_pool": {"protocol_fingerprint": "pool"},
+                "profile": {"profile_id": "baseline-claude-code-no-mcp"},
+                "agent": {"version": version},
+                "task_sequence": {"sequence_id": "seq"},
+                "cumulative_token_usage": {"weighted_token_cost": cost},
+            }
+        registry = {"sessions": [
+            baseline("r2", 330528.7), baseline("r3", 450781.4),
+            # a different build must not be pooled in, or the version confound comes back
+            baseline("r1", 444682.9, version="2.1.241 (Claude Code)"),
+        ]}
+        out = runner.baseline_pool_spread(registry, registry["sessions"][0], seq, 244087.0)
+        self.assertEqual(out["replicates"], 2)
+        self.assertEqual(out["weighted_token_costs"], [330528.7, 450781.4])
+        self.assertAlmostEqual(out["spread_percent"], 36.38, places=1)
+        low, high = out["delta_percent_range"]
+        self.assertLess(low, out["delta_percent_vs_median"] )
+        self.assertGreater(high, out["delta_percent_vs_median"])
+        # A pool with one member still reports, with no spread to speak of.
+        single = {"sessions": [registry["sessions"][2]]}
+        self.assertEqual(runner.baseline_pool_spread(single, registry["sessions"][2], seq, 1.0)["replicates"], 1)
+
     def test_declared_mcp_surface_must_be_live_in_the_model_stream(self) -> None:
         """A declared MCP treatment whose server never started is not a low-adoption result.
 
