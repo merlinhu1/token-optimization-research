@@ -12,9 +12,9 @@ The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lane
 | `beets-lifecycle-sequence-v2` | Beets | 6 bounded defect repairs |
 
 <!-- generated:corpus-summary -->
-The active registry contains 72 accepted provider-backed sessions: 14 baselines, 4 replacement-runtime controls, 54 individual-tool treatments. By sequence: 36 `beets-lifecycle-sequence-v2`, 36 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 36, Codex CLI 32, OpenCode CLI 4.
+The active registry contains 74 accepted provider-backed sessions: 14 baselines, 4 replacement-runtime controls, 56 individual-tool treatments. By sequence: 37 `beets-lifecycle-sequence-v2`, 37 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 38, Codex CLI 32, OpenCode CLI 4.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 17 replicates (71, 52, 52, 74, 72, 89, 58, 110, 65, 67, 76, 64, 56, 68, 74, 69, 72 agent steps, spread 111.5%); weighted cost per step spread 57.4%; `c86863838e8b` holds 17 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78, 100, 69, 90, 78, 78, 61, 67 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 17 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71, 106, 78, 80, 72, 84, 85, 82 agent steps, spread 115.6%); weighted cost per step spread 76.2%; `e257557e288c` holds 17 replicates (66, 36, 35, 50, 45, 51, 52, 54, 51, 39, 64, 42, 44, 54, 55, 51, 39 agent steps, spread 88.6%); weighted cost per step spread 93.1%.
+Weighted token cost decomposes as agent steps times weighted cost per step. `94cb0f4a5c49` holds 18 replicates (71, 52, 52, 74, 72, 89, 58, 110, 65, 67, 76, 64, 56, 68, 74, 69, 72, 75 agent steps, spread 111.5%); weighted cost per step spread 57.4%; `c86863838e8b` holds 17 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78, 100, 69, 90, 78, 78, 61, 67 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 17 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71, 106, 78, 80, 72, 84, 85, 82 agent steps, spread 115.6%); weighted cost per step spread 76.2%; `e257557e288c` holds 18 replicates (66, 36, 35, 50, 45, 51, 52, 54, 51, 39, 64, 42, 44, 54, 55, 51, 39, 53 agent steps, spread 88.6%); weighted cost per step spread 93.1%.
 <!-- /generated:corpus-summary -->
 
 ## Retired evidence
