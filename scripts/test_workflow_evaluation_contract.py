@@ -417,6 +417,48 @@ class ClaudeInstructionMaterializationTest(unittest.TestCase):
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_claude_code_verifier_can_resolve_the_agents_view_of_the_repository(self) -> None:
+        """A venv the agent builds names its interpreter by the path the agent saw.
+
+        The Claude Code agent works from a neutral mount of the repository, so an
+        in-session `uv sync` writes `.venv/bin/pytest` starting `#!<agent path>/.venv/bin/python`.
+        If the verifier container only knows the host path, that interpreter is missing and
+        every task verifier exits 127 without scoring, which is how SigMap's Claude Code Beets
+        lane came back unscored while the treatment itself worked. Codex lanes work from the
+        host path already and must not gain the extra mount.
+        """
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        seq = {"tasks": [{"order": 1, "id": "task-one"}]}
+        record = {"target": {"repository_path": "sources/evaluations/fixtures/medium/beetbox-beets/repo"}}
+        repo = runner.ROOT / record["target"]["repository_path"]
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp) / "run"
+            (run_dir / "task-01").mkdir(parents=True)
+            claude_home = Path(tmp) / "home"
+            claude_home.mkdir()
+            for profile_id, runtime, expected in (
+                ("integrated-token-savior-claude-code-product-v1", "claude-code", True),
+                ("integrated-token-savior-codex-product-v2", "codex-cli", False),
+            ):
+                with self.subTest(runtime=runtime):
+                    self.assertEqual(
+                        runner.profile_runtime_id(profile_id), runtime
+                    )
+                    mounts = runner.final_verifier_mounts(
+                        seq, record, claude_home, run_dir, profile_id
+                    )
+                    agent_view = [
+                        mount
+                        for mount in mounts
+                        if Path(mount[1]) == fixture_runner.CLAUDE_CONTAINER_REPO
+                    ]
+                    self.assertEqual(len(agent_view), 1 if expected else 0)
+                    if expected:
+                        source, _, mode = agent_view[0]
+                        self.assertEqual(Path(source).resolve(), repo.resolve())
+                        self.assertEqual(mode, "rw")
+
     def test_active_lifecycle_sequences_cover_the_required_task_mix(self) -> None:
         """The active family's declared contract must match the task classes it actually holds."""
         sequences = active_lifecycle_sequences()

@@ -3089,6 +3089,7 @@ def final_verifier_mounts(
     record: dict[str, Any],
     codex_home: Path,
     run_dir: Path,
+    profile_id: str | None = None,
 ) -> list[tuple[Path, Path, str]]:
     mounts = fixture.container_mounts_for_record(record, codex_home, include_repo=True)
     repo = ROOT / record["target"]["repository_path"]
@@ -3096,6 +3097,19 @@ def final_verifier_mounts(
         order = int(task["order"])
         fixture.add_mount(mounts, task_dir(run_dir, order), target=task_dir(repo.parent, order), mode="ro")
     fixture.add_mount(mounts, run_dir / "verify-workflow.sh", mode="ro")
+    # The Claude Code agent works from a neutral mount of this same repository at
+    # fixture.CLAUDE_CONTAINER_REPO, so anything it builds in-session records that path.
+    # A project virtualenv is the case that bites: `uv sync` writes console-script
+    # shebangs naming the interpreter by absolute path, so `.venv/bin/pytest` created by
+    # the agent starts `#!<claude container repo>/.venv/bin/python`. The verifier
+    # container mounts the repository at its host path only, that interpreter path does
+    # not exist there, and every task verifier dies with exit 127 before scoring
+    # anything -- which is how a whole retained lane can come back unscored while the
+    # treatment itself worked. Offer the agent's view of the repository here too so the
+    # verifier can resolve what the agent legitimately created. Same directory, both
+    # paths; the verifier still runs from the host path.
+    if profile_id is not None and profile_runtime_id(profile_id) == "claude-code":
+        fixture.add_mount(mounts, repo, target=fixture.CLAUDE_CONTAINER_REPO, mode="rw")
     return mounts
 
 
@@ -3291,10 +3305,10 @@ def run_codex_task(
     return code, captured_thread, continuity_error
 
 
-def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str) -> int:
+def run_final_verifier(seq: dict[str, Any], record: dict[str, Any], codex_home: Path, run_dir: Path, docker_image: str, profile_id: str | None = None) -> int:
     repo = ROOT / record["target"]["repository_path"]
     env = fixture.codex_env(codex_home, containerized=True)
-    mounts = final_verifier_mounts(seq, record, codex_home, run_dir)
+    mounts = final_verifier_mounts(seq, record, codex_home, run_dir, profile_id)
     proc = fixture.run_backend(["bash", str(run_dir / "verify-workflow.sh")], backend="docker", docker_image=docker_image, cwd=repo, env=env, stdout_path=run_dir / "final-verifier-output.txt", timeout=3600, mounts=mounts)
     return proc.returncode
 
@@ -4669,7 +4683,7 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     verifier_ready = verifier_integrity_passed
     if verifier_ready:
         final_verifier_code = run_final_verifier(
-            seq, record, codex_home, run_dir, runtime_docker_image
+            seq, record, codex_home, run_dir, runtime_docker_image, profile_id
         )
         try:
             verifier_results = parse_task_verifier_results(
