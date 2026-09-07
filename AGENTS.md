@@ -115,6 +115,12 @@ There is no minimum, no parity requirement, no cap, and nothing to register in a
   against a configuration the model was never given.
 - **State how many replicates each arm holds** in any comparison. Optional stopping is managed by
   disclosure rather than by a registered N, so the count is part of the result.
+- **Replicate depth is allocated by result direction, so it is a selected sample.** Under the
+  experiment owner's prioritization rule, an arm that screens at or above +20% against its baseline
+  pool does not get further replicates unless a materially different number is expected. Winners
+  therefore accumulate replicates and losers stay at one. Every retained replicate is still
+  published, so no individual measurement is biased, but **a deeper arm is not evidence of a better
+  tool**. Say so wherever replicate counts are compared across tools.
 - **Where ranges overlap at the counts held, report the tools as indistinguishable** rather than
   ordering them ([ADR 0007](docs/architecture/decision-records/0007-ranked-reporting-and-median-sampling.md)).
 
