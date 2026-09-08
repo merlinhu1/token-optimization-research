@@ -1,0 +1,56 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-fastify-20260908-vs-integrated-token-savior-claude-code-product-p-94cb0f4a5c49-r4",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "fastify-fastify-integrated-token-savior-claude-code-product-v1-94cb0f4a5c49-sequential-workflow-r4",
+  "comparison_design": "protocol-bound-shared-lifecycle-baseline",
+  "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
+  "baseline_profile_id": "baseline-claude-code-no-mcp",
+  "baseline_protocol_fingerprint": "94cb0f4a5c49",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "baseline_pool_spread": {
+    "replicates": 3,
+    "runtime_version": "2.1.258 (Claude Code)",
+    "weighted_token_costs": [
+      591968.7,
+      640241.2,
+      673095.3
+    ],
+    "median": 640241.2,
+    "spread_percent": 13.7,
+    "session_ids": [
+      "baseline-claude-code-fastify-20260903-p-94cb0f4a5c49-r2",
+      "baseline-claude-code-fastify-20260905-p-94cb0f4a5c49-r3",
+      "baseline-claude-code-fastify-20260908-p-94cb0f4a5c49-r4"
+    ],
+    "delta_percent_vs_median": -28.996384487596227,
+    "delta_percent_range": [
+      -32.4621045489398,
+      -23.206345200345886
+    ]
+  },
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "fastify-lifecycle-sequence-v2",
+  "baseline_session_id": "baseline-claude-code-fastify-20260908-p-94cb0f4a5c49-r4",
+  "treatment_session_id": "integrated-token-savior-claude-code-product-fastify-20260908-p-94cb0f4a5c49-r4",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 640241.2,
+  "treatment_weighted_token_cost": 454594.4,
+  "delta_weighted_token_cost": -185646.79999999993,
+  "delta_percent": -28.996384487596227,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "baseline_runtime_version": "2.1.258 (Claude Code)",
+  "treatment_runtime_version": "2.1.258 (Claude Code)",
+  "runtime_version_matched": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 6,
+    "treatment_tasks_passed": 6,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean integrated-token-savior-claude-code-product-v1 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}
