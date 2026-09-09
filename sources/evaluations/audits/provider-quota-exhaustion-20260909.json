@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-09",
+  "action": "zero-spend-receipt-for-provider-quota-exhausted-launches",
+  "verdict": "both-provider-accounts-reached-their-usage-limits-within-one-working-session",
+  "rule": "A run that fails before the provider boundary produced no measurement. It is replaced rather than retained, its replicate slot stays free, and a zero-spend receipt records the attempt so the corpus does not read as though the lane was never tried.",
+  "codex_attempts": {
+    "provider_message": "You've hit your usage limit. Upgrade to Pro ... or try again at 7:19 AM.",
+    "boundary": "before-provider-boundary",
+    "spend": "none; token_usage fields are null and no provider tokens were consumed",
+    "failure_point": "task-01, first turn, turn.failed with no assistant output",
+    "attempts": [
+      {
+        "profile_id": "codescope-codex-product-v1",
+        "sequences": ["beets-lifecycle-sequence-v2", "fastify-lifecycle-sequence-v2"],
+        "replicate_index": 0,
+        "session_ids_not_published": ["codescope-beets-20260909-p-c86863838e8b-r0"],
+        "ingress": "strict compact artifact ingress refused publication; nothing merged into data/workflow-sessions.json"
+      },
+      {
+        "profile_id": "retrieval-repowise-codex-product-v2",
+        "sequences": ["beets-lifecycle-sequence-v2", "fastify-lifecycle-sequence-v2"],
+        "replicate_index": 0,
+        "session_ids_not_published": [],
+        "ingress": "same refusal path"
+      }
+    ],
+    "slots": "r0 remains free for both profiles on both sequences; these were never measured and remain never measured"
+  },
+  "anthropic_attempt": {
+    "provider_message": "You've hit your session limit · resets 5:40pm (UTC)",
+    "boundary": "after-provider-boundary",
+    "spend": "consumed; this is NOT a zero-spend receipt",
+    "utilisation_at_cutoff": {"five_hour": 0.96, "seven_day": 0.74},
+    "profile_id": "integrated-leanctx-claude-code-hybrid-v1",
+    "fastify": {
+      "session_id": "integrated-leanctx-claude-code-hybrid-fastify-20260908-p-94cb0f4a5c49-r4",
+      "status": "failed",
+      "tasks_completed": 5,
+      "failure_point": "task-06, api_error_status 429",
+      "disclosed_partial_telemetry": {"weighted_token_cost": 388140.5, "agent_steps": 58},
+      "retained": true,
+      "comparison_published": false
+    },
+    "beets": {
+      "session_id": null,
+      "outcome": "no session produced; the lane never reached a measurable state"
+    },
+    "why_retained_rather_than_replaced": "It crossed the provider boundary and spent budget, so a zero-spend receipt would be false. But it priced five and a fraction of six tasks against six-task baselines, which is the named incomplete-execution invalidity condition, so it carries no comparison and must never be read as a LeanCTX result."
+  },
+  "disclosed_numbers_policy": "The Anthropic partial telemetry above is recorded for disclosure only and must never be published, compared, or ranked as a lane result.",
+  "operational_finding": "A Claude Code replicate is two lanes of six tasks each, and one five-hour Anthropic window buys roughly one tool. Launching tools back to back until one fails partway wastes nearly a full lane's budget for nothing usable. Provider budget is a scheduling constraint on this study, not only a cost, and both accounts should be checked for remaining headroom before a launch rather than after a failure.",
+  "no_apparatus_defect": "None of these failures indicates anything about the treatments or the apparatus. Every declared surface installed and every handshake passed where one was attempted; the runs were stopped by account limits external to the study."
+}
