@@ -417,6 +417,48 @@ class ClaudeInstructionMaterializationTest(unittest.TestCase):
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_drift_warning_reads_the_pinned_build_not_the_live_install(self) -> None:
+        """The pre-spend drift warning must name the build a lane will actually run.
+
+        The live install auto-updates and the pin exists so lanes stop following it. On 2026-09-11
+        the install was 2.1.268 while the pin held 2.1.258, and asking bare `claude` on PATH
+        produced a confident drift warning naming a build no lane would have run -- which cost a
+        legitimate launch. A warning that cries wolf about this study's worst failure mode is worse
+        than none, because the next real drift gets waved through.
+        """
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+        import run_sequential_workflow_matrix as matrix  # type: ignore
+
+        pinned = Path(fixture_runner.CLAUDE_HOST_EXECUTABLE)
+        self.assertTrue(
+            pinned.is_file(), f"resolved Claude executable should exist: {pinned}"
+        )
+        recorded: list[list[str]] = []
+
+        class _Result:
+            returncode = 0
+            stdout = "9.9.9 (Claude Code)\n"
+
+        def _fake_run(cmd, **kwargs):
+            recorded.append([str(part) for part in cmd])
+            return _Result()
+
+        original = matrix.subprocess.run
+        matrix.subprocess.run = _fake_run  # type: ignore[assignment]
+        try:
+            version = matrix.live_claude_runtime_version()
+        finally:
+            matrix.subprocess.run = original  # type: ignore[assignment]
+
+        self.assertEqual(version, "9.9.9 (Claude Code)")
+        self.assertEqual(len(recorded), 1)
+        self.assertEqual(
+            recorded[0][0],
+            str(pinned),
+            "the drift warning must ask the resolved/pinned executable, not bare 'claude' on PATH",
+        )
+        self.assertNotEqual(recorded[0][0], "claude")
+
     def test_claude_code_verifier_can_resolve_the_agents_view_of_the_repository(self) -> None:
         """A venv the agent builds names its interpreter by the path the agent saw.
 

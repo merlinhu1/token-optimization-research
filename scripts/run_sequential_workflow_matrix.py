@@ -167,9 +167,27 @@ def assert_agent_runtime_pinned(model_condition: dict[str, str] | None, *, spend
 
 
 def live_claude_runtime_version() -> str | None:
-    """Ask the installed Claude CLI what build it is, without making a provider request."""
+    """Report the build a lane will actually run, without making a provider request.
+
+    This must ask the *resolved* executable, not bare ``claude`` from PATH. The live install
+    auto-updates and the pin exists precisely so lanes stop following it: on 2026-09-11 the
+    install had moved to 2.1.268 while the pin held 2.1.258, and asking PATH produced a drift
+    warning naming a build no lane would have run. That is worse than no warning. It cries wolf
+    about the one failure mode this study most fears, and an operator who learns the warning is
+    unreliable will wave through a real drift later.
+
+    ``run_codex_fixture_evaluation`` owns the resolution order -- operator override, then registry
+    pin, then live install -- so defer to it rather than restating it here and letting the two
+    drift apart.
+    """
     try:
-        proc = subprocess.run(["claude", "--version"], text=True, capture_output=True, timeout=60)
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        executable = str(fixture_runner.CLAUDE_HOST_EXECUTABLE)
+    except Exception:
+        executable = "claude"
+    try:
+        proc = subprocess.run([executable, "--version"], text=True, capture_output=True, timeout=60)
     except (OSError, subprocess.SubprocessError):
         return None
     return proc.stdout.strip() if proc.returncode == 0 and proc.stdout.strip() else None
