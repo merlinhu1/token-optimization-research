@@ -108,7 +108,8 @@
         "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
         "pinned_on": "2026-09-02",
         "source_install": "/opt/data/.local/bin/claude",
-        "policy": "Lanes run this pinned build, never the live install. The runner verifies this hash before every spending launch and refuses to run when it does not match, so an auto-update cannot change the measurement apparatus mid-study."
+        "policy": "Lanes run this pinned build, never the live install. The runner verifies this hash before every spending launch and refuses to run when it does not match, so an auto-update cannot change the measurement apparatus mid-study.",
+        "source_install_alignment": "Rolled the npm global install back to 2.1.258 on 2026-09-11 after it auto-updated to 2.1.268, and disabled the auto-updater. The pinned copy and the live install now hash identically to 704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976, which also confirms the pinned artifact is exactly the published 2.1.258 build. Lanes resolve the pin regardless, so this aligns the machine with the study rather than changing what is measured."
       }
     }
   ]
