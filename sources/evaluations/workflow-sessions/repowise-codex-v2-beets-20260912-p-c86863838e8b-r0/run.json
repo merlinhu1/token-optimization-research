@@ -1,0 +1,832 @@
+{
+  "session_id": "repowise-codex-v2-beets-20260912-p-c86863838e8b-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-retrieval-repowise-codex-product-v2-c86863838e8b-sequential-workflow-r0",
+  "replicate_index": 0,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v2-retrieval-repowise-codex-product-v2-24e508c1cbd3",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-repowise-codex-product-v2-24e508c1cbd3.json",
+    "sha256": "1a29fadb1e7d3939d75728d2774f76e16aaef264dd0bf77ad8597e7aa8471d56"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "c86863838e8b",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "24e2adad691a66c1148eb2260e1a945420c66437a8ace87cdcef410a470d59a4",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-repowise-codex-product-v2",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-repowise-codex-product-v2"
+        ],
+        "enabled_surfaces": [
+          "retrieval-context",
+          "mcp",
+          "codex-project-hooks",
+          "product-authored-guidance",
+          "provider-backed-retrieval"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "d7b82bca65324638389242b53a23b00a6eda126e32927e04477de23fa35498bb",
+        "registry_entry": {
+          "id": "retrieval-repowise-codex-product-v2",
+          "name": "RepoWise Codex provider-backed product V2",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-shortlist",
+          "enabled_surfaces": [
+            "retrieval-context",
+            "mcp",
+            "codex-project-hooks",
+            "product-authored-guidance",
+            "provider-backed-retrieval"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-repowise-codex-product-v2",
+              "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-retrieval",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Install the pinned RepoWise 0.39.0 wheel in a lane-private venv and run `init --provider codex_cli --codex --no-prose` with REPOWISE_PROVIDER=codex_cli, retaining the project-local MCP configuration, lifecycle hooks, generated AGENTS.md guidance, and provider-backed MCP answer path."
+          },
+          "reset": {
+            "policy": "Delete the lane-private venv, RepoWise index, project MCP/Codex files, generated guidance, provider state, and isolated agent home after evidence capture."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "warm-index+official-codex-hooks+product-guidance+provider-configured",
+            "integration_state": "official-codex-project-setup+provider-backed-mcp",
+            "instruction_policy": "product-authored generated guidance",
+            "assignment_proof": "provider-configured pinned wheel, exact source identity, generated project integration, model-runtime PATH, provider environment, initialize plus tools/list, and provider-backed answer-path evidence required"
+          },
+          "source_snapshot": {
+            "repository": "repowise-dev/repowise",
+            "commit": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+            "version": "0.45.0",
+            "wheel_sha256": "e7d3068856a45a3d0501b84e6f52db24521512803a07881cdf145da546d932b4",
+            "release_directory": "/opt/data/tool-candidates/releases/repowise-0.45.0",
+            "artifact": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+            "official_install_guide": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+            "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
+          },
+          "notes": "Successor to the deleted provider-free setup. `--no-prose` keeps setup deterministic; REPOWISE_PROVIDER=codex_cli enables RepoWise's LLM-backed MCP path during natural use."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "repowise-codex-product-v2",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6b11e0587b56816fb3d7be030f162a8fd55e0e92d717650433431efb518e510a",
+        "tool_config": {
+          "display_name": "RepoWise 0.39.0 provider-backed Codex MCP, hooks, and guidance",
+          "lane_name": "retrieval-repowise-codex-product-v2",
+          "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-index",
+          "mcp_server": "repowise",
+          "allowed_terms": [
+            "repowise"
+          ],
+          "data_dir_name": "repowise-codex-product-v2",
+          "mcp_command": "{tool_data_dir}/venv/bin/repowise",
+          "mcp_args": [
+            "mcp"
+          ],
+          "path_entries": [
+            "{tool_data_dir}/venv/bin"
+          ],
+          "env": {
+            "REPOWISE_PROVIDER": "codex_cli"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/source",
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl"
+          ],
+          "diff_exclude_paths": [
+            ".repowise",
+            ".mcp.json",
+            ".codex",
+            ".vscode",
+            ".claude",
+            "AGENTS.md"
+          ],
+          "codex_features": {
+            "hooks": true
+          },
+          "host_integration": {
+            "home_dot_codex_alias": true,
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "venv",
+                "{tool_data_dir}/venv",
+                "--python",
+                "python3"
+              ],
+              [
+                "/opt/data/opt/uv/uv",
+                "pip",
+                "install",
+                "--python",
+                "{tool_data_dir}/venv/bin/python",
+                "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl"
+              ],
+              [
+                "{tool_data_dir}/venv/bin/repowise",
+                "init",
+                "--yes",
+                "--provider",
+                "codex_cli",
+                "--no-prose",
+                "--no-claude-md",
+                "--codex",
+                "--agents",
+                "--no-workspace",
+                "{repo}"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "{tool_data_dir}/venv/bin/repowise",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{tool_data_dir}/venv/bin/repowise",
+              "{repo}/.repowise/wiki.db",
+              "{repo}/.repowise/config.yaml",
+              "{repo}/.mcp.json",
+              "{repo}/.codex/config.toml",
+              "{repo}/.codex/hooks.json",
+              "{repo}/AGENTS.md"
+            ],
+            "timeout_seconds": 3600
+          },
+          "preflight_command": [
+            "{tool_data_dir}/venv/bin/repowise",
+            "--version"
+          ],
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 180
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+              "sha256": "c86ec4a505b16dfe0a6df5366aae9908a0a3ef6fabb204c883a6faf94a62492a",
+              "kind": "official-release-artifact"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+              "sha256": "09829e1ebfe734235296f633a44b59a235bee2c75bdafd9b50dab67671ecf416",
+              "kind": "official-install-guide"
+            }
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "default_tool_state": "warm-index+official-codex-hooks+product-guidance",
+          "required_source_artifacts": [
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/source",
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md"
+          ],
+          "clean_source_roots": [
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/source"
+          ]
+        },
+        "tool_config_sha256": "54672f94db94808ecdfd50e52553822eefe18a8544b97193995da39ce103b90b",
+        "tool_state": "warm-index+official-codex-hooks+product-guidance+provider-configured",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "{tool_data_dir}/venv/bin/repowise",
+            "mcp"
+          ]
+        },
+        "binary_identity": {
+          "kind": "generated-by-host-integration",
+          "command_template": "{tool_data_dir}/venv/bin/repowise",
+          "install_commands": [
+            [
+              "/opt/data/opt/uv/uv",
+              "venv",
+              "{tool_data_dir}/venv",
+              "--python",
+              "python3"
+            ],
+            [
+              "/opt/data/opt/uv/uv",
+              "pip",
+              "install",
+              "--python",
+              "{tool_data_dir}/venv/bin/python",
+              "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl"
+            ],
+            [
+              "{tool_data_dir}/venv/bin/repowise",
+              "init",
+              "--yes",
+              "--provider",
+              "codex_cli",
+              "--no-prose",
+              "--no-claude-md",
+              "--codex",
+              "--agents",
+              "--no-workspace",
+              "{repo}"
+            ]
+          ],
+          "install_contract_sha256": "32f7256b63c12f40899ddd8f37760bb7bd944ebd0b48ba1f2bbed05ed6c41781"
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "c86ec4a505b16dfe0a6df5366aae9908a0a3ef6fabb204c883a6faf94a62492a"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+            "git_clean": true,
+            "package_json_sha256": "58e654f39c00fcdc775bf31f8bcfa5d0fac17b1773dba8228cda47249d9c40ac"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+            "exists": true,
+            "kind": "file",
+            "sha256": "09829e1ebfe734235296f633a44b59a235bee2c75bdafd9b50dab67671ecf416"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6b11e0587b56816fb3d7be030f162a8fd55e0e92d717650433431efb518e510a",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "codex_web_search": "disabled",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific Codex home/tool data; provider-only network with model shell and Codex web search disabled; sequential one-task prompt delivery; controller seed/verifier and acceptance commands excluded; no acceptance assets injected",
+        "agent_runtime_id": "codex-cli",
+        "model_condition": {
+          "id": "codex-openai-gpt-5-6-sol-medium",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_codex_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium",
+        "codex_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "c86863838e8b",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+        "runtime_id": "codex-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-default",
+        "launcher": {
+          "path": "scripts/run_codex_workflow_model_condition.py",
+          "sha256": "1432d8583491c5505c4cbf95695e8288584492d2c14026dfd3322d4050852edc"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "codex-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "codex-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "codex_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "repowise-codex-product-v2",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "6b11e0587b56816fb3d7be030f162a8fd55e0e92d717650433431efb518e510a",
+    "tool_config": {
+      "display_name": "RepoWise 0.39.0 provider-backed Codex MCP, hooks, and guidance",
+      "lane_name": "retrieval-repowise-codex-product-v2",
+      "surface": "retrieval-context+mcp+codex-hooks+product-guidance+provider-backed-index",
+      "mcp_server": "repowise",
+      "allowed_terms": [
+        "repowise"
+      ],
+      "data_dir_name": "repowise-codex-product-v2",
+      "mcp_command": "{tool_data_dir}/venv/bin/repowise",
+      "mcp_args": [
+        "mcp"
+      ],
+      "path_entries": [
+        "{tool_data_dir}/venv/bin"
+      ],
+      "env": {
+        "REPOWISE_PROVIDER": "codex_cli"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/releases/repowise-0.45.0/source",
+        "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl"
+      ],
+      "diff_exclude_paths": [
+        ".repowise",
+        ".mcp.json",
+        ".codex",
+        ".vscode",
+        ".claude",
+        "AGENTS.md"
+      ],
+      "codex_features": {
+        "hooks": true
+      },
+      "host_integration": {
+        "home_dot_codex_alias": true,
+        "install_commands": [
+          [
+            "/opt/data/opt/uv/uv",
+            "venv",
+            "{tool_data_dir}/venv",
+            "--python",
+            "python3"
+          ],
+          [
+            "/opt/data/opt/uv/uv",
+            "pip",
+            "install",
+            "--python",
+            "{tool_data_dir}/venv/bin/python",
+            "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl"
+          ],
+          [
+            "{tool_data_dir}/venv/bin/repowise",
+            "init",
+            "--yes",
+            "--provider",
+            "codex_cli",
+            "--no-prose",
+            "--no-claude-md",
+            "--codex",
+            "--agents",
+            "--no-workspace",
+            "{repo}"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "{tool_data_dir}/venv/bin/repowise",
+            "--version"
+          ]
+        ],
+        "required_files": [
+          "{tool_data_dir}/venv/bin/repowise",
+          "{repo}/.repowise/wiki.db",
+          "{repo}/.repowise/config.yaml",
+          "{repo}/.mcp.json",
+          "{repo}/.codex/config.toml",
+          "{repo}/.codex/hooks.json",
+          "{repo}/AGENTS.md"
+        ],
+        "timeout_seconds": 3600
+      },
+      "preflight_command": [
+        "{tool_data_dir}/venv/bin/repowise",
+        "--version"
+      ],
+      "mcp_handshake": {
+        "required": true,
+        "method": "initialize-and-tools-list",
+        "timeout_seconds": 180
+      },
+      "artifact_identities": [
+        {
+          "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+          "sha256": "c86ec4a505b16dfe0a6df5366aae9908a0a3ef6fabb204c883a6faf94a62492a",
+          "kind": "official-release-artifact"
+        },
+        {
+          "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+          "sha256": "09829e1ebfe734235296f633a44b59a235bee2c75bdafd9b50dab67671ecf416",
+          "kind": "official-install-guide"
+        }
+      ],
+      "tool_manifest_identity": "current-file-v1",
+      "default_tool_state": "warm-index+official-codex-hooks+product-guidance",
+      "required_source_artifacts": [
+        "/opt/data/tool-candidates/releases/repowise-0.45.0/source",
+        "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+        "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md"
+      ],
+      "clean_source_roots": [
+        "/opt/data/tool-candidates/releases/repowise-0.45.0/source"
+      ]
+    },
+    "tool_config_sha256": "54672f94db94808ecdfd50e52553822eefe18a8544b97193995da39ce103b90b",
+    "tool_state": "warm-index+official-codex-hooks+product-guidance+provider-configured",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "{tool_data_dir}/venv/bin/repowise",
+        "mcp"
+      ]
+    },
+    "binary_identity": {
+      "kind": "generated-by-host-integration",
+      "command_template": "{tool_data_dir}/venv/bin/repowise",
+      "install_commands": [
+        [
+          "/opt/data/opt/uv/uv",
+          "venv",
+          "{tool_data_dir}/venv",
+          "--python",
+          "python3"
+        ],
+        [
+          "/opt/data/opt/uv/uv",
+          "pip",
+          "install",
+          "--python",
+          "{tool_data_dir}/venv/bin/python",
+          "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl"
+        ],
+        [
+          "{tool_data_dir}/venv/bin/repowise",
+          "init",
+          "--yes",
+          "--provider",
+          "codex_cli",
+          "--no-prose",
+          "--no-claude-md",
+          "--codex",
+          "--agents",
+          "--no-workspace",
+          "{repo}"
+        ]
+      ],
+      "install_contract_sha256": "32f7256b63c12f40899ddd8f37760bb7bd944ebd0b48ba1f2bbed05ed6c41781"
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/artifacts/repowise-0.45.0-py3-none-any.whl",
+        "exists": true,
+        "kind": "file",
+        "sha256": "c86ec4a505b16dfe0a6df5366aae9908a0a3ef6fabb204c883a6faf94a62492a"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "e2bb8a2e4eff3d00005a602ac65a8e4be7daa4a3",
+        "git_clean": true,
+        "package_json_sha256": "58e654f39c00fcdc775bf31f8bcfa5d0fac17b1773dba8228cda47249d9c40ac"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/repowise-0.45.0/source/docs/agent/CODEX.md",
+        "exists": true,
+        "kind": "file",
+        "sha256": "09829e1ebfe734235296f633a44b59a235bee2c75bdafd9b50dab67671ecf416"
+      }
+    ]
+  },
+  "profile_id": "retrieval-repowise-codex-product-v2",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v2",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 21600,
+  "codex_version": "codex-cli 0.147.0",
+  "agent_runtime_version": "codex-cli 0.147.0",
+  "agent_runtime_pin": {
+    "version": "codex-cli 0.147.0",
+    "sha256": "92ddff8a8d13ce94a2f2afbf236404177da2ca9320902a6e576f89d03cb907b3",
+    "entrypoint": "/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin/codex.js",
+    "pinned_on": "2026-09-02"
+  },
+  "token_usage": {
+    "measurement_source": "codex-jsonl-usage-events",
+    "fresh_input_tokens": 115901,
+    "cached_input_tokens": 3916032,
+    "cache_write_tokens": 0,
+    "output_tokens": 12977,
+    "reasoning_tokens": 2463,
+    "total_provider_tokens": 4044910,
+    "weighted_token_cost": 585366.2,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 67,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "agent_message": 30,
+      "command_execution": 31,
+      "file_change": 6
+    },
+    "weighted_token_cost_per_step": 8736.8,
+    "provider_usage_details": {
+      "runtime": "codex-cli",
+      "accounting_mode": "final-cumulative-total-per-thread",
+      "raw_token_field_totals": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 3916032,
+        "input_tokens": 4031933,
+        "output_tokens": 12977,
+        "reasoning_output_tokens": 2463
+      },
+      "incremental_raw_token_field_totals": {
+        "cached_input_tokens": 3916032,
+        "input_tokens": 4031933,
+        "output_tokens": 12977,
+        "reasoning_output_tokens": 2463
+      },
+      "fresh_input_formula": "input_tokens - cached_input_tokens",
+      "reasoning_tokens_available": true
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": true,
+    "provider": "codex_cli",
+    "passed": true,
+    "hits": [],
+    "policy": "a provider-backed RepoWise lane must never publish a no-llm-provider fallback"
+  },
+  "per_task_results": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-04-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-05-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/task-06-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "01a093ba-10d5-7101-bc0a-2f2fefbfc714",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0",
+    "run_record": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/repowise-codex-v2-beets-20260912-p-c86863838e8b-r0"
+}

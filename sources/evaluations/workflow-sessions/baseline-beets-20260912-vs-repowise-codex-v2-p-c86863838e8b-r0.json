@@ -1,0 +1,56 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-beets-20260912-vs-repowise-codex-v2-p-c86863838e8b-r0",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "beetbox-beets-retrieval-repowise-codex-product-v2-c86863838e8b-sequential-workflow-r0",
+  "comparison_design": "protocol-bound-shared-lifecycle-baseline",
+  "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
+  "baseline_profile_id": "baseline-bare-codex",
+  "baseline_protocol_fingerprint": "c86863838e8b",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "baseline_pool_spread": {
+    "replicates": 3,
+    "runtime_version": "codex-cli 0.147.0",
+    "weighted_token_costs": [
+      564733.2,
+      589696.0,
+      614214.4
+    ],
+    "median": 589696.0,
+    "spread_percent": 8.76,
+    "session_ids": [
+      "baseline-beets-20260822-p-c86863838e8b-r0",
+      "baseline-beets-20260822-p-c86863838e8b-r1",
+      "baseline-beets-20260822-p-c86863838e8b-r2"
+    ],
+    "delta_percent_vs_median": -0.7342427284567042,
+    "delta_percent_range": [
+      -4.696763866167916,
+      3.6535836745564105
+    ]
+  },
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "baseline_session_id": "baseline-beets-20260822-p-c86863838e8b-r0",
+  "treatment_session_id": "repowise-codex-v2-beets-20260912-p-c86863838e8b-r0",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 614214.4,
+  "treatment_weighted_token_cost": 585366.2,
+  "delta_weighted_token_cost": -28848.20000000007,
+  "delta_percent": -4.696763866167916,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "baseline_runtime_version": "codex-cli 0.147.0",
+  "treatment_runtime_version": "codex-cli 0.147.0",
+  "runtime_version_matched": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 6,
+    "treatment_tasks_passed": 6,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean retrieval-repowise-codex-product-v2 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}
