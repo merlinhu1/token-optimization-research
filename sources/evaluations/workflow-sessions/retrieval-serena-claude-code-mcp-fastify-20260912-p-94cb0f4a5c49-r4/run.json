@@ -1,0 +1,1972 @@
+{
+  "session_id": "retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "fastify-fastify-retrieval-serena-claude-code-mcp-v1-94cb0f4a5c49-sequential-workflow-r4",
+  "replicate_index": 4,
+  "frozen_protocol": {
+    "protocol_id": "fastify-lifecycle-sequence-v2-retrieval-serena-claude-code-mcp-v1-024e7c0afd5e",
+    "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-serena-claude-code-mcp-v1-024e7c0afd5e.json",
+    "sha256": "f2cfb64e07fe16b2e52a541c6ada0db2674609bda87d1e0f49b0b1db34778cd4"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "94cb0f4a5c49",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "df1f002150d4832c5614a8ca3ed1aed1055674caed771302b6692762c16dde23",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-serena-claude-code-mcp-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-serena-claude-code-mcp-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+mcp+product-guidance"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "registry_entry_sha256": "6a97e71cf5d3905018af84fb1f90bdea654205ad2155349b8ee416a65bea2313",
+        "registry_entry": {
+          "id": "retrieval-serena-claude-code-mcp-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "integration-qualified-provider-free",
+          "enabled_surfaces": [
+            "claude-code-retrieval/context+mcp+product-guidance"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "direct-account transport"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-serena-claude-code-mcp-v1",
+              "surface": "retrieval/context+mcp+product-guidance",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned Serena source snapshot from retrieval-serena-codex-mcp-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualified-provider-free",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "retrieval-serena-codex-mcp-v1"
+          ],
+          "notes": "Claude Code preparation profile for Serena; source profile retrieval-serena-codex-mcp-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "fastify-trailer-duplicate-callback-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+          },
+          {
+            "task_id": "fastify-nested-prefix-join-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+          },
+          {
+            "task_id": "fastify-serializer-compiler-flag-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+          },
+          {
+            "task_id": "fastify-sync-validator-throw-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+          },
+          {
+            "task_id": "fastify-duplicated-route-method-array-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+          },
+          {
+            "task_id": "fastify-head-route-web-stream-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "serena-claude-code-mcp-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "tool_config": {
+          "display_name": "Serena official Claude Code integration",
+          "lane_name": "retrieval-serena-claude-code-mcp-v1",
+          "surface": "claude-code-readme-setup+mcp",
+          "mcp_server": "serena",
+          "allowed_terms": [
+            "serena"
+          ],
+          "data_dir_name": "serena",
+          "mcp_command": "/opt/data/opt/uv/uv",
+          "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "serena",
+            "start-mcp-server",
+            "--transport",
+            "stdio",
+            "--context",
+            "claude-code",
+            "--mode",
+            "no-onboarding",
+            "--mode",
+            "no-memories",
+            "--project-from-cwd"
+          ],
+          "env": {
+            "SERENA_HOME": "{tool_data_dir}"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts"
+          ],
+          "diff_exclude_paths": [
+            ".serena",
+            ".mcp.json",
+            ".claude",
+            "CLAUDE.md"
+          ],
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+                "serena",
+                "init"
+              ],
+              [
+                "claude",
+                "mcp",
+                "add",
+                "--scope",
+                "user",
+                "serena",
+                "--",
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+                "serena",
+                "start-mcp-server",
+                "--transport",
+                "stdio",
+                "--context",
+                "claude-code",
+                "--mode",
+                "no-onboarding",
+                "--mode",
+                "no-memories",
+                "--project-from-cwd"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+                "serena",
+                "--help"
+              ],
+              [
+                "claude",
+                "mcp",
+                "get",
+                "serena"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/claude-config/.claude.json"
+            ],
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "mcp": true
+          },
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "c418637bacd3464b634ead74c7ba30dbae4d7e90d0448add3acf2e6ac226cb79",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "serena",
+            "start-mcp-server",
+            "--transport",
+            "stdio",
+            "--context",
+            "claude-code",
+            "--mode",
+            "no-onboarding",
+            "--mode",
+            "no-memories",
+            "--project-from-cwd"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/opt/uv/uv",
+          "resolved_path": "/opt/data/opt/uv/uv",
+          "realpath": "/opt/data/opt/uv/uv",
+          "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+          "metadata": {
+            "size": 58002784,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783498937309771510
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "exists": true,
+            "kind": "file",
+            "sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "949a27ef1e5fda1a6e7b561e777bcece345c6ffd"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "94cb0f4a5c49",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "serena-claude-code-mcp-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "tool_config": {
+      "display_name": "Serena official Claude Code integration",
+      "lane_name": "retrieval-serena-claude-code-mcp-v1",
+      "surface": "claude-code-readme-setup+mcp",
+      "mcp_server": "serena",
+      "allowed_terms": [
+        "serena"
+      ],
+      "data_dir_name": "serena",
+      "mcp_command": "/opt/data/opt/uv/uv",
+      "mcp_args": [
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+        "serena",
+        "start-mcp-server",
+        "--transport",
+        "stdio",
+        "--context",
+        "claude-code",
+        "--mode",
+        "no-onboarding",
+        "--mode",
+        "no-memories",
+        "--project-from-cwd"
+      ],
+      "env": {
+        "SERENA_HOME": "{tool_data_dir}"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+        "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+        "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts"
+      ],
+      "diff_exclude_paths": [
+        ".serena",
+        ".mcp.json",
+        ".claude",
+        "CLAUDE.md"
+      ],
+      "host_integration_backend": "docker",
+      "host_integration": {
+        "install_commands": [
+          [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "serena",
+            "init"
+          ],
+          [
+            "claude",
+            "mcp",
+            "add",
+            "--scope",
+            "user",
+            "serena",
+            "--",
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "serena",
+            "start-mcp-server",
+            "--transport",
+            "stdio",
+            "--context",
+            "claude-code",
+            "--mode",
+            "no-onboarding",
+            "--mode",
+            "no-memories",
+            "--project-from-cwd"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+            "serena",
+            "--help"
+          ],
+          [
+            "claude",
+            "mcp",
+            "get",
+            "serena"
+          ]
+        ],
+        "required_files": [
+          "{codex_home}/claude-config/.claude.json"
+        ],
+        "timeout_seconds": 900
+      },
+      "mcp_handshake": {
+        "required": true,
+        "method": "initialize-and-tools-list",
+        "timeout_seconds": 120
+      },
+      "claude_features": {
+        "mcp": true
+      },
+      "artifact_identities": []
+    },
+    "tool_config_sha256": "c418637bacd3464b634ead74c7ba30dbae4d7e90d0448add3acf2e6ac226cb79",
+    "tool_state": "qualified-provider-free",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/opt/data/opt/uv/uv",
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+        "serena",
+        "start-mcp-server",
+        "--transport",
+        "stdio",
+        "--context",
+        "claude-code",
+        "--mode",
+        "no-onboarding",
+        "--mode",
+        "no-memories",
+        "--project-from-cwd"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/opt/data/opt/uv/uv",
+      "resolved_path": "/opt/data/opt/uv/uv",
+      "realpath": "/opt/data/opt/uv/uv",
+      "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+      "metadata": {
+        "size": 58002784,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1783498937309771510
+      },
+      "version": {
+        "command": [
+          "/opt/data/opt/uv/uv",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/serena-1.7.0/artifacts/serena_agent-1.7.0-py3-none-any.whl",
+        "exists": true,
+        "kind": "file",
+        "sha256": "6dbf1459670d96fb0595f84932adef34260a6fe14ba5135b901fdb3c8c76e891"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/serena-1.7.0/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "949a27ef1e5fda1a6e7b561e777bcece345c6ffd"
+      }
+    ]
+  },
+  "profile_id": "retrieval-serena-claude-code-mcp-v1",
+  "workflow_sequence_id": "fastify-lifecycle-sequence-v2",
+  "fixture_id": "medium-fastify-fastify",
+  "repository_path": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 21600,
+  "codex_version": "",
+  "agent_runtime_version": "2.1.258 (Claude Code)",
+  "agent_runtime_pin": {
+    "version": "2.1.258 (Claude Code)",
+    "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+    "entrypoint": "/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258/claude",
+    "pinned_on": "2026-09-02"
+  },
+  "token_usage": {
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "fresh_input_tokens": 228517,
+    "cached_input_tokens": 2110917,
+    "cache_write_tokens": 228413,
+    "output_tokens": 655,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 2340089,
+    "weighted_token_cost": 443538.7,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 56,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "tool_use": 48,
+      "text": 8
+    },
+    "weighted_token_cost_per_step": 7920.3,
+    "provider_usage_details": {
+      "runtime": "claude-code",
+      "accounting_mode": "sum-unique-assistant-message-usage",
+      "accounting_note": "",
+      "assistant_usage_block_count": 52,
+      "result_usage_block_count": 6,
+      "result_usage_counted": false,
+      "reasoning_tokens_available": false,
+      "canonical_components": {
+        "input_tokens": 104,
+        "cache_creation_input_tokens": 228413,
+        "cache_read_input_tokens": 2110917,
+        "output_tokens": 655,
+        "reasoning_tokens": 0
+      },
+      "raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 228413,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 228413,
+        "cache_read_input_tokens": 2110917,
+        "input_tokens": 104,
+        "output_tokens": 655
+      },
+      "result_raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 228413,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 228413,
+        "cache_read_input_tokens": 2110917,
+        "input_tokens": 104,
+        "output_tokens": 14059,
+        "output_tokens_details.thinking_tokens": 3851
+      },
+      "raw_model_usage_token_field_totals": {},
+      "result_raw_model_usage_token_field_totals": {
+        "claude-opus-5.cacheCreationInputTokens": 228413,
+        "claude-opus-5.cacheReadInputTokens": 2110917,
+        "claude-opus-5.inputTokens": 104,
+        "claude-opus-5.outputTokens": 14059,
+        "claude-opus-5.thinkingTokens": 3851
+      },
+      "raw_usage_blocks": [
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLggL3GjuNfYZPsyKTp",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 23421,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 23421
+            },
+            "output_tokens": 32,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLgtznXnUJ1hTMrnYZH",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3054,
+            "cache_read_input_tokens": 23421,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3054
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLh77YYhgFkqKcdrtNw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2186,
+            "cache_read_input_tokens": 26475,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2186
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLhGWM1V5PTxGZZuUB5",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 987,
+            "cache_read_input_tokens": 28661,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 987
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLhi9Td2R23kyTUy2H6",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 696,
+            "cache_read_input_tokens": 29648,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 696
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLi7ryPFSNQ727PUs8U",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 504,
+            "cache_read_input_tokens": 30344,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 504
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLkYStVCzs3E9n6DBXC",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 486,
+            "cache_read_input_tokens": 30848,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 486
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLkk9quUsBDr6pVDVBw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 197,
+            "cache_read_input_tokens": 31334,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 197
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLm12YbKuYJKyL5kZLG",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 575,
+            "cache_read_input_tokens": 31531,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 575
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLoR7CQD7Zcnmc4zEPv",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 981,
+            "cache_read_input_tokens": 32106,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 981
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLqmNeQkFnarf3jp8sk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 310,
+            "cache_read_input_tokens": 33087,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 310
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLt5ugNe6Kc1vbUoqUf",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 343,
+            "cache_read_input_tokens": 33397,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 343
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLuDnUCw9KKQx2TERfg",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 23482,
+            "cache_read_input_tokens": 11460,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 23482
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLuY3L9JqkZbULrLmRk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 420,
+            "cache_read_input_tokens": 34942,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 420
+            },
+            "output_tokens": 21,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLuhdY7dNT1JuJ8WT3K",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 652,
+            "cache_read_input_tokens": 35362,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 652
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLus8nR8Q3C4vo2AiXo",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 395,
+            "cache_read_input_tokens": 36014,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 395
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLvcffH6jNvaAPg4pJW",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1171,
+            "cache_read_input_tokens": 36409,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1171
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLvnkeG2s9mfz9sUCwy",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 423,
+            "cache_read_input_tokens": 37580,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 423
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLyD1hu8EU3T6bEixjJ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 319,
+            "cache_read_input_tokens": 38003,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 319
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLzC4vHyac8KQh8Wgf8",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 28040,
+            "cache_read_input_tokens": 11460,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 28040
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLzTnUe62ixP9h3RiLJ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1003,
+            "cache_read_input_tokens": 39500,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1003
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLzfYQxLLyior2BZC6M",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 281,
+            "cache_read_input_tokens": 40503,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 281
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyLzrZT79F6dXYc3RiwF",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 355,
+            "cache_read_input_tokens": 40784,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 355
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM3GkYddP21WAYcgLby",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 250,
+            "cache_read_input_tokens": 41139,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 250
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM4EDGpQUUXkio64X5x",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 31008,
+            "cache_read_input_tokens": 11460,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 31008
+            },
+            "output_tokens": 15,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM4VWmvB2oxjn5fckUP",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 700,
+            "cache_read_input_tokens": 42468,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 700
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM4gFSRobXyqdUxnVvB",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2303,
+            "cache_read_input_tokens": 43168,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2303
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM4xbgtmqFZazqJNWdV",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 334,
+            "cache_read_input_tokens": 45471,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 334
+            },
+            "output_tokens": 21,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM59jv8pRxyGCZPdsDT",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1118,
+            "cache_read_input_tokens": 45805,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1118
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM5V6k41RE3tkguHcGe",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 393,
+            "cache_read_input_tokens": 46923,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 393
+            },
+            "output_tokens": 21,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM5fjxENYPMMUjctKGk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 321,
+            "cache_read_input_tokens": 47316,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 321
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM5qZJUcxh3p92hRcWB",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1032,
+            "cache_read_input_tokens": 47637,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1032
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM7BQvj9dmdPmg1WqWc",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1533,
+            "cache_read_input_tokens": 48669,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1533
+            },
+            "output_tokens": 6,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM7XbdBuu113LH3ijRH",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 416,
+            "cache_read_input_tokens": 50202,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 416
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyM7kNa6WVHXqus1dV9i",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 422,
+            "cache_read_input_tokens": 50618,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 422
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMA7DkorSac86F2xTJj",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 208,
+            "cache_read_input_tokens": 51040,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 208
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMB7DnXNoaWUE7rvViH",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 40977,
+            "cache_read_input_tokens": 11460,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 40977
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMBP9Ef8iLEDgAWfY4w",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1418,
+            "cache_read_input_tokens": 52437,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1418
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMBqrLFJJyLLJAF45Zh",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1323,
+            "cache_read_input_tokens": 53855,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1323
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMC22mBTqvgWCPaTUq7",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 573,
+            "cache_read_input_tokens": 55178,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 573
+            },
+            "output_tokens": 6,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMCaaLxvBpxhV2HBCEt",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 759,
+            "cache_read_input_tokens": 55751,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 759
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMCoLJz4DryobyMZzTm",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 325,
+            "cache_read_input_tokens": 56510,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 325
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMFAtQB896iPevTCSaw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 199,
+            "cache_read_input_tokens": 56835,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 199
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMG5E7h9G1DGzLKJBSr",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 46719,
+            "cache_read_input_tokens": 11460,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 46719
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMGKmjE5k7iaUCDCLaQ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1201,
+            "cache_read_input_tokens": 58179,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1201
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMGVRQWNS4wejRpBrFS",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 523,
+            "cache_read_input_tokens": 59380,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 523
+            },
+            "output_tokens": 6,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMGo2oeJpf62xaVGMa4",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2404,
+            "cache_read_input_tokens": 59903,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2404
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMH3G5GxsbndX3Hg6sN",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 350,
+            "cache_read_input_tokens": 62307,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 350
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMHLY8XdtCds3JCLaSE",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 371,
+            "cache_read_input_tokens": 62657,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 371
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMJKk3ED3oB1819oLaN",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 469,
+            "cache_read_input_tokens": 63028,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 469
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMLgu55qsVL46u643EB",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 198,
+            "cache_read_input_tokens": 63497,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 198
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CeyMP4f5nueu3kgsPFexf",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 285,
+            "cache_read_input_tokens": 63695,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 285
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        }
+      ],
+      "result_raw_usage_blocks": [
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 24,
+            "cache_creation_input_tokens": 33740,
+            "cache_read_input_tokens": 330852,
+            "output_tokens": 2545,
+            "output_tokens_details": {
+              "thinking_tokens": 532
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 33740,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 24,
+              "outputTokens": 2545,
+              "cacheReadInputTokens": 330852,
+              "cacheCreationInputTokens": 33740,
+              "webSearchRequests": 0,
+              "costUSD": 0.566571,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 532,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 26862,
+            "cache_read_input_tokens": 229770,
+            "output_tokens": 2321,
+            "output_tokens_details": {
+              "thinking_tokens": 758
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 26862,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 2321,
+              "cacheReadInputTokens": 229770,
+              "cacheCreationInputTokens": 26862,
+              "webSearchRequests": 0,
+              "costUSD": 0.4416,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 758,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 10,
+            "cache_creation_input_tokens": 29929,
+            "cache_read_input_tokens": 173386,
+            "output_tokens": 1025,
+            "output_tokens_details": {
+              "thinking_tokens": 0
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 29929,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 10,
+              "outputTokens": 1025,
+              "cacheReadInputTokens": 173386,
+              "cacheCreationInputTokens": 29929,
+              "webSearchRequests": 0,
+              "costUSD": 0.41165799999999997,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 0,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 24,
+            "cache_creation_input_tokens": 39788,
+            "cache_read_input_tokens": 530777,
+            "output_tokens": 3938,
+            "output_tokens_details": {
+              "thinking_tokens": 1562
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 39788,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 24,
+              "outputTokens": 3938,
+              "cacheReadInputTokens": 530777,
+              "cacheCreationInputTokens": 39788,
+              "webSearchRequests": 0,
+              "costUSD": 0.7618385,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 1562,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 45574,
+            "cache_read_input_tokens": 342026,
+            "output_tokens": 2234,
+            "output_tokens_details": {
+              "thinking_tokens": 685
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 45574,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 2234,
+              "cacheReadInputTokens": 342026,
+              "cacheCreationInputTokens": 45574,
+              "webSearchRequests": 0,
+              "costUSD": 0.682673,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 685,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 18,
+            "cache_creation_input_tokens": 52520,
+            "cache_read_input_tokens": 504106,
+            "output_tokens": 1996,
+            "output_tokens_details": {
+              "thinking_tokens": 314
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 52520,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 18,
+              "outputTokens": 1996,
+              "cacheReadInputTokens": 504106,
+              "cacheCreationInputTokens": 52520,
+              "webSearchRequests": 0,
+              "costUSD": 0.827243,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 314,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        }
+      ],
+      "provider_reported_total_tokens": null,
+      "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+      "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-01-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-02-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-03-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-04-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-05-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/task-06-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "19f8cf7c-13e9-484d-a6d8-e4c51c283348",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4",
+    "run_record": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/retrieval-serena-claude-code-mcp-fastify-20260912-p-94cb0f4a5c49-r4"
+}
