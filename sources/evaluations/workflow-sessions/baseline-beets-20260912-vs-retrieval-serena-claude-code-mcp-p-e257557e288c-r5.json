@@ -1,0 +1,58 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-beets-20260912-vs-retrieval-serena-claude-code-mcp-p-e257557e288c-r5",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "beetbox-beets-retrieval-serena-claude-code-mcp-v1-e257557e288c-sequential-workflow-r5",
+  "comparison_design": "protocol-bound-shared-lifecycle-baseline",
+  "baseline_reuse_policy": "one operationally valid canonical baseline-bare-codex provider sample per causal comparison fingerprint and replicate is shared by all treatment comparisons; verifier/review outcomes and execution date do not select the sample",
+  "baseline_profile_id": "baseline-claude-code-no-mcp",
+  "baseline_protocol_fingerprint": "e257557e288c",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "baseline_pool_spread": {
+    "replicates": 4,
+    "runtime_version": "2.1.258 (Claude Code)",
+    "weighted_token_costs": [
+      330528.7,
+      411864.0,
+      424639.9,
+      450781.4
+    ],
+    "median": 418251.95,
+    "spread_percent": 36.38,
+    "session_ids": [
+      "baseline-claude-code-beets-20260903-p-e257557e288c-r2",
+      "baseline-claude-code-beets-20260905-p-e257557e288c-r3",
+      "baseline-claude-code-beets-20260907-p-e257557e288c-r4",
+      "baseline-claude-code-beets-20260912-p-e257557e288c-r5"
+    ],
+    "delta_percent_vs_median": -21.54733528439019,
+    "delta_percent_range": [
+      -27.208664776319523,
+      -0.7257766118343197
+    ]
+  },
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "baseline_session_id": "baseline-claude-code-beets-20260912-p-e257557e288c-r5",
+  "treatment_session_id": "retrieval-serena-claude-code-mcp-beets-20260912-p-e257557e288c-r5",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 424639.9,
+  "treatment_weighted_token_cost": 328129.8,
+  "delta_weighted_token_cost": -96510.10000000003,
+  "delta_percent": -22.72751571390254,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "baseline_runtime_version": "2.1.258 (Claude Code)",
+  "treatment_runtime_version": "2.1.258 (Claude Code)",
+  "runtime_version_matched": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 6,
+    "treatment_tasks_passed": 6,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean retrieval-serena-claude-code-mcp-v1 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}
