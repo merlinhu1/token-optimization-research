@@ -1,0 +1,2159 @@
+{
+  "session_id": "retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "fastify-fastify-retrieval-graphify-claude-code-skill-v1-94cb0f4a5c49-sequential-workflow-r4",
+  "replicate_index": 4,
+  "frozen_protocol": {
+    "protocol_id": "fastify-lifecycle-sequence-v2-retrieval-graphify-claude-code-skill-v1-1a5842b185f2",
+    "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-retrieval-graphify-claude-code-skill-v1-1a5842b185f2.json",
+    "sha256": "7097f997ce8f207ed8a5604c4725e3c86c7c2a56c86cab5519dbca15d305d820"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "94cb0f4a5c49",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "0591093fb6c537a62e99669294e6d17e2d87bbeeb222b3cd1412f081e3b6fb36",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-graphify-claude-code-skill-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-graphify-claude-code-skill-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+native-skill+warm-index"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "registry_entry_sha256": "bddee0b88b323e1f10a04a665f20c4d49bae02f550e1ff1701700f6997bc037c",
+        "registry_entry": {
+          "id": "retrieval-graphify-claude-code-skill-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "integration-qualified-provider-free",
+          "enabled_surfaces": [
+            "claude-code-retrieval/context+native-skill+warm-index"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "direct-account transport"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-graphify-claude-code-skill-v1",
+              "surface": "retrieval/context+native-skill+warm-index",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned Graphify source snapshot from retrieval-graphify-codex-skill-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualified-provider-free",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "retrieval-graphify-codex-skill-v1"
+          ],
+          "notes": "Claude Code preparation profile for Graphify; source profile retrieval-graphify-codex-skill-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "fastify-trailer-duplicate-callback-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+          },
+          {
+            "task_id": "fastify-nested-prefix-join-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+          },
+          {
+            "task_id": "fastify-serializer-compiler-flag-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+          },
+          {
+            "task_id": "fastify-sync-validator-throw-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+          },
+          {
+            "task_id": "fastify-duplicated-route-method-array-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+          },
+          {
+            "task_id": "fastify-head-route-web-stream-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "graphify-claude-code-skill-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "tool_config": {
+          "display_name": "Graphify official Claude Code integration",
+          "lane_name": "retrieval-graphify-claude-code-skill-v1",
+          "surface": "claude-code-readme-claude-install+pretooluse-hook+mcp",
+          "mcp_server": "graphify",
+          "allowed_terms": [
+            "graphify",
+            "graphify-mcp"
+          ],
+          "data_dir_name": "graphify",
+          "mcp_command": "/opt/data/opt/uv/uv",
+          "mcp_args": [
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+            "--with",
+            "mcp",
+            "graphify-mcp",
+            "--graph",
+            "{repo}/graphify-out/graph.json",
+            "--transport",
+            "stdio"
+          ],
+          "env": {
+            "GRAPHIFY_OUT": "graphify-out"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/graphify-0.9.48/source",
+            "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts"
+          ],
+          "diff_exclude_paths": [
+            "graphify-out",
+            ".claude",
+            "CLAUDE.md",
+            ".mcp.json"
+          ],
+          "default_tool_state": "warm-index",
+          "warmup": {
+            "kind": "code-graph-build",
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "tool",
+              "run",
+              "--from",
+              "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+              "--with",
+              "mcp",
+              "graphify",
+              "update",
+              "{repo}",
+              "--no-cluster",
+              "--force"
+            ],
+            "cleanup_paths": [
+              "graphify-out"
+            ],
+            "output_name": "graphify-warmup-output.txt",
+            "metadata_name": "graphify-warmup-metadata.json",
+            "timeout_seconds": 1200
+          },
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+                "graphify",
+                "claude",
+                "install"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/opt/uv/uv",
+                "tool",
+                "run",
+                "--from",
+                "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+                "graphify",
+                "--help"
+              ]
+            ],
+            "required_files": [
+              "{repo}/CLAUDE.md",
+              "{repo}/.claude/settings.json"
+            ],
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "mcp": true,
+            "hooks": true,
+            "guidance_append": "graphify"
+          },
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "bb6c6bfa118f4b1e9224800b3aa3a90ce62d63248b8a6cc084232c309b688c60",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+            "--with",
+            "mcp",
+            "graphify-mcp",
+            "--graph",
+            "{repo}/graphify-out/graph.json",
+            "--transport",
+            "stdio"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/opt/uv/uv",
+          "resolved_path": "/opt/data/opt/uv/uv",
+          "realpath": "/opt/data/opt/uv/uv",
+          "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+          "metadata": {
+            "size": 58002784,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1783498937309771510
+          },
+          "version": {
+            "command": [
+              "/opt/data/opt/uv/uv",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/graphify-0.9.48/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b2cd36267456c166788c95be6e68574064a92a42"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "94cb0f4a5c49",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "graphify-claude-code-skill-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "tool_config": {
+      "display_name": "Graphify official Claude Code integration",
+      "lane_name": "retrieval-graphify-claude-code-skill-v1",
+      "surface": "claude-code-readme-claude-install+pretooluse-hook+mcp",
+      "mcp_server": "graphify",
+      "allowed_terms": [
+        "graphify",
+        "graphify-mcp"
+      ],
+      "data_dir_name": "graphify",
+      "mcp_command": "/opt/data/opt/uv/uv",
+      "mcp_args": [
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+        "--with",
+        "mcp",
+        "graphify-mcp",
+        "--graph",
+        "{repo}/graphify-out/graph.json",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "GRAPHIFY_OUT": "graphify-out"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/releases/graphify-0.9.48/source",
+        "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts"
+      ],
+      "diff_exclude_paths": [
+        "graphify-out",
+        ".claude",
+        "CLAUDE.md",
+        ".mcp.json"
+      ],
+      "default_tool_state": "warm-index",
+      "warmup": {
+        "kind": "code-graph-build",
+        "command": [
+          "/opt/data/opt/uv/uv",
+          "tool",
+          "run",
+          "--from",
+          "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+          "--with",
+          "mcp",
+          "graphify",
+          "update",
+          "{repo}",
+          "--no-cluster",
+          "--force"
+        ],
+        "cleanup_paths": [
+          "graphify-out"
+        ],
+        "output_name": "graphify-warmup-output.txt",
+        "metadata_name": "graphify-warmup-metadata.json",
+        "timeout_seconds": 1200
+      },
+      "host_integration_backend": "docker",
+      "host_integration": {
+        "install_commands": [
+          [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+            "graphify",
+            "claude",
+            "install"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "/opt/data/opt/uv/uv",
+            "tool",
+            "run",
+            "--from",
+            "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+            "graphify",
+            "--help"
+          ]
+        ],
+        "required_files": [
+          "{repo}/CLAUDE.md",
+          "{repo}/.claude/settings.json"
+        ],
+        "timeout_seconds": 900
+      },
+      "mcp_handshake": {
+        "required": true,
+        "method": "initialize-and-tools-list",
+        "timeout_seconds": 120
+      },
+      "claude_features": {
+        "mcp": true,
+        "hooks": true,
+        "guidance_append": "graphify"
+      },
+      "artifact_identities": []
+    },
+    "tool_config_sha256": "bb6c6bfa118f4b1e9224800b3aa3a90ce62d63248b8a6cc084232c309b688c60",
+    "tool_state": "qualified-provider-free",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/opt/data/opt/uv/uv",
+        "tool",
+        "run",
+        "--from",
+        "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts/graphifyy-0.9.48-py3-none-any.whl",
+        "--with",
+        "mcp",
+        "graphify-mcp",
+        "--graph",
+        "{repo}/graphify-out/graph.json",
+        "--transport",
+        "stdio"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/opt/data/opt/uv/uv",
+      "resolved_path": "/opt/data/opt/uv/uv",
+      "realpath": "/opt/data/opt/uv/uv",
+      "sha256": "dc407e8ebb7903e94580217e564e544b231f16ce2a697c247b71632bffe35b35",
+      "metadata": {
+        "size": 58002784,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1783498937309771510
+      },
+      "version": {
+        "command": [
+          "/opt/data/opt/uv/uv",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "uv 0.11.6 (x86_64-unknown-linux-musl)",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/graphify-0.9.48/artifacts",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/graphify-0.9.48/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "b2cd36267456c166788c95be6e68574064a92a42"
+      }
+    ]
+  },
+  "profile_id": "retrieval-graphify-claude-code-skill-v1",
+  "workflow_sequence_id": "fastify-lifecycle-sequence-v2",
+  "fixture_id": "medium-fastify-fastify",
+  "repository_path": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 21600,
+  "codex_version": "",
+  "agent_runtime_version": "2.1.258 (Claude Code)",
+  "agent_runtime_pin": {
+    "version": "2.1.258 (Claude Code)",
+    "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+    "entrypoint": "/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258/claude",
+    "pinned_on": "2026-09-02"
+  },
+  "token_usage": {
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "fresh_input_tokens": 277714,
+    "cached_input_tokens": 2920611,
+    "cache_write_tokens": 277584,
+    "output_tokens": 688,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 3199013,
+    "weighted_token_cost": 573903.1,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 73,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "text": 11,
+      "tool_use": 62
+    },
+    "weighted_token_cost_per_step": 7861.7,
+    "provider_usage_details": {
+      "runtime": "claude-code",
+      "accounting_mode": "sum-unique-assistant-message-usage",
+      "accounting_note": "",
+      "assistant_usage_block_count": 65,
+      "result_usage_block_count": 6,
+      "result_usage_counted": false,
+      "reasoning_tokens_available": false,
+      "canonical_components": {
+        "input_tokens": 130,
+        "cache_creation_input_tokens": 277584,
+        "cache_read_input_tokens": 2920611,
+        "output_tokens": 688,
+        "reasoning_tokens": 0
+      },
+      "raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 277584,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 277584,
+        "cache_read_input_tokens": 2920611,
+        "input_tokens": 130,
+        "output_tokens": 688
+      },
+      "result_raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 277584,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 277584,
+        "cache_read_input_tokens": 2920611,
+        "input_tokens": 130,
+        "output_tokens": 15933,
+        "output_tokens_details.thinking_tokens": 5761
+      },
+      "raw_model_usage_token_field_totals": {},
+      "result_raw_model_usage_token_field_totals": {
+        "claude-opus-5.cacheCreationInputTokens": 277584,
+        "claude-opus-5.cacheReadInputTokens": 2920611,
+        "claude-opus-5.inputTokens": 130,
+        "claude-opus-5.outputTokens": 15933,
+        "claude-opus-5.thinkingTokens": 5761
+      },
+      "raw_usage_blocks": [
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy6WkSkaMf4pWbS45zn",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 18655,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 18655
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy6jLUcuxgckmafcbVv",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 434,
+            "cache_read_input_tokens": 18655,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 434
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy6xJbAnh3duwshJp75",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 351,
+            "cache_read_input_tokens": 19089,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 351
+            },
+            "output_tokens": 30,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy75csJ9cShZHvTh88K",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 7116,
+            "cache_read_input_tokens": 19440,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 7116
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy7FMmBPgsAaiWQtjPC",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1514,
+            "cache_read_input_tokens": 26556,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1514
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy7PqVQRmXcUXrQg5Hk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1148,
+            "cache_read_input_tokens": 28070,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1148
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy81f2cPoZxn9zwESs2",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 794,
+            "cache_read_input_tokens": 29218,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 794
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezy8BC1fv4uadCd3MU9C",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 229,
+            "cache_read_input_tokens": 30012,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 229
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyAeojeXYYNDdvFC3gu",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 756,
+            "cache_read_input_tokens": 30241,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 756
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyAxdYNk4rAaFHEj7eX",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 525,
+            "cache_read_input_tokens": 30997,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 525
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyDHrz9SgHwPQEqAAp4",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 993,
+            "cache_read_input_tokens": 31522,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 993
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyHnKd5a2dPaABREB3t",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 544,
+            "cache_read_input_tokens": 32515,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 544
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyJ4QW9gcfRHh7Z7DqY",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 246,
+            "cache_read_input_tokens": 33059,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 246
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyJFENPWbpNRkQfxCiS",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 147,
+            "cache_read_input_tokens": 33305,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 147
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyKBDo8uP2Nsb2FL4GX",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 27507,
+            "cache_read_input_tokens": 6501,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 27507
+            },
+            "output_tokens": 15,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyKTAFR1ifYKNxWY7Ga",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 824,
+            "cache_read_input_tokens": 34008,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 824
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyKbnfo3seBMLt9pPDH",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 605,
+            "cache_read_input_tokens": 34832,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 605
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyLAywfxBX6pPPdN8yr",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1465,
+            "cache_read_input_tokens": 35437,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1465
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyLRxbjiWoeXwySXP3z",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 391,
+            "cache_read_input_tokens": 36902,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 391
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyLbsQU11eiKrNiRSkc",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 423,
+            "cache_read_input_tokens": 37293,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 423
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyNxjaSdWEzb9Pr5wfv",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 506,
+            "cache_read_input_tokens": 37716,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 506
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyPoEr5nLQQWJTsa5WL",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 32372,
+            "cache_read_input_tokens": 6501,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 32372
+            },
+            "output_tokens": 15,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyPzn8ssgpAoSZnVnFF",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 623,
+            "cache_read_input_tokens": 38873,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 623
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyQB8jnR9ePRg84LMzN",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1087,
+            "cache_read_input_tokens": 39496,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1087
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyQNh1mG82cZfLHmqRa",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 281,
+            "cache_read_input_tokens": 40583,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 281
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyQcN2crPU2eu1HHtaY",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 632,
+            "cache_read_input_tokens": 40864,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 632
+            },
+            "output_tokens": 1,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyQoCPqgH38DWDePWWi",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 325,
+            "cache_read_input_tokens": 41496,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 325
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyT7yKRv2hnwrsJRikt",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 366,
+            "cache_read_input_tokens": 41821,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 366
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyTuncGgLcHViEooYV3",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 36247,
+            "cache_read_input_tokens": 6501,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 36247
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyU6Bvv4NuDyFTFjGxX",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 995,
+            "cache_read_input_tokens": 42748,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 995
+            },
+            "output_tokens": 28,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyUJZKqc5VD6a4gf36Y",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 4814,
+            "cache_read_input_tokens": 43743,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 4814
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyUeQBETv51s3boT4gq",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2200,
+            "cache_read_input_tokens": 48557,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2200
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyUnycna2RGQmsCxHi3",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 522,
+            "cache_read_input_tokens": 50757,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 522
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyUv4WLuNYQi1wPmojp",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 387,
+            "cache_read_input_tokens": 51279,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 387
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyV4ABC7i7sjw3VqGT9",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 339,
+            "cache_read_input_tokens": 51666,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 339
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyVBFKEKF3TNPP4N4rk",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1158,
+            "cache_read_input_tokens": 52005,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1158
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyVjiC8qJuWHMg8GoWG",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 779,
+            "cache_read_input_tokens": 53163,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 779
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyVvNecMxHAj2jWztPX",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 642,
+            "cache_read_input_tokens": 53942,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 642
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyWfavxbZgcY9rdjDBx",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1523,
+            "cache_read_input_tokens": 54584,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1523
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyYfsLvGMTv2o7os51b",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2537,
+            "cache_read_input_tokens": 56107,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2537
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyYzL79vdsgN4AxLjxi",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 421,
+            "cache_read_input_tokens": 58644,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 421
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyZCfkY58KvWN4iEVq4",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 260,
+            "cache_read_input_tokens": 59065,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 260
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezybaSkXceyFWKZxeJsF",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 370,
+            "cache_read_input_tokens": 59325,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 370
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezycXywh4nbpuic9KgNR",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 53048,
+            "cache_read_input_tokens": 6501,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 53048
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezycmEAU4vBqynCEHxM1",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 774,
+            "cache_read_input_tokens": 59549,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 774
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezydAnWJytoN2NK7s23K",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 604,
+            "cache_read_input_tokens": 60323,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 604
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezydKjmzGABbLAKx6ASc",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1007,
+            "cache_read_input_tokens": 60927,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1007
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezydUFyoyPYRPcBxae2L",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 617,
+            "cache_read_input_tokens": 61934,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 617
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezydw6XRudvhun7X6UUz",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 598,
+            "cache_read_input_tokens": 62551,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 598
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezye7Y5D45dXusWL5Td3",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 253,
+            "cache_read_input_tokens": 63149,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 253
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezygSmmK5guC63QjCY7X",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 292,
+            "cache_read_input_tokens": 63402,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 292
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyhFGk7UqJvjEfMXd7n",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 57597,
+            "cache_read_input_tokens": 6501,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 57597
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyhUMYo3AoRobKpxJ6J",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 447,
+            "cache_read_input_tokens": 64098,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 447
+            },
+            "output_tokens": 27,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyhciMA79wuF7vuLtEw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 2167,
+            "cache_read_input_tokens": 64545,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 2167
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyhjvS8cE2EbdqiwbLx",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 684,
+            "cache_read_input_tokens": 66712,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 684
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyhyQnbbyds93uVM2Sn",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 419,
+            "cache_read_input_tokens": 67396,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 419
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezyi7snTH4HuL8hZfeb7",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 212,
+            "cache_read_input_tokens": 67815,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 212
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyiGnJrAJtSPWtkRMFs",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1516,
+            "cache_read_input_tokens": 68027,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1516
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyiXMQhrTwFT5PAJQGT",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1334,
+            "cache_read_input_tokens": 69543,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1334
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezyip6yCZLEcLK2yh4NW",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 373,
+            "cache_read_input_tokens": 70877,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 373
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyjGqK8KNCajTWvBvhP",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 510,
+            "cache_read_input_tokens": 71250,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 510
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezyjTdwc9yJDuXnizeyY",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 263,
+            "cache_read_input_tokens": 71760,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 263
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezymnNsFkE5azjPVeWXA",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 168,
+            "cache_read_input_tokens": 72023,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 168
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cezyp8YP4CxseQUwcjokG",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 258,
+            "cache_read_input_tokens": 72191,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 258
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011CezypaETYQLyrYvYWpCs9",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 390,
+            "cache_read_input_tokens": 72449,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 390
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        }
+      ],
+      "result_raw_usage_blocks": [
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 28,
+            "cache_creation_input_tokens": 33452,
+            "cache_read_input_tokens": 362679,
+            "output_tokens": 2763,
+            "output_tokens_details": {
+              "thinking_tokens": 780
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 33452,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 28,
+              "outputTokens": 2763,
+              "cacheReadInputTokens": 362679,
+              "cacheCreationInputTokens": 33452,
+              "webSearchRequests": 0,
+              "costUSD": 0.5850745,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 780,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 31721,
+            "cache_read_input_tokens": 222689,
+            "output_tokens": 1989,
+            "output_tokens_details": {
+              "thinking_tokens": 649
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 31721,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 1989,
+              "cacheReadInputTokens": 222689,
+              "cacheCreationInputTokens": 31721,
+              "webSearchRequests": 0,
+              "costUSD": 0.4783494999999999,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 649,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 35686,
+            "cache_read_input_tokens": 249634,
+            "output_tokens": 1298,
+            "output_tokens_details": {
+              "thinking_tokens": 125
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 35686,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 1298,
+              "cacheReadInputTokens": 249634,
+              "cacheCreationInputTokens": 35686,
+              "webSearchRequests": 0,
+              "costUSD": 0.514197,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 125,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 30,
+            "cache_creation_input_tokens": 53194,
+            "cache_read_input_tokens": 742086,
+            "output_tokens": 5396,
+            "output_tokens_details": {
+              "thinking_tokens": 3188
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 53194,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 30,
+              "outputTokens": 5396,
+              "cacheReadInputTokens": 742086,
+              "cacheCreationInputTokens": 53194,
+              "webSearchRequests": 0,
+              "costUSD": 1.0380330000000002,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 3188,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 16,
+            "cache_creation_input_tokens": 57193,
+            "cache_read_input_tokens": 438336,
+            "output_tokens": 1884,
+            "output_tokens_details": {
+              "thinking_tokens": 535
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 57193,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 16,
+              "outputTokens": 1884,
+              "cacheReadInputTokens": 438336,
+              "cacheCreationInputTokens": 57193,
+              "webSearchRequests": 0,
+              "costUSD": 0.838278,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 535,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 28,
+            "cache_creation_input_tokens": 66338,
+            "cache_read_input_tokens": 905187,
+            "output_tokens": 2603,
+            "output_tokens_details": {
+              "thinking_tokens": 484
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 66338,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 28,
+              "outputTokens": 2603,
+              "cacheReadInputTokens": 905187,
+              "cacheCreationInputTokens": 66338,
+              "webSearchRequests": 0,
+              "costUSD": 1.1811884999999998,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 484,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        }
+      ],
+      "provider_reported_total_tokens": null,
+      "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+      "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-01-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-02-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-03-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-04-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-05-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/task-06-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "4be9f077-513d-4498-9fe4-d98221efd708",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4",
+    "run_record": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/retrieval-graphify-claude-code-skill-fastify-20260913-p-94cb0f4a5c49-r4"
+}
