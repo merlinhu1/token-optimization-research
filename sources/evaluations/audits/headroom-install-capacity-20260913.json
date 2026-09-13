@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-13",
+  "action": "zero-spend-receipt-for-headroom-install-capacity-failure",
+  "profile_id": "headroom-default-codex",
+  "verdict": "faithful-install-exceeded-host-disk-capacity-before-the-provider-boundary",
+  "boundary": "before-provider-boundary",
+  "spend": "none; token_usage is null on the rejected record and no provider request was made",
+  "slots": "r0 remains free on both sequences; Headroom is still unmeasured on every runtime",
+  "what_happened": {
+    "failure": "uv could not extract nvidia_cublas-13.1.1.3 into the lane cache: 'No space left on device (os error 28)'",
+    "dependency_path": "headroom-ai[all] 0.36.3 -> torch 2.14.0 -> cuda-toolkit[cublas] 13.0.3.0 -> nvidia-cublas 13.1.1.3",
+    "preflight": "codex_preflight.passed false, tool_preflight_exit_code 1, failure_reasons ['Headroom 0.36.3 official Codex wrapper preflight exited 1']",
+    "host_state_after": "/opt/data at 93% used with 5.6G free; the exhaustion was transient because uv removed its extraction temp on failure"
+  },
+  "not_a_study_defect": "This says nothing about Headroom's token behaviour and nothing about the apparatus. No treatment was compared, no baseline was touched, and no measurement was produced. It is a host capacity limit met while performing the faithful installation the policy requires.",
+  "why_the_install_is_large": "The profile installs the product's own recommended surface, and Headroom's [all] extra pulls a full torch and CUDA toolchain. Several gigabytes of GPU runtime are required before the tool can start, which is unusual among the sixteen pinned products and is itself worth recording.",
+  "options_before_retry": [
+    "Free host capacity first: 107 lane directories under /opt/data/eval-workflow-lanes hold 2.5G of retained debug state, and their rejected-evidence copies duplicate records already merged into the repository.",
+    "Check whether the product documents a lighter extra than [all] for agent use. Installing a narrower surface is a declared ablation under the faithful-installation policy, not a silent reduction, and must be recorded as such if chosen.",
+    "Do not retry the same install without one of the above; it will fail the same way and consume the same wall time."
+  ],
+  "coverage_note": "This failure is why the corpus's product coverage is fifteen of sixteen pinned releases rather than complete. The earlier claim that no product remained unmeasured was corrected in the roadmap on the same day."
+}
