@@ -923,12 +923,16 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
             "artifact-ponytail-codex-plugin-v1",
             "behavior-caveman-codex-skill-v1",
         ]
-        self.assertEqual(
-            set(shortlisted),
-            {
-                "headroom-default-codex",
-                *corrected,
-            },
+        # headroom-default-codex was shortlisted until 2026-09-14, when the experiment owner
+        # excluded Headroom from the study: its faithful install pulls headroom-ai[all] -> torch ->
+        # CUDA toolkit and exhausted host disk before any provider request. Same basis as the
+        # swarmvault exclusion -- resource cost out of proportion to the measurement -- so it is
+        # absent here by decision rather than by backlog.
+        self.assertEqual(set(shortlisted), set(corrected))
+        self.assertNotIn(
+            "headroom-default-codex",
+            shortlisted,
+            "Headroom is excluded by owner direction and must not return to the shortlist",
         )
         for profile_id in shortlisted:
             runner.assert_profile_runnable(profile_id)

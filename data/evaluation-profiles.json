@@ -1071,7 +1071,7 @@
       "artifact_slug": "headroom-proxy",
       "profile_type": "comparator",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "ablation-profile",
+      "status": "excluded",
       "enabled_surfaces": [
         "api-proxy/context-compression-only"
       ],
@@ -1095,7 +1095,7 @@
       "reset": {
         "policy": "Record disable/uninstall commands and verify no stale index, hook, memory, cache, or generated profile survives into the next run."
       },
-      "notes": "Headroom proxy-only ablation. The runner disables context-tool setup, headroom MCP retrieval, tokensave code-graph MCP, and Serena backup; this profile is not a primary candidate evaluation and must not be cited as full/default Headroom.",
+      "notes": "Excluded 2026-09-14 by experiment-owner direction: unrealistic and expensive to install, with resource cost out of proportion to the measurement. The faithful install pulls headroom-ai[all] -> torch -> CUDA toolkit and exhausted host disk during dependency extraction before any provider request was made (sources/evaluations/audits/headroom-install-capacity-20260913.json). Several gigabytes of GPU runtime as a prerequisite to starting a token-optimization tool is not a setup this study will carry. Headroom is not to be evaluated again; its r0 slots stay vacant by decision rather than by backlog. Same basis as the swarmvault-codex-product-v1 exclusion.",
       "evaluation_protocol": {
         "tool_use_policy": "natural",
         "profile_intent": "component ablation only",
@@ -1114,7 +1114,7 @@
       "artifact_slug": "headroom",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-shortlist",
+      "status": "excluded",
       "enabled_surfaces": [
         "api-proxy/context-compression",
         "context-tool/terminal-output-compaction",
@@ -1149,7 +1149,7 @@
         "must_run_before_component_conclusions": true,
         "token_accounting_boundary": "provider-reported task usage with verifier acceptance; per-request Headroom headers are secondary diagnostics only."
       },
-      "notes": "Primary Headroom candidate profile for Codex integration. Headroom is not a Codex stack integrator; it is a broader compression/proxy framework with a Codex wrapper. Do not disable Headroom-managed default surfaces unless the run is explicitly labeled as an ablation.",
+      "notes": "Excluded 2026-09-14 by experiment-owner direction: unrealistic and expensive to install, with resource cost out of proportion to the measurement. The faithful install pulls headroom-ai[all] -> torch -> CUDA toolkit and exhausted host disk during dependency extraction before any provider request was made (sources/evaluations/audits/headroom-install-capacity-20260913.json). Several gigabytes of GPU runtime as a prerequisite to starting a token-optimization tool is not a setup this study will carry. Headroom is not to be evaluated again; its r0 slots stay vacant by decision rather than by backlog. Same basis as the swarmvault-codex-product-v1 exclusion.",
       "deferred_reason": "Selected for the next lifecycle-v0 natural-use treatment round after the first ten screens; primary profile requires its registered companion ablation before component conclusions."
     },
     {
@@ -2458,7 +2458,7 @@
       "artifact_slug": "headroom-opencode",
       "profile_type": "individual_tool",
       "objective_scope": "individual_tool_effectiveness",
-      "status": "screening-ablation",
+      "status": "excluded",
       "substrate": "opencode-cli",
       "enabled_surfaces": [
         "headroom-proxy-context-compression",
@@ -2508,7 +2508,7 @@
         "official_install_guide": "/opt/data/tool-candidates/releases/headroom-0.36.3/source/README.md",
         "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
       },
-      "notes": "Integrated product treatment, not a single-mechanism proxy ablation. Attribution is to the documented Headroom OpenCode bundle as a whole."
+      "notes": "Excluded 2026-09-14 by experiment-owner direction: unrealistic and expensive to install, with resource cost out of proportion to the measurement. The faithful install pulls headroom-ai[all] -> torch -> CUDA toolkit and exhausted host disk during dependency extraction before any provider request was made (sources/evaluations/audits/headroom-install-capacity-20260913.json). Several gigabytes of GPU runtime as a prerequisite to starting a token-optimization tool is not a setup this study will carry. Headroom is not to be evaluated again; its r0 slots stay vacant by decision rather than by backlog. Same basis as the swarmvault-codex-product-v1 exclusion."
     },
     {
       "id": "integrated-headroom-opencode-product-v2",
