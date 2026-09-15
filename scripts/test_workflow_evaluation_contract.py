@@ -417,6 +417,37 @@ class ClaudeInstructionMaterializationTest(unittest.TestCase):
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_both_agent_runtimes_resolve_on_the_lane_path(self) -> None:
+        """Profiles that install a Claude Code plugin invoke bare `claude` as an install command.
+
+        That token is resolved against the lane PATH when the execution descriptor is built. Before
+        the runtimes were pinned it resolved by accident, because the Codex entry was
+        /opt/data/.local/bin which also holds `claude`. Pinning moved that entry to the frozen Codex
+        package directory and took `claude` off the PATH with it, so caveman and ponytail raised
+        FileNotFoundError at descriptor time -- undetected for two weeks because neither profile ran.
+        """
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        lane_path = runner._lane_path({}, runner.ROOT).split(os.pathsep)
+        for label, executable in (
+            ("codex", fixture_runner.CODEX_HOST_EXECUTABLE),
+            ("claude", fixture_runner.CLAUDE_HOST_EXECUTABLE),
+        ):
+            with self.subTest(runtime=label):
+                self.assertIn(
+                    str(Path(executable).parent),
+                    lane_path,
+                    f"{label} runtime directory must be on the lane PATH",
+                )
+        # And the resolution the descriptor actually performs must succeed for a plugin profile.
+        cfg = fixture_runner.TOOL_CONFIGS["caveman"]
+        install = cfg["host_integration"]["install_commands"][0]
+        self.assertEqual(install[0], "claude")
+        self.assertIsNotNone(
+            shutil.which(install[0], path=runner._lane_path(cfg, runner.ROOT)),
+            "caveman's `claude plugin` install command must resolve on the lane PATH",
+        )
+
     def test_drift_warning_reads_the_pinned_build_not_the_live_install(self) -> None:
         """The pre-spend drift warning must name the build a lane will actually run.
 

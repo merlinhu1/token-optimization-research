@@ -1077,6 +1077,16 @@ def _lane_path(cfg: dict[str, Any], root: Path = ROOT) -> str:
     path_entries = [
         "/opt/data/bin",
         str(fixture.CODEX_HOST_EXECUTABLE.parent),
+        # Both agent runtimes must be resolvable here, not just Codex. Profiles that install a
+        # Claude Code plugin run `claude plugin marketplace add` as their install command, and that
+        # bare token is resolved against this PATH. Before the runtimes were pinned,
+        # CODEX_HOST_EXECUTABLE.parent happened to be /opt/data/.local/bin, which also holds
+        # `claude`, so those profiles resolved by accident. Pinning moved the Codex entry to its
+        # frozen package directory and silently took `claude` off this PATH with it, breaking
+        # caveman and ponytail -- neither of which had run since, so nothing noticed for two weeks.
+        # Naming the resolved Claude executable explicitly also means plugin installs run against
+        # the pinned build rather than whatever the live install happens to be.
+        str(fixture.CLAUDE_HOST_EXECUTABLE.parent),
         "/opt/data/opt/go/bin",
         "/opt/data/opt/uv",
         str(fixture.NODE_TOOLCHAIN_ROOT / "bin"),
