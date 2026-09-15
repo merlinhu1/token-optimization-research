@@ -1,0 +1,1618 @@
+{
+  "session_id": "retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "beetbox-beets-retrieval-codegraph-claude-code-mcp-v1-e257557e288c-sequential-workflow-r5",
+  "replicate_index": 5,
+  "frozen_protocol": {
+    "protocol_id": "beets-lifecycle-sequence-v2-retrieval-codegraph-claude-code-mcp-v1-ed19649e4220",
+    "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-retrieval-codegraph-claude-code-mcp-v1-ed19649e4220.json",
+    "sha256": "a07397f91e457b11dbb9b46afdfd0fb67b7f6ea4ee1466a29ca34801ac67ddf9"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "e257557e288c",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "c3e3387d4d8327fe78007261744b9e67428f1880a10a0e13579adda4c6ce99aa",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "beets-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "retrieval-codegraph-claude-code-mcp-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "retrieval-codegraph-claude-code-mcp-v1"
+        ],
+        "enabled_surfaces": [
+          "claude-code-retrieval/context+mcp+live-index"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces",
+          "other token-saving tools",
+          "direct-account transport"
+        ],
+        "registry_entry_sha256": "774844ff67e143e255c7ff2d8d7b11a6c33ad71ce99d3d1973a45234717e07cf",
+        "registry_entry": {
+          "id": "retrieval-codegraph-claude-code-mcp-v1",
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "substrate": "claude-code",
+          "status": "integration-qualified-provider-free",
+          "enabled_surfaces": [
+            "claude-code-retrieval/context+mcp+live-index"
+          ],
+          "disabled_overlaps": [
+            "all unlisted surfaces",
+            "other token-saving tools",
+            "direct-account transport"
+          ],
+          "components": [
+            {
+              "component_id": "retrieval-codegraph-claude-code-mcp-v1",
+              "surface": "retrieval/context+mcp+live-index",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Use the pinned CodeGraph source snapshot from retrieval-codegraph-codex-mcp-v1 and install every product-authored Claude Code surface it documents (MCP, hooks, skills, plugins, rules, and guidance) into the lane-private CLAUDE_CONFIG_DIR. Require provider-free artifact, configuration, and handshake proofs before any Anthropic request."
+          },
+          "reset": {
+            "policy": "Delete the lane-private Claude config, tool state, indexes, generated guidance, hooks, plugins, and background processes after evidence capture; retain only immutable run artifacts and source hashes."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "qualified-provider-free",
+            "integration_state": "official-claude-code-native-surface-qualified-before-provider",
+            "instruction_policy": "product-authored guidance only; no evaluator-authored invocation steering",
+            "assignment_proof": "provider-free pinned source, exact Claude configuration, native activation, and required MCP/hooks/skills/plugin smoke checks"
+          },
+          "source_profiles": [
+            "retrieval-codegraph-codex-mcp-v1"
+          ],
+          "notes": "Claude Code preparation profile for CodeGraph; source profile retrieval-codegraph-codex-mcp-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "beets-unique-path-counter-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+          },
+          {
+            "task_id": "beets-empty-string-field-split-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+          },
+          {
+            "task_id": "beets-date-query-alternation-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+          },
+          {
+            "task_id": "beets-membership-query-hashable-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+          },
+          {
+            "task_id": "beets-spotify-uri-extraction-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+          },
+          {
+            "task_id": "beets-lyrics-keep-synced-override-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "codegraph-claude-code-mcp-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "tool_config": {
+          "display_name": "CodeGraph official Claude Code integration",
+          "lane_name": "retrieval-codegraph-claude-code-mcp-v1",
+          "surface": "claude-code-readme-install+init+mcp",
+          "mcp_server": "codegraph",
+          "allowed_terms": [
+            "codegraph"
+          ],
+          "data_dir_name": "codegraph",
+          "mcp_command": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+          "mcp_args": [
+            "serve",
+            "--mcp"
+          ],
+          "env": {
+            "CODEGRAPH_TELEMETRY": "0"
+          },
+          "mounts": [
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/source",
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime",
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/artifacts"
+          ],
+          "warmup": {
+            "kind": "index",
+            "command": [
+              "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+              "init",
+              "{repo}"
+            ],
+            "cleanup_paths": [
+              ".codegraph"
+            ],
+            "output_name": "codegraph-warmup-output.txt",
+            "metadata_name": "codegraph-warmup-metadata.json"
+          },
+          "diff_exclude_paths": [
+            ".codegraph",
+            ".claude",
+            ".mcp.json",
+            "CLAUDE.md"
+          ],
+          "host_integration_backend": "docker",
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+                "install",
+                "--target",
+                "claude",
+                "--yes"
+              ],
+              [
+                "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+                "init",
+                "{repo}"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+                "--version"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/home/.claude.json",
+              "{codex_home}/claude-config/settings.json",
+              "{codex_home}/claude-config/CLAUDE.md"
+            ],
+            "timeout_seconds": 900
+          },
+          "mcp_handshake": {
+            "required": true,
+            "method": "initialize-and-tools-list",
+            "timeout_seconds": 120
+          },
+          "claude_features": {
+            "mcp": true
+          },
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime"
+          ],
+          "artifact_identities": []
+        },
+        "tool_config_sha256": "fdc4b7b8362b6d21149fc29ce68927475de968cc3fadbae32203888c133c2dd8",
+        "tool_state": "qualified-provider-free",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "mcp_command",
+          "command": [
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+            "serve",
+            "--mcp"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+          "resolved_path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+          "realpath": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+          "sha256": "3184bbf582b5db7cffd07373017631fdc4392842860c2e3991be3f23b6fb3559",
+          "metadata": {
+            "size": 1004,
+            "mode": "-rwxr-xr-x",
+            "uid": 10000,
+            "gid": 10000,
+            "mtime_ns": 1784661271000000000
+          },
+          "version": {
+            "command": [
+              "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "1.5.0",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6",
+            "package_json_sha256": "f6d34389ec4ea24017dd2938e3b8276a6233c864db02bc60cf718df0460b0e6e"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 3600,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "agent_runtime_id": "claude-code",
+        "model_condition": {
+          "id": "claude-code-anthropic-opus-5-medium",
+          "provider": "anthropic",
+          "model": "claude-opus-5",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_claude_code_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "uv sync --group test --frozen",
+        "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+        "lockfiles": [
+          {
+            "path": "uv.lock",
+            "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "e257557e288c",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "claude-code-anthropic-opus-5-medium",
+        "runtime_id": "claude-code",
+        "provider": "anthropic",
+        "model": "claude-opus-5",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_claude_code_workflow_model_condition.py",
+          "sha256": "23c1442121ef14492e4aab5cbd7383dc745b043108c3ed1f05f40572a0d99b9f",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "c77eddeac5a5280090ec1f5968d0596a714d6116cd7d3a25ebdb2e2ae4a98617"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "claude-code",
+    "provider": "anthropic",
+    "model": "claude-opus-5",
+    "model_condition_id": "claude-code-anthropic-opus-5-medium",
+    "reasoning_effort": "medium",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "codegraph-claude-code-mcp-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "59e3a8271387caf13a8069aa138371f26577d33f864323514b49eca5405301c8",
+    "tool_config": {
+      "display_name": "CodeGraph official Claude Code integration",
+      "lane_name": "retrieval-codegraph-claude-code-mcp-v1",
+      "surface": "claude-code-readme-install+init+mcp",
+      "mcp_server": "codegraph",
+      "allowed_terms": [
+        "codegraph"
+      ],
+      "data_dir_name": "codegraph",
+      "mcp_command": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+      "mcp_args": [
+        "serve",
+        "--mcp"
+      ],
+      "env": {
+        "CODEGRAPH_TELEMETRY": "0"
+      },
+      "mounts": [
+        "/opt/data/tool-candidates/releases/codegraph-1.5.0/source",
+        "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime",
+        "/opt/data/tool-candidates/releases/codegraph-1.5.0/artifacts"
+      ],
+      "warmup": {
+        "kind": "index",
+        "command": [
+          "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+          "init",
+          "{repo}"
+        ],
+        "cleanup_paths": [
+          ".codegraph"
+        ],
+        "output_name": "codegraph-warmup-output.txt",
+        "metadata_name": "codegraph-warmup-metadata.json"
+      },
+      "diff_exclude_paths": [
+        ".codegraph",
+        ".claude",
+        ".mcp.json",
+        "CLAUDE.md"
+      ],
+      "host_integration_backend": "docker",
+      "host_integration": {
+        "install_commands": [
+          [
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+            "install",
+            "--target",
+            "claude",
+            "--yes"
+          ],
+          [
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+            "init",
+            "{repo}"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+            "--version"
+          ]
+        ],
+        "required_files": [
+          "{codex_home}/home/.claude.json",
+          "{codex_home}/claude-config/settings.json",
+          "{codex_home}/claude-config/CLAUDE.md"
+        ],
+        "timeout_seconds": 900
+      },
+      "mcp_handshake": {
+        "required": true,
+        "method": "initialize-and-tools-list",
+        "timeout_seconds": 120
+      },
+      "claude_features": {
+        "mcp": true
+      },
+      "path_entries": [
+        "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime"
+      ],
+      "artifact_identities": []
+    },
+    "tool_config_sha256": "fdc4b7b8362b6d21149fc29ce68927475de968cc3fadbae32203888c133c2dd8",
+    "tool_state": "qualified-provider-free",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "mcp_command",
+      "command": [
+        "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+        "serve",
+        "--mcp"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+      "resolved_path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+      "realpath": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+      "sha256": "3184bbf582b5db7cffd07373017631fdc4392842860c2e3991be3f23b6fb3559",
+      "metadata": {
+        "size": 1004,
+        "mode": "-rwxr-xr-x",
+        "uid": 10000,
+        "gid": 10000,
+        "mtime_ns": 1784661271000000000
+      },
+      "version": {
+        "command": [
+          "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime/codegraph-linux-x64/bin/codegraph",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "1.5.0",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/artifacts",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/runtime",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/codegraph-1.5.0/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "ea72e1b190921232aa7bd02e96bef5bbe4fe0ab6",
+        "package_json_sha256": "f6d34389ec4ea24017dd2938e3b8276a6233c864db02bc60cf718df0460b0e6e"
+      }
+    ]
+  },
+  "profile_id": "retrieval-codegraph-claude-code-mcp-v1",
+  "workflow_sequence_id": "beets-lifecycle-sequence-v2",
+  "fixture_id": "medium-beetbox-beets",
+  "repository_path": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 21600,
+  "codex_version": "",
+  "agent_runtime_version": "2.1.258 (Claude Code)",
+  "agent_runtime_pin": {
+    "version": "2.1.258 (Claude Code)",
+    "sha256": "704f1334ac65d3e89e1c6c1d7663293ad786a6166afdb71b5075337df630f976",
+    "entrypoint": "/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258/claude",
+    "pinned_on": "2026-09-02"
+  },
+  "token_usage": {
+    "measurement_source": "claude-code-stream-json-assistant-usage",
+    "fresh_input_tokens": 272377,
+    "cached_input_tokens": 1746913,
+    "cache_write_tokens": 272305,
+    "output_tokens": 413,
+    "reasoning_tokens": 0,
+    "total_provider_tokens": 2019703,
+    "weighted_token_cost": 449546.3,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 39,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "tool_use": 30,
+      "text": 9
+    },
+    "weighted_token_cost_per_step": 11526.8,
+    "provider_usage_details": {
+      "runtime": "claude-code",
+      "accounting_mode": "sum-unique-assistant-message-usage",
+      "accounting_note": "",
+      "assistant_usage_block_count": 36,
+      "result_usage_block_count": 6,
+      "result_usage_counted": false,
+      "reasoning_tokens_available": false,
+      "canonical_components": {
+        "input_tokens": 72,
+        "cache_creation_input_tokens": 272305,
+        "cache_read_input_tokens": 1746913,
+        "output_tokens": 413,
+        "reasoning_tokens": 0
+      },
+      "raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 272305,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 272305,
+        "cache_read_input_tokens": 1746913,
+        "input_tokens": 72,
+        "output_tokens": 413
+      },
+      "result_raw_token_field_totals": {
+        "cache_creation.ephemeral_1h_input_tokens": 272305,
+        "cache_creation.ephemeral_5m_input_tokens": 0,
+        "cache_creation_input_tokens": 272305,
+        "cache_read_input_tokens": 1746913,
+        "input_tokens": 72,
+        "output_tokens": 7789,
+        "output_tokens_details.thinking_tokens": 1333
+      },
+      "raw_model_usage_token_field_totals": {},
+      "result_raw_model_usage_token_field_totals": {
+        "claude-opus-5.cacheCreationInputTokens": 272305,
+        "claude-opus-5.cacheReadInputTokens": 1746913,
+        "claude-opus-5.inputTokens": 72,
+        "claude-opus-5.outputTokens": 7789,
+        "claude-opus-5.thinkingTokens": 1333
+      },
+      "raw_usage_blocks": [
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ahQQkiRPhMWeVJ2zka",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 12928,
+            "cache_read_input_tokens": 4775,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 12928
+            },
+            "output_tokens": 29,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ahb1yogU54FS6sK8JD",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 9690,
+            "cache_read_input_tokens": 17703,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 9690
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ahqDG2s1buKgEpHGXQ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 324,
+            "cache_read_input_tokens": 27393,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 324
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ai6VHP7aHBJgMYg3Jb",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 522,
+            "cache_read_input_tokens": 27717,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 522
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5amwSvEEbzHtxMEJyr3",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1351,
+            "cache_read_input_tokens": 28239,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1351
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ann2uLbULgwxc2uP5c",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 25937,
+            "cache_read_input_tokens": 4775,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 25937
+            },
+            "output_tokens": 5,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5aoJH5XvVHJ1nv32jZA",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 8186,
+            "cache_read_input_tokens": 30712,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 8186
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5aoYUMTFQw74SgvJHx4",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 359,
+            "cache_read_input_tokens": 38898,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 359
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5aok5cAhxfvKZZYdsVq",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 135,
+            "cache_read_input_tokens": 39257,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 135
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5aovYuU1MN5rcrp88NT",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1617,
+            "cache_read_input_tokens": 39392,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1617
+            },
+            "output_tokens": 35,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ap62fVSP37LtLJKzUR",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 9475,
+            "cache_read_input_tokens": 41009,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 9475
+            },
+            "output_tokens": 2,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5apWngXJLJb6FrniyRy",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 498,
+            "cache_read_input_tokens": 50484,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 498
+            },
+            "output_tokens": 16,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5asmrdgUTJYmyuzR8sW",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 667,
+            "cache_read_input_tokens": 50982,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 667
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5atQxKGZ7ro3NPW83Fz",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 47873,
+            "cache_read_input_tokens": 4775,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 47873
+            },
+            "output_tokens": 28,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5auFqtne7pnjDy8LmB4",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 3336,
+            "cache_read_input_tokens": 52648,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 3336
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5auQZGt4zDzQpy749z8",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 390,
+            "cache_read_input_tokens": 55984,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 390
+            },
+            "output_tokens": 21,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5auY8RwEjp7ujiPFCbp",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1427,
+            "cache_read_input_tokens": 56374,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1427
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5aukDTr61qCEQZ9KWnE",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 525,
+            "cache_read_input_tokens": 57801,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 525
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5auwNvwyWJ7sipFNkSa",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 308,
+            "cache_read_input_tokens": 58326,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 308
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5ayKcyAgYYpH5ekh8hQ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 627,
+            "cache_read_input_tokens": 58634,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 627
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5az3GkRoBZvwMymHhd5",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 55579,
+            "cache_read_input_tokens": 4775,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 55579
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5azEcs9KRaA16pMG7yT",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1294,
+            "cache_read_input_tokens": 60354,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1294
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5azNGjthtBcnRPZ5Zoq",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 868,
+            "cache_read_input_tokens": 61648,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 868
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5azgNvEUy1inHUxHpQ7",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 461,
+            "cache_read_input_tokens": 62516,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 461
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b41oJkkNZ4Wk6iBW8h",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 522,
+            "cache_read_input_tokens": 62977,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 522
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b4ijQjXcPeQCrM7dYi",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1042,
+            "cache_read_input_tokens": 63499,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1042
+            },
+            "output_tokens": 28,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b5DN7KNdQLSbztNV9j",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 9351,
+            "cache_read_input_tokens": 64541,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 9351
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b5Sk2Aq2TZLKawSRG3",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 532,
+            "cache_read_input_tokens": 73892,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 532
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b5et1ac36jWkxPzrRb",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 324,
+            "cache_read_input_tokens": 74424,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 324
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b95RibnfuqHeRCyqUw",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 408,
+            "cache_read_input_tokens": 74748,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 408
+            },
+            "output_tokens": 7,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b9oSKdXiUtzszBBSkQ",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 71497,
+            "cache_read_input_tokens": 4775,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 71497
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5b9zTN4bK6FBzgHMYjV",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1293,
+            "cache_read_input_tokens": 76272,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1293
+            },
+            "output_tokens": 17,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5bA7UXjy6yV7VYGEMsq",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 1526,
+            "cache_read_input_tokens": 77565,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 1526
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5bAUJv6P1hrS46P5Dg5",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 663,
+            "cache_read_input_tokens": 79091,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 663
+            },
+            "output_tokens": 4,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5bAkG73yXeFh9EtN7ui",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 450,
+            "cache_read_input_tokens": 79754,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 450
+            },
+            "output_tokens": 20,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        },
+        {
+          "event_type": "assistant",
+          "message_id": "msg_011Cf5bDyVfxJioDWX9bFcVe",
+          "usage": {
+            "input_tokens": 2,
+            "cache_creation_input_tokens": 320,
+            "cache_read_input_tokens": 80204,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 320
+            },
+            "output_tokens": 3,
+            "service_tier": "standard",
+            "inference_geo": "not_available"
+          },
+          "model_usage": {}
+        }
+      ],
+      "result_raw_usage_blocks": [
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 10,
+            "cache_creation_input_tokens": 24815,
+            "cache_read_input_tokens": 105827,
+            "output_tokens": 1152,
+            "output_tokens_details": {
+              "thinking_tokens": 248
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 24815,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 10,
+              "outputTokens": 1152,
+              "cacheReadInputTokens": 105827,
+              "cacheCreationInputTokens": 24815,
+              "webSearchRequests": 0,
+              "costUSD": 0.3299135,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 248,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 16,
+            "cache_creation_input_tokens": 46874,
+            "cache_read_input_tokens": 295509,
+            "output_tokens": 1392,
+            "output_tokens_details": {
+              "thinking_tokens": 306
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 46874,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 16,
+              "outputTokens": 1392,
+              "cacheReadInputTokens": 295509,
+              "cacheCreationInputTokens": 46874,
+              "webSearchRequests": 0,
+              "costUSD": 0.6513744999999999,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 306,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 14,
+            "cache_creation_input_tokens": 54486,
+            "cache_read_input_tokens": 344542,
+            "output_tokens": 1396,
+            "output_tokens_details": {
+              "thinking_tokens": 194
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 54486,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 14,
+              "outputTokens": 1396,
+              "cacheReadInputTokens": 344542,
+              "cacheCreationInputTokens": 54486,
+              "webSearchRequests": 0,
+              "costUSD": 0.752101,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 194,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 10,
+            "cache_creation_input_tokens": 58724,
+            "cache_read_input_tokens": 252270,
+            "output_tokens": 1149,
+            "output_tokens_details": {
+              "thinking_tokens": 115
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 58724,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 10,
+              "outputTokens": 1149,
+              "cacheReadInputTokens": 252270,
+              "cacheCreationInputTokens": 58724,
+              "webSearchRequests": 0,
+              "costUSD": 0.7421500000000001,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 115,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 10,
+            "cache_creation_input_tokens": 11657,
+            "cache_read_input_tokens": 351104,
+            "output_tokens": 1182,
+            "output_tokens_details": {
+              "thinking_tokens": 170
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 11657,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 10,
+              "outputTokens": 1182,
+              "cacheReadInputTokens": 351104,
+              "cacheCreationInputTokens": 11657,
+              "webSearchRequests": 0,
+              "costUSD": 0.321722,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 170,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        },
+        {
+          "event_type": "result",
+          "message_id": null,
+          "usage": {
+            "input_tokens": 12,
+            "cache_creation_input_tokens": 75749,
+            "cache_read_input_tokens": 397661,
+            "output_tokens": 1518,
+            "output_tokens_details": {
+              "thinking_tokens": 300
+            },
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": 75749,
+              "ephemeral_5m_input_tokens": 0
+            },
+            "inference_geo": "not_available",
+            "iterations": [],
+            "speed": "standard"
+          },
+          "model_usage": {
+            "claude-opus-5": {
+              "inputTokens": 12,
+              "outputTokens": 1518,
+              "cacheReadInputTokens": 397661,
+              "cacheCreationInputTokens": 75749,
+              "webSearchRequests": 0,
+              "costUSD": 0.9943305000000001,
+              "contextWindow": 1000000,
+              "maxOutputTokens": 64000,
+              "thinkingTokens": 300,
+              "canonicalModel": "claude-opus-5",
+              "provider": "firstParty",
+              "costBasis": "list"
+            }
+          }
+        }
+      ],
+      "provider_reported_total_tokens": null,
+      "normalized_formula": "fresh_input_tokens + cached_input_tokens + output_tokens",
+      "fresh_input_formula": "input_tokens + cache_creation_input_tokens"
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "beets-unique-path-counter-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-01-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-empty-string-field-split-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-02-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-date-query-alternation-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-03-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-membership-query-hashable-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-04-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-spotify-uri-extraction-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-05-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "beets-lyrics-keep-synced-override-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/task-06-claude-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "6afe0a97-1fd1-40f3-9cf9-de77eeebf891",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5",
+    "run_record": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/retrieval-codegraph-claude-code-mcp-beets-20260915-p-e257557e288c-r5"
+}
