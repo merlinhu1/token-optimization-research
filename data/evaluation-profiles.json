@@ -2222,7 +2222,14 @@
         "binary": "/opt/data/tool-candidates/opencode-runtime/node_modules/opencode-ai/bin/opencode.exe",
         "binary_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
         "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter/opencode_workflow_adapter.py",
-        "runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4"
+        "runtime_adapter_sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227",
+        "adapter_repin": {
+          "date": "2026-09-16",
+          "previous_runtime_adapter_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4",
+          "previous_adapter_commit": "2704410da9da9b43ca84f776f012dd9acbf81442",
+          "why": "The pinned adapter snapshot and the pinned OpenCode runtime tree had both gone missing from /opt/data/tool-candidates, so the lane could not start. The binary restored byte-exact from the npm install and still matches binary_sha256. The adapter did not: it has moved 16 commits and +492/-37 lines since the pin, 48 of them touching usage, token or cost accounting, including the weighted-token-cost metric change and the OpenCode usage-normalisation fix. Restoring the old bytes would reinstate known-wrong accounting, so this is a deliberate re-pin onto the current adapter rather than a recovery.",
+          "consequence": "This is a new apparatus. The four retained runtime-opencode-codex-product-v1 sessions from 2026-08-22/23 were measured on the previous adapter and must not be pooled with runs made after this date, compared against them, or used as their baseline. Re-baseline on the new apparatus instead."
+        }
       },
       "notes": "Replacement-runtime treatment comparing official OpenCode with the canonical bare Codex baseline on the same provider, model, reasoning effort, fixtures, prompts, and controller verification."
     },

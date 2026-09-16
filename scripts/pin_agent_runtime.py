@@ -46,6 +46,19 @@ SOURCES: dict[str, dict[str, object]] = {
         "entrypoint_relative": Path("bin/codex.js"),
         "version_command": ["--version"],
     },
+    # OpenCode was pinned by hand into /opt/data/tool-candidates/opencode-runtime with the hash
+    # recorded in the profile's source_snapshot, outside this script and outside the registry's
+    # runtime_pin gate. That tree then went missing, and nothing noticed because no check covered
+    # it: `pin_agent_runtime.py --verify-only` reported both other runtimes ok while the third had
+    # no pinned binary at all. Bringing it under the same mechanism means one gate covers every
+    # runtime the study executes.
+    "opencode-cli": {
+        "executable": Path("/opt/data/.local/bin/opencode"),
+        "kind": "package",
+        "package_root": Path("/opt/data/.local/lib/node_modules/opencode-ai"),
+        "entrypoint_relative": Path("bin/opencode.exe"),
+        "version_command": ["--version"],
+    },
 }
 
 
