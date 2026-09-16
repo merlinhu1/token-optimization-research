@@ -439,13 +439,23 @@ class ActiveCampaignArchitectureTest(unittest.TestCase):
                     lane_path,
                     f"{label} runtime directory must be on the lane PATH",
                 )
-        # And the resolution the descriptor actually performs must succeed for a plugin profile.
+        # Assert the structural fact only: the directory holding the resolved Claude executable is
+        # on the lane PATH that plugin install commands are resolved against.
+        #
+        # An earlier version of this test also asserted shutil.which() succeeded. That coupled
+        # merge-eligibility to the executable bit on a file outside the repository, and on
+        # 2026-09-16 the pinned binary's mode drifted from 755 to 600, so this test failed during
+        # post-merge validation and rolled back two completed, paid RTK lanes whose evidence was
+        # entirely valid. A contract test guarding a wiring decision must not be able to destroy
+        # finished work over ambient filesystem state. The executable-bit precondition belongs in
+        # the pre-spend pin check, where it is caught before money is committed and can be repaired.
         cfg = fixture_runner.TOOL_CONFIGS["caveman"]
         install = cfg["host_integration"]["install_commands"][0]
         self.assertEqual(install[0], "claude")
-        self.assertIsNotNone(
-            shutil.which(install[0], path=runner._lane_path(cfg, runner.ROOT)),
-            "caveman's `claude plugin` install command must resolve on the lane PATH",
+        self.assertIn(
+            str(Path(fixture_runner.CLAUDE_HOST_EXECUTABLE).parent),
+            runner._lane_path(cfg, runner.ROOT).split(os.pathsep),
+            "caveman's `claude plugin` install command must have the runtime directory on its PATH",
         )
 
     def test_drift_warning_reads_the_pinned_build_not_the_live_install(self) -> None:

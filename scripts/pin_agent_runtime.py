@@ -119,6 +119,20 @@ def verify_pin(pin: dict) -> list[str]:
         actual = sha256_file(entrypoint)
     if actual != pin.get("sha256"):
         problems.append(f"pinned build hash changed: recorded {pin.get('sha256')}, found {actual}")
+    # A pin that hashes correctly but cannot be executed is still unusable, and the failure surfaces
+    # far from the cause. On 2026-09-16 the pinned Claude binary's mode drifted from 755 to 600; the
+    # hash still matched so this check reported "ok", and the breakage instead appeared as a lane
+    # PATH resolution failure during post-merge validation, which rolled back two completed paid
+    # runs. Only file-kind pins need this: package-kind entrypoints are invoked through an
+    # interpreter, so the Codex pin's codex.js is legitimately non-executable. Repair rather than
+    # merely report, because the recorded content is unchanged and the mode is not part of identity.
+    if pin.get("kind") != "package" and not os.access(entrypoint, os.X_OK):
+        try:
+            entrypoint.chmod(entrypoint.stat().st_mode | 0o755)
+        except OSError as exc:
+            problems.append(f"pinned entrypoint is not executable and could not be repaired: {exc}")
+        else:
+            print(f"  repaired  {entrypoint} was not executable; restored mode 755", flush=True)
     return problems
 
 
