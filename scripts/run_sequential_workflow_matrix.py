@@ -433,6 +433,7 @@ def find_protocol(
     model_condition_override: dict[str, str] | None = None,
     *,
     required: bool = True,
+    timeout_seconds_per_task: int = 3600,
 ) -> Path | None:
     sequences = load_json(root / "data/workflow-task-sequences.json").get("sequences", [])
     active_sequence = next((item for item in sequences if item.get("id") == sequence_id), None)
@@ -445,10 +446,14 @@ def find_protocol(
         setattr(workflow, "DEFAULT_WORKFLOW_MODEL_CONDITION_ID", model_condition_override.get("id", model_condition_override.get("model_condition_id", "")))
         setattr(workflow, "DEFAULT_WORKFLOW_MODEL", model_condition_override.get("model", ""))
         setattr(workflow, "DEFAULT_WORKFLOW_REASONING_EFFORT", model_condition_override.get("reasoning_effort", ""))
+    # The per-task timeout is part of the execution descriptor, so planning a protocol under the
+    # default while the lane runner validates under an overridden --timeout-per-task makes the two
+    # disagree and the launch refuses with "does not match run inputs: timeout". That is how the
+    # OpenCode restoration burned a lane: the flag was honoured by the runner and ignored here.
     current_execution = workflow.execution_condition_descriptor(
         active_sequence,
         profile_id,
-        timeout_seconds_per_task=3600,
+        timeout_seconds_per_task=timeout_seconds_per_task,
         docker_image=workflow.DEFAULT_DOCKER_IMAGE,
     )
     compatible_matches: list[Path] = []
@@ -503,9 +508,21 @@ def find_protocol(
 
 
 
-def _plan_protocol(sequence_id: str, profile: str, model_condition: dict[str, str] | None) -> str | None:
+def _plan_protocol(
+    sequence_id: str,
+    profile: str,
+    model_condition: dict[str, str] | None,
+    timeout_seconds_per_task: int = 3600,
+) -> str | None:
     """The plan records a protocol when one already exists; the lane mints one when it does not."""
-    found = find_protocol(ROOT, sequence_id, profile, model_condition_override=model_condition, required=False)
+    found = find_protocol(
+        ROOT,
+        sequence_id,
+        profile,
+        model_condition_override=model_condition,
+        required=False,
+        timeout_seconds_per_task=timeout_seconds_per_task,
+    )
     return str(found.relative_to(ROOT)) if found is not None else None
 
 
@@ -2256,7 +2273,9 @@ def main(argv: list[str] | None = None) -> int:
         {
             "sequence_id": sequence_id,
             "profile_id": profile,
-            "protocol": _plan_protocol(sequence_id, profile, model_condition),
+            "protocol": _plan_protocol(
+                sequence_id, profile, model_condition, args.timeout_per_task or 3600
+            ),
         }
         for sequence_id, profile in jobs
     ]
