@@ -527,12 +527,21 @@ def canonical_protocol_id(
     *,
     baseline_descriptor: dict[str, Any] | None = None,
     selected_execution: dict[str, Any] | None = None,
+    timeout_seconds_per_task: int = 3600,
 ) -> str:
-    """Compute the sole canonical protocol identity from causal descriptor bytes."""
+    """Compute the sole canonical protocol identity from causal descriptor bytes.
+
+    The per-task timeout is one of those bytes: it sits in the execution descriptor the run is
+    validated against. Leaving it hardcoded here meant a run launched with a non-default
+    --timeout-per-task minted its protocol under 3600 and then refused itself for not matching,
+    which made the flag unusable. The default is unchanged, so every protocol already on disk keeps
+    its identity; only a run that deliberately changes the timeout resolves to a new file, which is
+    what content-addressed identity is supposed to do.
+    """
     execution = selected_execution or execution_condition_descriptor(
         seq,
         profile_id,
-        timeout_seconds_per_task=3600,
+        timeout_seconds_per_task=timeout_seconds_per_task,
         docker_image=DEFAULT_DOCKER_IMAGE,
         root=root,
     )
@@ -1647,7 +1656,12 @@ def governing_model_condition(profile_id: str, root: Path = ROOT) -> tuple[str, 
     return str(selected["id"]), str(selected["model"]), str(selected["reasoning_effort"])
 
 
-def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT) -> str:
+def ensure_run_protocol(
+    seq: dict[str, Any],
+    profile_id: str,
+    root: Path = ROOT,
+    timeout_seconds_per_task: int = 3600,
+) -> str:
     """Materialise the protocol this run executes under, minting it if it does not exist yet.
 
     Protocol identity is content-addressed: canonical_protocol_id derives it from the causal
@@ -1710,7 +1724,9 @@ def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT)
         )
         self_module._ensure_run_protocol_condition_id = condition_id
 
-    protocol_id = canonical_protocol_id(seq, profile_id, root)
+    protocol_id = canonical_protocol_id(
+        seq, profile_id, root, timeout_seconds_per_task=timeout_seconds_per_task
+    )
     path = root / "sources/evaluations/protocols" / f"{protocol_id}.json"
     if path.is_file():
         return str(path)
@@ -1723,6 +1739,7 @@ def ensure_run_protocol(seq: dict[str, Any], profile_id: str, root: Path = ROOT)
         "--workflow-model-condition-id", condition_id,
         "--workflow-model", model,
         "--workflow-reasoning-effort", reasoning_effort,
+        "--timeout-per-task", str(timeout_seconds_per_task),
     ])
     if not path.is_file():
         raise ValueError(f"protocol mint did not produce {path}")
@@ -1750,7 +1767,9 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
         # the session record is built from the protocol document, so skipping it entirely would
         # leave a run with no descriptor to record. What goes away is the manual step, not the
         # protocol. In a lane the mint lands in that lane's checkout, not the source tree.
-        args.protocol = ensure_run_protocol(seq, profile_id)
+        args.protocol = ensure_run_protocol(
+            seq, profile_id, timeout_seconds_per_task=args.timeout_per_task
+        )
     protocol_path, protocol = load_protocol(args.protocol)
     if protocol.get("protocol_schema_version") != 3:
         raise ValueError(f"protocol {protocol_path} must declare protocol_schema_version=3")

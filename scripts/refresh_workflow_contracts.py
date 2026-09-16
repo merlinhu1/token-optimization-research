@@ -97,6 +97,7 @@ def runner_command(
     profile_id: str,
     protocol_path: Path,
     execution: dict[str, Any],
+    timeout_seconds_per_task: int = 3600,
 ) -> str:
     override = execution.get("model_condition_override")
     if isinstance(override, dict):
@@ -110,30 +111,35 @@ def runner_command(
         prefix = "python3 scripts/run_codex_workflow_evaluation.py"
     return (
         f"{prefix} --sequence-id {seq['id']} --profile-id {profile_id} "
-        f"--timeout-per-task 3600 --protocol {protocol_path.relative_to(ROOT)} "
+        f"--timeout-per-task {timeout_seconds_per_task} --protocol {protocol_path.relative_to(ROOT)} "
         f"--docker-image {runner.DEFAULT_DOCKER_IMAGE}"
     )
 
 
-def protocol_id(seq: dict[str, Any], profile_id: str) -> str:
-    return runner.canonical_protocol_id(seq, profile_id)
+def protocol_id(
+    seq: dict[str, Any], profile_id: str, timeout_seconds_per_task: int = 3600
+) -> str:
+    return runner.canonical_protocol_id(
+        seq, profile_id, timeout_seconds_per_task=timeout_seconds_per_task
+    )
 
 
 def frozen_protocol(
     seq: dict[str, Any],
     profile_id: str,
     qualification_path: Path,
+    timeout_seconds_per_task: int = 3600,
 ) -> dict[str, Any]:
-    pid = protocol_id(seq, profile_id)
+    pid = protocol_id(seq, profile_id, timeout_seconds_per_task=timeout_seconds_per_task)
     protocol_path = ROOT / "sources/evaluations/protocols" / f"{pid}.json"
     descriptor = runner.baseline_protocol_descriptor(seq)
     execution = runner.execution_condition_descriptor(
         seq,
         profile_id,
-        timeout_seconds_per_task=3600,
+        timeout_seconds_per_task=timeout_seconds_per_task,
         docker_image=runner.DEFAULT_DOCKER_IMAGE,
     )
-    command = runner_command(seq, profile_id, protocol_path, execution)
+    command = runner_command(seq, profile_id, protocol_path, execution, timeout_seconds_per_task)
     selected_agent = execution["agent_condition"]
     agent = {
         "profile_id": profile_id,
@@ -195,7 +201,7 @@ def frozen_protocol(
             "snapshot": seq["initial_snapshot"]["commit"],
             "qualification_path": str(qualification_path.relative_to(ROOT)),
             "qualification_sha256": digest(qualification_path),
-            "timeout_seconds_per_task": 3600,
+            "timeout_seconds_per_task": timeout_seconds_per_task,
         },
         "baseline": baseline,
         "comparison_baseline": comparison_baseline,
@@ -236,6 +242,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--workflow-model")
     parser.add_argument("--workflow-reasoning-effort")
     parser.add_argument("--replicate-index", type=int, default=1)
+    parser.add_argument(
+        "--timeout-per-task",
+        type=int,
+        default=3600,
+        help="per-task timeout baked into the minted descriptor; must match the run that will use it",
+    )
     return parser.parse_args(argv)
 
 
@@ -280,7 +292,7 @@ def main(argv: list[str] | None = None) -> int:
     runner.validate_default_model_condition()
     for seq in sequences:
         qualification_path = ROOT / seq["qualification_path"]
-        protocol = frozen_protocol(seq, args.profile_id, qualification_path)
+        protocol = frozen_protocol(seq, args.profile_id, qualification_path, args.timeout_per_task)
         path = ROOT / "sources/evaluations/protocols" / f"{protocol['protocol_id']}.json"
         write_json(path, protocol)
         print(path.relative_to(ROOT))

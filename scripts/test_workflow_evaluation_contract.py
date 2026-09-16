@@ -417,6 +417,30 @@ class ClaudeInstructionMaterializationTest(unittest.TestCase):
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_per_task_timeout_is_part_of_protocol_identity_without_moving_the_default(self) -> None:
+        """The timeout belongs in identity, but the default must not re-identify the corpus.
+
+        A run launched with a non-default --timeout-per-task used to mint its protocol under the
+        hardcoded 3600 and then refuse itself for not matching run inputs, which made the flag
+        unusable and cost an OpenCode lane. Threading it through means a changed timeout resolves to
+        a new protocol, as content-addressing intends. The default has to stay byte-identical or
+        every protocol already on disk would be orphaned.
+        """
+        seq = next(
+            s
+            for s in json.loads((ROOT / "data/workflow-task-sequences.json").read_text())["sequences"]
+            if s["id"] == "fastify-lifecycle-sequence-v2"
+        )
+        default = runner.canonical_protocol_id(seq, "baseline-bare-codex")
+        explicit = runner.canonical_protocol_id(
+            seq, "baseline-bare-codex", timeout_seconds_per_task=3600
+        )
+        changed = runner.canonical_protocol_id(
+            seq, "baseline-bare-codex", timeout_seconds_per_task=7200
+        )
+        self.assertEqual(default, explicit, "the default timeout must not change protocol identity")
+        self.assertNotEqual(changed, default, "a changed timeout must resolve to a new protocol")
+
     def test_both_agent_runtimes_resolve_on_the_lane_path(self) -> None:
         """Profiles that install a Claude Code plugin invoke bare `claude` as an install command.
 
