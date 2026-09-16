@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-16",
+  "action": "opencode-lane-restoration-repin-and-timeout-finding",
+  "authority": "experiment-owner direction to fix the OpenCode lane and run an OpenCode+GPT baseline plus eight tool treatments",
+  "what_was_broken": {
+    "missing_pinned_trees": [
+      "/opt/data/tool-candidates/opencode-runtime",
+      "/opt/data/tool-candidates/opencode-adapter"
+    ],
+    "why_undetected": "OpenCode had been pinned by hand outside scripts/pin_agent_runtime.py and outside the registry runtime_pin gate, so --verify-only reported claude-code and codex-cli ok while the third runtime had no pinned binary at all.",
+    "repair": "Binary restored byte-exact from the npm install and still matches the recorded binary_sha256 7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca. OpenCode added to pin_agent_runtime.py as a package-kind runtime and pinned into agent-runtimes, so one gate now covers all three."
+  },
+  "adapter_repin": {
+    "previous_sha256": "a2f6116cae013d39e8110c8588acde2a8ae9cd4f572fd9ce961d1542942617a4",
+    "previous_commit": "2704410da9da9b43ca84f776f012dd9acbf81442",
+    "current_sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227",
+    "distance": "16 commits, +492/-37 lines, 48 touching usage/token/cost accounting",
+    "decision": "Re-pinned onto the current adapter rather than restoring the recorded bytes. The old bytes predate the weighted-token-cost metric change and the OpenCode usage-normalisation fix; restoring them to make a hash match would reinstate accounting this repository has since corrected.",
+    "consequence": "New apparatus. The four retained runtime-opencode-codex-product-v1 sessions from 2026-08-22/23 must not be pooled with runs made after this date, compared against them, or used as their baseline. The new pool starts at replicate_index 2 so the break is visible in the index."
+  },
+  "timeout_finding": {
+    "observation": "The first baseline attempt on both lanes exceeded the 3600s default per-task timeout during task-01 and was killed.",
+    "not_a_hang": "The model completed the task. It wrote the repair, ran the project suite, and produced a final message; the lane was cut off at the timeout, not stalled. task-01 ran roughly 63 minutes.",
+    "why_this_runtime": "OpenCode is substantially more step-heavy on these fixtures than the other runtimes. Its retained r1 sessions ran 138 steps on Fastify and 123 on Beets against 69-76 for Codex, so per-task wall time is roughly double and the shared 3600s default does not fit it.",
+    "disclosed_spend": {
+      "session_id_not_published": "opencode-fastify-20260916-p-dc16afea3ad5-r2",
+      "weighted_token_cost": 93108.0,
+      "scope": "task-01 only",
+      "note": "This is real consumed budget with no usable result. It is NOT a zero-spend receipt. No comparison was published and nothing merged; the replicate slot stays free."
+    },
+    "repair": "Re-run with --timeout-per-task 7200. timeout_seconds_per_task is part of the execution descriptor, so this mints a new protocol identity, which is coherent with the adapter re-pin above: both belong to the same new OpenCode apparatus."
+  },
+  "practical_constraint_recorded": "At roughly double the steps per lane, an OpenCode campaign of one baseline plus eight treatments is sixteen to eighteen lanes of materially longer wall time than the equivalent Codex campaign. This is worth planning against rather than discovering lane by lane.",
+  "profiles_unavailable_for_the_requested_top_eight": {
+    "snip": "terminal-snip-opencode-plugin-v1 and v2 are both status excluded",
+    "token-savior": "no OpenCode profile exists",
+    "effect": "Two of the strongest products by measured effect cannot be run on OpenCode at all, so the requested top eight is drawn from the products that have a runnable profile."
+  }
+}
