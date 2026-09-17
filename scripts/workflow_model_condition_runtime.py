@@ -67,6 +67,12 @@ def published_baseline_descriptor(
     return copy.deepcopy(descriptor)
 
 
+# The bare OpenCode profile is the OpenCode control. Its id carries "codex" for historical
+# reasons -- it denotes the shared OpenAI/Codex subscription the runtime authenticates with, not the
+# Codex CLI -- and renaming it would orphan the retained sessions that reference it.
+OPENCODE_BASELINE_PROFILE_ID = "runtime-opencode-codex-product-v1"
+
+
 def resolve_condition_pair(root: Path, selected_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
     conditions = model_conditions(root)
     selected_matches = [item for item in conditions if item.get("id") == selected_id]
@@ -75,11 +81,21 @@ def resolve_condition_pair(root: Path, selected_id: str) -> tuple[dict[str, Any]
     selected = selected_matches[0]
     if selected.get("runtime_id") == "codex-cli":
         return selected, selected
-    # OpenCode is paired with a published Codex control; Claude Code starts its
-    # own bare-runtime control pool and must never borrow an incompatible one.
+    # Every runtime is its own control. OpenCode used to be paired against a published
+    # baseline-bare-codex control, which made an OpenCode measurement a statement about the Codex
+    # CLI rather than about OpenCode: the two share an OpenAI subscription, not a runtime, and a
+    # tool treatment on OpenCode compared to bare Codex cannot say whether the tool helped inside
+    # OpenCode. It also coupled the two apparatus, so any OpenCode-side change -- a per-task timeout
+    # that fits a runtime running roughly double the steps, for instance -- made the arms
+    # non-comparable and the launch refused. OpenCode now starts its own bare-runtime control pool
+    # on the same terms as Claude Code.
     if selected.get("runtime_id") == "claude-code":
         if selected.get("provider") not in {"anthropic"}:
             raise ValueError("Claude Code conditions must use Anthropic-compatible provider")
+        return selected, selected
+    if selected.get("runtime_id") == "opencode-cli":
+        if selected.get("provider") != "openai":
+            raise ValueError("OpenCode conditions must use an OpenAI-compatible provider")
         return selected, selected
     if selected.get("provider") != "openai":
         raise ValueError("replacement workflow conditions must use a supported provider")
@@ -173,11 +189,20 @@ def configure_runner(
             raise ValueError(f"registered model condition drifted: {selected['id']}")
 
     def baseline_descriptor(sequence: dict[str, Any], root: Path = runner.ROOT) -> dict[str, Any]:
-        if selected["runtime_id"] == "opencode-cli":
-            return published_baseline_descriptor(
-                Path(root), str(sequence["id"]), str(baseline["id"])
-            )
         descriptor = original_baseline_descriptor(sequence, root)
+        if selected["runtime_id"] == "opencode-cli":
+            profile = runner.profile_registry_entry(OPENCODE_BASELINE_PROFILE_ID, Path(root))
+            descriptor["baseline_profile"] = {
+                "profile_id": OPENCODE_BASELINE_PROFILE_ID,
+                "profile_type": profile["profile_type"],
+                "enabled_surfaces": profile.get("enabled_surfaces", []),
+                "disabled_overlaps": profile.get("disabled_overlaps", []),
+            }
+            descriptor["model_facing_prompts"] = runner.model_facing_prompt_descriptor(
+                sequence, OPENCODE_BASELINE_PROFILE_ID, Path(root)
+            )
+            descriptor["runtime_inputs"]["opencode_runtime_condition"] = selected["id"]
+            descriptor["runtime_inputs"].pop("codex_runtime_condition", None)
         if selected["runtime_id"] == "claude-code":
             profile = runner.profile_registry_entry("baseline-claude-code-no-mcp", Path(root))
             descriptor["baseline_profile"] = {
