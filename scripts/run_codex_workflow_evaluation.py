@@ -220,9 +220,6 @@ def build_profile_meta() -> dict[str, dict[str, Any]]:
     supported = {
         "baseline-bare-codex": None,
         "baseline-claude-code-no-mcp": None,
-        # Every runtime's control belongs here. OpenCode's was missing because it used to borrow
-        # baseline-bare-codex instead of having one.
-        "baseline-bare-opencode": None,
         **SUPPORTED_WORKFLOW_TOOL_PROFILES,
     }
     profiles: dict[str, dict[str, Any]] = {}

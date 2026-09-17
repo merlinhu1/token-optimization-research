@@ -72,7 +72,7 @@ def published_baseline_descriptor(
 # and demands a comparison baseline. Retyping it in place would invalidate the four retained
 # sessions whose recorded role would no longer match, so the control is a separate profile with
 # identical surfaces and the historical arm is left alone.
-OPENCODE_BASELINE_PROFILE_ID = "baseline-bare-opencode"
+OPENCODE_BASELINE_PROFILE_ID = "runtime-opencode-codex-product-v1"
 
 
 def resolve_condition_pair(root: Path, selected_id: str) -> tuple[dict[str, Any], dict[str, Any]]:

@@ -529,7 +529,6 @@ def _plan_protocol(
 SERIALIZED_REPLICATION_PROFILE_IDS = {
     "baseline-claude-code-no-mcp",
     "runtime-opencode-codex-product-v1",
-    "baseline-bare-opencode",
 }
 # Every supported family serializes: the race this prevents is over lane artifacts and
 # the session registry, which is a property of the harness, not of a task family.
@@ -548,7 +547,7 @@ def serialized_replication_lanes(
         if generation not in SERIALIZED_REPLICATION_GENERATIONS:
             continue
         if replicate_index > 0 or (
-            profile_id in {"runtime-opencode-codex-product-v1", "baseline-bare-opencode"}
+            profile_id == "runtime-opencode-codex-product-v1"
             and generation in SERIALIZED_REPLICATION_GENERATIONS
         ):
             selected.append((sequence_id, profile_id))
@@ -666,12 +665,7 @@ def workflow_lane_command(
         "--replicate-index", str(replicate_index),
         *runner_args,
     ])
-    if profile_id not in {
-        "baseline-bare-codex",
-        "baseline-claude-code-no-mcp",
-        "runtime-opencode-codex-product-v1",
-        "baseline-bare-opencode",
-    }:
+    if profile_id not in {"baseline-bare-codex", "baseline-claude-code-no-mcp", "runtime-opencode-codex-product-v1"}:
         cmd.extend(["--comparison-profile-id", profile_id])
     return cmd
 
@@ -2163,7 +2157,7 @@ def main(argv: list[str] | None = None) -> int:
         and model_condition.get("runtime_id") in {"opencode-cli", "claude-code"}
     )
     baseline_profile_id = (
-        "baseline-bare-opencode"
+        "runtime-opencode-codex-product-v1"
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "opencode-cli"
         else "baseline-claude-code-no-mcp"
         if isinstance(model_condition, dict) and model_condition.get("runtime_id") == "claude-code"
