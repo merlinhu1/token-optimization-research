@@ -67,10 +67,12 @@ def published_baseline_descriptor(
     return copy.deepcopy(descriptor)
 
 
-# The bare OpenCode profile is the OpenCode control. Its id carries "codex" for historical
-# reasons -- it denotes the shared OpenAI/Codex subscription the runtime authenticates with, not the
-# Codex CLI -- and renaming it would orphan the retained sessions that reference it.
-OPENCODE_BASELINE_PROFILE_ID = "runtime-opencode-codex-product-v1"
+# OpenCode's control. runtime-opencode-codex-product-v1 could not serve as it: profile_type
+# replacement_runtime makes session_role replacement_runtime, so validation treats it as a treatment
+# and demands a comparison baseline. Retyping it in place would invalidate the four retained
+# sessions whose recorded role would no longer match, so the control is a separate profile with
+# identical surfaces and the historical arm is left alone.
+OPENCODE_BASELINE_PROFILE_ID = "baseline-bare-opencode"
 
 
 def resolve_condition_pair(root: Path, selected_id: str) -> tuple[dict[str, Any], dict[str, Any]]:
