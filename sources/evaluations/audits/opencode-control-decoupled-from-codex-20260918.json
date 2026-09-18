@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-18",
+  "action": "apparatus-defect-finding-and-repair-opencode-control-was-bound-to-the-codex-baseline",
+  "verdict": "the-bare-opencode-control-could-not-be-launched-without-being-recorded-against-another-runtime",
+  "reported_by": "experiment owner",
+  "supersedes_conclusion_in": {
+    "receipt": "sources/evaluations/audits/opencode-lane-restoration-20260916.json",
+    "claim_now_false": "root_cause_found_20260918.not_fixable_in_code stated 'The evaluation apparatus is sound' and next_step stated 'No further code change is required.'",
+    "what_holds": "The expired-credential diagnosis was correct and complete as an explanation of the seven stalled attempts. The source credential was re-authenticated on 2026-09-18T20:16Z and the access token now expires 2026-09-28T20:16Z.",
+    "what_does_not_hold": "A code change was required. With a valid credential the launch path still resolved a bare-Codex baseline for the OpenCode control, so the lane could not have produced a clean control measurement even once auth was fixed. The credential was the reason nothing ran; it was not the only reason nothing correct would have come out."
+  },
+  "finding": {
+    "summary": "Asked to resolve a baseline for profile runtime-opencode-codex-product-v1, the runner returned baseline-fastify-20260822-p-dc16afea3ad5-r2 -- a bare-Codex session on codex-cli. Launching the OpenCode control would have bound it to that session through interpretation.comparison_baseline_session_id and published an OpenCode-versus-Codex-CLI comparison.",
+    "why_it_survived_the_previous_repair": "Commit 2b9fda77 fixed the condition layer only. resolve_condition_pair stopped pairing an OpenCode condition against a Codex baseline condition, and baseline_descriptor began building an OpenCode control descriptor. Two layers below it kept the retired premise.",
+    "layers_still_carrying_it": {
+      "protocol_builder": "refresh_workflow_contracts.frozen_protocol resolved baseline_profile_id to baseline-bare-codex for any non-Claude runtime, under a comment reading 'OpenCode has no baseline of its own: it runs on the Codex subscription and is compared with the bare Codex baseline'. A bare-OpenCode control protocol therefore declared bare Codex as its baseline and the OpenCode control as the treatment.",
+      "session_layer": "run_codex_workflow_evaluation.find_comparison_baseline_record fell the control through to find_canonical_baseline_record, and _run_one_locked hardcoded standalone_opencode_control = False so the control passed the treatment gate and required a reusable baseline of another runtime to exist before it could run."
+    },
+    "measurement_consequence": "An OpenCode lane read against a bare-Codex control is a statement about the Codex CLI, not about OpenCode. The two share an OpenAI subscription, not a runtime.",
+    "operational_consequence": "It also coupled the two apparatus, which is what broke the lane on 2026-09-16: raising OpenCode's per-task timeout made the arms disagree on runtime.timeout_seconds_per_task and repository validation correctly refused the pair."
+  },
+  "repair": {
+    "runtime_control_concept": "RUNTIME_CONTROL_PROFILE_IDS names every bare-runtime control -- a profile that is its own baseline, passes no treatment gate, binds no comparison baseline, and publishes no comparison record.",
+    "deliberately_distinct_set": "PRIMARY_OBJECTIVE_BASELINE_PROFILE_IDS still holds only baseline-bare-codex and baseline-claude-code-no-mcp and still decides interpretation.primary_objective_hard_baseline, which the retained OpenCode controls record false.",
+    "pool_anchoring": "find_pool_profile_record anchored a profile's pool on whatever find_comparison_baseline_record returned, so the borrowed Codex anchor was also what stopped a drifted live descriptor from making a retained session invisible and freeing its replicate slot. The control now anchors on itself through find_pool_control_record, preserving that protection without borrowing another runtime's fingerprint.",
+    "unchanged_by_design": "The Codex and Claude Code paths are byte-identical. Only the OpenCode branch moved.",
+    "validator_already_agreed": "validate_repository.py already exempted a standalone OpenCode control from the comparison-binding requirement in both of its checks. The validator was built for this; the runner and the protocol builder were not.",
+    "contract_tests_added": 4,
+    "test_isolation_note": "The protocol-shape test runs in a subprocess: configure_model_condition patches module-level globals irreversibly and leaked the OpenCode condition into three later tests when called in-process."
+  },
+  "retained_evidence_untouched": {
+    "sessions": [
+      "opencode-fastify-20260822-p-dc16afea3ad5-r0",
+      "opencode-beets-20260822-p-c86863838e8b-r0",
+      "opencode-fastify-20260823-p-dc16afea3ad5-r1",
+      "opencode-beets-20260823-p-c86863838e8b-r1"
+    ],
+    "disposition": "Frozen evidence. All four carry a comparison_baseline_session_id naming a bare-Codex session and are filed under the Codex pool fingerprints dc16afea3ad5 and c86863838e8b. They are not rewritten. The 2026-09-16 adapter re-pin already bars pooling them with any run made after that date.",
+    "protocols": "The four existing runtime-opencode-codex-product-v1 protocols all declare bare Codex as baseline and the control as treatment. They keep their bytes and their identities; the corrected descriptor mints new ones."
+  },
+  "post_repair_state": {
+    "control_resolves_no_foreign_baseline": true,
+    "minted_control_protocol": {
+      "baseline_profile_id": "runtime-opencode-codex-product-v1",
+      "baseline_runtime_id": "opencode-cli",
+      "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+      "treatment_block": "absent",
+      "codex_cli_in_arm_declarations": false
+    },
+    "opencode_tool_treatments_still_resolve_their_own_control": true,
+    "required_checks": "make check green: 336 tests, repository validation passed, no working-tree churn."
+  },
+  "launch": {
+    "authority": "experiment-owner direction on 2026-09-18 to get the OpenCode baseline running, and to treat any OpenCode-to-Codex coupling as a defect to be reverted",
+    "sequences": ["fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"],
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "replicate_index": 2,
+    "timeout_seconds_per_task": 7200,
+    "serialized": "one lane at a time",
+    "replicate_index_rationale": "The new pool starts at r2 so the 2026-09-16 adapter re-pin is visible in the index, per the restoration receipt.",
+    "credential_verified_in_lane": "The lane-private OpenCode credential materialized from the re-authenticated source and expires 2026-09-28T20:16:04Z. The stale lane copies under /opt/data/eval-codex-homes expired 2026-08-29 and belong to the older fixture path, not the workflow lane path, which builds a fresh home per session.",
+    "new_pool_fingerprints": {
+      "fastify": "4c934a33cbd1",
+      "note": "OpenCode's own pool, not the Codex dc16afea3ad5 the retained controls were filed under."
+    }
+  }
+}
