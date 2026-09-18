@@ -36,5 +36,19 @@
     "snip": "terminal-snip-opencode-plugin-v1 and v2 are both status excluded",
     "token-savior": "no OpenCode profile exists",
     "effect": "Two of the strongest products by measured effect cannot be run on OpenCode at all, so the requested top eight is drawn from the products that have a runnable profile."
+  },
+  "root_cause_found_20260918": {
+    "finding": "The OpenCode lane is blocked by an expired OpenAI credential, not by any apparatus defect.",
+    "evidence": "OpenCode's own log in the stalled lane records 'stream error ... Error: Token refresh failed: 401' twice, then 'disposing instance'. The source credential at ~/.codex/auth.json shows access_token expired 2026-09-18T03:05:45Z, id_token expired 2026-09-08T04:05:45Z, last_refresh 2026-09-08. A refresh_token is present but the refresh is rejected with 401.",
+    "why_it_looked_like_something_else": "OpenCode stalls silently for the entire per-task timeout before surfacing the auth failure. The log shows init at 09:20:44 and the next entry at 13:20:43, exactly 14400s later, followed immediately by the 401. At 3600s this read as 'too slow', at 7200s as 'hung', at 14400s as 'hung for four hours'. Every diagnosis that chased slowness or plumbing was chasing a symptom.",
+    "timeline_consistency": "The 2026-09-16 attempt did real work and consumed 93,108 weighted tokens because the access token was still valid until 2026-09-18T03:05Z. Every attempt after that timestamp failed.",
+    "not_fixable_in_code": "The evaluation apparatus is sound. Two direct probes against the stalled lane's own container, home and auth returned PROBE_OK and SHELLPROBE_OK in seconds, exercising the adapter, the pinned binary, the network-denied shell and tool use. The blocker is credential freshness and requires re-authenticating the OpenAI/Codex account.",
+    "verified_working_after_repairs": [
+      "pinned OpenCode runtime restored byte-exact and brought under pin_agent_runtime",
+      "--timeout-per-task threaded through protocol identity and minting",
+      "OpenCode decoupled from the Codex baseline condition in resolve_condition_pair",
+      "provider-free prepare smoke passes on both descriptor and protocol paths"
+    ],
+    "next_step": "Re-authenticate the OpenAI/Codex account, confirm ~/.codex/auth.json shows a fresh access_token and last_refresh, then rerun the OpenCode baseline. No further code change is required."
   }
 }
