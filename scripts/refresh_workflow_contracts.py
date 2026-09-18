@@ -150,11 +150,16 @@ def frozen_protocol(
         "reasoning_effort": selected_agent.get("reasoning_effort"),
         "command": command,
     }
-    # OpenCode has no baseline of its own: it runs on the Codex subscription and is compared with
-    # the bare Codex baseline, which is what makes the runtime swap the only difference.
+    # Every runtime is its own control. OpenCode shares an OpenAI subscription with the Codex CLI,
+    # not a runtime, so pairing it against the bare Codex baseline made an OpenCode measurement a
+    # statement about the Codex CLI. resolve_condition_pair stopped doing that; this builder kept
+    # doing it, which declared the bare OpenCode control a *treatment* against bare Codex in the
+    # protocol bytes themselves.
     baseline_profile_id = (
         "baseline-claude-code-no-mcp"
         if selected_agent.get("runtime_id") == "claude-code"
+        else runner.OPENCODE_CONTROL_PROFILE_ID
+        if selected_agent.get("runtime_id") == "opencode-cli"
         else "baseline-bare-codex"
     )
     baseline = {

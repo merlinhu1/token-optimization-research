@@ -432,6 +432,32 @@ def safe_profile_key(profile_id: str) -> str:
 BASELINE_POOL_PROTOCOL_VERSION = "baseline-pool-v1"
 BASELINE_POOL_FINGERPRINT_LENGTH = 12
 
+# The bare OpenCode profile is the OpenCode control. Its id carries "codex" for historical reasons
+# -- it denotes the shared OpenAI/Codex subscription the runtime authenticates with, not the Codex
+# CLI -- and renaming it would orphan the retained sessions that reference it.
+OPENCODE_CONTROL_PROFILE_ID = "runtime-opencode-codex-product-v1"
+
+# The two profiles that are hard baselines for the primary objective. Membership here decides
+# interpretation.primary_objective_hard_baseline, so it is deliberately not the same set as
+# RUNTIME_CONTROL_PROFILE_IDS below.
+PRIMARY_OBJECTIVE_BASELINE_PROFILE_IDS = frozenset({
+    "baseline-bare-codex",
+    "baseline-claude-code-no-mcp",
+})
+
+# Every bare-runtime control: a profile that *is* its own baseline and therefore neither requires a
+# baseline of another runtime nor produces a comparison record of its own. OpenCode belongs here
+# because it shares an OpenAI subscription with the Codex CLI, not a runtime; measuring it against
+# bare Codex made an OpenCode result a statement about the Codex CLI instead.
+RUNTIME_CONTROL_PROFILE_IDS = frozenset(
+    PRIMARY_OBJECTIVE_BASELINE_PROFILE_IDS | {OPENCODE_CONTROL_PROFILE_ID}
+)
+
+
+def is_runtime_control_profile(profile_id: str) -> bool:
+    """Whether this profile is a bare-runtime control that serves as its own baseline."""
+    return profile_id in RUNTIME_CONTROL_PROFILE_IDS
+
 
 def _protocol_file_hash(path: Path) -> str:
     if not path.is_file():
@@ -1824,10 +1850,7 @@ def validate_protocol_for_run(seq: dict[str, Any], profile_id: str, args: argpar
         errors.append("timeout")
     if selected_execution.get("descriptor", {}).get("runtime", {}).get("docker_image") != args.docker_image:
         errors.append("docker_image")
-    control_profile = profile_id in {
-        "baseline-bare-codex",
-        "baseline-claude-code-no-mcp",
-    }
+    control_profile = is_runtime_control_profile(profile_id)
     if control_profile:
         if baseline_block.get("profile_id") != profile_id:
             errors.append("profile_id")
@@ -1956,6 +1979,28 @@ def treatment_experiment_group_id(project_id: str, treatment_profile_id: str, re
     return f"{project_id}-{safe_profile_key(treatment_profile_id)}-{protocol_fingerprint}-sequential-workflow-r{replicate_index}"
 
 
+def find_pool_control_record(
+    registry: dict[str, Any], seq: dict[str, Any], profile_id: str, replicate_index: int
+) -> dict[str, Any] | None:
+    """Find a runtime control's own retained session, ignoring pool fingerprint.
+
+    A control that is its own baseline has no other record to anchor its pool on, so the
+    (sequence, profile, replicate) triple identifies it. Two controls at the same replicate index
+    under different apparatus are a genuine collision and are surfaced by the caller's ambiguity
+    check rather than silently pooled -- which is what the post-repin pool starting at r2 makes
+    visible in the index.
+    """
+    matches = [
+        session
+        for session in registry.get("sessions", [])
+        if session.get("schema_version") == 2
+        and session.get("replicate_index") == replicate_index
+        and session.get("task_sequence", {}).get("sequence_id") == seq["id"]
+        and session.get("profile", {}).get("profile_id") == profile_id
+    ]
+    return matches[0] if len(matches) == 1 else None
+
+
 def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], profile_id: str, replicate_index: int) -> dict[str, Any] | None:
     fingerprint = baseline_protocol_fingerprint(seq)
     if (
@@ -1966,8 +2011,17 @@ def find_pool_profile_record(registry: dict[str, Any], seq: dict[str, Any], prof
         # Codex baseline and its Codex pool fingerprint then overrode the correct one -- making
         # every Claude Code session invisible to this lookup even inside a correctly configured
         # run. That skipped their comparison publication and left their replicate slots looking
-        # free. Codex and OpenCode resolve to the canonical baseline through this call as before.
-        pool_baseline = find_comparison_baseline_record(registry, seq, profile_id, replicate_index)
+        # free. Codex resolves to the canonical baseline through this call as before.
+        #
+        # The OpenCode control anchors on itself: it has no baseline of any other runtime, and
+        # borrowing the Codex one filed its sessions under the Codex pool fingerprint. Self-anchoring
+        # keeps the protection the borrowed anchor was providing -- a drifted live descriptor must
+        # not make a retained session invisible and free its replicate slot for a duplicate.
+        pool_baseline = (
+            find_pool_control_record(registry, seq, profile_id, replicate_index)
+            if profile_id == OPENCODE_CONTROL_PROFILE_ID
+            else find_comparison_baseline_record(registry, seq, profile_id, replicate_index)
+        )
         frozen_pool_fingerprint = (
             pool_baseline.get("baseline_pool", {}).get("protocol_fingerprint")
             if pool_baseline is not None
@@ -2046,13 +2100,17 @@ def find_comparison_baseline_record(
     substrate = meta.get("substrate")
     if substrate == "claude-code":
         return find_claude_baseline_record(registry, seq, replicate_index)
-    if substrate != "opencode-cli" or profile_id == "runtime-opencode-codex-product-v1":
+    if profile_id == OPENCODE_CONTROL_PROFILE_ID:
+        # The OpenCode control *is* the OpenCode baseline. It previously fell through to the bare
+        # Codex baseline, which is how a control run came to be recorded against another runtime.
+        return None
+    if substrate != "opencode-cli":
         return find_canonical_baseline_record(registry, seq, replicate_index)
     matches = []
     for session in registry.get("sessions", []):
         if session.get("schema_version") != 2:
             continue
-        if session.get("profile", {}).get("profile_id") != "runtime-opencode-codex-product-v1":
+        if session.get("profile", {}).get("profile_id") != OPENCODE_CONTROL_PROFILE_ID:
             continue
         if session.get("agent", {}).get("runtime_id") != "opencode-cli":
             continue
@@ -3670,22 +3728,16 @@ def workflow_session_record(
 ) -> dict[str, Any]:
     pmeta = PROFILE_META[profile_id]
     runtime_id = profile_runtime_id(profile_id)
-    baseline_control_profile = profile_id in {
-        "baseline-bare-codex",
-        "baseline-claude-code-no-mcp",
-    }
-    if baseline_control_profile and comparison_baseline_session_id:
-        raise ValueError("baseline session must not carry a comparison baseline binding")
+    baseline_control_profile = profile_id in PRIMARY_OBJECTIVE_BASELINE_PROFILE_IDS
+    runtime_control_profile = is_runtime_control_profile(profile_id)
+    if runtime_control_profile and comparison_baseline_session_id:
+        raise ValueError("runtime control session must not carry a comparison baseline binding")
     accepted = bool(summary.get("accepted"))
-    standalone_opencode_control = (
-        profile_id == "runtime-opencode-codex-product-v1"
-        and not comparison_baseline_session_id
-    )
+    standalone_opencode_control = profile_id == OPENCODE_CONTROL_PROFILE_ID
     if (
-        not baseline_control_profile
+        not runtime_control_profile
         and accepted
         and not comparison_baseline_session_id
-        and not standalone_opencode_control
     ):
         raise ValueError("accepted treatment session requires a comparison baseline binding")
     tasks_passed = functional_task_count(task_checkpoints=task_checkpoints)
@@ -4384,23 +4436,21 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
     if seq["fixture_id"] not in PROJECT_META:
         raise ValueError(f"No runner metadata for fixture {seq['fixture_id']}")
     profile_id = args.profile_id
-    baseline_control_profile = profile_id in {
-        "baseline-bare-codex",
-        "baseline-claude-code-no-mcp",
-    }
     if profile_id not in PROFILE_META:
         raise ValueError(f"No runner metadata for profile {profile_id}")
-    # No standalone OpenCode control authorization exists: its receipts were deleted with the
-    # retired corpus, so every non-baseline profile goes through the treatment gate.
-    standalone_opencode_control = False
-    if not baseline_control_profile and not standalone_opencode_control:
+    # A bare-runtime control is its own baseline: it passes no treatment gate and binds no
+    # comparison baseline. OpenCode used to be excluded from this and was therefore launched as a
+    # treatment against the bare Codex baseline, which made an OpenCode control run a measurement
+    # of the Codex CLI. The two share an OpenAI subscription, not a runtime.
+    runtime_control_profile = is_runtime_control_profile(profile_id)
+    if not runtime_control_profile:
         require_lifecycle_treatment_gate(seq, ROOT)
     validate_protocol_for_run(seq, profile_id, args)
     comparison_baseline_session_id = ""
     if not args.prepare_only:
         registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
         assert_pool_slot_available(registry, seq, profile_id, args.replicate_index)
-        if not baseline_control_profile and not standalone_opencode_control:
+        if not runtime_control_profile:
             comparison_baseline_session_id = require_reusable_treatment_baseline(
                 registry,
                 seq,
@@ -4426,9 +4476,11 @@ def _run_one_locked(args: argparse.Namespace) -> dict[str, Any]:
         "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only",
     }
     study_id = args.study_id or default_study_id(profile_id)
+    # The OpenCode control has no treatment to compare: write_comparison_if_ready would resolve its
+    # baseline through find_comparison_baseline_record and pair it against bare Codex.
     comparison_profile_id = (
         ""
-        if standalone_opencode_control
+        if profile_id == OPENCODE_CONTROL_PROFILE_ID
         else args.comparison_profile_id or (profile_id if profile_id != "baseline-bare-codex" else "")
     )
     if args.prepare_only and not args.session_id:

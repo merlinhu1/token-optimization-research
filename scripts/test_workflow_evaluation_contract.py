@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import textwrap
 import threading
 import unittest
 from pathlib import Path
@@ -417,6 +418,117 @@ class ClaudeInstructionMaterializationTest(unittest.TestCase):
 
 
 class ActiveCampaignArchitectureTest(unittest.TestCase):
+    def test_the_opencode_control_is_never_paired_with_another_runtimes_baseline(self) -> None:
+        """OpenCode shares an OpenAI subscription with the Codex CLI, not a runtime.
+
+        resolve_condition_pair stopped pairing the two at the condition layer, but the session layer
+        kept doing it: the bare OpenCode control fell through to find_canonical_baseline_record and
+        resolved a bare-Codex baseline, so launching the OpenCode control would have bound it to a
+        codex-cli session and written an OpenCode-versus-Codex-CLI comparison. Both retained
+        OpenCode controls carry that binding; no new one may.
+        """
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        control = runner.OPENCODE_CONTROL_PROFILE_ID
+        for sequence_id in ("fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"):
+            seq = runner.load_sequence(sequence_id)
+            for replicate_index in (0, 1, 2, 3):
+                with self.subTest(sequence=sequence_id, replicate=replicate_index):
+                    resolved = runner.find_comparison_baseline_record(
+                        registry, seq, control, replicate_index
+                    )
+                    self.assertIsNone(
+                        resolved,
+                        "the OpenCode control is its own baseline and must resolve none",
+                    )
+
+    def test_the_opencode_control_is_a_runtime_control_and_binds_no_comparison(self) -> None:
+        """A bare-runtime control passes no treatment gate and produces no comparison record.
+
+        The runner hardcoded standalone_opencode_control to False, so the control went through the
+        treatment gate and required a reusable baseline from another runtime to exist before it
+        could run at all. That is what coupled the two apparatus: raising OpenCode's per-task
+        timeout made the arms disagree on runtime.timeout_seconds_per_task and validation correctly
+        refused the pair.
+        """
+        control = runner.OPENCODE_CONTROL_PROFILE_ID
+        self.assertTrue(runner.is_runtime_control_profile(control))
+        self.assertIn(control, runner.RUNTIME_CONTROL_PROFILE_IDS)
+        # Membership in the primary-objective hard-baseline set is a separate question, and the
+        # retained OpenCode controls record primary_objective_hard_baseline false.
+        self.assertNotIn(control, runner.PRIMARY_OBJECTIVE_BASELINE_PROFILE_IDS)
+        self.assertEqual(
+            runner.PROFILE_META[control]["session_role"],
+            "replacement_runtime",
+            "the control keeps its own session role; it is not a canonical baseline",
+        )
+
+    def test_opencode_tool_treatments_still_resolve_the_opencode_control(self) -> None:
+        """The fix must not cut OpenCode tool treatments off from their own control."""
+        registry = json.loads((ROOT / "data/workflow-sessions.json").read_text())
+        treatments = [
+            profile_id
+            for profile_id, meta in runner.PROFILE_META.items()
+            if meta.get("substrate") == "opencode-cli"
+            and profile_id != runner.OPENCODE_CONTROL_PROFILE_ID
+        ]
+        self.assertTrue(treatments, "expected registered OpenCode tool treatments")
+        seq = runner.load_sequence("fastify-lifecycle-sequence-v2")
+        for profile_id in sorted(treatments)[:3]:
+            with self.subTest(profile=profile_id):
+                resolved = runner.find_comparison_baseline_record(registry, seq, profile_id, 1)
+                self.assertIsNotNone(resolved, "an OpenCode treatment needs the OpenCode control")
+                self.assertEqual(
+                    resolved.get("profile", {}).get("profile_id"),
+                    runner.OPENCODE_CONTROL_PROFILE_ID,
+                )
+                self.assertEqual(resolved.get("agent", {}).get("runtime_id"), "opencode-cli")
+
+    def test_a_minted_opencode_control_protocol_declares_itself_the_baseline(self) -> None:
+        """The protocol builder encoded the stale premise in the frozen bytes themselves.
+
+        frozen_protocol resolved baseline_profile_id to baseline-bare-codex for any non-Claude
+        runtime, so a bare-OpenCode control protocol declared bare Codex as its baseline and the
+        OpenCode control as the *treatment*. All four protocols on disk carry that shape.
+        """
+        # configure_model_condition patches module-level globals irreversibly, so this runs in a
+        # subprocess. Doing it in-process leaked the OpenCode condition into every later test in the
+        # file and broke three of them.
+        script = textwrap.dedent(
+            """
+            import json, sys
+            sys.path.insert(0, "scripts")
+            import refresh_workflow_contracts as contracts
+            contracts.configure_model_condition(
+                "opencode-openai-gpt-5-6-sol-medium", "gpt-5.6-sol", "medium"
+            )
+            control = contracts.runner.OPENCODE_CONTROL_PROFILE_ID
+            seq = contracts.runner.load_sequence("fastify-lifecycle-sequence-v2")
+            document = contracts.frozen_protocol(
+                seq, control, contracts.ROOT / seq["qualification_path"], 7200
+            )
+            print(json.dumps({key: document[key] for key in ("baseline", "comparison_baseline", "treatment")}))
+            """
+        )
+        completed = subprocess.run(
+            [sys.executable, "-c", script],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        arms = json.loads(completed.stdout.strip().splitlines()[-1])
+        control = runner.OPENCODE_CONTROL_PROFILE_ID
+        self.assertEqual(arms["baseline"]["profile_id"], control)
+        self.assertEqual(arms["baseline"]["runtime_id"], "opencode-cli")
+        self.assertEqual(arms["comparison_baseline"]["profile_id"], control)
+        self.assertEqual(arms["treatment"], {}, "a control protocol carries no treatment block")
+        self.assertNotIn(
+            "codex-cli",
+            json.dumps(arms),
+            "no Codex CLI runtime may appear in an OpenCode control's arm declarations",
+        )
+
     def test_per_task_timeout_is_part_of_protocol_identity_without_moving_the_default(self) -> None:
         """The timeout belongs in identity, but the default must not re-identify the corpus.
 
