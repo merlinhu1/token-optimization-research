@@ -28,7 +28,17 @@ An accepted-order pair is valid only when both lanes retain the same:
 - provider model (`gpt-5.6-sol`) and reasoning effort (`high`);
 - accepted objective status and compact-artifact integrity.
 
-The intentional experimental variable is the replacement runtime: bare Codex versus bare OpenCode. The raw runtime-local labels remain in session IDs and frozen evidence for traceability; they are not renamed.
+In the archived V1 pairs the intentional experimental variable was the replacement runtime: bare Codex
+versus bare OpenCode. The raw runtime-local labels remain in session IDs and frozen evidence for
+traceability; they are not renamed.
+
+**That pairing is retired and must not be reproduced.** OpenCode shares an OpenAI subscription with
+the Codex CLI, not a runtime, so reading an OpenCode lane against a bare-Codex control makes the
+result a statement about the Codex CLI rather than about OpenCode. Every runtime is now its own
+control: OpenCode lanes pair against the bare OpenCode control
+(`runtime-opencode-codex-product-v1`), which binds no baseline of its own and publishes no
+comparison record. The pair-naming rule above is what survives from this example — it is about how
+`rN` labels map across arms, not about which arms may be compared.
 
 The r2 OpenCode record includes later controller/adapter provenance for the evidence-ingress repair. That does not alter the model-facing task contract, but it remains a disclosed runtime-revision caveat in the frozen protocol and the r2 completion audit.
 
