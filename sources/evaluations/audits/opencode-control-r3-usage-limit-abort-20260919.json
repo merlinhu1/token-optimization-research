@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-19",
+  "action": "aborted-replicate-disclosure-openai-usage-limit-reached",
+  "verdict": "opencode-control-r3-consumed-budget-and-produced-no-measurement-slot-stays-free",
+  "authority": "experiment-owner direction on 2026-09-18 to run the OpenCode control at r3",
+  "what_was_attempted": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "replicate_index": 3,
+    "sequences_requested": ["fastify-lifecycle-sequence-v2", "beets-lifecycle-sequence-v2"],
+    "timeout_seconds_per_task": 7200,
+    "serialized": "one lane at a time",
+    "launch_commit": "628e648000f433c65918d1c66dd7e2baeda4f2aa",
+    "preconditions_verified_before_spend": [
+      "paid launch checkout gate passed",
+      "both r3 pool slots available",
+      "all three agent runtimes hash-verified against their pins",
+      "source credential valid to 2026-09-28T20:16:04Z"
+    ]
+  },
+  "cause": {
+    "finding": "The OpenAI account reached its usage limit mid-run. This is provider budget exhaustion, not an apparatus defect and not a credential problem.",
+    "provider_error": "AI_APICallError: The usage limit has been reached",
+    "first_occurrence": "2026-09-18T23:53:55.218Z",
+    "where": "Fastify task-06, on its first provider turn",
+    "what_followed": "OpenCode retried the stream with growing backoff -- 00:02, 00:11, 00:28, 01:02 -- each attempt failing immediately with the same error, until the 7200s per-task timeout killed the task at 01:58:49Z. The lane runner then exited nonzero before publication.",
+    "not_the_2026_09_16_failure": "The expired-credential stall is separately receipted and is resolved. Zero occurrences of 'Token refresh failed', '401 Unauthorized' or 'disposing instance' appear in this lane's OpenCode log; the twelve ERROR lines are all the usage-limit stream error."
+  },
+  "disclosed_spend": {
+    "session_id_not_published": "opencode-fastify-20260918-p-4c934a33cbd1-r3",
+    "weighted_token_cost": 828890.0,
+    "agent_steps": 106,
+    "scope": "tasks 01-05 only; task-06 produced no provider turn and its event file is zero bytes",
+    "per_task_weighted_token_cost": {
+      "task-01": 117122.4,
+      "task-02": 110328.8,
+      "task-03": 143125.6,
+      "task-04": 228783.0,
+      "task-05": 229530.2,
+      "task-06": 0.0
+    },
+    "provider_telemetry_summed": {
+      "fresh_input_tokens": 185298,
+      "cached_input_tokens": 5709440,
+      "cache_write_tokens": 0,
+      "output_tokens": 12108,
+      "reasoning_tokens": 2631,
+      "total_provider_tokens": 5906846
+    },
+    "measurement_method": "scripts/extract_opencode_usage.py per task, summed, then scripts/token_metrics.weighted_token_cost over the summed telemetry",
+    "note": "This is real consumed budget with no usable result. It is NOT a zero-spend receipt. No session record was created, no comparison was published, and nothing merged."
+  },
+  "replicate_slot_disposition": {
+    "r3_slot": "free",
+    "reasoning": "The lane never reached publication, so no session record occupies the slot. The run is disclosed here rather than retained as a replicate, because it produced no complete workflow measurement: task-06 never executed. This is not a retained replicate dropped for the number it produced -- there is no number, the sixth task never ran.",
+    "registry_unchanged": "111 sessions before and after; working tree clean."
+  },
+  "beets_r3": {
+    "status": "never started",
+    "spend": "none",
+    "reason": "The matrix raised while handling the Fastify lane's failure inside execute_lane_jobs, so the Beets lane was never cloned."
+  },
+  "secondary_behaviour_observed_and_correct": {
+    "symptom": "The matrix's final error was 'unsafe rejected evidence shape for opencode-fastify-20260918-p-4c934a33cbd1-r3; source checkout retained', which reads like a defect and is not one.",
+    "explanation": "preserve_rejected_lane_artifacts copies a rejected session directory only when it matches the safe atomic-copy contract: non-empty, at most 32 entries, every entry a plain non-symlink file, under 128MB. That shape is what a lane produces after compaction. This lane died mid-task, so its session directory still held codex-homes/, project/, controller-scratch/ and model-output/ directories.",
+    "consequence": "Preservation refused and the whole lane checkout was retained instead, which is the safer outcome: nothing was discarded. The retained checkout is the only record of the spend above and should not be deleted until this receipt is accepted.",
+    "retained_checkout": "/opt/data/eval-workflow-lanes/workflow-matrix-20260918T234327376545Z-p2184775-r3/fastify-lifecycle-sequence-v2--runtime-opencode-codex-product-v1"
+  },
+  "operational_consequence": {
+    "blocker": "Provider budget, not apparatus. Any further OpenCode or Codex lane draws on the same OpenAI subscription and will fail the same way until the quota resets.",
+    "do_not": "Do not relaunch r3 before the quota resets; a relaunch would spend whatever remains and abort again, adding a second disclosure with no measurement.",
+    "already_recorded_as_a_study_constraint": "The roadmap already records provider budget as a scheduling constraint rather than only a cost, after the Anthropic five-hour session limit cut LeanCTX's second replicate and the Codex account's usage limit left CodeScope and RepoWise unmeasured. This is the third instance and the first to abort a control.",
+    "what_r3_was_for": "At one replicate per lane the OpenCode control has no observed spread, so the Beets reading -- 564,769.0, effectively on the floor of the Codex Beets pool -- cannot be distinguished from a single favourable draw. That question remains open."
+  }
+}
