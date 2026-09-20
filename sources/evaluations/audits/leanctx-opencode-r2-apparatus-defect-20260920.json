@@ -80,8 +80,34 @@
     "control": "The four post-repin control replicates are unaffected."
   },
   "required_before_rerun": [
-    "Resolve why the session-effective configuration addresses the lean-ctx MCP server as the OpenCode binary with no arguments while the product-generated opencode.json addresses the LeanCTX binary correctly.",
+    "Fix the MCP command shadowing recorded in root_cause_found below.",
     "Add an assignment check that reads the model's own event stream for treatment-tool usage or for loss of native tools, rather than relying on a prepare-phase handshake, so this class of defect fails closed before spend rather than after it.",
     "Re-run the freed r2 slot only once a lane demonstrates the declared tool surface from the model-visible side."
-  ]
+  ],
+  "root_cause_found": {
+    "finding": "The defect is in this repository's runner, not in LeanCTX. LeanCTX behaved as designed and its own integration was correct.",
+    "the_product_was_correct": {
+      "shadow_mode_is_intended": "The installer's own output reads 'Shadow mode: native tools denied at ~/.config/opencode/opencode.json' followed by 'OpenCode MCP configured at ~/.config/opencode/opencode.json'. Denying the native tools is LeanCTX's documented design, not a misconfiguration: the agent is meant to retrieve through ctx_* instead.",
+      "product_registration_was_right": "The product-generated opencode.json registers command ['/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx'], which is the pinned release, and that binary serves MCP correctly when probed directly."
+    },
+    "the_runner_overrode_it": {
+      "location": "scripts/run_codex_fixture_evaluation.py:2993",
+      "code": "executable = cfg.get(\"executable\") or cfg.get(\"mcp_command\")",
+      "effect": "For an OpenCode-runtime profile cfg['executable'] is /opt/data/.local/bin/opencode, the agent runtime itself, so the truthy 'executable' shadows 'mcp_command' and the tool's real server path is never consulted. The lane therefore registered [mcp_servers.lean-ctx] command = '/opt/data/.local/bin/opencode' with args = [], confirmed by the lane's own codex-mcp-list.txt. The OpenCode binary invoked with no arguments cannot speak MCP, so the server never served and no ctx_* tool ever reached the model.",
+      "existing_guard_not_set": "The same block is skipped when cfg['mcp_config_via_host_integration'] is set, which is the correct setting for a product that writes its own MCP configuration. The LeanCTX OpenCode tool config leaves it unset."
+    },
+    "combination_that_blinded_the_agent": "Shadow mode removed the native tools as designed, and the runner removed the replacement server. Either alone is survivable; together they leave an agent that can patch but cannot read.",
+    "scope_is_wider_than_leanctx": {
+      "affected_tool_configs": 9,
+      "detail": "Every tool config that declares both an 'executable' and a separate 'mcp_command' without 'mcp_config_via_host_integration' hits this: cartog-opencode-product-v2, codegraph-opencode-mcp-v1, codescope-opencode-product-v1, jcodemunch-opencode-product-v1, leanctx-opencode-hybrid-v1, repowise-opencode-product-v2, serena-opencode-mcp-v1, sigmap-opencode-product-v1 all register the OpenCode binary as their MCP server; tokenjuice-jcodemunch-mcp-stack registers the TokenJuice binary as the jcodemunch server.",
+      "why_this_was_not_caught_sooner": "LeanCTX is the first OpenCode MCP treatment ever executed. It was also the loudest possible case: because its shadow mode also removes the native tools, the missing server produced a visible catastrophe. The other eight would have kept their native tools and produced a quiet, plausible null -- tool installed, never invoked, no effect -- which is a result this corpus would have accepted and published.",
+      "consequence": "No OpenCode MCP-based treatment may be run until this is fixed, and any future null from one must not be read as natural non-use until the server is shown to serve from the model-visible side."
+    },
+    "separate_pin_integrity_defect": {
+      "location": "scripts/opencode_workflow_adapter.py:51",
+      "code": "LEANCTX_BINARY = Path(\"/opt/data/bin/lean-ctx\")",
+      "detail": "That path holds lean-ctx 3.8.18 while the profile pins, installs and hash-verifies 3.9.19. The adapter's own MCP block for the leanctx treatment points at the unpinned 3.8.18 build. Both builds serve MCP when probed, so this did not cause the failure above, but it means a lane can run a build the pin gate never checked.",
+      "required": "Resolve the adapter's hardcoded tool binaries against the pinned release paths, or remove the adapter's competing MCP block entirely if the runner's config is authoritative."
+    }
+  }
 }
