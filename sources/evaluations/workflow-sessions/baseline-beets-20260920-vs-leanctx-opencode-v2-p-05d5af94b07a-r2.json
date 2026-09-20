@@ -1,0 +1,54 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-beets-20260920-vs-leanctx-opencode-v2-p-05d5af94b07a-r2",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "beetbox-beets-integrated-leanctx-opencode-hybrid-v2-05d5af94b07a-sequential-workflow-r2",
+  "comparison_design": "protocol-bound-shared-runtime-baseline-v1",
+  "baseline_reuse_policy": "one accepted bare OpenCode runtime sample per sequence, protocol fingerprint, and replicate is shared by OpenCode-native tool treatments",
+  "baseline_profile_id": "runtime-opencode-codex-product-v1",
+  "baseline_protocol_fingerprint": "05d5af94b07a",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "baseline_pool_spread": {
+    "replicates": 2,
+    "runtime_version": "1.18.9",
+    "weighted_token_costs": [
+      552847.8,
+      564769.0
+    ],
+    "median": 558808.4,
+    "spread_percent": 2.16,
+    "session_ids": [
+      "opencode-beets-20260918-p-05d5af94b07a-r2",
+      "opencode-beets-20260919-p-05d5af94b07a-r3"
+    ],
+    "delta_percent_vs_median": -15.796362402569471,
+    "delta_percent_range": [
+      -16.685051764526733,
+      -14.888510002210381
+    ]
+  },
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "beets-lifecycle-sequence-v2",
+  "baseline_session_id": "opencode-beets-20260918-p-05d5af94b07a-r2",
+  "treatment_session_id": "leanctx-opencode-v2-beets-20260920-p-05d5af94b07a-r2",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 564769.0,
+  "treatment_weighted_token_cost": 470537.0,
+  "delta_weighted_token_cost": -94232.0,
+  "delta_percent": -16.685051764526733,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "baseline_runtime_version": "1.18.9",
+  "treatment_runtime_version": "1.18.9",
+  "runtime_version_matched": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 6,
+    "treatment_tasks_passed": 5,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean integrated-leanctx-opencode-hybrid-v2 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}
