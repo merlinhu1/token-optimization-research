@@ -1,0 +1,819 @@
+{
+  "session_id": "caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "experiment_group_id": "fastify-fastify-behavior-caveman-opencode-plugin-v1-4c934a33cbd1-sequential-workflow-r2",
+  "replicate_index": 2,
+  "frozen_protocol": {
+    "protocol_id": "fastify-lifecycle-sequence-v2-behavior-caveman-opencode-plugin-v1-85af274b1df8",
+    "path": "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-behavior-caveman-opencode-plugin-v1-85af274b1df8.json",
+    "sha256": "ce01ba93cd44043b806f2b6c225ab6cc7e1750867b781cc3d7c85caa0ed605ec"
+  },
+  "baseline_pool": {
+    "protocol_version": "baseline-pool-v1",
+    "protocol_fingerprint": "4c934a33cbd1",
+    "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+  },
+  "selected_execution": {
+    "descriptor_sha256": "eb57055429fd7bbc1dccfee5f98630c55fbb3ad473b9e3e7df98946e7eed6738",
+    "descriptor": {
+      "version": "execution-condition-v1",
+      "sequence_id": "fastify-lifecycle-sequence-v2",
+      "execution_role": "individual_tool_treatment",
+      "selected_profile": {
+        "profile_id": "behavior-caveman-opencode-plugin-v1",
+        "profile_type": "individual_tool",
+        "component_ids": [
+          "behavior-caveman-opencode-plugin-v1"
+        ],
+        "enabled_surfaces": [
+          "opencode-plugin",
+          "prompt-reinforcement",
+          "product-authored-init"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "registry_entry_sha256": "10d1667ee383612cb42f1decbf264ad68e233ae904fe588dcf3cc212743c9413",
+        "registry_entry": {
+          "profile_type": "individual_tool",
+          "objective_scope": "individual_tool_effectiveness",
+          "status": "screening-ablation",
+          "substrate": "opencode-cli",
+          "disabled_overlaps": [
+            "all unlisted surfaces"
+          ],
+          "native_agent_tools_allowed": [
+            "opencode-native-shell-edit",
+            "opencode-native-file-read-search",
+            "git",
+            "verifier-commands"
+          ],
+          "forbidden_surfaces": [
+            "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+          ],
+          "reset": {
+            "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+          },
+          "id": "behavior-caveman-opencode-plugin-v1",
+          "name": "Caveman OpenCode plugin and guidance V1",
+          "enabled_surfaces": [
+            "opencode-plugin",
+            "prompt-reinforcement",
+            "product-authored-init"
+          ],
+          "components": [
+            {
+              "component_id": "behavior-caveman-opencode-plugin-v1",
+              "surface": "opencode-plugin+prompt-reinforcement+product-authored-init",
+              "role": "individual_tool"
+            }
+          ],
+          "install": {
+            "policy": "Run Caveman\u2019s pinned installer with the OpenCode target and product initialization enabled, then require the installed native plugin and repo guidance in the isolated lane."
+          },
+          "evaluation_protocol": {
+            "tool_use_policy": "natural",
+            "tool_state": "active-native-plugin+per-session-guidance",
+            "integration_state": "official-opencode-plugin+product-init",
+            "assignment_proof": "provider-free exact artifact identities, effective OpenCode configuration, native activation, warm state, and task/final verifiers required"
+          },
+          "source_snapshot": {
+            "repository": "JuliusBrussee/caveman",
+            "version": "2.2.0",
+            "source_commit": "9aa63945a349bef17206540650db48c30fafbdf2",
+            "plugin_sha256": "6d68e8dfe205354718729a5f5c9ca9d555a045af6b2cbbc3b6a84caad1076df7",
+            "package_sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+            "runtime_adapter": "/opt/data/tool-candidates/opencode-adapter-v6/opencode_workflow_adapter.py",
+            "runtime_adapter_sha256": "1b98aaec34711b3a7bb09ce269c12bb06421ab08913d06593fb6d2c6641a34a3",
+            "commit": "9aa63945a349bef17206540650db48c30fafbdf2",
+            "release_directory": "/opt/data/tool-candidates/releases/caveman-2.2.0",
+            "artifact": "/opt/data/tool-candidates/releases/caveman-2.2.0/artifacts/caveman-v2.2.0-source.tar.gz",
+            "official_install_guide": "/opt/data/tool-candidates/releases/caveman-2.2.0/source/INSTALL.md",
+            "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
+          },
+          "notes": "Second successive screen: Caveman\u2019s local installer exposes an explicit OpenCode target and writes the native plugin under the OpenCode XDG configuration surface."
+        }
+      },
+      "model_facing_prompts": {
+        "rendering_contract": "sequential-model-facing-prompts-v2",
+        "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tasks": [
+          {
+            "task_id": "fastify-trailer-duplicate-callback-v2",
+            "order": 1,
+            "rendered_prompt_sha256": "cf5bdb936fda10330f945752a8d7e7f17ce0b04766f0563bdac21b132bb48b66"
+          },
+          {
+            "task_id": "fastify-nested-prefix-join-v2",
+            "order": 2,
+            "rendered_prompt_sha256": "cefad2184faabc76e8bfaba8ff3f162f04a5345a40c751602e4066503ca94cbb"
+          },
+          {
+            "task_id": "fastify-serializer-compiler-flag-v2",
+            "order": 3,
+            "rendered_prompt_sha256": "4da349e6a0a4684f02dd174cdf67215600339941330370b9d5d50361b549d9ed"
+          },
+          {
+            "task_id": "fastify-sync-validator-throw-v2",
+            "order": 4,
+            "rendered_prompt_sha256": "b61744b298f075c01c2b57cf8678364607484f8d24d119de8720e114e7ebd530"
+          },
+          {
+            "task_id": "fastify-duplicated-route-method-array-v2",
+            "order": 5,
+            "rendered_prompt_sha256": "490d4fe780b7ac48179b25c7667e0528cdb5530a4133ff21938e78435d26a082"
+          },
+          {
+            "task_id": "fastify-head-route-web-stream-v2",
+            "order": 6,
+            "rendered_prompt_sha256": "4f24bbc07d894bc81ae1366473009fb2a662d63c3fdeb14ace1490cc0b3178cd"
+          }
+        ]
+      },
+      "tool_adapter": {
+        "tool_id": "caveman-opencode-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "6b11e0587b56816fb3d7be030f162a8fd55e0e92d717650433431efb518e510a",
+        "tool_config": {
+          "display_name": "Caveman official OpenCode plugin and guidance v1",
+          "lane_name": "behavior-caveman-opencode-plugin-v1",
+          "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
+          "allowed_terms": [
+            "opencode",
+            "caveman",
+            "cavecrew"
+          ],
+          "data_dir_name": "behavior-caveman-opencode-plugin-v1",
+          "mounts": [
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "{repository_root}/scripts/token_metrics.py",
+            "/opt/data/tool-candidates/releases/caveman-2.2.0/source",
+            "/opt/data/tool-candidates/releases/caveman-2.2.0/runtime",
+            "/opt/data/tool-candidates/releases/caveman-2.2.0/artifacts"
+          ],
+          "executable": "/opt/data/.local/bin/opencode",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "{repository_root}/scripts/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/.local/bin/opencode",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "caveman"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "caveman",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "env": {
+            "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+          },
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/releases/caveman-2.2.0/source/bin/install.js",
+                "--only",
+                "opencode",
+                "--with-init"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+                "/opt/data/tool-candidates/releases/caveman-2.2.0/source/bin/install.js",
+                "--list"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
+              "{repo}/AGENTS.md"
+            ],
+            "timeout_seconds": 600
+          },
+          "native_plugin": {
+            "required": true,
+            "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/source/src/plugins/opencode/plugin.js",
+              "sha256": "b1387ab670e8239cc8fb6e05aa874ee2b51cb05efdfaaa5a6f273a56cedb0230",
+              "kind": "native-plugin-source"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/source/src/plugins/opencode/package.json",
+              "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+              "kind": "native-plugin-package"
+            },
+            {
+              "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+              "sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "diff_exclude_paths": [
+            "AGENTS.md",
+            ".opencode"
+          ],
+          "default_tool_state": "active-native-plugin+per-session-guidance",
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/caveman-2.2.0/runtime"
+          ]
+        },
+        "tool_config_sha256": "346740e2ab23e9d73c690720e4699632b8cdb17313129a681ec580fc7ed2c9e2",
+        "tool_state": "active-native-plugin+per-session-guidance",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "caveman"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/caveman-2.2.0/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "9aa63945a349bef17206540650db48c30fafbdf2",
+            "package_json_sha256": "1edf44a4ae5046eb874e7bd11ddbe0ac6a258c115c516752c1b67f5fbe82ee80"
+          },
+          {
+            "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227"
+          },
+          {
+            "path": "{repository_root}/scripts/token_metrics.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "97cfaeb687fe7ffa04a29cbec75567fdb618b2cf35e58310ecdbda3a0aeb0158"
+          }
+        ]
+      },
+      "runtime": {
+        "docker_image": "token-eval-codex:latest",
+        "docker_image_identity": {
+          "image_ref": "token-eval-codex:latest",
+          "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+          "repo_digests": [
+            "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+          ],
+          "repo_tags": [
+            "token-eval-codex:latest"
+          ]
+        },
+        "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+        "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+        "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+        "fixture_runner_sha256": "6b11e0587b56816fb3d7be030f162a8fd55e0e92d717650433431efb518e510a",
+        "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+        "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+        "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+        "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+        "timeout_seconds_per_task": 7200,
+        "network_isolation": {
+          "provider_access": true,
+          "model_shell_network_access": false,
+          "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+          "agent_web_tools": "disabled-by-permission",
+          "external_retrieval_audit": "fail-closed"
+        },
+        "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+        "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+        "workflow_controller_sha256": "814a09269a9462ed3b19242ecff20ad7d64812e4966e6f8ebb420e6a4406fefe",
+        "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+        "matrix_controller_sha256": "d42892eb765bf06bd5b052cb8bd570781b32fd150eb80bd3a6c0b17f3a682ec7",
+        "agent_runtime_id": "opencode-cli",
+        "model_condition": {
+          "id": "opencode-openai-gpt-5-6-sol-medium",
+          "provider": "openai",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "launcher": "scripts/run_opencode_workflow_model_condition.py"
+        }
+      },
+      "dependencies": {
+        "command": "npm install --ignore-scripts --no-audit --no-fund",
+        "command_sha256": "7493d616f26e72b22eb5a21beafa12a6717ebf5b93a7a75e709de65e7323cc41",
+        "lockfiles": [
+          {
+            "path": "package.json",
+            "snapshot_sha256": "b273320af1bb4cfc0f9334457c8e3b1d035fde0da14f9db65e8ef97d361d0be3",
+            "current_fixture_sha256": null
+          }
+        ]
+      },
+      "agent_condition": {
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+        "reasoning_effort": "medium",
+        "runtime_version_condition": "captured-at-run-and-bound-to-record"
+      },
+      "isolation": {
+        "prompt_delivery": "sequential-one-task-at-a-time",
+        "seed_delivery_mode": "preseeded-composite",
+        "future_tasks_visible": false,
+        "future_seed_regressions_visible": true,
+        "controller_verification": "final-only",
+        "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+        "model_visible_acceptance_asset_paths": [],
+        "model_concealed_paths": []
+      },
+      "baseline_pool_reference": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "4c934a33cbd1",
+        "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+      },
+      "model_condition_override": {
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+        "runtime_id": "opencode-cli",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "registry_status": "active-model-comparison",
+        "launcher": {
+          "path": "scripts/run_opencode_workflow_model_condition.py",
+          "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+          "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+          "condition_runtime_sha256": "a6dc0f5da675a3a830ee8712dcb15925ef1ce460358fc03fa085f0a7e0865120"
+        }
+      }
+    }
+  },
+  "agent_condition": {
+    "runtime_id": "opencode-cli",
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+    "reasoning_effort": "medium",
+    "runtime_version_condition": "captured-at-run-and-bound-to-record"
+  },
+  "docker_image_identity": {
+    "image_ref": "token-eval-codex:latest",
+    "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+    "repo_digests": [
+      "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+    ],
+    "repo_tags": [
+      "token-eval-codex:latest"
+    ]
+  },
+  "tool_adapter_identity": {
+    "tool_id": "caveman-opencode-plugin-v1",
+    "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+    "tool_manifest_sha256": "6b11e0587b56816fb3d7be030f162a8fd55e0e92d717650433431efb518e510a",
+    "tool_config": {
+      "display_name": "Caveman official OpenCode plugin and guidance v1",
+      "lane_name": "behavior-caveman-opencode-plugin-v1",
+      "surface": "opencode-plugin+prompt-reinforcement+skills+commands",
+      "allowed_terms": [
+        "opencode",
+        "caveman",
+        "cavecrew"
+      ],
+      "data_dir_name": "behavior-caveman-opencode-plugin-v1",
+      "mounts": [
+        "{repository_root}/scripts/opencode_workflow_adapter.py",
+        "{repository_root}/scripts/token_metrics.py",
+        "/opt/data/tool-candidates/releases/caveman-2.2.0/source",
+        "/opt/data/tool-candidates/releases/caveman-2.2.0/runtime",
+        "/opt/data/tool-candidates/releases/caveman-2.2.0/artifacts"
+      ],
+      "executable": "/opt/data/.local/bin/opencode",
+      "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+      "binary_mount_target": "/opt/data/.local/bin/opencode",
+      "codex_wrapper": {
+        "command": "/usr/bin/python3",
+        "args": [
+          "{repository_root}/scripts/opencode_workflow_adapter.py",
+          "--opencode-binary",
+          "/opt/data/.local/bin/opencode",
+          "--expected-opencode-sha256",
+          "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "--treatment",
+          "caveman"
+        ]
+      },
+      "preflight_command": [
+        "/usr/bin/python3",
+        "{repository_root}/scripts/opencode_workflow_adapter.py",
+        "--opencode-binary",
+        "/opt/data/.local/bin/opencode",
+        "--expected-opencode-sha256",
+        "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+        "--treatment",
+        "caveman",
+        "--probe"
+      ],
+      "tool_manifest_identity": "current-file-v1",
+      "env": {
+        "OPENCODE_TOOL_DATA_DIR": "{tool_data_dir}"
+      },
+      "host_integration": {
+        "install_commands": [
+          [
+            "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+            "/opt/data/tool-candidates/releases/caveman-2.2.0/source/bin/install.js",
+            "--only",
+            "opencode",
+            "--with-init"
+          ]
+        ],
+        "verify_commands": [
+          [
+            "/opt/data/opt/node-v24.18.0-linux-x64/bin/node",
+            "/opt/data/tool-candidates/releases/caveman-2.2.0/source/bin/install.js",
+            "--list"
+          ]
+        ],
+        "required_files": [
+          "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js",
+          "{repo}/AGENTS.md"
+        ],
+        "timeout_seconds": 600
+      },
+      "native_plugin": {
+        "required": true,
+        "path": "{codex_home}/xdg-config/opencode/plugins/caveman/plugin.js"
+      },
+      "artifact_identities": [
+        {
+          "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/source/src/plugins/opencode/plugin.js",
+          "sha256": "b1387ab670e8239cc8fb6e05aa874ee2b51cb05efdfaaa5a6f273a56cedb0230",
+          "kind": "native-plugin-source"
+        },
+        {
+          "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/source/src/plugins/opencode/package.json",
+          "sha256": "b603811ba72eb71581db5b02045fb5f8903e3c46dcf7b40f36eeb81fbba23274",
+          "kind": "native-plugin-package"
+        },
+        {
+          "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+          "sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227",
+          "kind": "runtime-adapter"
+        }
+      ],
+      "effective_host_config": {
+        "required": true,
+        "source": "adapter-probe"
+      },
+      "diff_exclude_paths": [
+        "AGENTS.md",
+        ".opencode"
+      ],
+      "default_tool_state": "active-native-plugin+per-session-guidance",
+      "path_entries": [
+        "/opt/data/tool-candidates/releases/caveman-2.2.0/runtime"
+      ]
+    },
+    "tool_config_sha256": "346740e2ab23e9d73c690720e4699632b8cdb17313129a681ec580fc7ed2c9e2",
+    "tool_state": "active-native-plugin+per-session-guidance",
+    "tool_use_policy": "natural",
+    "command_identity": {
+      "kind": "codex_wrapper",
+      "command": [
+        "/usr/bin/python3",
+        "{repository_root}/scripts/opencode_workflow_adapter.py",
+        "--opencode-binary",
+        "/opt/data/.local/bin/opencode",
+        "--expected-opencode-sha256",
+        "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+        "--treatment",
+        "caveman"
+      ]
+    },
+    "binary_identity": {
+      "executable_token": "/usr/bin/python3",
+      "resolved_path": "/usr/bin/python3",
+      "realpath": "/usr/bin/python3.13",
+      "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+      "metadata": {
+        "size": 6812336,
+        "mode": "-rwxr-xr-x",
+        "uid": 0,
+        "gid": 0,
+        "mtime_ns": 1778015152000000000
+      },
+      "version": {
+        "command": [
+          "/usr/bin/python3.13",
+          "--version"
+        ],
+        "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/caveman-2.2.0/runtime:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "captured": true,
+        "exit_code": 0,
+        "output": "Python 3.13.5",
+        "truncated": false
+      }
+    },
+    "source_identity": [
+      {
+        "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/artifacts",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/runtime",
+        "exists": true,
+        "kind": "directory"
+      },
+      {
+        "path": "/opt/data/tool-candidates/releases/caveman-2.2.0/source",
+        "exists": true,
+        "kind": "directory",
+        "git_head": "9aa63945a349bef17206540650db48c30fafbdf2",
+        "package_json_sha256": "1edf44a4ae5046eb874e7bd11ddbe0ac6a258c115c516752c1b67f5fbe82ee80"
+      },
+      {
+        "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+        "exists": true,
+        "kind": "file",
+        "sha256": "3de60a87386dc804b5b4b9a883f94b39f357b369c99c244183cee9868874e227"
+      },
+      {
+        "path": "{repository_root}/scripts/token_metrics.py",
+        "exists": true,
+        "kind": "file",
+        "sha256": "97cfaeb687fe7ffa04a29cbec75567fdb618b2cf35e58310ecdbda3a0aeb0158"
+      }
+    ]
+  },
+  "profile_id": "behavior-caveman-opencode-plugin-v1",
+  "workflow_sequence_id": "fastify-lifecycle-sequence-v2",
+  "fixture_id": "medium-fastify-fastify",
+  "repository_path": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/project/repo",
+  "codex_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_verifier_exit_code": 0,
+  "tool_isolation_audit_exit_code": 0,
+  "verifier_integrity_passed": true,
+  "thread_continuity_errors": [],
+  "seed_delivery": {
+    "mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "preseeded_task_orders": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "pending_seed_orders": []
+  },
+  "accepted": true,
+  "timeout_seconds": 43200,
+  "codex_version": "",
+  "agent_runtime_version": "1.18.9",
+  "agent_runtime_pin": {
+    "version": "1.18.9",
+    "sha256": "4bf862540e374d5653069b098bfb3addd5a20e2f7fa0485f294d3646e453c518",
+    "entrypoint": "/opt/data/tool-candidates/agent-runtimes/opencode-cli-1.18.9/package/bin/opencode.exe",
+    "pinned_on": "2026-09-16"
+  },
+  "token_usage": {
+    "measurement_source": "opencode-jsonl-step-finish-usage",
+    "fresh_input_tokens": 205304,
+    "cached_input_tokens": 7884544,
+    "cache_write_tokens": 0,
+    "output_tokens": 16150,
+    "reasoning_tokens": 3014,
+    "total_provider_tokens": 8105998,
+    "weighted_token_cost": 1090658.4,
+    "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+    "agent_steps": 125,
+    "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+    "agent_step_types": {
+      "text": 24,
+      "tool_use": 101
+    },
+    "weighted_token_cost_per_step": 8725.3,
+    "provider_usage_details": {
+      "runtime": "opencode-cli",
+      "accounting_mode": "sum-unique-incremental-step-finish-parts",
+      "raw_token_field_totals": {},
+      "fresh_input_formula": "input + cache.write",
+      "reasoning_tokens_available": true
+    }
+  },
+  "usage_warnings": [],
+  "repowise_provider_audit": {
+    "required": false,
+    "passed": true,
+    "provider": null,
+    "hits": []
+  },
+  "per_task_results": [
+    {
+      "task_id": "fastify-trailer-duplicate-callback-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-01",
+      "order": 1,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-01-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-01-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-nested-prefix-join-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-02",
+      "order": 2,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-02-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-02-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-serializer-compiler-flag-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-03",
+      "order": 3,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-03-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-03-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-sync-validator-throw-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-04",
+      "order": 4,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-04-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-04-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-duplicated-route-method-array-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-05",
+      "order": 5,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-05-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-05-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    },
+    {
+      "task_id": "fastify-head-route-web-stream-v2",
+      "task_class": "defect-repair",
+      "task_alias": "task-06",
+      "order": 6,
+      "agent_attempted": true,
+      "codex_exit_code": 0,
+      "thread_continuity_passed": true,
+      "thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+      "controller_verification": "passed",
+      "accepted": true,
+      "task_delta": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-06-agent.diff",
+      "usage_events": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/task-06-codex-events.jsonl",
+      "operational_retry_count": 0,
+      "verifier_exit_code": 0,
+      "verifier_passed": true
+    }
+  ],
+  "prompt_delivery": {
+    "mode": "sequential-one-task-at-a-time",
+    "future_tasks_visible": false,
+    "future_prompts_materialized_lazily": true,
+    "seed_delivery_mode": "preseeded-composite",
+    "future_seed_regressions_visible": true,
+    "controller_verification": "final-only",
+    "codex_thread_id": "ses_f42916f7cffe0kXuirwIt0QduA",
+    "task_prompt_evidence": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/evidence.jsonl.gz"
+  },
+  "leakage_controls": {
+    "seed_origin_concealed": true,
+    "seed_patches_model_visible": false,
+    "git_baseline_true_root_at_lane_start": true,
+    "fixed_snapshot_objects_model_visible": false,
+    "pre_seed_reflog_entries_visible": false,
+    "concealment_verification_passed": true,
+    "task_directories_model_visible": false,
+    "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+    "model_visible_acceptance_asset_paths": [],
+    "model_writable_surface": "target repository plus isolated model-output directory",
+    "verifier_integrity_passed": true,
+    "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/evidence.jsonl.gz#verifier-integrity.json",
+    "model_prompts_sanitized": true,
+    "upstream_remote_removed_from_model_facing_repo": true,
+    "broken_start_committed_as_local_baseline": true,
+    "remaining_limitations": [
+      "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+      "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+    ]
+  },
+  "artifacts": {
+    "artifact_contract": "compact-v1-four-files",
+    "root": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2",
+    "run_record": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/run.json",
+    "final_diff": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/changes.diff",
+    "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+    "evidence_bundle": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/evidence.jsonl.gz",
+    "manifest": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2/manifest.sha256"
+  },
+  "run_dir": "sources/evaluations/workflow-sessions/caveman-opencode-v1-fastify-20260920-p-4c934a33cbd1-r2"
+}
