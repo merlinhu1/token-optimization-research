@@ -660,28 +660,37 @@ def _read_prompt(parsed: CompatArgs) -> str:
     return prompt
 
 
+PINNED_TOOL_ROOT = Path("/opt/data/tool-candidates")
+
+
 def _assert_declared_tool_paths_exist(treatment: str, config: dict[str, Any]) -> None:
-    """Refuse a treatment whose own config names a path that is not there.
+    """Refuse a treatment whose config names a missing binary in the pinned tool tree.
 
     A missing MCP server or plugin does not stop the lane: the model simply never
     receives the treatment, and the run reports a plausible null. That is worse than
     a crash, so this fails closed instead.
+
+    Only paths under the pinned tool tree are checked. Lane-generated paths -- a
+    plugin the installer copies into the evaluation directory, a venv built under the
+    lane home -- do not exist yet when this runs, and host_integration.required_files
+    already gates those after install.
     """
+    def missing_pinned(path: Path) -> bool:
+        return path.is_absolute() and path.is_relative_to(PINNED_TOOL_ROOT) and not path.exists()
+
     missing: list[str] = []
     for name, server in (config.get("mcp") or {}).items():
         command = (server or {}).get("command") or []
-        if command:
-            binary = Path(str(command[0]))
-            if binary.is_absolute() and not binary.exists():
-                missing.append(f"mcp server {name!r} command {binary}")
+        if command and missing_pinned(Path(str(command[0]))):
+            missing.append(f"mcp server {name!r} command {command[0]}")
     for entry in config.get("plugin") or []:
         raw = str(entry)
         path = Path(raw[len("file://") :] if raw.startswith("file://") else raw)
-        if path.is_absolute() and not path.exists():
+        if missing_pinned(path):
             missing.append(f"plugin {path}")
     if missing:
         raise FileNotFoundError(
-            f"OpenCode treatment {treatment!r} declares paths that do not exist: "
+            f"OpenCode treatment {treatment!r} declares pinned tool paths that do not exist: "
             + "; ".join(missing)
         )
 
