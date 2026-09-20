@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-20",
+  "action": "apparatus-defect-invalidation-and-deletion",
+  "verdict": "leanctx-opencode-r2-measured-an-agent-without-retrieval-tools-not-the-declared-treatment-slot-freed",
+  "authority": "experiment-owner direction on 2026-09-20 after challenging the result as inconsistent with the product's established behaviour",
+  "what_was_attempted": {
+    "profile_id": "integrated-leanctx-opencode-hybrid-v2",
+    "replicate_index": 2,
+    "sequences": ["beets-lifecycle-sequence-v2", "fastify-lifecycle-sequence-v2"],
+    "model_condition": "opencode-openai-gpt-5-6-sol-medium",
+    "timeout_seconds_per_task": 7200,
+    "intent": "first OpenCode tool treatment in the corpus, screened against the two-replicate bare OpenCode control"
+  },
+  "defect": {
+    "finding": "In both lanes the model had no retrieval capability whatsoever. Its native read, grep, glob and bash tools were denied by the installed product configuration, and the LeanCTX ctx_* tools that are supposed to replace them were never served to the model's session. The agent was left able only to patch files it could not read.",
+    "declared_versus_actual": "The profile declares native_agent_tools_allowed = opencode-native-shell-edit, opencode-native-file-read-search, git, verifier-commands. The lane-active configuration denied read, grep, glob and bash. The run therefore did not operate under the declared treatment.",
+    "model_visible_evidence": {
+      "note": "Established from the model's own event stream, not from a preflight, per the repository rule that a handshake probe can pass against a configuration the model was never given.",
+      "leanctx_beets_tool_calls": {"apply_patch": 874, "todowrite": 30},
+      "leanctx_fastify_tool_calls": {"apply_patch": 138, "todowrite": 26},
+      "control_beets_r3_tool_calls": {"todowrite": 48, "bash": 48, "read": 40, "grep": 36, "apply_patch": 12, "glob": 4},
+      "caveman_beets_tool_calls": {"bash": 50, "todowrite": 48, "read": 38, "grep": 36, "apply_patch": 12, "glob": 4},
+      "ctx_star_calls": 0,
+      "interpretation": "Every ctx_ occurrence in the retained evidence sat in configuration, handshake, guidance or audit artifacts; none in the model's event stream. The contemporaneous Caveman runs and the control show the normal tool mix on the same apparatus, so the loss is specific to this integration and not a runtime or lane property."
+    },
+    "root_cause": {
+      "config_conflict": "Two configurations name the lean-ctx MCP server with different commands. The product-generated opencode.json gives command = ['/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx'], which is correct. The effective configuration recorded for the session gives [mcp_servers.lean-ctx] command = '/opt/data/.local/bin/opencode' with args = [], which is the OpenCode binary itself and cannot serve ctx_* tools.",
+      "compounding_factor": "The product-generated configuration also sets permission.bash, permission.glob, permission.grep and permission.read to deny. That is coherent only when the ctx_* replacements are actually reachable. With the server mis-addressed, the denial removed the agent's last means of reading the repository.",
+      "why_preflight_passed": "The prepare-phase MCP handshake completed initialize and tools/list against the lean-ctx binary and advertised twelve tools, so host_integration and mcp_handshake both reported passed. That probe exercised a configuration the model's own session did not use."
+    }
+  },
+  "disclosed_spend": {
+    "note": "Real consumed budget with no usable result. This is NOT a zero-spend receipt.",
+    "total_weighted_token_cost": 1735070.4,
+    "sessions": [
+      {
+        "session_id_deleted": "leanctx-opencode-v2-beets-20260920-p-05d5af94b07a-r2",
+        "weighted_token_cost": 1390469.6,
+        "agent_steps": 468,
+        "tasks_passed": 1,
+        "task_count": 6,
+        "published_delta_now_retracted": "+146.2% against its paired control"
+      },
+      {
+        "session_id_deleted": "leanctx-opencode-v2-fastify-20260920-p-4c934a33cbd1-r2",
+        "weighted_token_cost": 344600.8,
+        "agent_steps": 101,
+        "tasks_passed": 5,
+        "task_count": 6,
+        "published_delta_now_retracted": "-70.3% against its paired control"
+      }
+    ],
+    "measurement_basis": "provider-reported OpenCode step_finish usage as recorded in the deleted session records before deletion; the sole metric is weighted token cost"
+  },
+  "replicate_slot_disposition": {
+    "r2_slot_for_this_profile": "free",
+    "reasoning": "The declared treatment was not operating, so the run measured something the study never declared. The trigger for removal is the absence of the treatment, never the number returned. Both lanes are removed for the same established defect, including the Fastify lane whose number was favourable.",
+    "registry": "117 sessions before, 115 after"
+  },
+  "deleted": {
+    "session_records": 2,
+    "artifact_roots": [
+      "sources/evaluations/workflow-sessions/leanctx-opencode-v2-beets-20260920-p-05d5af94b07a-r2",
+      "sources/evaluations/workflow-sessions/leanctx-opencode-v2-fastify-20260920-p-4c934a33cbd1-r2"
+    ],
+    "comparison_records": [
+      "sources/evaluations/workflow-sessions/baseline-beets-20260920-vs-leanctx-opencode-v2-p-05d5af94b07a-r2.json",
+      "sources/evaluations/workflow-sessions/baseline-fastify-20260920-vs-leanctx-opencode-v2-p-4c934a33cbd1-r2.json"
+    ],
+    "unreferenced_protocols": [
+      "sources/evaluations/protocols/beets-lifecycle-sequence-v2-integrated-leanctx-opencode-hybrid-v2-6b0dbf77d3ba.json",
+      "sources/evaluations/protocols/fastify-lifecycle-sequence-v2-integrated-leanctx-opencode-hybrid-v2-653c136cfc12.json"
+    ],
+    "protocol_orphan_check": "90 protocol files on disk, 0 orphaned, after deletion"
+  },
+  "claims_retracted": "The roadmap bullets published under commit c4c2c26b treated these runs as a LeanCTX result, including a lane-dependent split, a note that the model never called the tool, and a cross-runtime non-transfer claim resting partly on them. They describe a crippled apparatus, not the product, and are rewritten in the same change that records this receipt.",
+  "unaffected": {
+    "caveman": "The contemporaneous behavior-caveman-opencode-plugin-v1 r2 runs are unaffected and retained. Their tool mix matches the bare control almost exactly on both lanes, they completed 6/6 tasks like the control, and their configuration carries no permission denial. Caveman remains indistinguishable from the control at the counts held.",
+    "control": "The four post-repin control replicates are unaffected."
+  },
+  "required_before_rerun": [
+    "Resolve why the session-effective configuration addresses the lean-ctx MCP server as the OpenCode binary with no arguments while the product-generated opencode.json addresses the LeanCTX binary correctly.",
+    "Add an assignment check that reads the model's own event stream for treatment-tool usage or for loss of native tools, rather than relying on a prepare-phase handshake, so this class of defect fails closed before spend rather than after it.",
+    "Re-run the freed r2 slot only once a lane demonstrates the declared tool surface from the model-visible side."
+  ]
+}
