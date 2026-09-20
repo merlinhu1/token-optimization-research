@@ -3040,6 +3040,46 @@ class VerifierContractTest(unittest.TestCase):
             self.assertEqual([block["usage"]["input_tokens"] for block in usage_blocks], [2, 1])
             self.assertTrue((root / "task-01-operational-retry-01.md").is_file())
 
+    def test_no_tool_registers_the_agent_runtime_as_its_own_mcp_server(self) -> None:
+        """A tool's MCP server must be the tool, never the agent binary running it.
+
+        The LeanCTX OpenCode lanes were invalidated because `executable` shadowed
+        `mcp_command`, so the lane registered the OpenCode binary as the `lean-ctx`
+        server. It answers no MCP, the model silently lost the treatment, and the
+        loss only became visible because that product also denies the native tools.
+        """
+        agent_runtime = "/opt/data/.local/bin/opencode"
+        tool_server = "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx"
+        cfg = {
+            "display_name": "probe tool",
+            "lane_name": "probe-lane",
+            "executable": agent_runtime,
+            "mcp_command": tool_server,
+            "mcp_server": "probe-server",
+            "data_dir_name": "probe",
+        }
+        record = {"profile": {"profile_id": "probe-lane"}}
+        import run_codex_fixture_evaluation as fixture_runner  # type: ignore
+
+        with tempfile.TemporaryDirectory() as tmp:
+            codex_home = Path(tmp)
+            with mock.patch.object(
+                fixture_runner, "active_tool_config", return_value=cfg
+            ):
+                fixture_runner.write_codex_config(codex_home, record, "probe-lane")
+            config = (codex_home / "config.toml").read_text()
+        self.assertIn("[mcp_servers.probe-server]", config)
+        self.assertIn(
+            f'command = "{tool_server}"',
+            config,
+            "the MCP server command must be the tool's own server binary",
+        )
+        self.assertNotIn(
+            f'command = "{agent_runtime}"',
+            config,
+            "registering the agent runtime as the tool's MCP server serves no MCP at all",
+        )
+
     def test_opencode_task_renders_repository_root_in_wrapper_args(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

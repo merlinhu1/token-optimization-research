@@ -2999,10 +2999,24 @@ def write_codex_config(codex_home: Path, record: dict[str, Any], pid: str) -> No
                 raise FileNotFoundError(f"{cfg['display_name']} command not found: {command}")
         server = cfg.get("mcp_server")
         if server and not cfg.get("mcp_config_via_host_integration"):
+            # The MCP server is its own program, so mcp_command decides it. Reusing
+            # `executable` here registers the agent runtime as the tool's own server,
+            # which speaks no MCP and silently leaves the model without the treatment.
+            mcp_executable = cfg.get("mcp_command") or cfg.get("executable")
+            rendered_mcp_command = (
+                render_tool_value(mcp_executable, record, codex_home, cfg) if mcp_executable else ""
+            )
+            if rendered_mcp_command:
+                mcp_path = Path(rendered_mcp_command)
+                mcp_generated_by_install = bool(cfg.get("host_integration")) and "{" in str(mcp_executable)
+                if mcp_path.is_absolute() and not mcp_path.exists() and not mcp_generated_by_install:
+                    raise FileNotFoundError(
+                        f"{cfg['display_name']} MCP server command not found: {mcp_path}"
+                    )
             lines.extend(
                 [
                     f"[mcp_servers.{server}]",
-                    f"command = {json.dumps(rendered_executable)}",
+                    f"command = {json.dumps(rendered_mcp_command)}",
                     f"args = {format_toml_array(render_mcp_args(record, codex_home, cfg))}",
                     "",
                 ]

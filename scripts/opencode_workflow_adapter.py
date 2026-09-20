@@ -48,7 +48,7 @@ SDL_MCP_MAIN = SDL_MCP_ROOT / "dist" / "main.js"
 CODESCOPE_BINARY = Path("/opt/data/tool-candidates/codescope-release-v0.8.12/codescope")
 CODEGRAPH_BINARY = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
 JCODEMUNCH_ROOT = Path("/opt/data/tool-candidates/jcodemunch-mcp")
-LEANCTX_BINARY = Path("/opt/data/bin/lean-ctx")
+LEANCTX_BINARY = Path("/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx")
 SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
 PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
 CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
@@ -660,6 +660,32 @@ def _read_prompt(parsed: CompatArgs) -> str:
     return prompt
 
 
+def _assert_declared_tool_paths_exist(treatment: str, config: dict[str, Any]) -> None:
+    """Refuse a treatment whose own config names a path that is not there.
+
+    A missing MCP server or plugin does not stop the lane: the model simply never
+    receives the treatment, and the run reports a plausible null. That is worse than
+    a crash, so this fails closed instead.
+    """
+    missing: list[str] = []
+    for name, server in (config.get("mcp") or {}).items():
+        command = (server or {}).get("command") or []
+        if command:
+            binary = Path(str(command[0]))
+            if binary.is_absolute() and not binary.exists():
+                missing.append(f"mcp server {name!r} command {binary}")
+    for entry in config.get("plugin") or []:
+        raw = str(entry)
+        path = Path(raw[len("file://") :] if raw.startswith("file://") else raw)
+        if path.is_absolute() and not path.exists():
+            missing.append(f"plugin {path}")
+    if missing:
+        raise FileNotFoundError(
+            f"OpenCode treatment {treatment!r} declares paths that do not exist: "
+            + "; ".join(missing)
+        )
+
+
 def _runtime_env(
     codex_home: Path,
     *,
@@ -868,6 +894,7 @@ def _runtime_env(
         config["plugin"] = [plugin.as_uri()]
     elif treatment == "dcp":
         config["plugin"] = [DCP_PACKAGE]
+    _assert_declared_tool_paths_exist(treatment, config)
     env.update(
         {
             "XDG_DATA_HOME": str(xdg_data),
