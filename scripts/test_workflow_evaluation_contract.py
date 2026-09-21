@@ -3040,6 +3040,36 @@ class VerifierContractTest(unittest.TestCase):
             self.assertEqual([block["usage"]["input_tokens"] for block in usage_blocks], [2, 1])
             self.assertTrue((root / "task-01-operational-retry-01.md").is_file())
 
+    def test_profile_snapshot_hashes_match_the_files_they_name(self) -> None:
+        """A recorded hash must match the file it points at, or it is worse than absent.
+
+        A LeanCTX profile declared version 3.9.19 while carrying 3.8.18's binary hash,
+        and five OpenCode profiles carried the pre-re-pin adapter hash. None of it was
+        read by the runner, so nothing failed -- the registry simply asserted things
+        that were not true about the apparatus.
+        """
+        profiles = json.loads((ROOT / "data/evaluation-profiles.json").read_text())
+        profiles = profiles.get("profiles", profiles)
+        mismatched = []
+        for profile in profiles:
+            snapshot = profile.get("source_snapshot") or {}
+            for key, recorded in snapshot.items():
+                if not key.endswith("_sha256"):
+                    continue
+                named = snapshot.get(key[: -len("_sha256")])
+                if not isinstance(named, str) or not named.startswith("/"):
+                    continue
+                path = Path(named)
+                if not path.is_file():
+                    continue
+                actual = hashlib.sha256(path.read_bytes()).hexdigest()
+                if actual != recorded:
+                    mismatched.append(
+                        f"{profile.get('id')}.{key}: {path} is {actual[:16]}... "
+                        f"but the registry records {str(recorded)[:16]}..."
+                    )
+        self.assertEqual(mismatched, [], "; ".join(mismatched))
+
     def test_no_tool_registers_the_agent_runtime_as_its_own_mcp_server(self) -> None:
         """A tool's MCP server must be the tool, never the agent binary running it.
 

@@ -47,12 +47,8 @@ SDL_MCP_ROOT = Path("/opt/data/tool-candidates/sdl-mcp")
 SDL_MCP_MAIN = SDL_MCP_ROOT / "dist" / "main.js"
 CODESCOPE_BINARY = Path("/opt/data/tool-candidates/codescope-release-v0.8.12/codescope")
 CODEGRAPH_BINARY = Path("/opt/data/tool-candidates/codegraph/dist/bin/codegraph.js")
-JCODEMUNCH_ROOT = Path("/opt/data/tool-candidates/jcodemunch-mcp")
 LEANCTX_BINARY = Path("/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx")
 SIGMAP_ROOT = Path("/opt/data/tool-candidates/sigmap")
-PONYTAIL_ROOT = Path("/opt/data/tool-candidates/ponytail")
-CAVEMAN_ROOT = Path("/opt/data/tool-candidates/caveman")
-LOWFAT_BINARY = Path("/opt/data/tool-candidates/lowfat-bin/lowfat")
 DCP_PACKAGE = "@tarquinen/opencode-dcp@3.1.14"
 HEADROOM_PLUGIN = Path(
     "/opt/data/tool-candidates/headroom/plugins/opencode/dist/entry.opencode.js"
