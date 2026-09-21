@@ -1695,7 +1695,19 @@
         "integration_state": "official-codex-hybrid",
         "instruction_policy": "product-authored-guidance"
       },
-      "notes": "Versioned correction of the historical MCP-only LeanCTX profile. Measures the official hybrid product surface rather than a hand-wired partial ablation."
+      "notes": "Versioned correction of the historical MCP-only LeanCTX profile. Measures the official hybrid product surface rather than a hand-wired partial ablation.",
+      "source_snapshot": {
+        "repository": "yvgude/lean-ctx",
+        "version": "3.9.19",
+        "commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+        "source_commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+        "binary": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx",
+        "binary_sha256": "c83296d2576eb77f9230253a91b61b0b453453b6edb3709a0923a7595b5ff49d",
+        "release_directory": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19",
+        "artifact": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/artifacts/lean-ctx-x86_64-unknown-linux-gnu.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane installs and verifies from this release directory via host_integration, running `lean-ctx init --agent codex`. Recorded from the installed binary rather than restated, so the registry and the enforced artifact identity agree."
+      }
     },
     {
       "id": "retrieval-cartog-mcp-v1",
@@ -3465,12 +3477,13 @@
         "repository": "yvgude/lean-ctx",
         "version": "3.9.19",
         "source_commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
-        "binary_sha256": "475e89e495c31824ef324f92e695706ddbd890dff2c3b55b807cd1f8526c6db9",
+        "binary_sha256": "c83296d2576eb77f9230253a91b61b0b453453b6edb3709a0923a7595b5ff49d",
         "commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
         "release_directory": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19",
         "artifact": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/artifacts/lean-ctx-x86_64-unknown-linux-gnu.tar.gz",
         "official_install_guide": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/source/README.md",
-        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
+        "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs",
+        "binary": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx"
       },
       "notes": "Corrected official OpenCode integration: the product-generated ~/.config/opencode configuration and AGENTS guidance are copied byte-for-byte into the lane-active isolated XDG root, with MCP handshake and warm index retained."
     },
@@ -3858,7 +3871,19 @@
       "source_profiles": [
         "integrated-leanctx-codex-hybrid-v1"
       ],
-      "notes": "Claude Code preparation profile for LeanCTX; source profile integrated-leanctx-codex-hybrid-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy."
+      "notes": "Claude Code preparation profile for LeanCTX; source profile integrated-leanctx-codex-hybrid-v1. Provider-free native qualification passed for both Lifecycle V1 sequences, which were the active pair at the time; provider execution is governed by the owner authorization and first-valid-sample policy.",
+      "source_snapshot": {
+        "repository": "yvgude/lean-ctx",
+        "version": "3.9.19",
+        "commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+        "source_commit": "8a3d23b317c98b39704543c9acb8b7cc8992c63d",
+        "binary": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/runtime/lean-ctx",
+        "binary_sha256": "c83296d2576eb77f9230253a91b61b0b453453b6edb3709a0923a7595b5ff49d",
+        "release_directory": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19",
+        "artifact": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/artifacts/lean-ctx-x86_64-unknown-linux-gnu.tar.gz",
+        "official_install_guide": "/opt/data/tool-candidates/releases/lean-ctx-3.9.19/source/README.md",
+        "pin_basis": "BATCH_RELEASES; the lane installs and verifies from this release directory via host_integration, running `lean-ctx init --agent claude`. Recorded from the installed binary rather than restated, so the registry and the enforced artifact identity agree."
+      }
     },
     {
       "id": "terminal-lowfat-claude-code-hook-v1",
