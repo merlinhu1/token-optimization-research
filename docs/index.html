@@ -1,908 +1,538 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Archived pre-correction Lifecycle V1 screening evidence for 15 token-saving coding-agent integrations.">
-  <meta property="og:title" content="Token-saving tools do not save tokens everywhere">
-  <meta property="og:description" content="Archived pre-correction evidence from 27 matched product/runtime conditions and 54 persistent sessions.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://merlinhu1.github.io/token-optimization-research/">
-  <meta property="og:image" content="https://merlinhu1.github.io/token-optimization-research/papers/figures/phase-2-lifecycle-v1-runtime-contrast.svg">
-  <meta name="twitter:card" content="summary_large_image">
-  <title>Token-saving tools do not save tokens everywhere</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f4f6fa;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #5b6b7f;
-      --faint: #8a97a8;
-      --line: #e3e8f0;
-      --accent: #4f46e5;
-      --accent-soft: #eceafe;
-      --good: #059669;
-      --good-soft: #d3f2e5;
-      --bad: #e11d48;
-      --bad-soft: #fde3e9;
-      --na: #94a3b8;
-      --na-soft: #eceff3;
-      --track: #eef1f6;
-      --shadow: 0 10px 30px rgb(15 23 42 / 7%);
-      --radius: 16px;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        color-scheme: dark;
-        --bg: #0c1220;
-        --card: #131c2e;
-        --ink: #e6ecf5;
-        --muted: #9aa8bd;
-        --faint: #71809a;
-        --line: #223050;
-        --accent: #8b85ff;
-        --accent-soft: #262457;
-        --good: #34d399;
-        --good-soft: #0e3a2d;
-        --bad: #fb7185;
-        --bad-soft: #4a1b26;
-        --na: #7d8ba1;
-        --na-soft: #1d2840;
-        --track: #1b2740;
-        --shadow: 0 10px 30px rgb(0 0 0 / 35%);
-      }
-    }
-
-    * { box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--bg);
-      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .skip-link {
-      position: absolute;
-      top: -4rem;
-      left: 1rem;
-      z-index: 30;
-      padding: .7rem 1rem;
-      color: #fff;
-      background: var(--ink);
-      border-radius: .6rem;
-    }
-    .skip-link:focus { top: 1rem; }
-
-    .shell { width: min(1080px, 100% - 2.5rem); margin-inline: auto; }
-
-    /* ---------- top bar ---------- */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      border-bottom: 1px solid var(--line);
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-    .topbar .shell {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      min-height: 3.6rem;
-    }
-    .brand {
-      color: var(--ink);
-      font-weight: 800;
-      font-size: .95rem;
-      letter-spacing: -.01em;
-      white-space: nowrap;
-    }
-    .brand:hover { text-decoration: none; }
-    .topbar nav {
-      display: flex;
-      gap: 1.1rem;
-      overflow-x: auto;
-      font-size: .85rem;
-      scrollbar-width: none;
-    }
-    .topbar nav::-webkit-scrollbar { display: none; }
-    .topbar nav a { color: var(--muted); white-space: nowrap; }
-    .topbar nav a:hover { color: var(--ink); text-decoration: none; }
-
-    /* ---------- hero ---------- */
-    .hero { padding-block: clamp(2.75rem, 7vw, 5.5rem) clamp(2rem, 5vw, 3.5rem); }
-
-    .eyebrow {
-      margin: 0 0 .9rem;
-      color: var(--accent);
-      font-size: .74rem;
-      font-weight: 800;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3 { line-height: 1.12; letter-spacing: -.03em; }
-
-    h1 {
-      max-width: 16ch;
-      margin: 0;
-      font-size: clamp(2.3rem, 7.2vw, 4.3rem);
-      font-weight: 820;
-    }
-
-    .dek {
-      max-width: 46rem;
-      margin: 1.2rem 0 0;
-      color: var(--muted);
-      font-size: clamp(1.05rem, 2.4vw, 1.28rem);
-    }
-
-    .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.7rem; }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: .7rem 1.25rem;
-      border-radius: 999px;
-      color: #fff;
-      background: var(--accent);
-      font-size: .92rem;
-      font-weight: 700;
-    }
-    .button:hover { text-decoration: none; filter: brightness(1.08); }
-    .button.secondary {
-      color: var(--ink);
-      background: var(--card);
-      border: 1px solid var(--line);
-    }
-
-    .hero-note {
-      margin-top: 1.6rem;
-      max-width: 46rem;
-      padding: 1rem 1.15rem;
-      background: var(--accent-soft);
-      border-radius: 12px;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-    .hero-note strong { color: var(--ink); }
-
-    /* ---------- stat cards ---------- */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: .9rem;
-      padding-bottom: clamp(2.5rem, 6vw, 4rem);
-    }
-    .stat {
-      min-width: 0;
-      padding: 1.2rem 1.25rem;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-    .stat b {
-      display: block;
-      font-size: clamp(1.5rem, 3.6vw, 2.4rem);
-      line-height: 1.05;
-      letter-spacing: -.04em;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat span { display: block; margin-top: .5rem; color: var(--muted); font-size: .83rem; line-height: 1.4; }
-    .stat.bad b { color: var(--bad); }
-    .stat.good b { color: var(--good); }
-
-    /* ---------- sections ---------- */
-    section { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-    section + section { border-top: 1px solid var(--line); }
-
-    .section-head { max-width: 46rem; margin-bottom: 1.75rem; }
-    .section-head h2 { margin: 0 0 .6rem; font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 780; }
-    .section-head p { margin: 0; color: var(--muted); }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    /* ---------- contrast chart ---------- */
-    .chart { padding: clamp(1.1rem, 3vw, 1.75rem); }
-    .chart-title { margin: 0 0 .25rem; font-size: 1.02rem; font-weight: 750; }
-    .chart-sub { margin: 0 0 1.4rem; color: var(--muted); font-size: .85rem; }
-
-    .chart-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5rem 1.1rem;
-      margin: 0 0 1.3rem;
-      color: var(--muted);
-      font-size: .8rem;
-    }
-    .chart-legend i {
-      display: inline-block;
-      width: .8rem;
-      height: .8rem;
-      margin-right: .35rem;
-      border-radius: 3px;
-      vertical-align: -.08em;
-    }
-    .lg-good { background: var(--good); }
-    .lg-bad { background: var(--bad); }
-    .lg-na { background: transparent; border: 1.5px dashed var(--na); }
-
-    .trow { padding-block: .65rem; border-top: 1px solid var(--line); }
-    .trow:first-of-type { border-top: 0; }
-    .tname { margin: 0 0 .45rem; font-size: .95rem; font-weight: 750; }
-
-    .crow {
-      display: grid;
-      grid-template-columns: 4.6rem minmax(0, 1fr) 4.4rem;
-      align-items: center;
-      gap: .6rem;
-      padding-block: .18rem;
-    }
-    .clab { color: var(--faint); font-size: .78rem; font-weight: 650; line-height: 1.15; }
-
-    .axis {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      height: 1.3rem;
-      background: var(--track);
-      border-radius: 7px;
-    }
-    .axis::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      margin-left: -1px;
-      background: var(--card);
-    }
-    .half { position: relative; }
-    .bar {
-      position: absolute;
-      top: 3px;
-      bottom: 3px;
-      min-width: 3px;
-      border-radius: 4px;
-    }
-    .bar.neg { right: 0; background: var(--good); width: var(--w); }
-    .bar.pos { left: 0; background: var(--bad); width: var(--w); }
-    .bar.na {
-      left: 0;
-      width: 100%;
-      background: transparent;
-      border: 1.5px dashed var(--na);
-      min-width: 0;
-    }
-
-    .val { font-size: .85rem; font-weight: 750; font-variant-numeric: tabular-nums; text-align: right; }
-    .val.up { color: var(--bad); }
-    .val.down { color: var(--good); }
-    .val.na { color: var(--na); font-weight: 600; font-size: .78rem; }
-
-    .chart-foot { margin: 1.2rem 0 0; color: var(--muted); font-size: .83rem; }
-
-    /* ---------- heatmap ---------- */
-    .heat { padding: clamp(1.1rem, 3vw, 1.75rem); }
-    .heat-grid { display: grid; gap: .45rem; }
-    .heat-head, .hrow {
-      display: grid;
-      grid-template-columns: minmax(6.5rem, 9rem) repeat(4, minmax(0, 1fr));
-      gap: .45rem;
-      align-items: stretch;
-    }
-    .heat-head { color: var(--faint); font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-    .heat-head span { padding: 0 .55rem; align-self: center; }
-    .hname { display: flex; align-items: center; font-size: .88rem; font-weight: 700; }
-
-    .cell {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: .1rem;
-      min-height: 2.6rem;
-      padding: .35rem .55rem;
-      border-radius: 9px;
-      font-size: .82rem;
-      font-weight: 720;
-      font-variant-numeric: tabular-nums;
-      line-height: 1.25;
-    }
-    .cell .cl { display: none; font-size: .66rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
-
-    .cell.up1 { background: #ffe4e6; color: #9f1239; }
-    .cell.up2 { background: #fecdd3; color: #881337; }
-    .cell.up3 { background: #e11d48; color: #ffffff; }
-    .cell.up4 { background: #9f1239; color: #ffffff; }
-    .cell.dn1 { background: #d1fae5; color: #065f46; }
-    .cell.dn2 { background: #a7f3d0; color: #064e3b; }
-    .cell.dn3 { background: #047857; color: #ffffff; }
-    .cell.dn4 { background: #064e3b; color: #ffffff; }
-    .cell.na { background: var(--na-soft); color: var(--na); font-weight: 600; }
-
-    @media (prefers-color-scheme: dark) {
-      .cell.up1 { background: #3b1620; color: #fda4af; }
-      .cell.up2 { background: #571e2c; color: #fda4af; }
-      .cell.up3 { background: #8b2b3d; color: #ffe4e6; }
-      .cell.up4 { background: #fb7185; color: #3d0f18; }
-      .cell.dn1 { background: #0e3a2d; color: #6ee7b7; }
-      .cell.dn2 { background: #11543f; color: #6ee7b7; }
-      .cell.dn3 { background: #0d7a57; color: #ecfdf5; }
-      .cell.dn4 { background: #34d399; color: #043c2c; }
-    }
-
-    /* ---------- component bars ---------- */
-    .components { padding: clamp(1.1rem, 3vw, 1.75rem); }
-    .comp-group + .comp-group { margin-top: 1.4rem; }
-    .comp-name { margin: 0 0 .5rem; font-size: .95rem; font-weight: 750; }
-    .comp-row {
-      display: grid;
-      grid-template-columns: 6.4rem minmax(0, 1fr) 4.2rem;
-      align-items: center;
-      gap: .6rem;
-      padding-block: .2rem;
-    }
-
-    /* ---------- card grids ---------- */
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
-
-    .mini {
-      padding: 1.1rem 1.2rem;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-    }
-    .mini b {
-      display: block;
-      margin-bottom: .3rem;
-      color: var(--accent);
-      font-size: .72rem;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .mini p { margin: 0; color: var(--muted); font-size: .9rem; }
-    .mini h3 { margin: 0 0 .35rem; font-size: 1rem; }
-
-    /* ---------- tool accordions ---------- */
-    .tools { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
-    details.tool {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-    details.tool summary {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .8rem;
-      min-height: 3.4rem;
-      padding: .85rem 1.05rem;
-      cursor: pointer;
-      font-weight: 750;
-      font-size: .95rem;
-      list-style: none;
-    }
-    details.tool summary::-webkit-details-marker { display: none; }
-    details.tool summary::after {
-      content: "+";
-      flex: none;
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 50%;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.5rem;
-      text-align: center;
-    }
-    details.tool[open] summary::after { content: "−"; }
-    details.tool p { margin: 0; padding: 0 1.05rem 1.05rem; color: var(--muted); font-size: .9rem; }
-
-    .chips { display: flex; flex-wrap: wrap; gap: .3rem; justify-content: flex-end; }
-    .chip {
-      padding: .16rem .55rem;
-      border-radius: 999px;
-      font-size: .74rem;
-      font-weight: 750;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-    .chip.up { color: var(--bad); background: var(--bad-soft); }
-    .chip.down { color: var(--good); background: var(--good-soft); }
-    .chip.na { color: var(--na); background: var(--na-soft); }
-
-    /* ---------- limits ---------- */
-    .limits { margin: 0; padding-left: 1.2rem; color: var(--muted); }
-    .limits li { margin: 0 0 .7rem; padding-left: .25rem; }
-    .limits li::marker { color: var(--accent); }
-
-    /* ---------- data links ---------- */
-    .data-link {
-      display: block;
-      padding: 1.1rem 1.2rem;
-      color: var(--ink);
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      transition: border-color .15s ease;
-    }
-    .data-link:hover { border-color: var(--accent); text-decoration: none; }
-    .data-link strong { display: block; margin-bottom: .15rem; font-size: .95rem; }
-    .data-link span { color: var(--muted); font-size: .84rem; }
-
-    footer { padding-block: 2.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .84rem; }
-    footer .shell { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; }
-
-    /* ---------- responsive ---------- */
-    @media (max-width: 760px) {
-      .topbar .shell { flex-wrap: wrap; gap: .35rem; padding-block: .65rem; }
-      .topbar nav { order: 3; width: 100%; gap: 1.35rem; }
-      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stat b { font-size: clamp(1.3rem, 8.2vw, 1.9rem); }
-      .grid3, .grid2, .tools { grid-template-columns: 1fr; }
-      .heat-head { display: none; }
-      .hrow {
-        grid-template-columns: 1fr 1fr;
-        padding: .7rem;
-        background: var(--bg);
-        border-radius: 12px;
-      }
-      .hname { grid-column: 1 / -1; margin-bottom: .1rem; }
-      .cell .cl { display: block; }
-      .crow { grid-template-columns: 3.6rem minmax(0, 1fr) 4.2rem; gap: .4rem; }
-      .clab { font-size: .72rem; }
-      .comp-row { grid-template-columns: 5.6rem minmax(0, 1fr) 4.2rem; gap: .4rem; }
-    }
-
-    @media (max-width: 400px) {
-      .crow { grid-template-columns: 3.2rem minmax(0, 1fr) 4rem; }
-      .clab { font-size: .68rem; }
-      .val { font-size: .8rem; }
-      .comp-row { grid-template-columns: 5.2rem minmax(0, 1fr) 4rem; }
-    }
-
-    @media print {
-      body { background: #fff; }
-      .topbar, .hero-actions { display: none; }
-      .card, .stat, .mini, details.tool, .data-link { box-shadow: none; }
-      details.tool > * { display: block; }
-      details.tool summary::after { display: none; }
-      a { color: inherit; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The runtime decides whether a token-saving tool saves tokens</title>
+<meta name="description" content="A matched Lifecycle V2 screening of 15 token-saving integrations across three coding-agent runtimes. In 12 of 26 comparisons the direction of the effect changes with the runtime.">
+<style>
+:root{
+  --bg:#f4f6fa; --card:#fff; --ink:#0b0b0b; --muted:#52514e; --faint:#8a97a8;
+  --line:#e3e8f0; --accent:#2a78d6; --accent-soft:#e8f0fb;
+  --neg:#2a78d6;          /* cheaper than control */
+  --pos:#e34948;          /* costlier than control */
+  --mid:#f0efec;          /* neutral midpoint */
+  --na:#94a3b8; --track:#f0efec;
+  --shadow:0 10px 30px rgb(15 23 42/7%); --radius:16px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0c1220; --card:#131c2e; --ink:#fff; --muted:#c3c2b7; --faint:#71809a;
+    --line:#223050; --accent:#3987e5; --accent-soft:#1d2a44;
+    --neg:#3987e5; --pos:#e66767; --mid:#383835; --na:#7d8ba1; --track:#1b2740;
+    --shadow:0 10px 30px rgb(0 0 0/35%);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
+body{margin:0;color:var(--ink);background:var(--bg);
+  font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.shell{width:min(1140px,100% - 2.5rem);margin-inline:auto}
+.topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px)}
+.topbar .shell{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:3.6rem}
+.brand{font-weight:800;font-size:.95rem;color:var(--ink);text-decoration:none}
+.nav{display:flex;gap:1.1rem;font-size:.9rem;flex-wrap:wrap}
+.nav a{color:var(--muted);text-decoration:none}
+.nav a:hover{color:var(--accent)}
+.hero{padding:3.4rem 0 1.6rem}
+.tag{display:inline-block;padding:.3rem .7rem;border-radius:999px;background:var(--accent-soft);
+  color:var(--accent);font-size:.78rem;font-weight:700;letter-spacing:.02em}
+h1{font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.12;letter-spacing:-.02em;margin:.9rem 0 .8rem}
+.lede{font-size:1.1rem;color:var(--muted);max-width:64ch}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.5rem}
+.btn{padding:.7rem 1.1rem;border-radius:.7rem;font-weight:650;font-size:.92rem;text-decoration:none;
+  border:1px solid var(--line);color:var(--ink);background:var(--card)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.note{margin-top:1.4rem;padding:.9rem 1.1rem;border-left:3px solid var(--accent);
+  background:var(--card);border-radius:0 .6rem .6rem 0;font-size:.9rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin:2.2rem 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:1.9rem;letter-spacing:-.02em;line-height:1.1}
+.stat span{display:block;font-size:.85rem;color:var(--muted);margin-top:.35rem}
+section{padding:2.2rem 0}
+h2{font-size:clamp(1.3rem,2.4vw,1.75rem);letter-spacing:-.015em;margin:0 0 .5rem}
+.sub{color:var(--muted);max-width:74ch;margin:0 0 1.3rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.2rem;box-shadow:var(--shadow);overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:900px}
+caption{text-align:left;color:var(--muted);font-size:.86rem;padding-bottom:.8rem}
+th,td{padding:.5rem .55rem;text-align:left;vertical-align:middle}
+thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);
+  font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody th{font-weight:650;white-space:nowrap;padding-right:1rem}
+tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--line)}
+.grp{border-left:1px solid var(--line)}
+.cell{white-space:nowrap}
+.track{position:relative;width:118px;height:12px;background:var(--track);border-radius:4px;overflow:hidden}
+.axis{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--mid);opacity:.9}
+.fill{position:absolute;top:0;bottom:0;border-radius:4px}
+.fill.neg{background:var(--neg)}
+.fill.pos{background:var(--pos)}
+.val{display:inline-block;min-width:58px;font-variant-numeric:tabular-nums;font-size:.82rem;margin-left:.5rem;color:var(--ink)}
+.n{font-size:.72rem;color:var(--faint);margin-left:.35rem}
+.na{font-size:.8rem;color:var(--na);font-style:italic}
+.legend{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;font-size:.85rem;color:var(--muted)}
+.key{display:inline-flex;align-items:center;gap:.45rem}
+.sw{width:15px;height:12px;border-radius:3px;display:inline-block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:1rem}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem;box-shadow:var(--shadow)}
+.box h3{margin:0 0 .4rem;font-size:1rem}
+.box p{margin:0;color:var(--muted);font-size:.9rem}
+ul.clean{margin:.4rem 0 0;padding-left:1.1rem;color:var(--muted);font-size:.92rem}
+ul.clean li{margin:.35rem 0}
+footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);font-size:.85rem}
+.skip{position:absolute;left:1rem;top:-4rem;background:var(--ink);color:var(--bg);padding:.7rem 1rem;border-radius:.6rem;z-index:30}
+.skip:focus{top:1rem}
+</style>
 </head>
 <body>
-  <a class="skip-link" href="#report">Skip to report</a>
+<a class="skip" href="#results">Skip to results</a>
+<div class="topbar"><div class="shell">
+  <a class="brand" href="#top">Token Optimization Research</a>
+  <nav class="nav">
+    <a href="#finding">Finding</a><a href="#results">Results</a><a href="#coverage">Coverage</a>
+    <a href="#limits">Limitations</a><a href="#data">Data</a>
+  </nav>
+</div></div>
+<main id="top">
+<header class="hero"><div class="shell">
+  <span class="tag">Lifecycle V2 · current evidence · 2026-09-21</span>
+  <h1>The runtime decides whether a token-saving tool saves tokens.</h1>
+  <p class="lede">Fifteen products, measured one at a time against matched controls on two real
+  repositories and three coding-agent runtimes. In <strong>12 of 26</strong> comparisons that exist
+  on more than one runtime, the same product changes the <em>direction</em> of its effect when the
+  host agent changes.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Read the technical report</a>
+    <a class="btn" href="#results">See the results</a>
+  </div>
+  <p class="note"><strong>Every value on this page is weighted token cost</strong>
+  (<code>fresh input + 0.1 × cached input + 6 × output</code>), measured against that runtime's own
+  bare control on the same repository. No raw-token result is shown. This is a screening study, not
+  a leaderboard — most cells hold a single replicate.</p>
+</div></header>
+<div class="shell">
+  <div class="stats">
+    <div class="stat"><b>12 of 26</b><span>Comparisons where the runtime flips the direction of the effect</span></div>
+    <div class="stat"><b>9 of 31</b><span>Product–runtime pairs where the two repositories disagree on direction</span></div>
+    <div class="stat"><b>10 of 13</b><span>Products that reduce cost on both Claude Code lanes — against 5 of 15 on Codex</span></div>
+    <div class="stat"><b>693 / 726</b><span>Recorded task outcomes passing their controller verifiers</span></div>
+  </div>
+</div>
 
-  <header class="topbar">
-    <div class="shell">
-      <a class="brand" href="https://github.com/merlinhu1/token-optimization-research">Token Optimization Research</a>
-      <nav aria-label="Report navigation">
-        <a href="#finding">Finding</a>
-        <a href="#results">Results</a>
-        <a href="#tools">Tools</a>
-        <a href="#model-selection">Claude baseline</a>
-        <a href="#limits">Limitations</a>
-        <a href="#data">Data</a>
-      </nav>
-    </div>
-  </header>
+<section id="finding"><div class="shell">
+  <h2>The host agent matters as much as the tool.</h2>
+  <p class="sub">The same integration can cut weighted token cost on one runtime and raise it on
+  another. Caveman costs 9.7% and 20.6% more on Codex, saves 25.0% and 32.1% on Claude Code, and is
+  indistinguishable from the control on OpenCode. Serena costs more on both Codex lanes and saves
+  about a quarter on both Claude Code lanes. This is the central result, and it is why a
+  single-runtime recommendation is not supportable from this corpus.</p>
+  <div class="grid">
+    <div class="box"><h3>The repository matters too</h3><p>Nine of thirty-one product–runtime pairs
+    change direction between the two fixtures alone. SigMap on Claude Code saves 18.6% on Fastify
+    and costs 51.8% more on Beets. A product evaluated on one repository has not been evaluated.</p></div>
+    <div class="box"><h3>Claude Code is where these products pay</h3><p>Ten of thirteen reduce cost
+    on both Claude Code lanes. On Codex only five of fifteen do, and several are substantially more
+    expensive — CodeGraph reaches +72.4% on Beets.</p></div>
+    <div class="box"><h3>Savings can carry a cost</h3><p>LeanCTX's OpenCode integration denies the
+    agent's native file tools. It is the largest saving measured — and the only arm that
+    reproducibly loses a task its control always passes. Reported as an association, not a
+    demonstrated mechanism.</p></div>
+  </div>
+</div></section>
 
-  <main id="report">
-    <div class="shell hero">
-      <p class="eyebrow">Archived Phase 2 · pre-correction Lifecycle V1 screening</p>
-      <h1>Token-saving tools do not save tokens everywhere.</h1>
-      <p class="dek">A matched screening study across two coding-agent runtimes found lower weighted token cost in 11 of 13 OpenCode conditions—and none of 14 Codex conditions.</p>
-      <div class="hero-actions">
-        <a class="button" href="#finding">Explore the results</a>
-        <a class="button secondary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md">Read the technical report</a>
-      </div>
-      <div class="hero-note">
-        <strong>Archived evidence, not a current finding or ranking.</strong>
-        The model-facing task contract changed on 2026-08-13, so these pre-correction sessions cannot serve as controls for the corrected rerun. They remain available only for provenance.
-        <strong>Every token value shown is weighted token cost.</strong> This report never uses or displays a raw-token result.
-      </div>
-    </div>
+<section id="results"><div class="shell">
+  <h2>Weighted token cost against the matched control.</h2>
+  <p class="sub">Bars diverge from a centre line: <strong>left is cheaper</strong> than that
+  runtime's own bare control on that repository, right is costlier. Every bar shares one scale, and
+  every value is printed beside its bar — colour is never the only channel. <code>n</code> is the
+  number of retained replicates in that cell.</p>
+  <div class="legend">
+    <span class="key"><span class="sw" style="background:var(--neg)"></span> Lower cost than control</span>
+    <span class="key"><span class="sw" style="background:var(--pos)"></span> Higher cost than control</span>
+    <span class="key"><span class="sw" style="background:var(--track)"></span> No qualified run</span>
+  </div>
+  <div class="card">
+  <table>
+    <caption>Change in weighted token cost versus the matched runtime control, by product,
+    runtime and repository. Descriptive treatment-to-control deltas — not a stable ranking.</caption>
+    <thead>
+      <tr><th scope="col" rowspan="2">Product</th>
+        <th scope="col" colspan="2" class="grp">Codex CLI</th>
+        <th scope="col" colspan="2" class="grp">Claude Code</th>
+        <th scope="col" colspan="2" class="grp">OpenCode CLI <span style="text-transform:none;font-weight:500">(preliminary)</span></th></tr>
+      <tr><th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
+          <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
+          <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Cartog</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:18.05%"></span></div>
+          <span class="val neg">-26.1%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.96%"></span></div>
+          <span class="val pos">+1.4%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.17%"></span></div>
+          <span class="val neg">-14.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.97%"></span></div>
+          <span class="val neg">-13.0%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">Caveman</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:6.67%"></span></div>
+          <span class="val pos">+9.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:14.23%"></span></div>
+          <span class="val pos">+20.6%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.29%"></span></div>
+          <span class="val neg">-25.0%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:22.21%"></span></div>
+          <span class="val neg">-32.1%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.89%"></span></div>
+          <span class="val pos">+1.3%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.93%"></span></div>
+          <span class="val pos">+1.3%</span><span class="n">n=1</span>
+        </td>
+      </tr>
+      <tr><th scope="row">CodeGraph</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.48%"></span></div>
+          <span class="val pos">+3.6%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:50.00%"></span></div>
+          <span class="val pos">+72.4%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.76%"></span></div>
+          <span class="val pos">+1.1%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.37%"></span></div>
+          <span class="val pos">+3.4%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">CodeScope</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:2.78%"></span></div>
+          <span class="val neg">-4.0%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:2.13%"></span></div>
+          <span class="val neg">-3.1%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">Graphify</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:18.32%"></span></div>
+          <span class="val neg">-26.5%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.99%"></span></div>
+          <span class="val pos">+4.3%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.84%"></span></div>
+          <span class="val neg">-12.8%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:20.49%"></span></div>
+          <span class="val neg">-29.7%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">LeanCTX</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.04%"></span></div>
+          <span class="val neg">-24.7%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.67%"></span></div>
+          <span class="val neg">-1.0%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.43%"></span></div>
+          <span class="val neg">-35.4%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:27.41%"></span></div>
+          <span class="val neg">-39.7%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:43.01%"></span></div>
+          <span class="val neg">-62.2%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.83%"></span></div>
+          <span class="val neg">-14.2%</span><span class="n">n=2</span>
+        </td>
+      </tr>
+      <tr><th scope="row">Ponytail</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:1.49%"></span></div>
+          <span class="val neg">-2.2%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:5.24%"></span></div>
+          <span class="val pos">+7.6%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.17%"></span></div>
+          <span class="val neg">-23.4%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:22.32%"></span></div>
+          <span class="val neg">-32.3%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:14.33%"></span></div>
+          <span class="val neg">-20.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:9.24%"></span></div>
+          <span class="val pos">+13.4%</span><span class="n">n=1</span>
+        </td>
+      </tr>
+      <tr><th scope="row">RTK</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.34%"></span></div>
+          <span class="val neg">-9.2%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.79%"></span></div>
+          <span class="val neg">-12.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.81%"></span></div>
+          <span class="val neg">-14.2%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.69%"></span></div>
+          <span class="val neg">-24.2%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">RepoWise</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:5.82%"></span></div>
+          <span class="val neg">-8.4%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.51%"></span></div>
+          <span class="val neg">-0.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">Serena</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.56%"></span></div>
+          <span class="val pos">+0.8%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:13.77%"></span></div>
+          <span class="val pos">+19.9%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.83%"></span></div>
+          <span class="val neg">-24.4%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.83%"></span></div>
+          <span class="val neg">-25.8%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">SigMap</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.12%"></span></div>
+          <span class="val neg">-0.2%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:12.35%"></span></div>
+          <span class="val pos">+17.9%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:12.85%"></span></div>
+          <span class="val neg">-18.6%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:35.76%"></span></div>
+          <span class="val pos">+51.8%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">Snip</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:15.19%"></span></div>
+          <span class="val neg">-22.0%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:2.57%"></span></div>
+          <span class="val neg">-3.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:14.99%"></span></div>
+          <span class="val neg">-21.7%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:15.92%"></span></div>
+          <span class="val neg">-23.1%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">Token Savior</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:11.59%"></span></div>
+          <span class="val neg">-16.8%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.27%"></span></div>
+          <span class="val pos">+3.3%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.72%"></span></div>
+          <span class="val neg">-25.6%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:33.21%"></span></div>
+          <span class="val neg">-48.1%</span><span class="n">n=2</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">TokenJuice</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:12.83%"></span></div>
+          <span class="val neg">-18.6%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.43%"></span></div>
+          <span class="val pos">+0.6%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:4.20%"></span></div>
+          <span class="val pos">+6.1%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:19.98%"></span></div>
+          <span class="val neg">-28.9%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+      <tr><th scope="row">jCodeMunch</th>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:7.79%"></span></div>
+          <span class="val pos">+11.3%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:29.74%"></span></div>
+          <span class="val pos">+43.0%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:7.59%"></span></div>
+          <span class="val neg">-11.0%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.30%"></span></div>
+          <span class="val neg">-14.9%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div></section>
 
-    <div class="shell stats" aria-label="Study highlights">
-      <div class="stat bad"><b>+35.10%</b><span>Codex aggregate weighted token cost</span></div>
-      <div class="stat good"><b>−14.02%</b><span>OpenCode aggregate weighted token cost</span></div>
-      <div class="stat"><b>162</b><span>Accepted tasks across 54 persistent sessions</span></div>
-      <div class="stat"><b>15</b><span>Token-saving products, 27 matched conditions</span></div>
-    </div>
+<section id="coverage"><div class="shell">
+  <h2>Coverage is uneven, and that is stated rather than smoothed.</h2>
+  <p class="sub">The Codex and Claude Code arms are the result of this study. The OpenCode arm is an
+  early screen: three of its sixteen runnable profiles have been measured, and it is labelled
+  preliminary everywhere it appears.</p>
+  <div class="grid">
+    <div class="box"><h3>Codex CLI — 15 products</h3><p>Complete, with Headroom excluded on
+    resource grounds by owner direction. Controls: 3 replicates per repository.</p></div>
+    <div class="box"><h3>Claude Code — 13 products</h3><p>Near-complete. Controls: 5 replicates on
+    Fastify, 6 on Beets — the deepest control pool in the corpus.</p></div>
+    <div class="box"><h3>OpenCode CLI — 3 of 16</h3><p>Preliminary. Thirteen profiles unrun. Snip
+    and Token Savior have no runnable OpenCode profile at all, so this arm cannot mirror the Codex
+    sweep even with unlimited budget.</p></div>
+  </div>
+</div></section>
 
-    <section id="finding">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">The central finding</p>
-          <h2>Runtime mattered as much as the tool.</h2>
-          <p>The same class of integration could reduce context in OpenCode while increasing weighted cost in Codex. Automatic interception, retrieval depth, persistent instructions, tool schemas, and trajectory changes are plausible contributors—but this screen does not isolate them causally.</p>
-        </div>
+<section id="limits"><div class="shell">
+  <h2>Read the boundary before the headline.</h2>
+  <p class="sub">What this study does not establish, stated as plainly as what it does.</p>
+  <ul class="clean">
+    <li><strong>It is not a leaderboard.</strong> Most cells hold one replicate. A single replicate
+    can support “not worth carrying forward”; it cannot support a ranked effect size.</li>
+    <li><strong>The deeper arms are a selected sample.</strong> Products that screened well were
+    resampled; products that screened badly were not. More replicates is not evidence of a better
+    product.</li>
+    <li><strong>Overlapping ranges mean indistinguishable</strong>, and are reported that way rather
+    than ordered.</li>
+    <li><strong>Mechanism is not isolated.</strong> Interception, retrieval depth, persistent
+    instructions, tool schemas and trajectory length are all plausible contributors; this design
+    separates none of them.</li>
+    <li><strong>Effect sizes do not transfer across runtimes.</strong> A Claude Code figure is not
+    an estimate of the same product's Codex or OpenCode figure.</li>
+    <li><strong>Correctness is reported, not averaged away.</strong> 693 of 726 task outcomes
+    passed; the exceptions are attributed individually in the report.</li>
+  </ul>
+</div></section>
 
-        <div class="card chart">
-          <p class="chart-title">Weighted token-cost change versus matched runtime baseline</p>
-          <p class="chart-sub">Negative values are lower than the matched baseline. Blocked means no qualified provider-backed condition was run.</p>
-          <p class="chart-legend">
-            <span><i class="lg-good"></i>Lower cost than baseline</span>
-            <span><i class="lg-bad"></i>Higher cost than baseline</span>
-            <span><i class="lg-na"></i>Blocked</span>
-          </p>
-
-          <div class="trow">
-            <h3 class="tname">RTK</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:48.7%"></span></div></div><span class="val up">+42.31%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:30%"></span></div><div class="half"></div></div><span class="val down">−26.12%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Serena</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:1%"></span></div></div><span class="val up">+0.83%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:29.9%"></span></div><div class="half"></div></div><span class="val down">−26.03%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">TokenJuice</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:9.6%"></span></div></div><span class="val up">+8.37%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:32.8%"></span></div><div class="half"></div></div><span class="val down">−28.49%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Ponytail</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:35.1%"></span></div></div><span class="val up">+30.48%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:13.9%"></span></div><div class="half"></div></div><span class="val down">−12.13%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Caveman</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:37.1%"></span></div></div><span class="val up">+32.24%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:31.5%"></span></div><div class="half"></div></div><span class="val down">−27.43%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">jCodeMunch</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:32.7%"></span></div></div><span class="val up">+28.45%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:3.8%"></span></div><div class="half"></div></div><span class="val down">−3.34%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">CodeGraph</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:56%"></span></div></div><span class="val up">+48.72%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:18.1%"></span></div><div class="half"></div></div><span class="val down">−15.74%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">SigMap</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:31.9%"></span></div></div><span class="val up">+27.74%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:2.9%"></span></div></div><span class="val up">+2.54%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">LowFat</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar na"></span></div></div><span class="val na">Blocked</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:25.6%"></span></div><div class="half"></div></div><span class="val down">−22.24%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Token Savior</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:100%"></span></div></div><span class="val up">+86.96%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar na"></span></div><div class="half"></div></div><span class="val na">Blocked</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Graphify</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:81%"></span></div></div><span class="val up">+70.45%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:14.4%"></span></div><div class="half"></div></div><span class="val down">−12.49%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">LeanCTX</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:35.9%"></span></div></div><span class="val up">+31.24%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:18.8%"></span></div></div><span class="val up">+16.33%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Snip</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:23.3%"></span></div></div><span class="val up">+20.29%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:30.6%"></span></div><div class="half"></div></div><span class="val down">−26.61%</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">Cartog</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:59.8%"></span></div></div><span class="val up">+52.02%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar na"></span></div><div class="half"></div></div><span class="val na">Blocked</span></div>
-          </div>
-          <div class="trow">
-            <h3 class="tname">CodeScope</h3>
-            <div class="crow"><span class="clab">Codex</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:13%"></span></div></div><span class="val up">+11.34%</span></div>
-            <div class="crow"><span class="clab">OpenCode</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:0.6%"></span></div><div class="half"></div></div><span class="val down">−0.52%</span></div>
-          </div>
-
-          <p class="chart-foot">Bars share one scale: the largest change (Token Savior on Codex, +86.96%) spans the full half-track. Each condition ran 6 accepted tasks across Fastify and Beets.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="method">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Experimental design</p>
-          <h2>Normal use, persistent sessions, matched controls.</h2>
-          <p>Every condition used the product’s documented native integration without evaluator-forced tool calls. Each session carried state through feature implementation, behavior-preserving refactoring, and code review/correction.</p>
-        </div>
-        <div class="grid3">
-          <article class="mini"><b>Workloads</b><p>Fastify and Beets: one TypeScript project and one Python project.</p></article>
-          <article class="mini"><b>Session model</b><p>Three sequential tasks in one persistent agent session.</p></article>
-          <article class="mini"><b>Conditions</b><p>14 Codex profiles and 13 OpenCode profiles with runtime-matched controls.</p></article>
-          <article class="mini"><b>Primary measure</b><p>Fresh input + 0.1 × cached input + 6 × output.</p></article>
-          <article class="mini"><b>Correctness</b><p>All 162 reported tasks passed the active compile-based acceptance checks.</p></article>
-          <article class="mini"><b>Evidence snapshot</b><p>Frozen 2026-08-08 registry and recoverable workflow artifacts.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="results">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Sequence detail</p>
-          <h2>The direction often flipped across runtimes.</h2>
-          <p>Sequence-level weighted token-cost change for every product and runtime condition. Color shows direction and magnitude, not statistical significance. These are descriptive treatment-to-baseline deltas, not a stable leaderboard.</p>
-        </div>
-
-        <div class="card heat">
-          <div class="heat-grid">
-            <div class="heat-head" aria-hidden="true">
-              <span></span><span>Codex · Fastify</span><span>Codex · Beets</span><span>OpenCode · Fastify</span><span>OpenCode · Beets</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">RTK</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+38.58%</span>
-              <span class="cell up3"><span class="cl">Codex · Beets</span>+46.33%</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−16.07%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−35.66%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Serena</span>
-              <span class="cell up1"><span class="cl">Codex · Fastify</span>+2.43%</span>
-              <span class="cell dn1"><span class="cl">Codex · Beets</span>−0.89%</span>
-              <span class="cell up2"><span class="cl">OpenCode · Fastify</span>+16.42%</span>
-              <span class="cell dn4"><span class="cl">OpenCode · Beets</span>−66.34%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">TokenJuice</span>
-              <span class="cell up2"><span class="cl">Codex · Fastify</span>+18.72%</span>
-              <span class="cell dn1"><span class="cl">Codex · Beets</span>−2.79%</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−20.30%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−36.26%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Ponytail</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+39.73%</span>
-              <span class="cell up2"><span class="cl">Codex · Beets</span>+20.51%</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−14.25%</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Beets</span>−10.11%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Caveman</span>
-              <span class="cell up4"><span class="cl">Codex · Fastify</span>+54.39%</span>
-              <span class="cell up1"><span class="cl">Codex · Beets</span>+8.34%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Fastify</span>−29.27%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−25.69%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">jCodeMunch</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+33.60%</span>
-              <span class="cell up2"><span class="cl">Codex · Beets</span>+22.90%</span>
-              <span class="cell dn1"><span class="cl">OpenCode · Fastify</span>−8.25%</span>
-              <span class="cell up1"><span class="cl">OpenCode · Beets</span>+1.33%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">CodeGraph</span>
-              <span class="cell up4"><span class="cl">Codex · Fastify</span>+53.96%</span>
-              <span class="cell up3"><span class="cl">Codex · Beets</span>+43.06%</span>
-              <span class="cell dn1"><span class="cl">OpenCode · Fastify</span>−4.05%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−26.85%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">SigMap</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+35.05%</span>
-              <span class="cell up2"><span class="cl">Codex · Beets</span>+19.86%</span>
-              <span class="cell up2"><span class="cl">OpenCode · Fastify</span>+20.25%</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Beets</span>−14.28%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">LowFat</span>
-              <span class="cell na"><span class="cl">Codex · Fastify</span>Blocked</span>
-              <span class="cell na"><span class="cl">Codex · Beets</span>Blocked</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−19.21%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Beets</span>−25.12%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Token Savior</span>
-              <span class="cell up4"><span class="cl">Codex · Fastify</span>+134.51%</span>
-              <span class="cell up3"><span class="cl">Codex · Beets</span>+35.68%</span>
-              <span class="cell na"><span class="cl">OpenCode · Fastify</span>Blocked</span>
-              <span class="cell na"><span class="cl">OpenCode · Beets</span>Blocked</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Graphify</span>
-              <span class="cell up4"><span class="cl">Codex · Fastify</span>+93.86%</span>
-              <span class="cell up3"><span class="cl">Codex · Beets</span>+45.20%</span>
-              <span class="cell dn2"><span class="cl">OpenCode · Fastify</span>−21.60%</span>
-              <span class="cell dn1"><span class="cl">OpenCode · Beets</span>−3.84%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">LeanCTX</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+29.26%</span>
-              <span class="cell up3"><span class="cl">Codex · Beets</span>+33.39%</span>
-              <span class="cell up2"><span class="cl">OpenCode · Fastify</span>+13.21%</span>
-              <span class="cell up2"><span class="cl">OpenCode · Beets</span>+19.30%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Snip</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+32.57%</span>
-              <span class="cell up1"><span class="cl">Codex · Beets</span>+7.03%</span>
-              <span class="cell dn3"><span class="cl">OpenCode · Fastify</span>−46.54%</span>
-              <span class="cell dn1"><span class="cl">OpenCode · Beets</span>−7.69%</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">Cartog</span>
-              <span class="cell up4"><span class="cl">Codex · Fastify</span>+75.68%</span>
-              <span class="cell up3"><span class="cl">Codex · Beets</span>+26.49%</span>
-              <span class="cell na"><span class="cl">OpenCode · Fastify</span>Blocked</span>
-              <span class="cell na"><span class="cl">OpenCode · Beets</span>Blocked</span>
-            </div>
-            <div class="hrow">
-              <span class="hname">CodeScope</span>
-              <span class="cell up3"><span class="cl">Codex · Fastify</span>+25.11%</span>
-              <span class="cell dn1"><span class="cl">Codex · Beets</span>−3.52%</span>
-              <span class="cell up1"><span class="cl">OpenCode · Fastify</span>+5.84%</span>
-              <span class="cell dn1"><span class="cl">OpenCode · Beets</span>−6.57%</span>
-            </div>
-          </div>
-          <p class="chart-foot">Sequence-level outcomes show that the aggregate runtime split is not driven by a single product. “Blocked” means no qualified provider-backed condition was run.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="tools">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Per-tool discussion</p>
-          <h2>What each result might mean.</h2>
-          <p>Open each tool for the concise evidence-bounded interpretation. The linked technical report contains component deltas and source dossiers.</p>
-        </div>
-        <div class="tools">
-          <details class="tool"><summary>RTK <span class="chips"><span class="chip up">Codex +42.31%</span><span class="chip down">OpenCode −26.12%</span></span></summary><p>RTK filters eligible shell output. The split is consistent with OpenCode’s automatic native plugin outperforming instruction-dependent Codex routing, which included unsupported pass-through forms.</p></details>
-          <details class="tool"><summary>Serena <span class="chips"><span class="chip up">Codex +0.83%</span><span class="chip down">OpenCode −26.03%</span></span></summary><p>Language-server retrieval was nearly neutral in Codex and lower-cost in OpenCode, consistent with targeted symbols displacing more broad reading in the latter runtime.</p></details>
-          <details class="tool"><summary>TokenJuice <span class="chips"><span class="chip up">Codex +8.37%</span><span class="chip down">OpenCode −28.49%</span></span></summary><p>Automatic command-output reducers align with the OpenCode reduction. In Codex, filtering was outweighed by hook, cache, or trajectory effects.</p></details>
-          <details class="tool"><summary>Ponytail <span class="chips"><span class="chip up">Codex +30.48%</span><span class="chip down">OpenCode −12.13%</span></span></summary><p>Ponytail changes implementation policy rather than compressing an input stream. Persistent guidance can alter planning and tool trajectories, making activation runtime-specific.</p></details>
-          <details class="tool"><summary>Caveman <span class="chips"><span class="chip up">Codex +32.24%</span><span class="chip down">OpenCode −27.43%</span></span></summary><p>Caveman compresses assistant prose rather than shell output or retrieved code. Codex showed no clear behavioral activation; the OpenCode reduction could reflect terser responses or a shorter trajectory.</p></details>
-          <details class="tool"><summary>jCodeMunch <span class="chips"><span class="chip up">Codex +28.45%</span><span class="chip down">OpenCode −3.34%</span></span></summary><p>Token-budgeted symbol retrieval must repay a sizeable MCP schema and guidance surface. It nearly broke even in OpenCode but did not in Codex.</p></details>
-          <details class="tool"><summary>CodeGraph <span class="chips"><span class="chip up">Codex +48.72%</span><span class="chip down">OpenCode −15.74%</span></span></summary><p>Bounded graph queries plausibly displaced file reads in OpenCode. In Codex, graph instructions, returned context, or additional turns exceeded avoided reading.</p></details>
-          <details class="tool"><summary>SigMap <span class="chips"><span class="chip up">Codex +27.74%</span><span class="chip up">OpenCode +2.54%</span></span></summary><p>Neither runtime showed a meaningful reduction. The evaluated tasks may have been navigable with native search, leaving index and returned-map overhead unrepaid.</p></details>
-          <details class="tool"><summary>LowFat <span class="chips"><span class="chip na">Codex blocked</span><span class="chip down">OpenCode −22.24%</span></span></summary><p>A narrow automatic command filter reduced OpenCode context without requiring a retrieval decision. No qualified native Codex condition exists for comparison.</p></details>
-          <details class="tool"><summary>Token Savior <span class="chips"><span class="chip up">Codex +86.96%</span><span class="chip na">OpenCode blocked</span></span></summary><p>The broad retrieval, indexing, memory, summary, and shell surface added more weighted cost than it removed. This integrated treatment cannot identify the responsible component.</p></details>
-          <details class="tool"><summary>Graphify <span class="chips"><span class="chip up">Codex +70.45%</span><span class="chip down">OpenCode −12.49%</span></span></summary><p>OpenCode’s always-on graph guidance may have displaced some exploration. In Codex, graph and guidance overhead was not repaid by avoided source reading.</p></details>
-          <details class="tool"><summary>LeanCTX <span class="chips"><span class="chip up">Codex +31.24%</span><span class="chip up">OpenCode +16.33%</span></span></summary><p>Its broad hybrid surface spans retrieval, compressed reads, shell output, memory, and indexing. Both runtimes incurred more weighted cost; component ablation is needed.</p></details>
-          <details class="tool"><summary>Snip <span class="chips"><span class="chip up">Codex +20.29%</span><span class="chip down">OpenCode −26.61%</span></span></summary><p>Command-specific output rewriting aligns with the OpenCode reduction. The Codex increase could reflect lower rewrite coverage, pass-throughs, or a longer recovery trajectory.</p></details>
-          <details class="tool"><summary>Cartog <span class="chips"><span class="chip up">Codex +52.02%</span><span class="chip na">OpenCode blocked</span></span></summary><p>Indexed navigation and task-context bundles cost more than they displaced in Codex. OpenCode was excluded before execution after artifact-identity verification failed.</p></details>
-          <details class="tool"><summary>CodeScope <span class="chips"><span class="chip up">Codex +11.34%</span><span class="chip down">OpenCode −0.52%</span></span></summary><p>Graph/search and output archiving were effectively neutral in OpenCode and modestly higher in Codex. A near-zero single-run delta is not a stable win.</p></details>
-        </div>
-      </div>
-    </section>
-
-    <section id="accounting">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Token accounting</p>
-          <h2>Cached input drove most of the weighted difference.</h2>
-          <p>Weighted token cost is a declared accounting convention—not dollars: fresh input + 0.1 × cached input + 6 × output. Reasoning is already included within output and is not added twice.</p>
-        </div>
-
-        <div class="card components">
-          <p class="chart-title">Weighted-cost component differences</p>
-          <p class="chart-sub">Each bar is treatment minus the repeated matched baseline.</p>
-
-          <div class="comp-group">
-            <h3 class="comp-name">Codex</h3>
-            <div class="comp-row"><span class="clab">Fresh input</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:28.9%"></span></div></div><span class="val up">+0.48M</span></div>
-            <div class="comp-row"><span class="clab">Cached input</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:100%"></span></div></div><span class="val up">+1.67M</span></div>
-            <div class="comp-row"><span class="clab">Output</span><div class="axis" aria-hidden="true"><div class="half"></div><div class="half"><span class="bar pos" style="--w:22.7%"></span></div></div><span class="val up">+0.38M</span></div>
-          </div>
-
-          <div class="comp-group">
-            <h3 class="comp-name">OpenCode</h3>
-            <div class="comp-row"><span class="clab">Fresh input</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:12.2%"></span></div><div class="half"></div></div><span class="val down">−0.20M</span></div>
-            <div class="comp-row"><span class="clab">Cached input</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:49.3%"></span></div><div class="half"></div></div><span class="val down">−0.82M</span></div>
-            <div class="comp-row"><span class="clab">Output</span><div class="axis" aria-hidden="true"><div class="half"><span class="bar neg" style="--w:18.2%"></span></div><div class="half"></div></div><span class="val down">−0.30M</span></div>
-          </div>
-
-          <p class="chart-foot">Codex increased across all three weighted components. OpenCode decreased across all three, with cached-input reduction contributing most.</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="model-selection">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Claude Code baseline selection</p>
-          <h2>Sonnet 5 is the treatment model.</h2>
-          <p>We ran direct first-party Anthropic baselines with both Sonnet 5/high and Opus 5/high on the same Fastify and Beets workflows. Opus used 1,167,276.7 weighted units versus Sonnet's 897,108.2—30.12% more. Sonnet was already 73.85% above matched Codex and 22.71% above matched OpenCode weighted baselines, so subsequent Claude Code treatment experiments continue with Sonnet 5/high; Opus remains baseline-only.</p>
-        </div>
-        <div class="grid2">
-          <div class="mini"><h3>Sonnet 5/high</h3><p><strong>897,108.2</strong> weighted units across Fastify and Beets.</p></div>
-          <div class="mini"><h3>Opus 5/high</h3><p><strong>1,167,276.7</strong> weighted units—<strong>30.12%</strong> above Sonnet.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="mechanisms">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Mechanism hypotheses</p>
-          <h2>Why might the tools behave differently?</h2>
-          <p>The token components identify where cost changed, not why. These explanations are consistent with inspected source and retained traces; targeted ablations and replication are still required for causal claims.</p>
-        </div>
-        <div class="grid3">
-          <article class="mini"><h3>Automatic interception can pay</h3><p>OpenCode-native hooks and plugins can filter terminal output without waiting for the model to choose a special command. RTK, TokenJuice, Snip, and LowFat are consistent with this pattern.</p></article>
-          <article class="mini"><h3>Focused retrieval must displace reading</h3><p>Symbol or graph retrieval helps only when bounded results replace enough broad file context to repay schemas, instructions, indexes, and extra tool turns.</p></article>
-          <article class="mini"><h3>Broad integrations carry fixed cost</h3><p>Multi-surface products can add persistent guidance, schemas, memory, and tool traffic. On short tasks, that overhead may exceed local compression gains.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="limits">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Limitations</p>
-          <h2>Read the boundary before the headline.</h2>
-          <p>This study is designed as a screening experiment. Its strongest contribution is showing that runtime-specific evaluation is necessary—not selecting a universal winner.</p>
-        </div>
-        <ul class="limits">
-          <li>Each product/runtime condition has one treatment assignment per workflow; there is no within-condition replicate.</li>
-          <li>Repeated baselines are descriptive and do not provide 27 independent control pairs.</li>
-          <li>The workloads cover two projects and two languages; results may not generalize to other repositories or task families.</li>
-          <li>Weighted token cost is an accounting convention, not monetary cost.</li>
-          <li>The accounting does not identify the exact trajectory step that caused a difference.</li>
-          <li>Compile success does not establish equal maintainability, latency, memory use, or correctness outside the frozen contracts.</li>
-          <li>Cross-runtime contrasts are not a causal comparison of Codex versus OpenCode.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="data">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Open evidence</p>
-          <h2>Inspect the report, data, and workflow artifacts.</h2>
-          <p>The archived result is backed by its frozen registry, derived dataset, compact workflow evidence, and product source dossiers.</p>
-        </div>
-        <div class="grid2">
-          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md"><strong>Technical report</strong><span>Methods, exact tables, per-tool interpretation, and limitations</span></a>
-          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/audits/phase-2-lifecycle-v1-report-data-20260808.json"><strong>Derived report dataset</strong><span>Frozen JSON used to generate the publication report</span></a>
-          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/blob/main/sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/workflow-sessions-registry.json"><strong>Archived registry</strong><span>Execution-time session records, conditions, and evidence references</span></a>
-          <a class="data-link" href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations/archive/lifecycle-v1-pre-corrected-prompts-20260813/workflow-sessions"><strong>Archived workflow evidence</strong><span>Recoverable run artifacts, manifests, and final changes</span></a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="shell">
-      <span>Token Optimization Research · Archived Phase 2 evidence snapshot · 2026-08-08</span>
-      <a href="https://github.com/merlinhu1/token-optimization-research">View on GitHub</a>
-    </div>
-  </footer>
+<section id="data"><div class="shell">
+  <h2>Inspect the evidence.</h2>
+  <p class="sub">Every figure on this page is reproducible from the machine authority in the
+  repository. Invalidated runs, exclusions and disclosed spend that bought no measurement are
+  published alongside the results.</p>
+  <div class="grid">
+    <div class="box"><h3>Technical report</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Lifecycle V2 single-treatment screening</a> — method, results, threats to validity.</p></div>
+    <div class="box"><h3>Session registry</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">data/workflow-sessions.json</a> — every retained session with its token telemetry.</p></div>
+    <div class="box"><h3>Artifacts &amp; receipts</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations">sources/evaluations/</a> — per-session artifacts, protocols and audit receipts.</p></div>
+  </div>
+</div></section>
+</main>
+<footer><div class="shell">
+  <p>Lifecycle V2 single-treatment screening · evidence current as of 2026-09-21 ·
+  supersedes the archived <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md">Phase 2 Lifecycle V1 screening</a>,
+  whose corpus was deleted when V1 was retired.</p>
+  <p>All values are weighted token cost. Negative means cheaper than that runtime's own bare control.</p>
+</div></footer>
 </body>
 </html>
