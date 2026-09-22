@@ -176723,6 +176723,903 @@
         "operationally_completed": true,
         "agent_declared_task_completion_count": 6
       }
+    },
+    {
+      "schema_version": 2,
+      "session_id": "rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2",
+      "record_type": "workflow_session",
+      "evidence_type": "workflow-simulation",
+      "study_id": "phase-2-sequential-workflow-v1",
+      "experiment_group_id": "beetbox-beets-terminal-rtk-opencode-plugin-v1-05d5af94b07a-sequential-workflow-r2",
+      "objective": "individual_tool_effectiveness",
+      "evidence_stage": "reproduction",
+      "status": "completed",
+      "session_role": "individual_tool_treatment",
+      "replicate_index": 2,
+      "frozen_protocol": {
+        "protocol_id": "beets-lifecycle-sequence-v2-terminal-rtk-opencode-plugin-v1-b115b3cd5bdc",
+        "path": "sources/evaluations/protocols/beets-lifecycle-sequence-v2-terminal-rtk-opencode-plugin-v1-b115b3cd5bdc.json",
+        "sha256": "64c6ef5901ea5e54833e60f1a7552cdf747e8985d29e1cd09c679cb7c48a91ff"
+      },
+      "baseline_pool": {
+        "protocol_version": "baseline-pool-v1",
+        "protocol_fingerprint": "05d5af94b07a",
+        "identity_policy": "frozen-protocol-and-replicate; execution date is metadata only"
+      },
+      "selected_execution": {
+        "descriptor_sha256": "80633f7f5f24fcc28b828641fd5a6485f4b77fb51de44edc1f7cebbcf50630bc",
+        "descriptor": {
+          "version": "execution-condition-v1",
+          "sequence_id": "beets-lifecycle-sequence-v2",
+          "execution_role": "individual_tool_treatment",
+          "selected_profile": {
+            "profile_id": "terminal-rtk-opencode-plugin-v1",
+            "profile_type": "individual_tool",
+            "component_ids": [
+              "terminal-rtk-opencode-plugin-v1"
+            ],
+            "enabled_surfaces": [
+              "opencode-native-plugin",
+              "terminal-command-rewriting",
+              "terminal-output-compaction"
+            ],
+            "disabled_overlaps": [
+              "all unlisted surfaces"
+            ],
+            "registry_entry_sha256": "4c16063683f7ccc4f6dfd2ed0f430b9e922642f11f8e818683817528f98a89a6",
+            "registry_entry": {
+              "profile_type": "individual_tool",
+              "objective_scope": "individual_tool_effectiveness",
+              "status": "screening-ablation",
+              "substrate": "opencode-cli",
+              "disabled_overlaps": [
+                "all unlisted surfaces"
+              ],
+              "native_agent_tools_allowed": [
+                "opencode-native-shell-edit",
+                "opencode-native-file-read-search",
+                "git",
+                "verifier-commands"
+              ],
+              "forbidden_surfaces": [
+                "all external retrieval, compression, memory, MCP, skills, plugins, subagents, and web tools except the assigned product surfaces"
+              ],
+              "reset": {
+                "policy": "Delete lane-private OpenCode XDG directories, product state, generated repository treatment files, auth translation, and background processes after evidence capture."
+              },
+              "id": "terminal-rtk-opencode-plugin-v1",
+              "name": "RTK OpenCode plugin V1",
+              "enabled_surfaces": [
+                "opencode-native-plugin",
+                "terminal-command-rewriting",
+                "terminal-output-compaction"
+              ],
+              "components": [
+                {
+                  "component_id": "terminal-rtk-opencode-plugin-v1",
+                  "surface": "opencode-native-plugin/terminal-command-rewriting+output-compaction",
+                  "role": "individual_tool"
+                }
+              ],
+              "install": {
+                "policy": "Run pinned RTK 0.42.4 `rtk init --global --opencode` against the lane-private HOME; verify exact binary, source plugin, and generated plugin identities before provider execution."
+              },
+              "evaluation_protocol": {
+                "tool_use_policy": "natural",
+                "tool_state": "active-native-plugin-exact-artifact",
+                "integration_state": "official-opencode-global-plugin",
+                "assignment_proof": "provider-free exact binary, source/generated plugin, effective-config, and OpenCode debug-info proof required"
+              },
+              "source_snapshot": {
+                "repository": "rtk-ai/rtk",
+                "commit": "b34be37caf3796b69a50952a28e60e32b5daad43",
+                "version": "0.45.0",
+                "release_directory": "/opt/data/tool-candidates/releases/rtk-0.45.0",
+                "artifact": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts/rtk-x86_64-unknown-linux-musl.tar.gz",
+                "official_install_guide": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/README.md",
+                "pin_basis": "BATCH_RELEASES; the lane runner rewrites this profile's paths onto this release, so this is the version that installs"
+              },
+              "notes": "Successive OpenCode screen selected from the live compatible shortlist; measures the official command-rewriting plugin rather than the Codex instruction profile."
+            }
+          },
+          "model_facing_prompts": {
+            "rendering_contract": "sequential-model-facing-prompts-v2",
+            "profile_guidance_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "tasks": [
+              {
+                "task_id": "beets-unique-path-counter-v2",
+                "order": 1,
+                "rendered_prompt_sha256": "8e413d21b506cfd62b4bafac0a517f8a1ae84551b6bc3db19420322bc01529f5"
+              },
+              {
+                "task_id": "beets-empty-string-field-split-v2",
+                "order": 2,
+                "rendered_prompt_sha256": "4cc50df75236e66f5f7512d96f060eb7b1b63e36bd19c04a87b086eb18a9331e"
+              },
+              {
+                "task_id": "beets-date-query-alternation-v2",
+                "order": 3,
+                "rendered_prompt_sha256": "cd2078ae7b779915f23b93db515e3b21c94aa493a6ac06006da5cfe064d47912"
+              },
+              {
+                "task_id": "beets-membership-query-hashable-v2",
+                "order": 4,
+                "rendered_prompt_sha256": "0f55e370d994703faa7b40fc719aadee4d80befa84243c94fab8c3c012df226f"
+              },
+              {
+                "task_id": "beets-spotify-uri-extraction-v2",
+                "order": 5,
+                "rendered_prompt_sha256": "79d2d7dd094f603c891dce02915637e160dff142d4a1ceeb512b23625cf87ff1"
+              },
+              {
+                "task_id": "beets-lyrics-keep-synced-override-v2",
+                "order": 6,
+                "rendered_prompt_sha256": "cee41258dbb633530395f84b784f97126825b36f3540a46019b03ad8a34c0fdf"
+              }
+            ]
+          },
+          "tool_adapter": {
+            "tool_id": "rtk-opencode-plugin-v1",
+            "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+            "tool_manifest_sha256": "9db50d5a96e37fd73907b4e613e1ef82e1d7b55d04b7a04c9881db46363fe740",
+            "tool_config": {
+              "display_name": "RTK official OpenCode plugin v1",
+              "lane_name": "terminal-rtk-opencode-plugin-v1",
+              "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
+              "allowed_terms": [
+                "opencode",
+                "rtk"
+              ],
+              "data_dir_name": "terminal-rtk-opencode-plugin-v1",
+              "mounts": [
+                "{repository_root}/scripts/opencode_workflow_adapter.py",
+                "{repository_root}/scripts/token_metrics.py",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source/hooks/opencode/rtk.ts",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts"
+              ],
+              "executable": "/opt/data/.local/bin/opencode",
+              "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "binary_mount_target": "/opt/data/.local/bin/opencode",
+              "codex_wrapper": {
+                "command": "/usr/bin/python3",
+                "args": [
+                  "{repository_root}/scripts/opencode_workflow_adapter.py",
+                  "--opencode-binary",
+                  "/opt/data/.local/bin/opencode",
+                  "--expected-opencode-sha256",
+                  "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                  "--treatment",
+                  "rtk"
+                ]
+              },
+              "preflight_command": [
+                "/usr/bin/python3",
+                "{repository_root}/scripts/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/.local/bin/opencode",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "rtk",
+                "--probe"
+              ],
+              "tool_manifest_identity": "current-file-v1",
+              "path_entries": [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release",
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+              ],
+              "env": {
+                "RTK_TELEMETRY": "0"
+              },
+              "host_integration": {
+                "install_commands": [
+                  [
+                    "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                    "init",
+                    "--global",
+                    "--opencode"
+                  ]
+                ],
+                "verify_commands": [
+                  [
+                    "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                    "init",
+                    "--global",
+                    "--opencode",
+                    "--dry-run"
+                  ]
+                ],
+                "required_files": [
+                  "{codex_home}/home/.config/opencode/plugins/rtk.ts"
+                ]
+              },
+              "artifact_identities": [
+                {
+                  "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                  "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+                  "kind": "compiled-cli"
+                },
+                {
+                  "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/hooks/opencode/rtk.ts",
+                  "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb",
+                  "kind": "native-plugin-source"
+                },
+                {
+                  "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+                  "sha256": "04d366be16d7227cbc12fc59a9f44ee4dfb1cc1e197d1b9be1c5bc4efeb261e3",
+                  "kind": "runtime-adapter"
+                }
+              ],
+              "post_install_artifacts": [
+                {
+                  "path": "{codex_home}/home/.config/opencode/plugins/rtk.ts",
+                  "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb",
+                  "retain_as": "rtk-installed-plugin.ts"
+                }
+              ],
+              "effective_host_config": {
+                "required": true,
+                "source": "adapter-probe"
+              },
+              "default_tool_state": "active-native-plugin-exact-artifact"
+            },
+            "tool_config_sha256": "ee510b455d8adfe45608c97d53c86aa72c312b741a502a54a9cb97f4d4c7fd81",
+            "tool_state": "active-native-plugin-exact-artifact",
+            "tool_use_policy": "natural",
+            "command_identity": {
+              "kind": "codex_wrapper",
+              "command": [
+                "/usr/bin/python3",
+                "{repository_root}/scripts/opencode_workflow_adapter.py",
+                "--opencode-binary",
+                "/opt/data/.local/bin/opencode",
+                "--expected-opencode-sha256",
+                "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+                "--treatment",
+                "rtk"
+              ]
+            },
+            "binary_identity": {
+              "executable_token": "/usr/bin/python3",
+              "resolved_path": "/usr/bin/python3",
+              "realpath": "/usr/bin/python3.13",
+              "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+              "metadata": {
+                "size": 6812336,
+                "mode": "-rwxr-xr-x",
+                "uid": 0,
+                "gid": 0,
+                "mtime_ns": 1778015152000000000
+              },
+              "version": {
+                "command": [
+                  "/usr/bin/python3.13",
+                  "--version"
+                ],
+                "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "captured": true,
+                "exit_code": 0,
+                "output": "Python 3.13.5",
+                "truncated": false
+              }
+            },
+            "source_identity": [
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+                "exists": true,
+                "kind": "directory"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+                "exists": true,
+                "kind": "directory",
+                "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/hooks/opencode/rtk.ts",
+                "exists": true,
+                "kind": "file",
+                "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb"
+              },
+              {
+                "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release",
+                "exists": false
+              },
+              {
+                "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "04d366be16d7227cbc12fc59a9f44ee4dfb1cc1e197d1b9be1c5bc4efeb261e3"
+              },
+              {
+                "path": "{repository_root}/scripts/token_metrics.py",
+                "exists": true,
+                "kind": "file",
+                "sha256": "97cfaeb687fe7ffa04a29cbec75567fdb618b2cf35e58310ecdbda3a0aeb0158"
+              }
+            ]
+          },
+          "runtime": {
+            "docker_image": "token-eval-codex:latest",
+            "docker_image_identity": {
+              "image_ref": "token-eval-codex:latest",
+              "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+              "repo_digests": [
+                "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+              ],
+              "repo_tags": [
+                "token-eval-codex:latest"
+              ]
+            },
+            "dockerfile_path": "sources/evaluations/fixtures/container/Dockerfile",
+            "dockerfile_sha256": "47c91967ce25014ce54879514f51d2ff0326651be1087209115eff4d358226b3",
+            "fixture_runner_path": "scripts/run_codex_fixture_evaluation.py",
+            "fixture_runner_sha256": "9db50d5a96e37fd73907b4e613e1ef82e1d7b55d04b7a04c9881db46363fe740",
+            "mcp_probe_path": "scripts/probe_mcp_stdio.py",
+            "mcp_probe_sha256": "7c06ea36ee5cac933a97140b84a41405fc99b45152388e8d7c6659136af698fd",
+            "codex_entrypoint_path": "sources/evaluations/fixtures/container/codex-entrypoint.sh",
+            "codex_entrypoint_sha256": "8715fe37cb1fa3823f5f05493bc9681ce7ffc72126dfec4d64d448762c550c3c",
+            "timeout_seconds_per_task": 7200,
+            "network_isolation": {
+              "provider_access": true,
+              "model_shell_network_access": false,
+              "model_shell_enforcement": "seccomp denies AF_INET and AF_INET6 socket creation for the shell process and descendants",
+              "agent_web_tools": "disabled-by-permission",
+              "external_retrieval_audit": "fail-closed"
+            },
+            "isolation_policy": "fresh lane-specific agent home/XDG state; provider-only network with model shell and agent web tools disabled; sequential one-task prompt delivery; controller seed/verifier scripts excluded while controller-only compile and essential-smoke commands retained; no acceptance-test assets injected; agent prompts carry normal software objectives",
+            "workflow_controller_path": "scripts/run_codex_workflow_evaluation.py",
+            "workflow_controller_sha256": "814a09269a9462ed3b19242ecff20ad7d64812e4966e6f8ebb420e6a4406fefe",
+            "matrix_controller_path": "scripts/run_sequential_workflow_matrix.py",
+            "matrix_controller_sha256": "d42892eb765bf06bd5b052cb8bd570781b32fd150eb80bd3a6c0b17f3a682ec7",
+            "agent_runtime_id": "opencode-cli",
+            "model_condition": {
+              "id": "opencode-openai-gpt-5-6-sol-medium",
+              "provider": "openai",
+              "model": "gpt-5.6-sol",
+              "reasoning_effort": "medium",
+              "launcher": "scripts/run_opencode_workflow_model_condition.py"
+            }
+          },
+          "dependencies": {
+            "command": "uv sync --group test --frozen",
+            "command_sha256": "cef23fd45902c23f8b3e89b7c6360a401eb49c17cf36d742e5b625d5593c911b",
+            "lockfiles": [
+              {
+                "path": "uv.lock",
+                "snapshot_sha256": "fbf1d7a9c84b658a2433035221ba18c57508c254d711a06f305e2f610839a45f",
+                "current_fixture_sha256": null
+              }
+            ]
+          },
+          "agent_condition": {
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+            "reasoning_effort": "medium",
+            "runtime_version_condition": "captured-at-run-and-bound-to-record"
+          },
+          "isolation": {
+            "prompt_delivery": "sequential-one-task-at-a-time",
+            "seed_delivery_mode": "preseeded-composite",
+            "future_tasks_visible": false,
+            "future_seed_regressions_visible": true,
+            "controller_verification": "final-only",
+            "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+            "model_visible_acceptance_asset_paths": [],
+            "model_concealed_paths": []
+          },
+          "baseline_pool_reference": {
+            "protocol_version": "baseline-pool-v1",
+            "protocol_fingerprint": "05d5af94b07a",
+            "comparison_policy": "paired baseline and treatment must share this baseline pool fingerprint and replicate"
+          },
+          "model_condition_override": {
+            "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+            "runtime_id": "opencode-cli",
+            "provider": "openai",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium",
+            "registry_status": "active-model-comparison",
+            "launcher": {
+              "path": "scripts/run_opencode_workflow_model_condition.py",
+              "sha256": "c38d87266347dfd46c8f671ad0e22fef52841a34643b93fc769d4ebfb71ac9ce",
+              "condition_runtime_path": "scripts/workflow_model_condition_runtime.py",
+              "condition_runtime_sha256": "a6dc0f5da675a3a830ee8712dcb15925ef1ce460358fc03fa085f0a7e0865120"
+            }
+          }
+        }
+      },
+      "docker_image_identity": {
+        "image_ref": "token-eval-codex:latest",
+        "image_id": "sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe",
+        "repo_digests": [
+          "token-eval-codex@sha256:6f86d01f2c63f5029c6bb874d8f3694c24d5cd567e3d09413eccc956ba3feafe"
+        ],
+        "repo_tags": [
+          "token-eval-codex:latest"
+        ]
+      },
+      "tool_adapter_identity": {
+        "tool_id": "rtk-opencode-plugin-v1",
+        "tool_manifest": "scripts/run_codex_fixture_evaluation.py:TOOL_CONFIGS",
+        "tool_manifest_sha256": "9db50d5a96e37fd73907b4e613e1ef82e1d7b55d04b7a04c9881db46363fe740",
+        "tool_config": {
+          "display_name": "RTK official OpenCode plugin v1",
+          "lane_name": "terminal-rtk-opencode-plugin-v1",
+          "surface": "opencode-native-tool-execute-before/terminal-command-rewriting",
+          "allowed_terms": [
+            "opencode",
+            "rtk"
+          ],
+          "data_dir_name": "terminal-rtk-opencode-plugin-v1",
+          "mounts": [
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "{repository_root}/scripts/token_metrics.py",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source/hooks/opencode/rtk.ts",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts"
+          ],
+          "executable": "/opt/data/.local/bin/opencode",
+          "expected_executable_sha256": "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+          "binary_mount_target": "/opt/data/.local/bin/opencode",
+          "codex_wrapper": {
+            "command": "/usr/bin/python3",
+            "args": [
+              "{repository_root}/scripts/opencode_workflow_adapter.py",
+              "--opencode-binary",
+              "/opt/data/.local/bin/opencode",
+              "--expected-opencode-sha256",
+              "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+              "--treatment",
+              "rtk"
+            ]
+          },
+          "preflight_command": [
+            "/usr/bin/python3",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "rtk",
+            "--probe"
+          ],
+          "tool_manifest_identity": "current-file-v1",
+          "path_entries": [
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release",
+            "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime"
+          ],
+          "env": {
+            "RTK_TELEMETRY": "0"
+          },
+          "host_integration": {
+            "install_commands": [
+              [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                "init",
+                "--global",
+                "--opencode"
+              ]
+            ],
+            "verify_commands": [
+              [
+                "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+                "init",
+                "--global",
+                "--opencode",
+                "--dry-run"
+              ]
+            ],
+            "required_files": [
+              "{codex_home}/home/.config/opencode/plugins/rtk.ts"
+            ]
+          },
+          "artifact_identities": [
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime/rtk",
+              "sha256": "99e0cff729d52297a23eb832f809d9773ba7c32de818dfe76b2cdd900a951535",
+              "kind": "compiled-cli"
+            },
+            {
+              "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/hooks/opencode/rtk.ts",
+              "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb",
+              "kind": "native-plugin-source"
+            },
+            {
+              "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+              "sha256": "04d366be16d7227cbc12fc59a9f44ee4dfb1cc1e197d1b9be1c5bc4efeb261e3",
+              "kind": "runtime-adapter"
+            }
+          ],
+          "post_install_artifacts": [
+            {
+              "path": "{codex_home}/home/.config/opencode/plugins/rtk.ts",
+              "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb",
+              "retain_as": "rtk-installed-plugin.ts"
+            }
+          ],
+          "effective_host_config": {
+            "required": true,
+            "source": "adapter-probe"
+          },
+          "default_tool_state": "active-native-plugin-exact-artifact"
+        },
+        "tool_config_sha256": "ee510b455d8adfe45608c97d53c86aa72c312b741a502a54a9cb97f4d4c7fd81",
+        "tool_state": "active-native-plugin-exact-artifact",
+        "tool_use_policy": "natural",
+        "command_identity": {
+          "kind": "codex_wrapper",
+          "command": [
+            "/usr/bin/python3",
+            "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "--opencode-binary",
+            "/opt/data/.local/bin/opencode",
+            "--expected-opencode-sha256",
+            "7c4d91c84d2bfdeabb59257e3490c5e5acb08f2aacb3e42f3ddc296a1c3f1aca",
+            "--treatment",
+            "rtk"
+          ]
+        },
+        "binary_identity": {
+          "executable_token": "/usr/bin/python3",
+          "resolved_path": "/usr/bin/python3",
+          "realpath": "/usr/bin/python3.13",
+          "sha256": "4703a3d15898c0b5d81c3f939e93bdd8ca6116342093fb160ab1e01860dd7d8b",
+          "metadata": {
+            "size": 6812336,
+            "mode": "-rwxr-xr-x",
+            "uid": 0,
+            "gid": 0,
+            "mtime_ns": 1778015152000000000
+          },
+          "version": {
+            "command": [
+              "/usr/bin/python3.13",
+              "--version"
+            ],
+            "environment_path": "/opt/data/bin:/opt/data/tool-candidates/releases/rtk-0.45.0/runtime:/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release:/opt/data/tool-candidates/agent-runtimes/codex-cli-0.147.0/package/bin:/opt/data/tool-candidates/agent-runtimes/claude-code-2.1.258:/opt/data/opt/go/bin:/opt/data/opt/uv:/opt/data/opt/node-v24.18.0-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "captured": true,
+            "exit_code": 0,
+            "output": "Python 3.13.5",
+            "truncated": false
+          }
+        },
+        "source_identity": [
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/artifacts",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/runtime",
+            "exists": true,
+            "kind": "directory"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source",
+            "exists": true,
+            "kind": "directory",
+            "git_head": "b34be37caf3796b69a50952a28e60e32b5daad43"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/hooks/opencode/rtk.ts",
+            "exists": true,
+            "kind": "file",
+            "sha256": "6530c131946c84892f9522abd68d4e513e1e658d8ddbad1f59388c86ebbcb6bb"
+          },
+          {
+            "path": "/opt/data/tool-candidates/releases/rtk-0.45.0/source/target/release",
+            "exists": false
+          },
+          {
+            "path": "{repository_root}/scripts/opencode_workflow_adapter.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "04d366be16d7227cbc12fc59a9f44ee4dfb1cc1e197d1b9be1c5bc4efeb261e3"
+          },
+          {
+            "path": "{repository_root}/scripts/token_metrics.py",
+            "exists": true,
+            "kind": "file",
+            "sha256": "97cfaeb687fe7ffa04a29cbec75567fdb618b2cf35e58310ecdbda3a0aeb0158"
+          }
+        ]
+      },
+      "date": "2026-09-22",
+      "target": {
+        "fixture_id": "medium-beetbox-beets",
+        "fixture_scale": "medium-project",
+        "project_id": "beetbox-beets",
+        "repository_path": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/project/repo",
+        "initial_snapshot": {
+          "commit": "746cecf204a48667dcce8a303272ff2b79dae8a3",
+          "branch": "detached",
+          "fixture_hash": ""
+        }
+      },
+      "task_sequence": {
+        "sequence_id": "beets-lifecycle-sequence-v2",
+        "sequence_contract": "bounded-defect-repair-series",
+        "task_ids": [
+          "beets-unique-path-counter-v2",
+          "beets-empty-string-field-split-v2",
+          "beets-date-query-alternation-v2",
+          "beets-membership-query-hashable-v2",
+          "beets-spotify-uri-extraction-v2",
+          "beets-lyrics-keep-synced-override-v2"
+        ],
+        "task_classes": [
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair",
+          "defect-repair"
+        ],
+        "reset_policy": "reset source checkout, profile home, tool state, indexes, caches, generated config, and agent home before the lane; preserve repository, thread, tool, index, cache, and agent state across every sequential prompt",
+        "prompt_delivery": {
+          "mode": "sequential-one-task-at-a-time",
+          "future_tasks_visible": false,
+          "future_prompts_materialized_lazily": true,
+          "seed_delivery_mode": "preseeded-composite",
+          "future_seed_regressions_visible": true,
+          "controller_verification": "final-only",
+          "codex_thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "task_prompt_evidence": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/evidence.jsonl.gz"
+        },
+        "leakage_controls": {
+          "seed_origin_concealed": true,
+          "seed_patches_model_visible": false,
+          "git_baseline_true_root_at_lane_start": true,
+          "fixed_snapshot_objects_model_visible": false,
+          "pre_seed_reflog_entries_visible": false,
+          "concealment_verification_passed": true,
+          "task_directories_model_visible": false,
+          "controller_verifier_scripts_and_canonical_copies_model_visible": false,
+          "model_visible_acceptance_asset_paths": [],
+          "model_writable_surface": "target repository plus isolated model-output directory",
+          "verifier_integrity_passed": true,
+          "verifier_integrity_evidence": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/evidence.jsonl.gz#verifier-integrity.json",
+          "model_prompts_sanitized": true,
+          "upstream_remote_removed_from_model_facing_repo": true,
+          "broken_start_committed_as_local_baseline": true,
+          "remaining_limitations": [
+            "Future semantic regression code is present from lane start. Agent prompts state normal software objectives and do not disclose controller scoring. Compile, essential-smoke, and controller verifier commands remain controller-only; no acceptance-test assets are injected.",
+            "Task semantics and verifier names may still be searchable if the model intentionally uses external network access."
+          ]
+        }
+      },
+      "profile": {
+        "profile_id": "terminal-rtk-opencode-plugin-v1",
+        "profile_type": "individual_tool",
+        "enabled_surfaces": [
+          "opencode-native-plugin",
+          "terminal-command-rewriting",
+          "terminal-output-compaction"
+        ],
+        "disabled_overlaps": [
+          "all unlisted surfaces"
+        ],
+        "component_ids": [
+          "terminal-rtk-opencode-plugin-v1"
+        ]
+      },
+      "agent": {
+        "runtime_id": "opencode-cli",
+        "model_condition_id": "opencode-openai-gpt-5-6-sol-medium",
+        "name": "OpenCode CLI",
+        "version": "1.18.9",
+        "provider": "openai",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium",
+        "temperature": null,
+        "max_turns": null,
+        "time_budget_seconds": 43200
+      },
+      "state_policy": {
+        "reset_before_session": [
+          "repository working tree",
+          "profile home",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "temporary directories"
+        ],
+        "persist_between_tasks": [
+          "repository source working tree and model-facing Git metadata from one composite broken-start root",
+          "tool indexes and caches",
+          "generated config",
+          "agent home",
+          "memory/state stores enabled by the active profile",
+          "run artifacts"
+        ]
+      },
+      "cumulative_token_usage": {
+        "measurement_source": "opencode-jsonl-step-finish-usage",
+        "fresh_input_tokens": 98661,
+        "cached_input_tokens": 3703424,
+        "cache_write_tokens": 0,
+        "output_tokens": 15556,
+        "reasoning_tokens": 2064,
+        "total_provider_tokens": 3817641,
+        "weighted_token_cost": 562339.4,
+        "weighted_token_cost_formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+        "agent_steps": 136,
+        "agent_step_definition": "count of completed agent items (agent_message, command_execution, file_change, todo_list)",
+        "agent_step_types": {
+          "text": 30,
+          "tool_use": 106
+        },
+        "weighted_token_cost_per_step": 4134.8,
+        "provider_usage_details": {
+          "runtime": "opencode-cli",
+          "accounting_mode": "sum-unique-incremental-step-finish-parts",
+          "raw_token_field_totals": {},
+          "fresh_input_formula": "input + cache.write",
+          "reasoning_tokens_available": true
+        },
+        "accounting_basis": "OpenCode CLI telemetry; the sole evaluation metric is weighted token cost"
+      },
+      "per_task_results": [
+        {
+          "task_id": "beets-unique-path-counter-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-01",
+          "order": 1,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-01-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-01-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-empty-string-field-split-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-02",
+          "order": 2,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-02-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-02-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-date-query-alternation-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-03",
+          "order": 3,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-03-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-03-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-membership-query-hashable-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-04",
+          "order": 4,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-04-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-04-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-spotify-uri-extraction-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-05",
+          "order": 5,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-05-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-05-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        },
+        {
+          "task_id": "beets-lyrics-keep-synced-override-v2",
+          "task_class": "defect-repair",
+          "task_alias": "task-06",
+          "order": 6,
+          "agent_attempted": true,
+          "codex_exit_code": 0,
+          "thread_continuity_passed": true,
+          "thread_id": "ses_f3629164fffemC1F5lSR4NlRnc",
+          "controller_verification": "passed",
+          "accepted": true,
+          "task_delta": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-06-agent.diff",
+          "usage_events": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/task-06-codex-events.jsonl",
+          "operational_retry_count": 0,
+          "verifier_exit_code": 0,
+          "verifier_passed": true
+        }
+      ],
+      "software_quality": {
+        "tasks_attempted": 6,
+        "tasks_agent_claimed_complete": 6,
+        "tasks_passed": 6,
+        "final_verifier_command": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/verify-workflow.sh",
+        "final_verifier_passed": true,
+        "project_compile_command": "uv run --offline --frozen python -c \"import ast, pathlib; [ast.parse(p.read_text(), filename=str(p)) for root in ('beets', 'beetsplug') for p in pathlib.Path(root).rglob('*.py')]\"",
+        "project_compile_passed": true,
+        "functional_verifier_passed": true,
+        "quality_review_status": "not-reviewed",
+        "quality_score": null,
+        "critical_failures": []
+      },
+      "execution_integrity": {
+        "verifier_integrity_passed": true,
+        "tool_isolation_audit_passed": true,
+        "external_retrieval_hits": [],
+        "pass_through_tool_command_hits": []
+      },
+      "artifacts": {
+        "artifact_contract": "compact-v1-four-files",
+        "root": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2",
+        "run_record": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/run.json",
+        "final_diff": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/changes.diff",
+        "final_diff_basis": "ordered cumulative checkpoints plus final cumulative source diff from one composite root",
+        "evidence_bundle": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/evidence.jsonl.gz",
+        "manifest": "sources/evaluations/workflow-sessions/rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2/manifest.sha256"
+      },
+      "interpretation": {
+        "accepted_for_execution": true,
+        "accepted_for_objective": true,
+        "claim_status": "token-accounting-eligible",
+        "comparison_baseline_session_id": "opencode-beets-20260918-p-05d5af94b07a-r2",
+        "standalone_runtime_control": false,
+        "exclusion_reason": "",
+        "notes": "Provider-backed lane completed with clean integrity; task acceptance and broader review outcomes do not gate weighted-token sample retention.",
+        "scope_note": "Full warm-state lane; all regressions are preseeded, prompts are disclosed sequentially, and controller verification runs only after the final prompt; declared acceptance assertions remain model-visible.",
+        "evaluation_validity": "valid",
+        "primary_objective_hard_baseline": false,
+        "usable_for_primary_objective_token_comparison": true,
+        "operationally_completed": true,
+        "agent_declared_task_completion_count": 6
+      }
     }
   ]
 }

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-22",
+  "action": "per-task-timeout-disclosure-partial-arm-retained",
+  "verdict": "rtk-opencode-beets-retained-fastify-unmeasured-slot-free",
+  "authority": "experiment-owner direction on 2026-09-22 to evaluate five further OpenCode tools",
+  "what_was_attempted": {
+    "profile_id": "terminal-rtk-opencode-plugin-v1",
+    "replicate_index": 2,
+    "sequences": ["beets-lifecycle-sequence-v2", "fastify-lifecycle-sequence-v2"],
+    "timeout_seconds_per_task": 7200,
+    "model_condition": "opencode-openai-gpt-5-6-sol-medium"
+  },
+  "beets_lane_retained": {
+    "session_id": "rtk-opencode-v1-beets-20260922-p-05d5af94b07a-r2",
+    "weighted_token_cost": 562339.4,
+    "agent_steps": 136,
+    "tasks_passed": 6,
+    "task_count": 6,
+    "project_compile_passed": true,
+    "note": "The Beets lane ran to completion and exited zero. It was never published only because the matrix aborts publication when a sibling lane fails, and this lane's sibling timed out. The record and artifacts are the runner's own output, copied into the controller checkout unchanged and validated against the session schema by repository validation."
+  },
+  "fastify_lane_unmeasured": {
+    "session_id_not_published": "rtk-opencode-v1-fastify-20260922-p-4c934a33cbd1-r2",
+    "weighted_token_cost": 91230.6,
+    "scope": "task-01 only; task-02 was killed at the 7200s per-task timeout and its event file is zero bytes",
+    "measurement_basis": "provider-reported OpenCode step_finish usage summed over the retained task event files, then weighted_token_cost over the sum",
+    "note": "Real consumed budget with no usable result. NOT a zero-spend receipt. No session record was created and no comparison was published."
+  },
+  "cause": {
+    "finding": "RTK is pathologically slow on the Fastify lane under this runtime. It is not a stall, a quota exhaustion, or a credential failure.",
+    "evidence": "OpenCode's own log shows the session streaming from openai/gpt-5.6-sol, evaluating permissions and advancing its loop with no error entries right up to the kill, having reached only step 9 and step 10. The bare control completes a Fastify lane in 129-136 agent steps, so reaching step 10 inside a 7200s task budget is roughly twelve minutes per step.",
+    "ruled_out": [
+      "provider usage limit: no AI_APICallError or usage-limit entry anywhere in the lane",
+      "credential expiry: access_token valid to 2026-09-28, last_refresh 2026-09-18",
+      "apparatus defect: the Beets lane of the same launch completed 6/6 on the same adapter, binary and config"
+    ],
+    "plausible_mechanism_not_established": "RTK rewrites terminal commands and compacts terminal output, and the Fastify task contract asks the model to run the project suite as its final verification step. A per-command overhead on a lane whose verification is a full JavaScript test suite is a coherent explanation and is not demonstrated here."
+  },
+  "slot_disposition": {
+    "fastify_r2": "free",
+    "beets_r2": "occupied by the retained session",
+    "reasoning": "A task killed by the harness's own time budget produced no complete workflow measurement, so no record occupies the Fastify slot. The Beets lane produced a complete measurement and is retained. Neither lane was dropped for the number it returned."
+  },
+  "campaign_consequence": {
+    "decision": "Continue the remaining tools rather than halt. The failure is specific to this product and lane, the sibling lane of the same launch succeeded, and the two ruled-out causes are the ones that would make further spend futile.",
+    "if_rerun": "A Fastify retry would need a materially larger per-task budget, which changes timeout_seconds_per_task and therefore mints a protocol identity differing from the control's. That is a declared apparatus change rather than a like-for-like rerun, and it is not done here."
+  }
+}
