@@ -41,7 +41,7 @@ HEADROOM_WHEEL = Path(
     "/opt/data/tool-candidates/headroom/dist/headroom_ai-0.28.0-cp310-abi3-linux_x86_64.whl"
 )
 SERENA_ROOT = Path("/opt/data/tool-candidates/serena")
-CARTOG_BINARY = Path("/opt/data/tool-candidates/cartog/target/release/cartog")
+CARTOG_BINARY = Path("/opt/data/tool-candidates/releases/cartog-0.32.2/runtime/cartog")
 NODE_BINARY = Path("/opt/data/opt/node-v24.18.0-linux-x64/bin/node")
 SDL_MCP_ROOT = Path("/opt/data/tool-candidates/sdl-mcp")
 SDL_MCP_MAIN = SDL_MCP_ROOT / "dist" / "main.js"
