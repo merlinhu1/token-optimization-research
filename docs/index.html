@@ -99,10 +99,10 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></div>
 <main id="top">
 <header class="hero"><div class="shell">
-  <span class="tag">Lifecycle V2 · current evidence · 2026-09-21</span>
+  <span class="tag">Lifecycle V2 · current evidence · 2026-09-23</span>
   <h1>The runtime decides whether a token-saving tool saves tokens.</h1>
   <p class="lede">Fifteen products, measured one at a time against matched controls on two real
-  repositories and three coding-agent runtimes. In <strong>12 of 26</strong> comparisons that exist
+  repositories and three coding-agent runtimes. In <strong>15 of 26</strong> comparisons that exist
   on more than one runtime, the same product changes the <em>direction</em> of its effect when the
   host agent changes.</p>
   <div class="cta">
@@ -116,8 +116,8 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></header>
 <div class="shell">
   <div class="stats">
-    <div class="stat"><b>12 of 26</b><span>Comparisons where the runtime flips the direction of the effect</span></div>
-    <div class="stat"><b>9 of 31</b><span>Product–runtime pairs where the two repositories disagree on direction</span></div>
+    <div class="stat"><b>15 of 26</b><span>Comparisons where the runtime flips the direction of the effect</span></div>
+    <div class="stat"><b>10 of 35</b><span>Product–runtime pairs where the two repositories disagree on direction</span></div>
     <div class="stat"><b>10 of 13</b><span>Products that reduce cost on both Claude Code lanes — against 5 of 15 on Codex</span></div>
     <div class="stat"><b>693 / 726</b><span>Recorded task outcomes passing their controller verifiers</span></div>
   </div>
@@ -131,7 +131,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
   about a quarter on both Claude Code lanes. This is the central result, and it is why a
   single-runtime recommendation is not supportable from this corpus.</p>
   <div class="grid">
-    <div class="box"><h3>The repository matters too</h3><p>Nine of thirty-one product–runtime pairs
+    <div class="box"><h3>The repository matters too</h3><p>Ten of thirty-five product–runtime pairs
     change direction between the two fixtures alone. SigMap on Claude Code saves 18.6% on Fastify
     and costs 51.8% more on Beets. A product evaluated on one repository has not been evaluated.</p></div>
     <div class="box"><h3>Claude Code is where these products pay</h3><p>Ten of thirteen reduce cost
@@ -163,7 +163,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       <tr><th scope="col" rowspan="2">Product</th>
         <th scope="col" colspan="2" class="grp">Codex CLI</th>
         <th scope="col" colspan="2" class="grp">Claude Code</th>
-        <th scope="col" colspan="2" class="grp">OpenCode CLI <span style="text-transform:none;font-weight:500">(preliminary)</span></th></tr>
+        <th scope="col" colspan="2" class="grp">OpenCode CLI <span style="text-transform:none;font-weight:500">(8 of 16)</span></th></tr>
       <tr><th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
           <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
           <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th></tr>
@@ -186,8 +186,14 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.97%"></span></div>
           <span class="val neg">-13.0%</span><span class="n">n=1</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.66%"></span></div>
+          <span class="val neg">-15.4%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:18.09%"></span></div>
+          <span class="val pos">+26.2%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">Caveman</th>
         <td class="cell">
@@ -232,8 +238,14 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.37%"></span></div>
           <span class="val pos">+3.4%</span><span class="n">n=1</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.42%"></span></div>
+          <span class="val neg">-9.3%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:1.33%"></span></div>
+          <span class="val neg">-1.9%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">CodeScope</th>
         <td class="cell">
@@ -339,7 +351,10 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-24.2%</span><span class="n">n=2</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.44%"></span></div>
+          <span class="val pos">+0.6%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">RepoWise</th>
         <td class="cell">
@@ -372,8 +387,14 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.83%"></span></div>
           <span class="val neg">-25.8%</span><span class="n">n=2</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.34%"></span></div>
+          <span class="val neg">-13.5%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.07%"></span></div>
+          <span class="val neg">-8.8%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">SigMap</th>
         <td class="cell">
@@ -452,8 +473,14 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:19.98%"></span></div>
           <span class="val neg">-28.9%</span><span class="n">n=1</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:35.95%"></span></div>
+          <span class="val neg">-52.0%</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.90%"></span></div>
+          <span class="val neg">-1.3%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">jCodeMunch</th>
         <td class="cell">
@@ -490,7 +517,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
     resource grounds by owner direction. Controls: 3 replicates per repository.</p></div>
     <div class="box"><h3>Claude Code — 13 products</h3><p>Near-complete. Controls: 5 replicates on
     Fastify, 6 on Beets — the deepest control pool in the corpus.</p></div>
-    <div class="box"><h3>OpenCode CLI — 3 of 16</h3><p>Preliminary. Thirteen profiles unrun. Snip
+    <div class="box"><h3>OpenCode CLI — 8 of 16</h3><p>Half covered. Eight profiles unrun, and RTK holds Beets only after a per-task timeout on Fastify. Snip
     and Token Savior have no runnable OpenCode profile at all, so this arm cannot mirror the Codex
     sweep even with unlimited budget.</p></div>
   </div>
@@ -530,7 +557,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></section>
 </main>
 <footer><div class="shell">
-  <p>Lifecycle V2 single-treatment screening · evidence current as of 2026-09-21 ·
+  <p>Lifecycle V2 single-treatment screening · evidence current as of 2026-09-23 ·
   supersedes the archived <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md">Phase 2 Lifecycle V1 screening</a>,
   whose corpus was deleted when V1 was retired.</p>
   <p>All values are weighted token cost. Negative means cheaper than that runtime's own bare control.</p>

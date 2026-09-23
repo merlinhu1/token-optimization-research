@@ -23,13 +23,14 @@
   products, Claude Code 13, and OpenCode only 3 of its 16 runnable profiles. The Codex and Claude
   Code arms are the result. **The OpenCode arm is a preliminary screen and is labelled as such
   throughout.**
-- **The runtime changes the sign of the effect, not merely its size.** In **12 of 26** product-lane
+- **The runtime changes the sign of the effect, not merely its size.** In **15 of 26** product-lane
   comparisons measured on more than one runtime, the direction of the effect differs between
   runtimes. A product that reduces weighted token cost on one agent can increase it on another.
-- **The fixture changes the sign too.** In **9 of 31** product-runtime pairs, the direction differs
-  between the two fixtures of the same runtime.
+- **The fixture changes the sign too.** In **10 of 35** product-runtime pairs, the direction differs
+  between the two fixtures of the same runtime. On OpenCode the fixture never changes the *ranking*:
+  all eight products do better on Fastify than on Beets.
 - **Claude Code is where these products work.** 10 of 13 reduce weighted token cost on both lanes.
-  On Codex only 5 of 15 do.
+  On Codex only 5 of 15 do, and on OpenCode 4 of 8.
 - **Correctness was not traded away in aggregate.** 693 of 726 recorded task outcomes passed their
   controller verifiers. Exceptions are individually attributed rather than averaged away.
 - **No universal ranking is established, and none is offered.** Most cells hold a single replicate,
@@ -92,27 +93,27 @@ cheaper than the control. `n` is the number of retained replicates in that cell.
 
 | Product | Codex Fastify | Codex Beets | Claude Code Fastify | Claude Code Beets | OpenCode Fastify | OpenCode Beets |
 |---|---:|---:|---:|---:|---:|---:|
-| Cartog | -26.1% (n=1) | +1.4% (n=1) | -14.7% (n=1) | -13.0% (n=1) | — | — |
+| Cartog | -26.1% (n=1) | +1.4% (n=1) | -14.7% (n=1) | -13.0% (n=1) | -15.4% (n=1) | +26.2% (n=1) |
 | Caveman | +9.7% (n=1) | +20.6% (n=1) | -25.0% (n=2) | -32.1% (n=2) | +1.3% (n=1) | +1.3% (n=1) |
-| CodeGraph | +3.6% (n=1) | +72.4% (n=1) | +1.1% (n=1) | +3.4% (n=1) | — | — |
+| CodeGraph | +3.6% (n=1) | +72.4% (n=1) | +1.1% (n=1) | +3.4% (n=1) | -9.3% (n=1) | -1.9% (n=1) |
 | CodeScope | -4.0% (n=1) | -3.1% (n=1) | — | — | — | — |
 | Graphify | -26.5% (n=1) | +4.3% (n=1) | -12.8% (n=2) | -29.7% (n=2) | — | — |
 | LeanCTX | -24.7% (n=2) | -1.0% (n=2) | -35.4% (n=2) | -39.7% (n=2) | -62.2% (n=2) | -14.2% (n=2) |
 | Ponytail | -2.2% (n=1) | +7.6% (n=1) | -23.4% (n=2) | -32.3% (n=2) | -20.7% (n=1) | +13.4% (n=1) |
-| RTK | -9.2% (n=1) | -12.7% (n=1) | -14.2% (n=2) | -24.2% (n=2) | — | — |
+| RTK | -9.2% (n=1) | -12.7% (n=1) | -14.2% (n=2) | -24.2% (n=2) | — | +0.6% (n=1) |
 | RepoWise | -8.4% (n=1) | -0.7% (n=1) | — | — | — | — |
-| Serena | +0.8% (n=1) | +19.9% (n=1) | -24.4% (n=2) | -25.8% (n=2) | — | — |
+| Serena | +0.8% (n=1) | +19.9% (n=1) | -24.4% (n=2) | -25.8% (n=2) | -13.5% (n=1) | -8.8% (n=1) |
 | SigMap | -0.2% (n=1) | +17.9% (n=1) | -18.6% (n=1) | +51.8% (n=1) | — | — |
 | Snip | -22.0% (n=1) | -3.7% (n=1) | -21.7% (n=1) | -23.1% (n=1) | — | — |
 | Token Savior | -16.8% (n=1) | +3.3% (n=1) | -25.6% (n=2) | -48.1% (n=2) | — | — |
-| TokenJuice | -18.6% (n=1) | +0.6% (n=1) | +6.1% (n=1) | -28.9% (n=1) | — | — |
+| TokenJuice | -18.6% (n=1) | +0.6% (n=1) | +6.1% (n=1) | -28.9% (n=1) | -52.0% (n=1) | -1.3% (n=1) |
 | jCodeMunch | +11.3% (n=1) | +43.0% (n=1) | -11.0% (n=1) | -14.9% (n=1) | — | — |
 
 ## Findings
 
 ### The runtime decides the direction
 
-Twelve of the twenty-six product-lane comparisons that exist on more than one runtime **change sign**
+Fifteen of the twenty-six product-lane comparisons that exist on more than one runtime **change sign**
 between runtimes. Caveman costs 9.7% and 20.6% more on Codex, saves 25.0% and 32.1% on Claude Code,
 and is indistinguishable from the control on OpenCode. Serena costs more on both Codex lanes and
 saves roughly a quarter on both Claude Code lanes. jCodeMunch costs 11.3% and 43.0% more on Codex
@@ -124,7 +125,7 @@ as the integration itself.
 
 ### The fixture decides the direction too
 
-Nine of thirty-one product-runtime pairs change sign **between the two fixtures**, holding the
+Ten of thirty-five product-runtime pairs change sign **between the two fixtures**, holding the
 runtime constant. SigMap on Claude Code saves 18.6% on Fastify and costs 51.8% more on Beets.
 TokenJuice on Claude Code costs 6.1% more on Fastify and saves 28.9% on Beets. A product evaluated
 on one repository has not been evaluated.
@@ -156,21 +157,45 @@ specification-exposure explanation was examined and does not survive the cross-r
 measurement that would settle it is a declared ablation: LeanCTX on OpenCode with the native tools
 restored.
 
-## The OpenCode arm is preliminary
+## The OpenCode arm
 
-Three of sixteen runnable OpenCode profiles have been measured: LeanCTX, Ponytail and Caveman.
-Thirteen remain unrun, including Serena, CodeGraph, SigMap, Cartog, RepoWise and jCodeMunch. Two of
-the strongest products by measured effect elsewhere, Snip and Token Savior, have **no runnable
-OpenCode profile at all**, so this arm cannot mirror the Codex sweep even with unlimited budget.
+Eight of sixteen runnable OpenCode profiles have been measured: LeanCTX, Ponytail, Caveman, Serena,
+CodeGraph, Cartog, TokenJuice and RTK. Eight remain unrun. Two of the strongest products elsewhere,
+Snip and Token Savior, have **no runnable OpenCode profile at all**, so this arm cannot mirror the
+Codex sweep even with unlimited budget. RTK holds Beets only: its Fastify lane was killed at the
+7200s per-task budget having reached step 10 of a trajectory the control finishes in 129-136, and
+the 91,230.6 weighted tokens it spent are disclosed without a measurement
+([receipt](../../sources/evaluations/audits/rtk-opencode-fastify-timeout-20260922.json)).
 
-Until those cells exist, no aggregate OpenCode claim should be drawn from this report beyond the
-three products named, and the three carry one or two replicates each.
+### Every OpenCode product does better on Fastify than on Beets
 
-An earlier attempt at the LeanCTX OpenCode cell was invalidated as an apparatus defect: a runner bug
-registered the agent runtime itself as the product's MCP server, so the model ran with its native
-tools denied and no replacement, and its 1,735,070.4 weighted tokens bought no measurement. It is
-disclosed in full and occupies no replicate slot. The bug affected nine tool configurations and is
-fixed, which is why the OpenCode arm is young rather than merely small.
+Across all eight, without exception: LeanCTX -62.2% against -14.2%, TokenJuice -52.0% against
+-1.3%, Ponytail -20.7% against +13.4%, Cartog -15.4% against +26.2%, Serena -13.5% against -8.8%,
+CodeGraph -9.3% against -1.9%, and Caveman and RTK indistinguishable from the control on the lanes
+they hold. Eight products, one direction of difference, no counterexample.
+
+The bare control's own weighted cost per step differs about twofold between these lanes -- 7,708.2
+to 8,523.0 on Fastify against 4,412.3 to 4,685.2 on Beets -- so there is simply more per-step
+context cost available to remove on Fastify. That remains a **coherent and unproven** explanation.
+Every one of these cells is a single replicate bar LeanCTX's two, and two fixtures cannot establish
+a law about fixtures. What would test it is a third lane whose control step price is known in
+advance to fall between the two.
+
+### The products that move the metric are mostly the ones the model never calls
+
+Serena, CodeGraph and TokenJuice were each installed faithfully, each appear hundreds to thousands
+of times in the model's own event stream, each kept the agent's native tools intact -- and each was
+invoked **zero** times. All three still moved weighted token cost, TokenJuice by -52.0% on Fastify.
+Cartog is the only OpenCode treatment the model actually called, 38 times per lane, and it is the
+one that splits hardest: -15.4% on Fastify against +26.2% on Beets.
+
+Under the availability/natural-use policy zero calls is a valid observed outcome, and these were
+checked rather than assumed -- the defect receipt from the LeanCTX invalidation requires it, because
+a quiet null is exactly what a broken integration also looks like. In each case the server was
+verified registered to the product's own pinned binary, the handshake completed, and the native
+tools were untouched. The conclusion is that on this runtime these integrations act below the
+model-visible command surface, through hooks, output compaction and injected guidance, rather than
+through retrieval calls the model chooses to make.
 
 ## Threats to validity
 
