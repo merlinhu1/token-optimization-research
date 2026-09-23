@@ -7,7 +7,10 @@
   "what_was_attempted": {
     "profile_id": "terminal-rtk-opencode-plugin-v1",
     "replicate_index": 2,
-    "sequences": ["beets-lifecycle-sequence-v2", "fastify-lifecycle-sequence-v2"],
+    "sequences": [
+      "beets-lifecycle-sequence-v2",
+      "fastify-lifecycle-sequence-v2"
+    ],
     "timeout_seconds_per_task": 7200,
     "model_condition": "opencode-openai-gpt-5-6-sol-medium"
   },
@@ -45,5 +48,13 @@
   "campaign_consequence": {
     "decision": "Continue the remaining tools rather than halt. The failure is specific to this product and lane, the sibling lane of the same launch succeeded, and the two ruled-out causes are the ones that would make further spend futile.",
     "if_rerun": "A Fastify retry would need a materially larger per-task budget, which changes timeout_seconds_per_task and therefore mints a protocol identity differing from the control's. That is a declared apparatus change rather than a like-for-like rerun, and it is not done here."
+  },
+  "correction_20260923": {
+    "supersedes": "the cause block above, which attributed the Fastify timeout to pathological slowness and stated that provider usage limit was ruled out",
+    "finding": "The RTK Fastify lane was killed by the OpenAI usage limit, not by slowness. OpenCode's own log for that lane carries thirteen ERROR entries reading 'AI_APICallError: The usage limit has been reached'.",
+    "how_the_original_conclusion_was_reached_and_why_it_was_wrong": "The lane directory was grepped broadly for quota markers, which returned only false positives on the string 429 in hashes and timestamps, and OpenCode's own log was then inspected for activity rather than for provider errors. It showed the session streaming and advancing its loop, so the slow progress was read as the cause. It was the symptom: every stream errored and was retried, which is why the session sat at step 9 and step 10 for the whole task budget.",
+    "what_stands": "The disclosed spend of 91,230.6 weighted tokens, the free Fastify slot, and the retained Beets lane are all unaffected. The Beets lane completed 6/6 before the limit was reached.",
+    "what_falls": "The 'pathological slowness' reading, the inference that RTK imposes a large per-command overhead on a test-suite-heavy lane, and the claim that provider usage limit was ruled out. None of those is supported.",
+    "campaign_consequence": "The decision recorded above to continue rather than halt rested on the ruled-out causes. That reasoning was unsound, although the outcome was not: Cartog, TokenJuice, Graphify and jCodeMunch all completed afterwards, so the limit is evidently a rolling window that had recovered. It was reached again on 2026-09-23 during SigMap."
   }
 }

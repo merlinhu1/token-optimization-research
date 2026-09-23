@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-23",
+  "action": "aborted-lane-disclosure-openai-usage-limit-reached",
+  "verdict": "sigmap-opencode-produced-no-measurement-both-slots-free-campaign-halted",
+  "authority": "experiment-owner direction to continue evaluating OpenCode tools",
+  "what_was_attempted": {
+    "profile_id": "retrieval-sigmap-opencode-product-v1",
+    "replicate_index": 2,
+    "sequences_requested": ["beets-lifecycle-sequence-v2", "fastify-lifecycle-sequence-v2"],
+    "timeout_seconds_per_task": 7200
+  },
+  "cause": {
+    "finding": "The OpenAI account reached its usage limit during the Beets lane. This is provider budget exhaustion, not an apparatus defect.",
+    "provider_error": "AI_APICallError: The usage limit has been reached",
+    "occurrences": 13,
+    "where": "Beets task-03, whose event file is zero bytes; tasks 01 and 02 completed normally",
+    "presentation": "OpenCode retries the stream rather than failing fast, so the task consumed its whole 7200s budget and surfaced as a timeout. The provider error appears only in OpenCode's own log, not in the controller's."
+  },
+  "disclosed_spend": {
+    "session_id_not_published": "sigmap-opencode-v1-beets-20260923-p-05d5af94b07a-r2",
+    "weighted_token_cost": 168679.2,
+    "agent_steps_with_usage": 25,
+    "scope": "tasks 01-02 only",
+    "note": "Real consumed budget with no usable result. NOT a zero-spend receipt."
+  },
+  "slot_disposition": {
+    "beets_r2": "free",
+    "fastify_r2": "free",
+    "reasoning": "The Beets lane produced no complete workflow measurement and the Fastify lane never started, because the serialized matrix stops at the first lane failure. No record occupies either slot and neither was dropped for the number it returned."
+  },
+  "campaign_halted": {
+    "decision": "Stop launching further OpenCode tools until the quota resets.",
+    "why": "This is the second time the limit has been reached in this campaign and the third in the study. The 2026-09-19 receipt already records the rule: a relaunch before reset spends whatever remains and aborts again, adding a disclosure with no measurement.",
+    "remaining_unrun": ["retrieval-sigmap-opencode-product-v1", "retrieval-repowise-opencode-product-v2", "codescope-opencode-product-v1", "terminal-lowfat-opencode-plugin-v1", "context-dcp-opencode-plugin-v1", "retrieval-sdl-mcp-opencode-product-v1"],
+    "note": "retrieval-sdl-mcp-opencode-product-v1 is additionally expected to be refused at prepare: the adapter's SDL_MCP_ROOT does not exist and has no pinned release candidate on disk, so it needs a pin before it can run at all."
+  },
+  "related_correction": "This diagnosis prompted a correction to sources/evaluations/audits/rtk-opencode-fastify-timeout-20260922.json, whose cause block attributed the same failure mode to slowness and wrongly stated that provider usage limit had been ruled out."
+}
