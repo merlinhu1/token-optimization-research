@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-24",
+  "action": "profile-blocked-pending-adapter-support",
+  "verdict": "repowise-opencode-cannot-run-no-provider-spend-incurred",
+  "authority": "experiment-owner direction to continue evaluating OpenCode tools",
+  "profile_id": "retrieval-repowise-opencode-product-v2",
+  "finding": {
+    "cause": "The OpenCode workflow adapter has no 'repowise' treatment. The runner's preflight invokes the adapter with --treatment repowise, argparse rejects it against its choices list, and the process exits 2.",
+    "evidence": "tool_preflight_exit_code 2 with failure reason 'RepoWise ... preflight exited 2'. scripts/opencode_workflow_adapter.py TREATMENT_PROFILES contains eighteen treatments and repowise is not among them; mcp_list_exit_code was 0, so nothing else in the chain objected.",
+    "why_this_is_a_protection_rather_than_a_bug": "The adapter branch is what writes the product's MCP registration into the lane-active opencode.json. Without it the model would receive no RepoWise surface at all while the run otherwise proceeded, which is the phantom-null shape that invalidated the first LeanCTX lanes. The argparse rejection stops that before any provider spend."
+  },
+  "spend": {
+    "weighted_token_cost": 0.0,
+    "note": "Zero-spend. The failure occurred in the provider-free prepare phase; no lane reached the provider boundary."
+  },
+  "slot_disposition": {
+    "beets_r2": "free",
+    "fastify_r2": "free"
+  },
+  "required_before_this_profile_can_run": [
+    "Implement a repowise branch in _runtime_env that registers the product's MCP server in the lane-active OpenCode configuration, matching the surfaces the profile declares.",
+    "The integration shape must come from RepoWise's own documented OpenCode support rather than being inferred from how other products are wired here. Guessing it would install an evaluator-authored integration, which the faithful-installation rule forbids and which would produce a result describing this repository rather than the product."
+  ],
+  "related": {
+    "runner_side_is_defined": "TOOL_CONFIGS['repowise-opencode-product-v2'] already specifies a lane-local uv venv installed from the pinned releases/repowise-0.45.0 tree, so only the adapter half is missing.",
+    "stale_label_noted": "That entry's display_name reads 'RepoWise 0.39.0' while it installs 0.45.0. Cosmetic, and the same class as the version metadata corrected on 2026-09-21."
+  },
+  "remaining_arm_readiness": {
+    "codescope-opencode-product-v1": "adapter supports treatment codescope",
+    "terminal-lowfat-opencode-plugin-v1": "adapter supports treatment lowfat",
+    "context-dcp-opencode-plugin-v1": "adapter supports treatment dcp",
+    "retrieval-sdl-mcp-opencode-product-v1": "adapter supports treatment sdl-mcp, but SDL_MCP_ROOT does not exist and has no pinned release candidate on disk, so it needs a pin before it can run"
+  }
+}
