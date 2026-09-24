@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-24",
+  "action": "profiles-advertised-runnable-but-unconfigured",
+  "verdict": "opencode-arm-complete-at-12-of-16-four-profiles-cannot-run-as-declared",
+  "authority": "experiment-owner direction to continue evaluating OpenCode tools",
+  "finding": "Four of the sixteen OpenCode profiles carrying status screening-ablation cannot be executed. Three of them have no runner configuration of any kind, and the registry nonetheless advertises them as runnable.",
+  "unconfigured": {
+    "profiles": ["terminal-lowfat-opencode-plugin-v1", "context-dcp-opencode-plugin-v1", "retrieval-sdl-mcp-opencode-product-v1"],
+    "cause": "Each is absent from PROFILE_META and has no TOOL_CONFIGS entry whose lane_name matches its profile id. execution_condition_descriptor raises KeyError on the profile id before any lane is built.",
+    "evidence": "Every OpenCode profile that runs has both: codescope-opencode-product-v1 and sigmap-opencode-product-v1 each appear in PROFILE_META with a matching TOOL_CONFIGS lane_name. The bare 'lowfat' TOOL_CONFIGS key belongs to terminal-lowfat, a different Codex-era profile, and does not serve the OpenCode one.",
+    "additional_for_sdl": "Beyond the registration gap, the adapter's SDL_MCP_ROOT points at /opt/data/tool-candidates/sdl-mcp, which does not exist and has no pinned release candidate under releases/. It needs a pin as well as a registration."
+  },
+  "adapter_gap": {
+    "profile": "retrieval-repowise-opencode-product-v2",
+    "cause": "Registered in PROFILE_META and TOOL_CONFIGS, but the adapter has no 'repowise' treatment, so its preflight exits 2.",
+    "receipt": "sources/evaluations/audits/repowise-opencode-adapter-gap-20260924.json"
+  },
+  "spend": {
+    "weighted_token_cost": 0.0,
+    "note": "Zero-spend across all four. Every failure occurred in the provider-free prepare phase; no lane reached the provider boundary."
+  },
+  "arm_state": {
+    "measured": 12,
+    "registered_runnable": 16,
+    "complete_both_lanes": 11,
+    "beets_only": ["terminal-rtk-opencode-plugin-v1"],
+    "rtk_note": "RTK's Fastify lane was aborted by the OpenAI usage limit, receipted separately, and its slot remains free.",
+    "no_opencode_profile_at_all": ["Snip", "Token Savior"]
+  },
+  "interpretation": "The OpenCode arm is complete at twelve of sixteen in the sense that every profile the apparatus can actually execute has been executed. The remaining four are not unmeasured for want of budget; they are unmeasured because the registry declares a readiness the runner does not have. status screening-ablation should mean a profile can be launched, and for these four it does not.",
+  "required_before_the_arm_can_reach_sixteen": [
+    "Register terminal-lowfat-opencode-plugin-v1, context-dcp-opencode-plugin-v1 and retrieval-sdl-mcp-opencode-product-v1 in PROFILE_META with matching TOOL_CONFIGS entries, from each product's own documented OpenCode integration.",
+    "Pin an SDL-MCP release and point the adapter at it.",
+    "Implement the repowise adapter treatment from RepoWise's documented OpenCode support.",
+    "None of these should be inferred from how neighbouring products are wired here: an evaluator-authored integration measures this repository rather than the product."
+  ]
+}
