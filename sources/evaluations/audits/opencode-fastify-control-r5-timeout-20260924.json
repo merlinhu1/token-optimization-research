@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-24",
+  "action": "control-lane-timeout-disclosure-spend-unquantifiable",
+  "verdict": "fastify-control-r5-produced-no-measurement-slot-free-spend-real-but-unrecoverable",
+  "authority": "experiment-owner direction to deepen the OpenCode control before further treatment replicates",
+  "what_was_attempted": {
+    "profile_id": "runtime-opencode-codex-product-v1",
+    "sequence": "fastify-lifecycle-sequence-v2",
+    "replicate_index": 5,
+    "timeout_seconds_per_task": 7200,
+    "purpose": "characterise a control whose replicate-to-replicate spread widened from 16.6% to 23.6% when a third replicate was added"
+  },
+  "cause": {
+    "finding": "task-01 exceeded the 7200s per-task budget having reached step 12. This is provider slowness, not quota exhaustion and not a credential failure.",
+    "evidence": "OpenCode's log for the lane contains 138 lines, 13 loop iterations and 14 provider streams between 14:11:33Z and 16:14:15Z, and zero entries at level=ERROR. No AI_APICallError and no usage-limit text appears anywhere in the lane.",
+    "rate": "Roughly ten minutes per step. The same control completed entire Fastify lanes at 129, 136 and 145 steps in r3, r2 and r4 respectively.",
+    "significance": "This is the bare control with no treatment installed, so the slowness cannot be a property of any product. It is a property of the lane or the provider on the day.",
+    "distinct_from_the_quota_aborts": "RTK's Fastify lane and SigMap's Beets lane also timed out, but both carried thirteen AI_APICallError entries reading 'The usage limit has been reached'. This lane carries none. Two different failures present identically to the controller -- a task that runs out its budget with a zero-byte event file -- and only OpenCode's own log distinguishes them."
+  },
+  "disclosed_spend": {
+    "weighted_token_cost": null,
+    "note": "Real but unquantifiable from retained evidence. Fourteen provider streams were issued per OpenCode's log, so budget was consumed, but the adapter writes normalized events at task completion and the process was killed mid-task, leaving a zero-byte event file. There is no step_finish telemetry to sum. This is disclosed as an unmeasurable spend rather than as zero.",
+    "not_a_zero_spend_receipt": true
+  },
+  "slot_disposition": {
+    "fastify_r5": "free",
+    "reasoning": "No complete workflow measurement was produced and no record occupies the slot."
+  },
+  "control_pool_state": {
+    "lane": "fastify-lifecycle-sequence-v2",
+    "fingerprint": "4c934a33cbd1",
+    "replicates": 3,
+    "values": [1159122.6, 994352.2, 1229326.2],
+    "median": 1159122.6,
+    "spread_percent": 23.6,
+    "consequence": "The Fastify control remains uncharacterised. Its spread widened rather than converged when the third replicate landed, and the fourth attempt produced nothing. Every single-replicate Fastify treatment delta in this arm is measured against this pool and inherits its uncertainty."
+  },
+  "operational_note": "A timeout on a bare control lane means throughput on this fixture varies by roughly an order of magnitude between runs, independently of any treatment. That is a property of the measurement environment that belongs alongside the 23.6% cost spread when interpreting any Fastify result."
+}
