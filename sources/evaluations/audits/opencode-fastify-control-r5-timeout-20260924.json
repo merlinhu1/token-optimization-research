@@ -31,10 +31,22 @@
     "lane": "fastify-lifecycle-sequence-v2",
     "fingerprint": "4c934a33cbd1",
     "replicates": 3,
-    "values": [1159122.6, 994352.2, 1229326.2],
+    "values": [
+      1159122.6,
+      994352.2,
+      1229326.2
+    ],
     "median": 1159122.6,
     "spread_percent": 23.6,
     "consequence": "The Fastify control remains uncharacterised. Its spread widened rather than converged when the third replicate landed, and the fourth attempt produced nothing. Every single-replicate Fastify treatment delta in this arm is measured against this pool and inherits its uncertainty."
   },
-  "operational_note": "A timeout on a bare control lane means throughput on this fixture varies by roughly an order of magnitude between runs, independently of any treatment. That is a property of the measurement environment that belongs alongside the 23.6% cost spread when interpreting any Fastify result."
+  "operational_note": "A timeout on a bare control lane means throughput on this fixture varies by roughly an order of magnitude between runs, independently of any treatment. That is a property of the measurement environment that belongs alongside the 23.6% cost spread when interpreting any Fastify result.",
+  "second_attempt_20260925": {
+    "outcome": "Also timed out on task-01, having reached step 4 in the 7200s budget between 2026-09-24T22:24:19Z and 2026-09-25T00:24:46Z.",
+    "errors": "Zero level=ERROR entries and zero AI_APICallError. Same signature as the first attempt and worse throughput: step 4 against step 12.",
+    "conclusion": "The Fastify lane cannot currently complete a bare control task inside the declared per-task budget. Two consecutive attempts, no provider errors, progressively slower. This is environmental degradation rather than a one-off.",
+    "decision": "Stop attempting Fastify replicates. A third attempt costs two hours and another unquantifiable spend for the same expected outcome, and raising the per-task budget would mint a protocol identity differing from the control's, which is a declared apparatus change rather than a like-for-like replicate.",
+    "consequence_for_the_arm": "The Fastify control stays at three replicates with a 23.6% spread, and every single-replicate Fastify treatment delta keeps that uncertainty. Beets is unaffected: its control spread is 2.2% and its lanes complete normally, so replicate depth added there is interpretable in a way Fastify depth currently is not.",
+    "queue_change": "Ponytail and TokenJuice second replicates were recommended for their Fastify readings. Running them across both lanes now would likely lose the Beets lane to the sibling failure, as happened to RTK. They are redirected to Beets-only until Fastify throughput recovers."
+  }
 }
