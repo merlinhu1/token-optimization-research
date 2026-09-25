@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-25",
+  "action": "campaign-halted-environment-cannot-produce-measurements",
+  "verdict": "opencode-lanes-time-out-on-task-01-across-both-fixtures-with-no-provider-error",
+  "authority": "experiment-owner direction to continue replicate work without per-run confirmation",
+  "finding": "Since 2026-09-24T14:08Z no OpenCode lane has completed. Three consecutive attempts across both fixtures, including two bare-control lanes with no treatment installed, timed out on task-01 inside the 7200s per-task budget. None carries a single provider error.",
+  "timeline": {
+    "last_successful_lane": "opencode-fastify-20260924-p-4c934a33cbd1-r4, control, completed 2026-09-24T14:08:41",
+    "failures_since": [
+      {"at": "2026-09-24T14:11Z", "lane": "fastify control r5", "reached": "step 12", "errors": 0},
+      {"at": "2026-09-24T22:24Z", "lane": "fastify control r5 retry", "reached": "step 4", "errors": 0},
+      {"at": "2026-09-25T00:26Z", "lane": "beets ponytail r3", "reached": "step 11", "errors": 0}
+    ],
+    "window": "Degradation began within three minutes of the last successful lane finishing and has persisted for about ten hours."
+  },
+  "diagnosis": {
+    "not_quota": "Zero AI_APICallError and zero usage-limit text in every one of the three lanes. The quota aborts of 2026-09-22 and 2026-09-23 each carried thirteen such entries, so this is a different failure.",
+    "not_credentials": "The access token is valid to 2026-09-28 and a minimal paid probe on 2026-09-24 completed normally.",
+    "not_treatment_specific": "Two of the three failures are bare-control lanes with no product installed. The third is a plugin treatment. The failure does not depend on what is being measured.",
+    "not_fixture_specific": "Two failures on Fastify, one on Beets. Beets had been completing normally as recently as 08:42 the same day.",
+    "what_it_looks_like": "Provider throughput collapsed to roughly five to twenty minutes per agent step, against a normal rate that completes 118 to 145 steps within six task budgets. OpenCode streams, receives, and advances its loop without error; it is simply far too slow to finish a task."
+  },
+  "spend": {
+    "weighted_token_cost": null,
+    "note": "Real but unquantifiable across all three lanes. Provider streams were issued in each, but the adapter writes normalized events at task completion and every kill left a zero-byte event file, so no step_finish telemetry survives to sum. Disclosed as unmeasurable rather than as zero."
+  },
+  "slots_left_free": [
+    "fastify control r5",
+    "beets artifact-ponytail-opencode-plugin-v1 r3"
+  ],
+  "decision": {
+    "halt": "Stop launching OpenCode lanes until a cheap probe shows throughput has recovered.",
+    "reasoning": "The apparatus cannot currently produce a measurement. Each further attempt costs about two hours and an unquantifiable spend for an outcome that is now predictable. Continuing would convert budget into receipts rather than results.",
+    "explicitly_not_done": "Raising the per-task timeout would let these lanes finish, but timeout_seconds_per_task is part of the execution descriptor, so it mints a protocol identity differing from the control's. Treatments measured under a longer budget than their control are not like-for-like, and the fix for a slow environment is not a changed apparatus.",
+    "resume_condition": "Re-probe throughput before relaunching. A bare control lane completing within budget is the signal; a minimal paid probe confirms only that the provider answers, not that it answers fast enough."
+  },
+  "open_questions_left_by_the_halt": {
+    "fastify_control": "Stays at three replicates with a 23.6% spread that widened rather than converged. Every single-replicate Fastify delta in the arm inherits that uncertainty, including the two headline savings.",
+    "ponytail_fastify": "Its -20.7% reading, marginal against control noise, is still unreplicated.",
+    "tokenjuice_fastify": "Its -52.0% reading, the second largest in the arm, is still unreplicated."
+  }
+}
