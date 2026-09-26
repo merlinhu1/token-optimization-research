@@ -112,6 +112,15 @@
       "added": "scripts/probe_opencode_throughput.py generates a few hundred words under a timeout and fails when that does not complete, so the resume decision costs a couple of minutes instead of a lane.",
       "limits": "It is a point-in-time check, not a guarantee. Throughput moved from unusable to 25.4 words/s inside fifteen minutes, so a pass can still be followed by a failing lane. It bounds the cost of being wrong; it does not remove the risk.",
       "not_a_fix_for_the_provider": "Nothing here makes the provider faster. The environment cannot be repaired from this side; it can only be detected cheaply and waited out."
+    },
+    "CORRECTION_20260926": {
+      "retracted": "The claim that the defect is length-dependent generation throughput.",
+      "why_it_was_wrong": "The three measurements varied request length and wall-clock time together. The 400-word failure sat two minutes after a short success and fifteen minutes before a long success, which is equally consistent with an outage window. A mechanism was asserted from a confound that was never controlled.",
+      "owner_correction": "The experiment owner identified the cause as temporary GPT downtime, not a length effect.",
+      "decisive_evidence_against_length": "On 2026-09-26 the throughput probe returned 335 words in 15s immediately after a TokenJuice lane ran from 06:14:09Z to 08:14:43Z and reached only step 3, and it had returned 326 words in 13s immediately before that lane launched. Sustained generation of several hundred words was healthy on both sides of a two-hour lane failure, so output length cannot be what distinguishes them.",
+      "probe_limitation_now_established": "scripts/probe_opencode_throughput.py does not predict lane success. It passed twice around a lane that failed. It detects a fully unavailable provider and nothing finer, so it must not be used as a launch gate on its own -- which is exactly the role I built it for.",
+      "untested_hypothesis": "Lane requests carry very large cached input contexts -- the SigMap abort recorded 816,512 cached input tokens against 62,074 fresh -- while the probe carries almost none. Whether large-context requests stall while small ones succeed is untested. It is recorded as a hypothesis and explicitly not as a finding; the discriminating test is a probe carrying a comparable cached context, run during a failure window.",
+      "operational_consequence": "Stop launching lanes. Three consecutive treatment lanes have failed while short and medium generations stay healthy, so there is currently no cheap signal that predicts whether a lane will complete."
     }
   }
 }

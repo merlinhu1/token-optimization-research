@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Check whether OpenCode can sustain generation, not merely answer.
 
-A trivial completion returns in seconds even when the provider is too slow to run a
-lane: on 2026-09-26 a one-sentence reply took 5s while a 400-word explanation did not
-finish in 600s, and five lanes launched on the strength of short-probe successes each
-burned about two hours and produced nothing.
+This detects a provider that cannot generate at all. It does NOT predict whether a
+lane will complete: on 2026-09-26 it returned ~330 words in 13-15s both immediately
+before and immediately after a two-hour lane that reached step 3.
 
-This probe generates a few hundred words and fails when that does not complete in
-time, so the resume decision costs a couple of minutes instead of a lane.
+Use it to rule out a dead provider cheaply, never as a launch gate on its own. A
+pass means "the provider answers a few hundred words right now", which is weaker
+than "a six-task lane carrying a large cached context will finish".
 
 Exit codes: 0 sustained generation OK, 1 too slow, 2 could not run the probe.
 """
@@ -76,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
         except subprocess.TimeoutExpired:
             print(
                 f"FAIL provider did not generate ~{args.words} words within {args.timeout}s. "
-                "Lanes will time out; do not launch."
+                "Do not launch. Cause not established by this probe."
             )
             return 1
         elapsed = time.monotonic() - started
@@ -84,7 +84,7 @@ def main(argv: list[str] | None = None) -> int:
         if words < args.min_words:
             print(f"FAIL generated only {words} words in {elapsed:.0f}s (floor {args.min_words}); do not launch.")
             return 1
-        print(f"OK {words} words in {elapsed:.0f}s ({words / max(elapsed, 1):.1f} words/s). Sustained generation is healthy.")
+        print(f"OK {words} words in {elapsed:.0f}s ({words / max(elapsed, 1):.1f} words/s). Provider answers; this does NOT predict that a lane will complete.")
         return 0
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
