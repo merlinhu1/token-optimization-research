@@ -70,6 +70,8 @@ tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--line)}
 .fill{position:absolute;top:0;bottom:0;border-radius:4px;z-index:0}
 .fill.neg{background:var(--neg)}
 .fill.pos{background:var(--pos)}
+.fill.faint{opacity:.35}
+.nz{font-size:.75rem;color:var(--faint);margin-left:.15rem}
 .val{display:inline-block;min-width:58px;font-variant-numeric:tabular-nums;font-size:.82rem;margin-left:.5rem;color:var(--ink)}
 .n{font-size:.72rem;color:var(--faint);margin-left:.35rem}
 .na{font-size:.8rem;color:var(--na);font-style:italic}
@@ -99,7 +101,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></div>
 <main id="top">
 <header class="hero"><div class="shell">
-  <span class="tag">Lifecycle V2 · current evidence · 2026-09-23</span>
+  <span class="tag">Lifecycle V2 · current evidence · 2026-09-26</span>
   <h1>The runtime decides whether a token-saving tool saves tokens.</h1>
   <p class="lede">Fifteen products, measured one at a time against matched controls on two real
   repositories and three coding-agent runtimes. In <strong>15 of 26</strong> comparisons that exist
@@ -116,7 +118,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></header>
 <div class="shell">
   <div class="stats">
-    <div class="stat"><b>15 of 26</b><span>Comparisons where the runtime flips the direction of the effect</span></div>
+    <div class="stat"><b>34 of 79</b><span>Readings that exceed their own control pool’s replicate-to-replicate spread</span></div>
     <div class="stat"><b>10 of 35</b><span>Product–runtime pairs where the two repositories disagree on direction</span></div>
     <div class="stat"><b>10 of 13</b><span>Products that reduce cost on both Claude Code lanes — against 5 of 15 on Codex</span></div>
     <div class="stat"><b>693 / 726</b><span>Recorded task outcomes passing their controller verifiers</span></div>
@@ -154,6 +156,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
     <span class="key"><span class="sw" style="background:var(--neg)"></span> Lower cost than control</span>
     <span class="key"><span class="sw" style="background:var(--pos)"></span> Higher cost than control</span>
     <span class="key"><span class="sw" style="background:var(--track)"></span> No qualified run</span>
+    <span class="key">† within the control’s own spread — not distinguishable from it</span>
   </div>
   <div class="card">
   <table>
@@ -163,7 +166,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       <tr><th scope="col" rowspan="2">Product</th>
         <th scope="col" colspan="2" class="grp">Codex CLI</th>
         <th scope="col" colspan="2" class="grp">Claude Code</th>
-        <th scope="col" colspan="2" class="grp">OpenCode CLI <span style="text-transform:none;font-weight:500">(8 of 16)</span></th></tr>
+        <th scope="col" colspan="2" class="grp">OpenCode CLI <span style="text-transform:none;font-weight:500">(12 of 16)</span></th></tr>
       <tr><th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
           <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
           <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th></tr>
@@ -175,20 +178,20 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-26.1%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.96%"></span></div>
-          <span class="val pos">+1.4%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.96%"></span></div>
+          <span class="val pos">+1.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.17%"></span></div>
           <span class="val neg">-14.7%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.97%"></span></div>
-          <span class="val neg">-13.0%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.97%"></span></div>
+          <span class="val neg">-13.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.66%"></span></div>
-          <span class="val neg">-15.4%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.82%"></span></div>
+          <span class="val neg">-21.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:18.09%"></span></div>
@@ -197,8 +200,8 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       </tr>
       <tr><th scope="row">Caveman</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:6.67%"></span></div>
-          <span class="val pos">+9.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:6.67%"></span></div>
+          <span class="val pos">+9.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:14.23%"></span></div>
@@ -209,57 +212,63 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-25.0%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:22.21%"></span></div>
-          <span class="val neg">-32.1%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:22.21%"></span></div>
+          <span class="val neg">-32.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.89%"></span></div>
-          <span class="val pos">+1.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:4.08%"></span></div>
+          <span class="val neg">-5.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.93%"></span></div>
-          <span class="val pos">+1.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.93%"></span></div>
+          <span class="val pos">+1.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">CodeGraph</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.48%"></span></div>
-          <span class="val pos">+3.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.48%"></span></div>
+          <span class="val pos">+3.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:50.00%"></span></div>
           <span class="val pos">+72.4%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.76%"></span></div>
-          <span class="val pos">+1.1%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div>
+          <span class="val pos">+1.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.37%"></span></div>
-          <span class="val pos">+3.4%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.37%"></span></div>
+          <span class="val pos">+3.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.42%"></span></div>
-          <span class="val neg">-9.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.88%"></span></div>
+          <span class="val neg">-15.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:1.33%"></span></div>
-          <span class="val neg">-1.9%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.33%"></span></div>
+          <span class="val neg">-1.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">CodeScope</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:2.78%"></span></div>
-          <span class="val neg">-4.0%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.78%"></span></div>
+          <span class="val neg">-4.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:2.13%"></span></div>
-          <span class="val neg">-3.1%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.13%"></span></div>
+          <span class="val neg">-3.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.17%"></span></div>
+          <span class="val neg">-19.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.59%"></span></div>
+          <span class="val pos">+3.8%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">Graphify</th>
         <td class="cell">
@@ -267,19 +276,25 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-26.5%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.99%"></span></div>
-          <span class="val pos">+4.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.99%"></span></div>
+          <span class="val pos">+4.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.84%"></span></div>
-          <span class="val neg">-12.8%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div>
+          <span class="val neg">-12.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:20.49%"></span></div>
-          <span class="val neg">-29.7%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:20.49%"></span></div>
+          <span class="val neg">-29.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.18%"></span></div>
+          <span class="val pos">+0.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:32.41%"></span></div>
+          <span class="val pos">+46.9%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">LeanCTX</th>
         <td class="cell">
@@ -287,20 +302,20 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-24.7%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.67%"></span></div>
-          <span class="val neg">-1.0%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.67%"></span></div>
+          <span class="val neg">-1.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.43%"></span></div>
           <span class="val neg">-35.4%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:27.41%"></span></div>
-          <span class="val neg">-39.7%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:27.41%"></span></div>
+          <span class="val neg">-39.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:43.01%"></span></div>
-          <span class="val neg">-62.2%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:44.86%"></span></div>
+          <span class="val neg">-64.9%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.83%"></span></div>
@@ -309,24 +324,24 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       </tr>
       <tr><th scope="row">Ponytail</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:1.49%"></span></div>
-          <span class="val neg">-2.2%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.49%"></span></div>
+          <span class="val neg">-2.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:5.24%"></span></div>
-          <span class="val pos">+7.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:5.24%"></span></div>
+          <span class="val pos">+7.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.17%"></span></div>
           <span class="val neg">-23.4%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:22.32%"></span></div>
-          <span class="val neg">-32.3%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:22.32%"></span></div>
+          <span class="val neg">-32.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:14.33%"></span></div>
-          <span class="val neg">-20.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:18.22%"></span></div>
+          <span class="val neg">-26.4%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:9.24%"></span></div>
@@ -335,8 +350,8 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       </tr>
       <tr><th scope="row">RTK</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.34%"></span></div>
-          <span class="val neg">-9.2%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.34%"></span></div>
+          <span class="val neg">-9.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.79%"></span></div>
@@ -347,23 +362,23 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-14.2%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.69%"></span></div>
-          <span class="val neg">-24.2%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.69%"></span></div>
+          <span class="val neg">-24.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.44%"></span></div>
-          <span class="val pos">+0.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.44%"></span></div>
+          <span class="val pos">+0.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">RepoWise</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:5.82%"></span></div>
-          <span class="val neg">-8.4%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.82%"></span></div>
+          <span class="val neg">-8.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.51%"></span></div>
-          <span class="val neg">-0.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.51%"></span></div>
+          <span class="val neg">-0.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
@@ -372,8 +387,8 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       </tr>
       <tr><th scope="row">Serena</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.56%"></span></div>
-          <span class="val pos">+0.8%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.56%"></span></div>
+          <span class="val pos">+0.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:13.77%"></span></div>
@@ -384,12 +399,12 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-24.4%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.83%"></span></div>
-          <span class="val neg">-25.8%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:17.83%"></span></div>
+          <span class="val neg">-25.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.34%"></span></div>
-          <span class="val neg">-13.5%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.58%"></span></div>
+          <span class="val neg">-19.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.07%"></span></div>
@@ -398,8 +413,8 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       </tr>
       <tr><th scope="row">SigMap</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.12%"></span></div>
-          <span class="val neg">-0.2%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.12%"></span></div>
+          <span class="val neg">-0.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:12.35%"></span></div>
@@ -413,8 +428,14 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:35.76%"></span></div>
           <span class="val pos">+51.8%</span><span class="n">n=1</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.61%"></span></div>
+          <span class="val neg">-18.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:12.95%"></span></div>
+          <span class="val pos">+18.7%</span><span class="n">n=1</span>
+        </td>
       </tr>
       <tr><th scope="row">Snip</th>
         <td class="cell">
@@ -422,16 +443,16 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-22.0%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:2.57%"></span></div>
-          <span class="val neg">-3.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.57%"></span></div>
+          <span class="val neg">-3.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:14.99%"></span></div>
           <span class="val neg">-21.7%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:15.92%"></span></div>
-          <span class="val neg">-23.1%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.92%"></span></div>
+          <span class="val neg">-23.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
@@ -442,8 +463,8 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-16.8%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.27%"></span></div>
-          <span class="val pos">+3.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.27%"></span></div>
+          <span class="val pos">+3.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.72%"></span></div>
@@ -462,45 +483,51 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
           <span class="val neg">-18.6%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:0.43%"></span></div>
-          <span class="val pos">+0.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.43%"></span></div>
+          <span class="val pos">+0.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:4.20%"></span></div>
-          <span class="val pos">+6.1%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.20%"></span></div>
+          <span class="val pos">+6.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:19.98%"></span></div>
-          <span class="val neg">-28.9%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.98%"></span></div>
+          <span class="val neg">-28.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:35.95%"></span></div>
-          <span class="val neg">-52.0%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:38.30%"></span></div>
+          <span class="val neg">-55.4%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:0.90%"></span></div>
-          <span class="val neg">-1.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.90%"></span></div>
+          <span class="val neg">-1.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">jCodeMunch</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:7.79%"></span></div>
-          <span class="val pos">+11.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.79%"></span></div>
+          <span class="val pos">+11.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:29.74%"></span></div>
           <span class="val pos">+43.0%</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:7.59%"></span></div>
-          <span class="val neg">-11.0%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.59%"></span></div>
+          <span class="val neg">-11.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.30%"></span></div>
-          <span class="val neg">-14.9%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.30%"></span></div>
+          <span class="val neg">-14.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
         </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:3.43%"></span></div>
+          <span class="val neg">-5.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+        </td>
+        <td class="cell">
+          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:7.09%"></span></div>
+          <span class="val pos">+10.3%</span><span class="n">n=1</span>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -517,7 +544,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
     resource grounds by owner direction. Controls: 3 replicates per repository.</p></div>
     <div class="box"><h3>Claude Code — 13 products</h3><p>Near-complete. Controls: 5 replicates on
     Fastify, 6 on Beets — the deepest control pool in the corpus.</p></div>
-    <div class="box"><h3>OpenCode CLI — 8 of 16</h3><p>Half covered. Eight profiles unrun, and RTK holds Beets only after a per-task timeout on Fastify. Snip
+    <div class="box"><h3>OpenCode CLI — 12 of 16</h3><p>Every profile the apparatus can execute has been run. The remaining four are blocked: RepoWise has no adapter treatment, and LowFat, DCP and SDL-MCP are advertised as runnable but have no runner configuration at all. Snip
     and Token Savior have no runnable OpenCode profile at all, so this arm cannot mirror the Codex
     sweep even with unlimited budget.</p></div>
   </div>
@@ -557,7 +584,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></section>
 </main>
 <footer><div class="shell">
-  <p>Lifecycle V2 single-treatment screening · evidence current as of 2026-09-23 ·
+  <p>Lifecycle V2 single-treatment screening · evidence current as of 2026-09-26 ·
   supersedes the archived <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md">Phase 2 Lifecycle V1 screening</a>,
   whose corpus was deleted when V1 was retired.</p>
   <p>All values are weighted token cost. Negative means cheaper than that runtime's own bare control.</p>

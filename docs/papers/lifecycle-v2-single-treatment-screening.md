@@ -29,8 +29,13 @@
 - **The fixture changes the sign too.** In **10 of 35** product-runtime pairs, the direction differs
   between the two fixtures of the same runtime. On OpenCode the fixture never changes the *ranking*:
   all eight products do better on Fastify than on Beets.
-- **Claude Code is where these products work.** 10 of 13 reduce weighted token cost on both lanes.
-  On Codex only 5 of 15 do, and on OpenCode 4 of 8.
+- **Most measured effects do not exceed the noise of their own control.** Across the corpus, **34 of
+  79 readings (43%)** are larger than the replicate-to-replicate spread of the control pool they are
+  measured against. The rest cannot be distinguished from that control's own variation and are
+  marked in the results table. This is the most important limit on everything below.
+- **Claude Code reduces cost on both lanes for 10 of 13 products, but only on Fastify is that
+  separable from control noise.** Its Fastify control spans 13.7% across five replicates and 9 of 13
+  effects clear it. Its Beets control spans 44.7% across six, and only 2 of 13 clear it.
 - **Correctness was not traded away in aggregate.** 693 of 726 recorded task outcomes passed their
   controller verifiers. Exceptions are individually attributed rather than averaged away.
 - **No universal ranking is established, and none is offered.** Most cells hold a single replicate,
@@ -53,6 +58,46 @@ Read this section before the tables.
 - **Cross-runtime effect sizes do not transfer.** The same product measured on two runtimes produces
   two different numbers, and sometimes two different signs. A Claude Code figure is not an estimate
   of the same product's Codex or OpenCode figure.
+
+## Control variance is the binding constraint
+
+Every delta in this report is a treatment median against a control median. That comparison is only
+as good as the control, and the controls in this corpus vary far more than the effects being
+attributed to products.
+
+| Runtime | Lane | Control replicates | Replicate-to-replicate spread | Effects clearing it |
+|---|---|---:|---:|---:|
+| Claude Code | Fastify | 5 | 13.7% | 9 of 13 |
+| Claude Code | Beets | 6 | **44.7%** | **2 of 13** |
+| Codex | Fastify | 3 | 13.0% | 6 of 15 |
+| Codex | Beets | 3 | 8.8% | 6 of 15 |
+| OpenCode | Fastify | 3 | **23.6%** | **3 of 11** |
+| OpenCode | Beets | 2 | 2.2% | 8 of 12 |
+
+Three things follow, and they cut against the headline readings rather than supporting them.
+
+**A product can post a large number and still be indistinguishable from doing nothing.** Token
+Savior reduces Claude Code Beets cost by 48.1%, which clears that lane's 44.7% control spread only
+barely. Nine other Claude Code Beets reductions between 11% and 32% do not clear it at all. Read as
+point estimates they look like a consistent story about Claude Code; read against the control they
+are mostly silence.
+
+**Deepening a control can make it worse, not better.** The OpenCode Fastify control was measured at
+two replicates with a 16.6% spread. A third replicate moved the median 7.7% and widened the spread
+to 23.6%, and three products crossed zero as a result. Two further attempts to add a fourth produced
+nothing. A control that grows less certain with more data is not undersampled; it is genuinely
+variable, and no amount of treatment depth compensates for it.
+
+**Spread is not symmetric between lanes or runtimes, so the same delta means different things.** An
+8.8% reading is noise on Claude Code Beets and a clear effect on OpenCode Beets. Comparing raw
+percentages across cells without their control spreads attached is the single easiest way to
+misread this table.
+
+One caveat on the measure itself: min-to-max spread is sensitive to outliers, and the 44.7% figure
+is driven by one low Claude Code Beets draw at 330,528.7 against five others clustered between
+411,864.0 and 478,129.1. Excluding it gives 16.1%. The figure is reported as-measured rather than
+trimmed, because discarding an inconvenient control replicate is exactly the move this corpus
+forbids for treatments, and the same rule has to apply to controls.
 
 ## Method
 
@@ -93,21 +138,23 @@ cheaper than the control. `n` is the number of retained replicates in that cell.
 
 | Product | Codex Fastify | Codex Beets | Claude Code Fastify | Claude Code Beets | OpenCode Fastify | OpenCode Beets |
 |---|---:|---:|---:|---:|---:|---:|
-| Cartog | -26.1% (n=1) | +1.4% (n=1) | -14.7% (n=1) | -13.0% (n=1) | -15.4% (n=1) | +26.2% (n=1) |
-| Caveman | +9.7% (n=1) | +20.6% (n=1) | -25.0% (n=2) | -32.1% (n=2) | +1.3% (n=1) | +1.3% (n=1) |
-| CodeGraph | +3.6% (n=1) | +72.4% (n=1) | +1.1% (n=1) | +3.4% (n=1) | -9.3% (n=1) | -1.9% (n=1) |
-| CodeScope | -4.0% (n=1) | -3.1% (n=1) | — | — | — | — |
-| Graphify | -26.5% (n=1) | +4.3% (n=1) | -12.8% (n=2) | -29.7% (n=2) | — | — |
-| LeanCTX | -24.7% (n=2) | -1.0% (n=2) | -35.4% (n=2) | -39.7% (n=2) | -62.2% (n=2) | -14.2% (n=2) |
-| Ponytail | -2.2% (n=1) | +7.6% (n=1) | -23.4% (n=2) | -32.3% (n=2) | -20.7% (n=1) | +13.4% (n=1) |
-| RTK | -9.2% (n=1) | -12.7% (n=1) | -14.2% (n=2) | -24.2% (n=2) | — | +0.6% (n=1) |
-| RepoWise | -8.4% (n=1) | -0.7% (n=1) | — | — | — | — |
-| Serena | +0.8% (n=1) | +19.9% (n=1) | -24.4% (n=2) | -25.8% (n=2) | -13.5% (n=1) | -8.8% (n=1) |
-| SigMap | -0.2% (n=1) | +17.9% (n=1) | -18.6% (n=1) | +51.8% (n=1) | — | — |
-| Snip | -22.0% (n=1) | -3.7% (n=1) | -21.7% (n=1) | -23.1% (n=1) | — | — |
-| Token Savior | -16.8% (n=1) | +3.3% (n=1) | -25.6% (n=2) | -48.1% (n=2) | — | — |
-| TokenJuice | -18.6% (n=1) | +0.6% (n=1) | +6.1% (n=1) | -28.9% (n=1) | -52.0% (n=1) | -1.3% (n=1) |
-| jCodeMunch | +11.3% (n=1) | +43.0% (n=1) | -11.0% (n=1) | -14.9% (n=1) | — | — |
+| Cartog | -26.1% (n=1) | +1.4%† (n=1) | -14.7% (n=1) | -13.0%† (n=1) | -21.4%† (n=1) | +26.2% (n=1) |
+| Caveman | +9.7%† (n=1) | +20.6% (n=1) | -25.0% (n=2) | -32.1%† (n=2) | -5.9%† (n=1) | +1.3%† (n=1) |
+| CodeGraph | +3.6%† (n=1) | +72.4% (n=1) | +1.1%† (n=1) | +3.4%† (n=1) | -15.7%† (n=1) | -1.9%† (n=1) |
+| CodeScope | -4.0%† (n=1) | -3.1%† (n=1) | — | — | -19.1%† (n=1) | +3.8% (n=1) |
+| Graphify | -26.5% (n=1) | +4.3%† (n=1) | -12.8%† (n=2) | -29.7%† (n=2) | +0.3%† (n=1) | +46.9% (n=1) |
+| LeanCTX | -24.7% (n=2) | -1.0%† (n=2) | -35.4% (n=2) | -39.7%† (n=2) | -64.9% (n=2) | -14.2% (n=2) |
+| Ponytail | -2.2%† (n=1) | +7.6%† (n=1) | -23.4% (n=2) | -32.3%† (n=2) | -26.4% (n=1) | +13.4% (n=1) |
+| RTK | -9.2%† (n=1) | -12.7% (n=1) | -14.2% (n=2) | -24.2%† (n=2) | — | +0.6%† (n=1) |
+| RepoWise | -8.4%† (n=1) | -0.7%† (n=1) | — | — | — | — |
+| Serena | +0.8%† (n=1) | +19.9% (n=1) | -24.4% (n=2) | -25.8%† (n=2) | -19.7%† (n=1) | -8.8% (n=1) |
+| SigMap | -0.2%† (n=1) | +17.9% (n=1) | -18.6% (n=1) | +51.8% (n=1) | -18.2%† (n=1) | +18.7% (n=1) |
+| Snip | -22.0% (n=1) | -3.7%† (n=1) | -21.7% (n=1) | -23.1%† (n=1) | — | — |
+| Token Savior | -16.8% (n=1) | +3.3%† (n=1) | -25.6% (n=2) | -48.1% (n=2) | — | — |
+| TokenJuice | -18.6% (n=1) | +0.6%† (n=1) | +6.1%† (n=1) | -28.9%† (n=1) | -55.4% (n=1) | -1.3%† (n=1) |
+| jCodeMunch | +11.3%† (n=1) | +43.0% (n=1) | -11.0%† (n=1) | -14.9%† (n=1) | -5.0%† (n=1) | +10.3% (n=1) |
+
+`†` marks a reading that does **not** exceed the replicate-to-replicate spread of the control pool it is measured against, and therefore cannot be distinguished from that control's own variation. 45 of 79 readings carry it.
 
 ## Findings
 
@@ -133,8 +180,13 @@ on one repository has not been evaluated.
 ### Claude Code is the runtime where these products pay
 
 Ten of thirteen products reduce weighted token cost on both Claude Code lanes. On Codex only five of
-fifteen do — RTK, Snip, LeanCTX, CodeScope and RepoWise — and several products are substantially more
-expensive there, CodeGraph reaching +72.4% on Beets.
+fifteen do -- RTK, Snip, LeanCTX, CodeScope and RepoWise -- and several products are substantially
+more expensive there, CodeGraph reaching +72.4% on Beets.
+
+That comparison is between point estimates and should not be read as a ranking of runtimes. Against
+their own control spreads the picture narrows sharply: 9 of 13 Claude Code Fastify effects clear
+their control, but only 2 of 13 on Claude Code Beets, where the control itself spans 44.7%. The
+Claude Code advantage is real on one lane and unestablished on the other.
 
 ### LeanCTX is the only product measured on all three runtimes
 
