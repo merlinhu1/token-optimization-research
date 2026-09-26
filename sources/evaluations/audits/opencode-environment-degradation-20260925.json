@@ -8,9 +8,24 @@
   "timeline": {
     "last_successful_lane": "opencode-fastify-20260924-p-4c934a33cbd1-r4, control, completed 2026-09-24T14:08:41",
     "failures_since": [
-      {"at": "2026-09-24T14:11Z", "lane": "fastify control r5", "reached": "step 12", "errors": 0},
-      {"at": "2026-09-24T22:24Z", "lane": "fastify control r5 retry", "reached": "step 4", "errors": 0},
-      {"at": "2026-09-25T00:26Z", "lane": "beets ponytail r3", "reached": "step 11", "errors": 0}
+      {
+        "at": "2026-09-24T14:11Z",
+        "lane": "fastify control r5",
+        "reached": "step 12",
+        "errors": 0
+      },
+      {
+        "at": "2026-09-24T22:24Z",
+        "lane": "fastify control r5 retry",
+        "reached": "step 4",
+        "errors": 0
+      },
+      {
+        "at": "2026-09-25T00:26Z",
+        "lane": "beets ponytail r3",
+        "reached": "step 11",
+        "errors": 0
+      }
     ],
     "window": "Degradation began within three minutes of the last successful lane finishing and has persisted for about ten hours."
   },
@@ -39,5 +54,20 @@
     "fastify_control": "Stays at three replicates with a 23.6% spread that widened rather than converged. Every single-replicate Fastify delta in the arm inherits that uncertainty, including the two headline savings.",
     "ponytail_fastify": "Its -20.7% reading, marginal against control noise, is still unreplicated.",
     "tokenjuice_fastify": "Its -52.0% reading, the second largest in the arm, is still unreplicated."
+  },
+  "revision_20260926": {
+    "supersedes": "the blanket reading that the environment cannot produce measurements",
+    "finding": "The degradation is intermittent, not continuous. Successes and failures now interleave within hours of each other.",
+    "sequence": [
+      "2026-09-24T14:11Z fastify control r5 - failed at step 12",
+      "2026-09-24T22:24Z fastify control r5 retry - failed at step 4",
+      "2026-09-25T00:26Z beets ponytail r3 - failed at step 11",
+      "2026-09-26 fastify control r5 third attempt - SUCCEEDED, 142 steps, 6/6",
+      "2026-09-26T00:46Z beets ponytail r3 retry - failed at step 5"
+    ],
+    "consequence": "A single failed lane no longer justifies halting, and a single successful probe no longer certifies the environment. Throughput varies enough between adjacent runs that neither a success nor a failure generalises to the next launch.",
+    "what_this_costs": "Roughly two hours and an unquantifiable spend per failed attempt, with no way to predict which attempts will land. Ponytail r3 on Beets has now failed twice while the control succeeded between them.",
+    "method_change": "Rather than retry the same cell a third time, the next launch moves to a different treatment. If it lands, the failures are cell-independent bad luck and Ponytail can be retried later; if it also fails, the environment is unusable again and the halt resumes. That is a cheaper discriminator than repeating one cell.",
+    "spend": "Unquantifiable, as before. The kill leaves a zero-byte event file and no step_finish telemetry survives."
   }
 }
