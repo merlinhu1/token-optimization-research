@@ -78,5 +78,40 @@
     "cumulative_cost_of_the_window": "Five lanes at roughly two hours each, every one disclosed as unquantifiable spend because the kill leaves a zero-byte event file with no step_finish telemetry to sum.",
     "what_is_not_being_done": "Raising the per-task timeout would let these lanes finish but mints a protocol identity differing from the control's, so treatments would no longer be measured under the same budget as the control they are compared against. The environment is the problem and changing the apparatus to accommodate it would put the defect into the measurement.",
     "resume_condition": "A bare control lane completing within budget. A minimal paid probe is explicitly insufficient: one returned in six seconds on 2026-09-26 and the lane launched immediately after it still failed."
+  },
+  "measured_diagnosis_20260926": {
+    "finding": "The defect is provider generation throughput, and it is length-dependent and intermittent on a timescale of minutes. This is now measured rather than inferred from lane behaviour.",
+    "host_ruled_out": {
+      "load_average": "0.00 on 4 cores",
+      "memory": "4.4 GiB available of 7.6 GiB",
+      "disk_write": "989 MB/s to /opt/data",
+      "disk_read": "9.2 GB/s",
+      "network_latency": "20-26 ms to the provider endpoint",
+      "orphaned_containers": "none; one running container, the agent's own",
+      "conclusion": "Nothing on this machine is slow. Earlier suspicion of disk pressure at 95% full was not borne out by measurement."
+    },
+    "provider_measurements": [
+      {
+        "at": "~05:58Z",
+        "request": "one short sentence",
+        "result": "5s"
+      },
+      {
+        "at": "~06:00Z",
+        "request": "400-word explanation",
+        "result": "did not complete in 600s"
+      },
+      {
+        "at": "~06:15Z",
+        "request": "300-word explanation",
+        "result": "326 words in 13s, 25.4 words/s"
+      }
+    ],
+    "why_short_probes_certified_a_broken_environment": "Trivial completions return in seconds even while sustained generation stalls. Every readiness check used before this was a short probe, so it tested the one case that works. Five lanes were launched on that evidence and each burned about two hours for nothing.",
+    "remediation": {
+      "added": "scripts/probe_opencode_throughput.py generates a few hundred words under a timeout and fails when that does not complete, so the resume decision costs a couple of minutes instead of a lane.",
+      "limits": "It is a point-in-time check, not a guarantee. Throughput moved from unusable to 25.4 words/s inside fifteen minutes, so a pass can still be followed by a failing lane. It bounds the cost of being wrong; it does not remove the risk.",
+      "not_a_fix_for_the_provider": "Nothing here makes the provider faster. The environment cannot be repaired from this side; it can only be detected cheaply and waited out."
+    }
   }
 }
