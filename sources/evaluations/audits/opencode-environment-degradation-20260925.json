@@ -69,5 +69,14 @@
     "what_this_costs": "Roughly two hours and an unquantifiable spend per failed attempt, with no way to predict which attempts will land. Ponytail r3 on Beets has now failed twice while the control succeeded between them.",
     "method_change": "Rather than retry the same cell a third time, the next launch moves to a different treatment. If it lands, the failures are cell-independent bad luck and Ponytail can be retried later; if it also fails, the environment is unusable again and the halt resumes. That is a cheaper discriminator than repeating one cell.",
     "spend": "Unquantifiable, as before. The kill leaves a zero-byte event file and no step_finish telemetry survives."
+  },
+  "halt_resumed_20260926": {
+    "trigger": "The discriminator launched under revision_20260926 failed. TokenJuice r3 on Beets reached step 1 in the 7200s budget, with zero errors and zero quota entries.",
+    "reading": "Two different treatments on the same lane both failed, and throughput is degrading across attempts: ponytail reached step 11, then step 5, then tokenjuice step 1. The one success in this window, the Fastify control at 142 steps, now looks like the exception rather than evidence of recovery.",
+    "decision": "Halt resumed, per the rule recorded in revision_20260926. No further OpenCode lanes until a bare control completes within budget.",
+    "failed_attempts_this_window": 5,
+    "cumulative_cost_of_the_window": "Five lanes at roughly two hours each, every one disclosed as unquantifiable spend because the kill leaves a zero-byte event file with no step_finish telemetry to sum.",
+    "what_is_not_being_done": "Raising the per-task timeout would let these lanes finish but mints a protocol identity differing from the control's, so treatments would no longer be measured under the same budget as the control they are compared against. The environment is the problem and changing the apparatus to accommodate it would put the defect into the measurement.",
+    "resume_condition": "A bare control lane completing within budget. A minimal paid probe is explicitly insufficient: one returned in six seconds on 2026-09-26 and the lane launched immediately after it still failed."
   }
 }
