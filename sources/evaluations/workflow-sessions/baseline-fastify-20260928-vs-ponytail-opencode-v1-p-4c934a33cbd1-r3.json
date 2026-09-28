@@ -1,0 +1,58 @@
+{
+  "schema_version": 3,
+  "comparison_id": "baseline-fastify-20260928-vs-ponytail-opencode-v1-p-4c934a33cbd1-r3",
+  "study_id": "phase-2-sequential-workflow-v1",
+  "objective": "individual_tool_effectiveness",
+  "experiment_group_id": "fastify-fastify-artifact-ponytail-opencode-plugin-v1-4c934a33cbd1-sequential-workflow-r3",
+  "comparison_design": "protocol-bound-shared-runtime-baseline-v1",
+  "baseline_reuse_policy": "one accepted bare OpenCode runtime sample per sequence, protocol fingerprint, and replicate is shared by OpenCode-native tool treatments",
+  "baseline_profile_id": "runtime-opencode-codex-product-v1",
+  "baseline_protocol_fingerprint": "4c934a33cbd1",
+  "replicate_count": 1,
+  "uncertainty": null,
+  "baseline_pool_spread": {
+    "replicates": 4,
+    "runtime_version": "1.18.9",
+    "weighted_token_costs": [
+      994352.2,
+      1141054.8,
+      1159122.6,
+      1229326.2
+    ],
+    "median": 1150088.7000000002,
+    "spread_percent": 23.63,
+    "session_ids": [
+      "opencode-fastify-20260918-p-4c934a33cbd1-r2",
+      "opencode-fastify-20260919-p-4c934a33cbd1-r3",
+      "opencode-fastify-20260924-p-4c934a33cbd1-r4",
+      "opencode-fastify-20260926-p-4c934a33cbd1-r5"
+    ],
+    "delta_percent_vs_median": 3.2509057779630224,
+    "delta_percent_range": [
+      -3.4042388423837346,
+      19.422172546105905
+    ]
+  },
+  "claim_status": "single-run-screening",
+  "eligible_for_ranking": false,
+  "sequence_id": "fastify-lifecycle-sequence-v2",
+  "baseline_session_id": "opencode-fastify-20260919-p-4c934a33cbd1-r3",
+  "treatment_session_id": "ponytail-opencode-v1-fastify-20260928-p-4c934a33cbd1-r3",
+  "metric": "weighted_token_cost",
+  "formula": "fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens",
+  "baseline_weighted_token_cost": 994352.2,
+  "treatment_weighted_token_cost": 1187477.0,
+  "delta_weighted_token_cost": 193124.80000000005,
+  "delta_percent": 19.422172546105905,
+  "baseline_accepted": true,
+  "treatment_accepted": true,
+  "baseline_runtime_version": "1.18.9",
+  "treatment_runtime_version": "1.18.9",
+  "runtime_version_matched": true,
+  "model_behavior_diagnostics": {
+    "baseline_tasks_passed": 6,
+    "treatment_tasks_passed": 6,
+    "task_count": 6
+  },
+  "interpretation": "Single-run weighted-token screening observation only; do not treat one pair as a population estimate. Negative weighted-token deltas mean artifact-ponytail-opencode-plugin-v1 had lower weighted token cost than the compatible retained baseline. Structured verifier and review outcomes are diagnostic and do not select the pair."
+}
