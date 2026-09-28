@@ -29,8 +29,7 @@
 - **The fixture changes the sign too.** In **10 of 35** product-runtime pairs, the direction differs
   between the two fixtures of the same runtime. On OpenCode the fixture never changes the *ranking*:
   all eight products do better on Fastify than on Beets.
-- **Most measured effects do not exceed the noise of their own control.** Across the corpus, **34 of
-  79 readings (43%)** are larger than the replicate-to-replicate spread of the control pool they are
+- **Most measured effects do not exceed the noise of their own control.** Across the corpus, **35 of 79 readings (44%)** are larger than the replicate-to-replicate spread of the control pool they are
   measured against. The rest cannot be distinguished from that control's own variation and are
   marked in the results table. This is the most important limit on everything below.
 - **Claude Code reduces cost on both lanes for 10 of 13 products, but only on Fastify is that
@@ -93,6 +92,23 @@ variable, and no amount of treatment depth compensates for it.
 percentages across cells without their control spreads attached is the single easiest way to
 misread this table.
 
+**Treatments are not steadier than controls, and their stability cannot be predicted.** Twenty cells
+now hold more than one replicate. Their own replicate-to-replicate spread ranges from **1.5% to
+49.0%**, median 17.5%, and in **9 of 20** the treatment is *less* stable than the control it is
+measured against. Nor does it track the control: Serena varies 3.6% on a lane whose control varies
+44.7%, while RTK varies 43.8% on a lane whose control varies 13.7%. Stability is a property of the
+particular product-lane cell and has to be measured there.
+
+That matters most for the **59 of 79 cells (75%) that hold a single replicate**, where stability is
+simply unknown and the observed range says it could be anywhere in that 1.5-49.0% band. Two
+examples from the same fixture, runtime and control show what is at stake: Ponytail's two Beets
+draws differ by 2.4%, so its single replicate was nearly the whole story at +13.4% against a
+two-replicate +12.1%. TokenJuice's differ by 21.8%, and its single replicate read -1.3% -- inside
+the control band, indistinguishable from doing nothing -- where the pair reads -10.1% with the
+ranges disjoint. Both were published as `n=1` with identical wording. **A replicate count records
+how many draws were taken and never how much they agreed**, so it cannot carry this distinction, and
+no reading in the single-replicate majority should be assumed to sit at the stable end.
+
 One caveat on the measure itself: min-to-max spread is sensitive to outliers, and the 44.7% figure
 is driven by one low Claude Code Beets draw at 330,528.7 against five others clustered between
 411,864.0 and 478,129.1. Excluding it gives 16.1%. The figure is reported as-measured rather than
@@ -138,23 +154,23 @@ cheaper than the control. `n` is the number of retained replicates in that cell.
 
 | Product | Codex Fastify | Codex Beets | Claude Code Fastify | Claude Code Beets | OpenCode Fastify | OpenCode Beets |
 |---|---:|---:|---:|---:|---:|---:|
-| Cartog | -26.1% (n=1) | +1.4%† (n=1) | -14.7% (n=1) | -13.0%† (n=1) | -21.4%† (n=1) | +26.2% (n=1) |
-| Caveman | +9.7%† (n=1) | +20.6% (n=1) | -25.0% (n=2) | -32.1%† (n=2) | -5.9%† (n=1) | +1.3%† (n=1) |
-| CodeGraph | +3.6%† (n=1) | +72.4% (n=1) | +1.1%† (n=1) | +3.4%† (n=1) | -15.7%† (n=1) | -1.9%† (n=1) |
-| CodeScope | -4.0%† (n=1) | -3.1%† (n=1) | — | — | -19.1%† (n=1) | +3.8% (n=1) |
-| Graphify | -26.5% (n=1) | +4.3%† (n=1) | -12.8%† (n=2) | -29.7%† (n=2) | +0.3%† (n=1) | +46.9% (n=1) |
-| LeanCTX | -24.7% (n=2) | -1.0%† (n=2) | -35.4% (n=2) | -39.7%† (n=2) | -64.9% (n=2) | -14.2% (n=2) |
-| Ponytail | -2.2%† (n=1) | +7.6%† (n=1) | -23.4% (n=2) | -32.3%† (n=2) | -26.4% (n=1) | +13.4% (n=1) |
+| Cartog | -26.1% (n=1) | +1.4%† (n=1) | -14.7% (n=1) | -13.0%† (n=1) | -20.8%† (n=1) | +26.2% (n=1) |
+| Caveman | +9.7%† (n=1) | +20.6% (n=1) | -25.0% (n=2) | -32.1%† (n=2) | -5.2%† (n=1) | +1.3%† (n=1) |
+| CodeGraph | +3.6%† (n=1) | +72.4% (n=1) | +1.1%† (n=1) | +3.4%† (n=1) | -15.1%† (n=1) | -1.9%† (n=1) |
+| CodeScope | -4.0%† (n=1) | -3.1%† (n=1) | — | — | -18.4%† (n=1) | +3.8% (n=1) |
+| Graphify | -26.5% (n=1) | +4.3%† (n=1) | -12.8%† (n=2) | -29.7%† (n=2) | +1.1%† (n=1) | +46.9% (n=1) |
+| LeanCTX | -24.7% (n=2) | -1.0%† (n=2) | -35.4% (n=2) | -39.7%† (n=2) | -64.7% (n=2) | -14.2% (n=2) |
+| Ponytail | -2.2%† (n=1) | +7.6%† (n=1) | -23.4% (n=2) | -32.3%† (n=2) | -25.8% (n=1) | +12.1% (n=2) |
 | RTK | -9.2%† (n=1) | -12.7% (n=1) | -14.2% (n=2) | -24.2%† (n=2) | — | +0.6%† (n=1) |
 | RepoWise | -8.4%† (n=1) | -0.7%† (n=1) | — | — | — | — |
-| Serena | +0.8%† (n=1) | +19.9% (n=1) | -24.4% (n=2) | -25.8%† (n=2) | -19.7%† (n=1) | -8.8% (n=1) |
-| SigMap | -0.2%† (n=1) | +17.9% (n=1) | -18.6% (n=1) | +51.8% (n=1) | -18.2%† (n=1) | +18.7% (n=1) |
+| Serena | +0.8%† (n=1) | +19.9% (n=1) | -24.4% (n=2) | -25.8%† (n=2) | -19.0%† (n=1) | -8.8% (n=1) |
+| SigMap | -0.2%† (n=1) | +17.9% (n=1) | -18.6% (n=1) | +51.8% (n=1) | -17.6%† (n=1) | +18.7% (n=1) |
 | Snip | -22.0% (n=1) | -3.7%† (n=1) | -21.7% (n=1) | -23.1%† (n=1) | — | — |
 | Token Savior | -16.8% (n=1) | +3.3%† (n=1) | -25.6% (n=2) | -48.1% (n=2) | — | — |
-| TokenJuice | -18.6% (n=1) | +0.6%† (n=1) | +6.1%† (n=1) | -28.9%† (n=1) | -55.4% (n=1) | -1.3%† (n=1) |
-| jCodeMunch | +11.3%† (n=1) | +43.0% (n=1) | -11.0%† (n=1) | -14.9%† (n=1) | -5.0%† (n=1) | +10.3% (n=1) |
+| TokenJuice | -18.6% (n=1) | +0.6%† (n=1) | +6.1%† (n=1) | -28.9%† (n=1) | -55.1% (n=1) | -10.1% (n=2) |
+| jCodeMunch | +11.3%† (n=1) | +43.0% (n=1) | -11.0%† (n=1) | -14.9%† (n=1) | -4.2%† (n=1) | +10.3% (n=1) |
 
-`†` marks a reading that does **not** exceed the replicate-to-replicate spread of the control pool it is measured against, and therefore cannot be distinguished from that control's own variation. 45 of 79 readings carry it.
+`†` marks a reading that does **not** exceed the replicate-to-replicate spread of the control pool it is measured against, and therefore cannot be distinguished from that control's own variation.
 
 ## Findings
 
