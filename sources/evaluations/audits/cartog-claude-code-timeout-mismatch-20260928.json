@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-28",
+  "action": "launcher-error-disclosure-apparatus-mismatch-rejected-at-validation",
+  "verdict": "run-completed-but-rejected-slot-free-spend-disclosed-operator-error",
+  "authority": "experiment-owner direction to deepen the thinnest single-replicate claims",
+  "what_happened": {
+    "intent": "Add a second usable replicate to retrieval-cartog-claude-code-product-v1 on Fastify, whose single usable reading of -14.7% clears its control's 13.7% spread by only 1.1x.",
+    "error": "The lane was launched with --timeout-per-task 7200, carried over from the OpenCode campaign without checking what this runtime's control used. Every Claude Code Fastify control, and the usable Cartog r2, ran at 3600.",
+    "detection": "repository validation rejected the merged session: 'produced by different measurement apparatus: runtime.timeout_seconds_per_task'. The matrix rolled the merge back, and the registry is unchanged.",
+    "not_an_apparatus_defect": "Nothing was wrong with the run. It completed 6/6 tasks on Claude Code 2.1.258, matching its control's build. The treatment was simply measured under a per-task budget its control never had, which is precisely the comparability violation the gate exists to catch."
+  },
+  "disclosed_spend": {
+    "session_id_rejected": "retrieval-cartog-claude-code-product-fastify-20260928-p-94cb0f4a5c49-r3",
+    "weighted_token_cost": 557426.4,
+    "agent_steps": 75,
+    "tasks_passed": 6,
+    "task_count": 6,
+    "note": "Real consumed budget with no usable result, caused by operator error rather than by the environment. NOT a zero-spend receipt."
+  },
+  "slot_disposition": {
+    "fastify_r3": "free",
+    "reasoning": "The session was rolled back and no record occupies the slot."
+  },
+  "why_this_is_worth_recording": "I spent the week declining to raise timeout_seconds_per_task for slow OpenCode lanes, on the grounds that a treatment measured under a longer budget than its control is not like-for-like. Then I did exactly that to a Claude Code lane by carrying a flag across runtimes. The gate caught what the reasoning did not.",
+  "corrective": "Relaunch at --timeout-per-task 3600 to match this runtime's control. More generally, the per-task budget is a property of the control pool being joined, not of the campaign, and must be read from the pool before each launch rather than carried between runtimes."
+}
