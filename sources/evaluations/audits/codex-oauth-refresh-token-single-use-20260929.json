@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-29",
+  "action": "apparatus-defect-diagnosis-credential-refresh-not-persisted",
+  "verdict": "openai-provider-lanes-blocked-until-the-source-credential-is-reauthenticated",
+  "authority": "experiment-owner direction to deepen the thinnest single-replicate claims",
+  "finding": "After the shared OpenAI access token expired, exactly one lane can succeed. That lane refreshes the token inside its ephemeral copy of the credential, the refreshed tokens are discarded with the lane, and the source file keeps a refresh token that has now been consumed. Every later lane copies that stale refresh token and is rejected with 401.",
+  "evidence": {
+    "provider_error": "codex_login::auth::manager: Failed to refresh token: 401 Unauthorized -- 'Your refresh token has already been used to generate a new access token. Please try signing in again.'",
+    "source_credential_state": {
+      "path": "/opt/data/home/.codex/auth.json",
+      "access_token_expired": "2026-09-28T20:16:04Z",
+      "last_refresh": "2026-09-18T20:16:04Z",
+      "file_mtime": "2026-09-18T20:16:04Z",
+      "note": "The file has not been written since 2026-09-18, so no lane has ever persisted a refreshed token back to it."
+    },
+    "mechanism_in_code": "scripts/run_codex_fixture_evaluation.py copies the credential into the lane home with shutil.copy2 and records auth_materialization as copy-ephemeral. The copy is one-way by design, which is correct for credential hygiene and has the side effect that a refresh performed inside a lane is never durable.",
+    "sequence_observed": [
+      "2026-09-28T20:16Z access token expires",
+      "2026-09-29 token-savior-fastify-r1 runs, refreshes inside its ephemeral copy, completes 6/6, discards the new tokens",
+      "2026-09-29T23:17Z tokenjuice-fastify-r1 copies the same now-consumed refresh token and fails 401 on task-01"
+    ]
+  },
+  "why_this_was_not_seen_earlier": "The access token was valid from 2026-09-18 to 2026-09-28, so no lane in that window needed to refresh. Every OpenAI-provider failure before the expiry had a different cause and is receipted separately: quota exhaustion on 09-22 and 09-23, and unexplained provider slowness with no errors on 09-24 through 09-26.",
+  "affected": "All OpenAI-provider lanes, both the codex-cli and opencode-cli runtimes, since they share this credential. Claude Code lanes are unaffected; they use a separate Anthropic credential and have been completing normally, including two on 09-28 and 09-29.",
+  "disclosed_spend": {
+    "session_id_refused": "tokenjuice-fastify-20260929-p-dc16afea3ad5-r1",
+    "weighted_token_cost": null,
+    "note": "No provider turn completed. task-01 was attempted and exited 1 on the auth failure; the run record carries no cumulative usage and the retained diff is 132 bytes. Disclosed as effectively zero rather than as a measured spend.",
+    "ingress": "The lane was additionally refused by strict compact artifact ingress validation, which is the correct handling of a session carrying no usable telemetry."
+  },
+  "slot_disposition": {"fastify_r1_tokenjuice_codex": "free"},
+  "required_to_unblock": "Re-authenticate the OpenAI/Codex account so /opt/data/home/.codex/auth.json holds a fresh access token and an unused refresh token. This needs an interactive sign-in and cannot be done from here.",
+  "durable_fix_worth_considering": "Persist a refreshed credential back to the source home after a lane completes, or refresh once in the controller before each launch rather than letting each lane refresh independently. Either removes the one-lane-per-expiry ceiling. Both touch credential handling, so neither is attempted here without direction."
+}
