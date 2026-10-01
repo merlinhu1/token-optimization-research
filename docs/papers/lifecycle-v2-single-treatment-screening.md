@@ -92,6 +92,33 @@ variable, and no amount of treatment depth compensates for it.
 percentages across cells without their control spreads attached is the single easiest way to
 misread this table.
 
+**Single-replicate readings are provisional, and the margin over control noise does not predict
+which will survive.** Five of the thinnest single-replicate claims were selected purely by how
+narrowly they cleared their control's spread, then given a second replicate. **Four of the five did
+not survive.**
+
+| Margin at n=1 | Product | Cell | n=1 | n=2 | Outcome |
+|---:|---|---|---:|---:|---|
+| 1.1x | Ponytail | OpenCode Fastify | -25.8% | -11.3% | **retracted** |
+| 1.1x | Cartog | Claude Code Fastify | -14.7% | -23.5% | confirmed |
+| 1.3x | Token Savior | Codex Fastify | -16.8% | -1.1% | **retracted** |
+| 1.4x | SigMap | Claude Code Fastify | -18.6% | -9.1% | **retracted** |
+| 1.6x | Snip | Claude Code Fastify | -21.7% | -12.8% | **retracted** |
+
+The selection rule picked these for narrow margins, not for suspicious values, and the retractions
+span all three runtimes. Two features matter more than the headline count. The **only survivor had
+the thinnest margin of the five**, and the **widest margin tested failed**, so the ratio of effect to
+control spread carried no predictive power across this range at all. And four cells that had been
+published as measured effects were not effects; they were single draws from distributions wide
+enough to cross the line.
+
+The practical consequence is stated rather than softened: **no reading in this report that rests on
+one replicate should be treated as an established effect, at any margin.** The 59 single-replicate
+cells are screens that indicate where to look, which is what
+[ADR 0009](../architecture/decision-records/0009-replicate-counts-are-chosen-not-registered.md)
+already says a single replicate is. This corpus had been presenting them as more than that whenever
+they happened to clear a control spread, and the clearing was not the discriminator it looked like.
+
 **Treatments are not steadier than controls, and their stability cannot be predicted.** Twenty cells
 now hold more than one replicate. Their own replicate-to-replicate spread ranges from **1.5% to
 49.0%**, median 17.5%, and in **9 of 20** the treatment is *less* stable than the control it is
