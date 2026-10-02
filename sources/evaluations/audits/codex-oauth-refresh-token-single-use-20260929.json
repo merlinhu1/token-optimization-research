@@ -29,7 +29,17 @@
     "note": "No provider turn completed. task-01 was attempted and exited 1 on the auth failure; the run record carries no cumulative usage and the retained diff is 132 bytes. Disclosed as effectively zero rather than as a measured spend.",
     "ingress": "The lane was additionally refused by strict compact artifact ingress validation, which is the correct handling of a session carrying no usable telemetry."
   },
-  "slot_disposition": {"fastify_r1_tokenjuice_codex": "free"},
+  "slot_disposition": {
+    "fastify_r1_tokenjuice_codex": "free"
+  },
   "required_to_unblock": "Re-authenticate the OpenAI/Codex account so /opt/data/home/.codex/auth.json holds a fresh access token and an unused refresh token. This needs an interactive sign-in and cannot be done from here.",
-  "durable_fix_worth_considering": "Persist a refreshed credential back to the source home after a lane completes, or refresh once in the controller before each launch rather than letting each lane refresh independently. Either removes the one-lane-per-expiry ceiling. Both touch credential handling, so neither is attempted here without direction."
+  "durable_fix_worth_considering": "Persist a refreshed credential back to the source home after a lane completes, or refresh once in the controller before each launch rather than letting each lane refresh independently. Either removes the one-lane-per-expiry ceiling. Both touch credential handling, so neither is attempted here without direction.",
+  "resolved_20261002": {
+    "finding": "The account had been re-authenticated on 2026-09-29T14:44:51Z, but into /opt/data/auth.json, a multi-provider credential pool, rather than the flat /opt/data/home/.codex/auth.json that DEFAULT_SOURCE_CODEX_HOME points the runner at. The runner kept reading the stale file and every OpenAI lane stayed blocked for three days after the credential was actually fixed.",
+    "independent_confirmation_of_the_diagnosis": "That pool file records last_auth_error {'code': 'refresh_token_reused', 'message': 'Codex refresh token was already consumed by ano...'}, which is the same single-use-refresh failure diagnosed here from the lane side on 09-29.",
+    "action": "Materialised the pool's openai-codex entry into the flat format the runner reads: auth_mode, OPENAI_API_KEY, tokens and last_refresh, with the prior file preserved at auth.json.bak-20261002 and mode 600. The tokens object was byte-identical in shape, so this is a reformat rather than a credential change.",
+    "verified": "Access token valid to 2026-10-09T14:44:51Z. Throughput probe returns 322 words in 10s at 32.2 words/s.",
+    "standing_risk_unchanged": "This does not fix the underlying defect. The lane copy is still one-way, so when this token expires on 10-09 the same one-lane-per-expiry behaviour returns unless a refreshed credential is persisted back to the source or refreshed once in the controller before launch.",
+    "operational_note": "Two credential locations now exist on this machine for the same account. Whichever is authoritative should be the one DEFAULT_SOURCE_CODEX_HOME reads, or the runner should learn the pool format; otherwise a future re-authentication can again appear to have no effect."
+  }
 }
