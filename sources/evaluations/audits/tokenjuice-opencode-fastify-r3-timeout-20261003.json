@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "action": "lane-timeout-disclosure-spend-unquantifiable",
+  "verdict": "tokenjuice-opencode-fastify-r3-produced-no-measurement-slot-free",
+  "authority": "experiment-owner direction to continue the replicate queue without per-run approval",
+  "what_was_attempted": {
+    "profile_id": "terminal-tokenjuice-opencode-plugin-v2",
+    "sequence": "fastify-lifecycle-sequence-v2",
+    "replicate_index": 3,
+    "timeout_seconds_per_task": 7200,
+    "why_this_cell": "Its single replicate reads -55.1%, the second largest effect in the corpus and the only untested claim above 2x over control noise. Four of five thinner claims did not survive a second replicate, so this was the last chance to show that any margin is trustworthy at n=1."
+  },
+  "cause": {
+    "finding": "task-01 exceeded the 7200s per-task budget having reached step 14. Provider slowness, not quota and not credentials.",
+    "evidence": "Zero AI_APICallError and zero level=ERROR entries in the lane's OpenCode log. The credential materialised on 2026-10-02 is valid to 2026-10-09 and the throughput probe returned 322 words in 10s shortly before launch.",
+    "context": "This is the same signature as the Fastify failures of 09-24 through 09-26: the lane streams without error and is simply too slow to finish a task. It is the first failure since the credential was fixed, so it is not a recurrence of the auth defect."
+  },
+  "disclosed_spend": {
+    "weighted_token_cost": null,
+    "note": "Real but unquantifiable. The adapter writes normalized events at task completion and the kill left a zero-byte event file, so no step_finish telemetry survives to sum. Disclosed as unmeasurable rather than as zero."
+  },
+  "slot_disposition": {"fastify_r3": "free"},
+  "decision": "Not retried immediately. Under the standing rule one failure is diagnosed and disclosed rather than repeated; two consecutive failures in the same shape stop the queue. The next launch moves to Serena on Beets, which is both the next queue item and a test of whether this is specific to the Fastify lane, where every slowness failure in this study has occurred.",
+  "open_question_still_open": "Whether any single-replicate margin is trustworthy. The corpus has tested 1.1x through 1.6x and retracted four of five; 2.3x remains unmeasured."
+}
