@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-03",
+  "action": "queue-halted-two-consecutive-lane-timeouts",
+  "verdict": "environment-degraded-again-not-lane-specific-queue-stopped",
+  "authority": "experiment-owner direction to continue without per-run approval; halting under the stop rule stated when that direction was given",
+  "failures": [
+    {"cell": "terminal-tokenjuice-opencode-plugin-v2 fastify r3", "reached": "task-01 step 14", "errors": 0, "quota": 0},
+    {"cell": "retrieval-serena-opencode-mcp-v1 beets r3", "reached": "task-01 step 2", "errors": 0, "quota": 0}
+  ],
+  "discriminator_result": {
+    "hypothesis": "Every slowness failure in this study had been on Fastify, so Serena on Beets was launched to test whether the problem is lane-specific.",
+    "answer": "It is not. Beets failed in the same shape and sooner, at step 2 against step 14. The degradation affects both fixtures."
+  },
+  "diagnosis": {
+    "not_quota": "Zero AI_APICallError and zero usage-limit entries in either lane.",
+    "not_credentials": "The credential materialised 2026-10-02 is valid to 2026-10-09; no 401 and no refresh failure appears in either lane.",
+    "not_the_host": "Measured on 2026-09-26 and unchanged in kind: load average near zero, memory free, 989 MB/s disk writes, 20-26 ms to the provider endpoint.",
+    "conclusion": "Provider throughput again too low to finish a task inside the per-task budget, with no error surfaced. Same signature as 09-24 through 09-26."
+  },
+  "probe_behaviour_confirms_its_known_limit": "The throughput probe returned 322 words in 10s before the first failure and 337 words in 15s after the second. It passed on both sides of two dead lanes, exactly as it did on 09-26. It detects a dead provider and does not predict that a lane will complete.",
+  "spend": {
+    "weighted_token_cost": null,
+    "note": "Unquantifiable for both lanes. Each kill left a zero-byte event file with no step_finish telemetry to sum."
+  },
+  "slots_left_free": ["tokenjuice-opencode fastify r3", "serena-opencode beets r3"],
+  "queue_remaining_unrun": ["jcodemunch-opencode beets r3", "codescope-opencode beets r3", "claude-code beets control r6"],
+  "note_on_the_remaining_queue": "The Claude Code control item is unaffected by this: Claude Code runs on a separate Anthropic credential and completed four lanes on 09-28 through 10-01 while OpenAI lanes were failing. It is the only remaining queue item runnable during an OpenAI degradation.",
+  "resume_condition": "A bare OpenCode control lane completing within budget. The minimal probe is explicitly insufficient and has now failed to predict lane outcomes four times."
+}
