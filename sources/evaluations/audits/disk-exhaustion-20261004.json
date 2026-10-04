@@ -21,6 +21,19 @@
     "status": "Not retracted and not confirmed. The October failures have two candidate causes and the evidence retained cannot separate them. The degradation receipts stand as records of the failures; their attribution to provider throughput is downgraded to unresolved."
   },
   "what_would_separate_them": "Relaunch now that 13G is free. If lanes complete, disk exhaustion was the cause and the provider-slowness reading was wrong. If they fail identically with ample disk, provider throughput is confirmed.",
-  "spend": {"weighted_token_cost": 0.0, "note": "The r6 lane failed at dependency setup before any provider turn. Zero spend."},
-  "preventable": "This was foreseeable. Lane roots accumulate about a gigabyte per run and nothing prunes them; I deleted 4.6G on 2026-09-26 and did not check again across sixteen further lanes. A disk check belongs in the pre-launch sequence alongside the credential and pin checks."
+  "spend": {
+    "weighted_token_cost": 0.0,
+    "note": "The r6 lane failed at dependency setup before any provider turn. Zero spend."
+  },
+  "preventable": "This was foreseeable. Lane roots accumulate about a gigabyte per run and nothing prunes them; I deleted 4.6G on 2026-09-26 and did not check again across sixteen further lanes. A disk check belongs in the pre-launch sequence alongside the credential and pin checks.",
+  "attribution_resolved_20261004": {
+    "question": "Whether the October OpenCode failures were caused by disk exhaustion or by provider throughput. Both produce a task that exhausts its budget leaving a zero-byte event file and no error.",
+    "test": "Relaunch both a Claude Code lane and an OpenCode lane with 12-13G free.",
+    "result_claude_code": "baseline-claude-code-no-mcp beets r6 completed 6/6 at 309,469.7 after failing the day before at setup-deps with no space left on device. Disk was that failure's cause.",
+    "result_opencode": "retrieval-serena-opencode-mcp-v1 beets r3 failed again with 12G free, reaching task-01 step 11, zero errors, zero quota, zero-byte event file. Disk was not its cause.",
+    "conclusion": "The two failure families are distinct and were correctly separated only after the disk was cleared. The Claude Code setup-deps failure was disk. The OpenCode lane timeouts of 10-02 and 10-03 are confirmed as provider-side: they reproduce with ample disk, on both fixtures, with no error surfaced.",
+    "status_of_the_earlier_downgrade": "The provider-throughput attribution recorded on 10-03 for the OpenCode failures is restored. The caution that prompted the downgrade was still correct methodology -- the host evidence I had cited was stale -- but the conclusion it questioned has now been tested directly and holds.",
+    "opencode_failure_count": "Three consecutive OpenCode lanes have now failed in this shape: tokenjuice fastify r3 at step 14, serena beets r3 at step 2 and again at step 11. The OpenAI halt stands.",
+    "claude_code_unaffected": "Claude Code lanes have completed throughout, including this one, on a separate Anthropic credential."
+  }
 }
