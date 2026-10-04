@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-04",
+  "action": "infrastructure-fault-found-and-cleared-prior-diagnoses-in-doubt",
+  "verdict": "disk-was-full-recent-lane-failures-may-not-be-provider-slowness",
+  "authority": "experiment-owner direction to continue without per-run approval",
+  "trigger": "The Claude Code Beets control r6 failed at stage setup-deps with exit 2. The uv installer reported: failed to copy ... No space left on device (os error 28).",
+  "state_found": {
+    "disk": "72G used of 75G, 612M free, 100% on /opt/data",
+    "lane_roots": "13G across 80 lane checkouts, each roughly 0.7-1.2G",
+    "note": "A single lane rsyncs a full repository checkout and builds a fixture virtualenv, so a lane needs roughly a gigabyte to start."
+  },
+  "action_taken": {
+    "freed": "12.06 GB by deleting lane roots not referenced by any receipt; 50 referenced roots retained",
+    "result": "13G free, 83% used"
+  },
+  "prior_diagnoses_now_in_doubt": {
+    "what_was_claimed": "The OpenCode lane failures of 2026-10-02 and 10-03 -- TokenJuice on Fastify stalling at step 14 and Serena on Beets at step 2, both with zero errors and zero quota entries -- were attributed to provider throughput being too low to finish a task.",
+    "why_that_is_now_uncertain": "Those lanes ran while the disk was at or near exhaustion. A lane that cannot write is indistinguishable from a lane that is waiting on a slow provider, from the controller's side: both produce a task that runs out its budget leaving a zero-byte event file and no error.",
+    "what_the_host_check_actually_showed": "The host measurements that ruled out local causes were taken on 2026-09-26, when 4.0G remained free. They were never repeated during the October failures. Asserting the host was healthy during those runs was an inference from a stale measurement, not an observation.",
+    "status": "Not retracted and not confirmed. The October failures have two candidate causes and the evidence retained cannot separate them. The degradation receipts stand as records of the failures; their attribution to provider throughput is downgraded to unresolved."
+  },
+  "what_would_separate_them": "Relaunch now that 13G is free. If lanes complete, disk exhaustion was the cause and the provider-slowness reading was wrong. If they fail identically with ample disk, provider throughput is confirmed.",
+  "spend": {"weighted_token_cost": 0.0, "note": "The r6 lane failed at dependency setup before any provider turn. Zero spend."},
+  "preventable": "This was foreseeable. Lane roots accumulate about a gigabyte per run and nothing prunes them; I deleted 4.6G on 2026-09-26 and did not check again across sixteen further lanes. A disk check belongs in the pre-launch sequence alongside the credential and pin checks."
+}
