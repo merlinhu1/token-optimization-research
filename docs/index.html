@@ -3,15 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nine supported results from seventy-nine measurements</title>
-<meta name="description" content="A matched Lifecycle V2 screening of 15 token-saving integrations across three coding-agent runtimes. In 12 of 26 comparisons the direction of the effect changes with the runtime.">
+<title>Do AI coding cost-savers actually work? We tested fifteen.</title>
+<meta name="description" content="An independent test of fifteen products that promise to cut the cost of AI coding assistants. Seven produced a saving we could confirm; most claims could not be separated from ordinary run-to-run variation.">
 <style>
 :root{
   --bg:#f4f6fa; --card:#fff; --ink:#0b0b0b; --muted:#52514e; --faint:#8a97a8;
   --line:#e3e8f0; --accent:#2a78d6; --accent-soft:#e8f0fb;
-  --neg:#2a78d6;          /* cheaper than control */
-  --pos:#e34948;          /* costlier than control */
-  --mid:#b9bcc4;          /* zero reference, must contrast with --track */
+  --neg:#2a78d6; --pos:#e34948; --mid:#b9bcc4;
   --na:#94a3b8; --track:#f0efec;
   --shadow:0 10px 30px rgb(15 23 42/7%); --radius:16px;
 }
@@ -26,9 +24,10 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
 body{margin:0;color:var(--ink);background:var(--bg);
-  font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+  font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--accent)}
 .shell{width:min(1140px,100% - 2.5rem);margin-inline:auto}
+.narrow{max-width:72ch}
 .topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);
   background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px)}
 .topbar .shell{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:3.6rem}
@@ -36,556 +35,498 @@ a{color:var(--accent)}
 .nav{display:flex;gap:1.1rem;font-size:.9rem;flex-wrap:wrap}
 .nav a{color:var(--muted);text-decoration:none}
 .nav a:hover{color:var(--accent)}
-.hero{padding:3.4rem 0 1.6rem}
+.hero{padding:3.2rem 0 1.2rem}
 .tag{display:inline-block;padding:.3rem .7rem;border-radius:999px;background:var(--accent-soft);
   color:var(--accent);font-size:.78rem;font-weight:700;letter-spacing:.02em}
-h1{font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.12;letter-spacing:-.02em;margin:.9rem 0 .8rem}
-.lede{font-size:1.1rem;color:var(--muted);max-width:64ch}
-.cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.5rem}
+h1{font-size:clamp(1.85rem,4.2vw,2.9rem);line-height:1.14;letter-spacing:-.02em;margin:.9rem 0 .9rem;max-width:20ch}
+.lede{font-size:1.14rem;color:var(--muted);max-width:62ch}
+.lede strong{color:var(--ink)}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.6rem}
 .btn{padding:.7rem 1.1rem;border-radius:.7rem;font-weight:650;font-size:.92rem;text-decoration:none;
   border:1px solid var(--line);color:var(--ink);background:var(--card)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.note{margin-top:1.4rem;padding:.9rem 1.1rem;border-left:3px solid var(--accent);
-  background:var(--card);border-radius:0 .6rem .6rem 0;font-size:.9rem;color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;margin:2.2rem 0}
+.primer{margin:2.4rem 0 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.4rem 1.5rem;box-shadow:var(--shadow)}
+.primer h2{font-size:1.05rem;margin:0 0 .7rem;max-width:none}
+.primer p{margin:.6rem 0;color:var(--muted);font-size:.95rem;max-width:74ch}
+.primer p:first-of-type{margin-top:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:2.2rem 0 .5rem}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem;box-shadow:var(--shadow)}
-.stat b{display:block;font-size:1.9rem;letter-spacing:-.02em;line-height:1.1}
-.stat span{display:block;font-size:.85rem;color:var(--muted);margin-top:.35rem}
-section{padding:2.2rem 0}
-h2{font-size:clamp(1.3rem,2.4vw,1.75rem);letter-spacing:-.015em;margin:0 0 .5rem}
-.sub{color:var(--muted);max-width:74ch;margin:0 0 1.3rem}
+.stat b{display:block;font-size:1.85rem;letter-spacing:-.02em;line-height:1.1}
+.stat span{display:block;font-size:.87rem;color:var(--muted);margin-top:.35rem}
+section{padding:2.4rem 0}
+h2{font-size:clamp(1.35rem,2.4vw,1.8rem);letter-spacing:-.015em;margin:0 0 .6rem;max-width:34ch;text-wrap:balance}
+h3{font-size:1.02rem;margin:0 0 .4rem}
+.sub{color:var(--muted);max-width:74ch;margin:0 0 1.4rem;font-size:1.02rem}
+p.body{color:var(--muted);max-width:74ch;margin:.9rem 0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:1.2rem;box-shadow:var(--shadow);overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:900px}
-caption{text-align:left;color:var(--muted);font-size:.86rem;padding-bottom:.8rem}
-th,td{padding:.5rem .55rem;text-align:left;vertical-align:middle}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+#matrix table{min-width:880px}
+#split table{min-width:680px}
+caption{text-align:left;color:var(--muted);font-size:.86rem;padding-bottom:.9rem;max-width:80ch}
+th,td{padding:.55rem .55rem;text-align:left;vertical-align:middle}
 thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);
   font-weight:700;border-bottom:1px solid var(--line);white-space:nowrap}
 tbody th{font-weight:650;white-space:nowrap;padding-right:1rem}
 tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--line)}
 .grp{border-left:1px solid var(--line)}
 .cell{white-space:nowrap}
-.track{position:relative;width:118px;height:12px;background:var(--track);border-radius:4px;overflow:hidden}
+
+.track{position:relative;width:92px;height:12px;background:var(--track);border-radius:4px;overflow:hidden}
 .axis{position:absolute;left:50%;top:-1px;bottom:-1px;width:1px;background:var(--mid);z-index:1}
 .fill{position:absolute;top:0;bottom:0;border-radius:4px;z-index:0}
 .fill.neg{background:var(--neg)}
 .fill.pos{background:var(--pos)}
-.fill.faint{opacity:.35}
-.nz{font-size:.75rem;color:var(--faint);margin-left:.15rem}
-.val{display:inline-block;min-width:58px;font-variant-numeric:tabular-nums;font-size:.82rem;margin-left:.5rem;color:var(--ink)}
-.n{font-size:.72rem;color:var(--faint);margin-left:.35rem}
+.fill.faint{opacity:.3}
+.val{display:inline-block;min-width:56px;font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--ink);font-weight:600}
+.val.dim{color:var(--faint);font-weight:400}
+.n{font-size:.72rem;color:var(--faint);margin-left:.4rem}
+.nz{display:inline-block;font-size:.68rem;color:var(--faint);margin-left:.45rem;
+  border:1px solid var(--line);border-radius:999px;padding:.05rem .4rem;white-space:nowrap}
+.ok{display:inline-block;font-size:.68rem;color:#fff;background:var(--neg);margin-left:.45rem;
+  border-radius:999px;padding:.05rem .45rem;font-weight:700;white-space:nowrap}
 .na{font-size:.8rem;color:var(--na);font-style:italic}
-.legend{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;font-size:.85rem;color:var(--muted)}
+.rt{display:block;font-weight:400;font-size:.76rem;color:var(--faint)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.raw{display:block;font-size:.72rem;color:var(--faint);font-weight:400}
+.how{font-size:.84rem;color:var(--muted);white-space:nowrap}
+.legend{display:flex;gap:1.1rem;flex-wrap:wrap;align-items:center;margin-bottom:1.1rem;font-size:.86rem;color:var(--muted)}
 .key{display:inline-flex;align-items:center;gap:.45rem}
 .sw{width:15px;height:12px;border-radius:3px;display:inline-block}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:1rem}
 .box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem;box-shadow:var(--shadow)}
-.box h3{margin:0 0 .4rem;font-size:1rem}
 .box p{margin:0;color:var(--muted);font-size:.9rem}
-ul.clean{margin:.4rem 0 0;padding-left:1.1rem;color:var(--muted);font-size:.92rem}
-ul.clean li{margin:.35rem 0}
+.box p+p{margin-top:.6rem}
+ul.clean{margin:.4rem 0 0;padding-left:1.15rem;color:var(--muted);max-width:74ch}
+ul.clean li{margin:.6rem 0}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:1.2rem 0 0;max-width:74ch}
+ol.steps li{counter-increment:s;position:relative;padding-left:2.6rem;margin:1rem 0;color:var(--muted)}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:.05rem;width:1.75rem;height:1.75rem;
+  border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:.85rem;
+  display:grid;place-items:center}
+ol.steps b{color:var(--ink)}
+.callout{margin:1.6rem 0 0;padding:1rem 1.2rem;border-left:3px solid var(--accent);
+  background:var(--card);border-radius:0 .6rem .6rem 0;color:var(--muted);font-size:.95rem;max-width:76ch}
+.callout strong{color:var(--ink)}
 footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);font-size:.85rem}
-@media (max-width:660px){.nav{display:none}}
+footer p{max-width:78ch}
+@media (max-width:660px){.nav{display:none}h1{max-width:none}}
 .skip{position:absolute;left:1rem;top:-4rem;background:var(--ink);color:var(--bg);padding:.7rem 1rem;border-radius:.6rem;z-index:30}
 .skip:focus{top:1rem}
 </style>
 </head>
 <body>
-<a class="skip" href="#results">Skip to results</a>
+<a class="skip" href="#results">Skip to the results</a>
 <div class="topbar"><div class="shell">
   <a class="brand" href="#top">Token Optimization Research</a>
   <nav class="nav">
-    <a href="#finding">Finding</a><a href="#results">Results</a><a href="#coverage">Coverage</a>
-    <a href="#limits">Limitations</a><a href="#data">Data</a>
+    <a href="#found">What we found</a><a href="#split">How they save</a>
+    <a href="#noise">Why so few</a><a href="#results">Full results</a>
+    <a href="#limits">Limits</a><a href="#data">Check our work</a>
   </nav>
 </div></div>
 <main id="top">
+
 <header class="hero"><div class="shell">
-  <span class="tag">Lifecycle V2 · final for this phase · 2026-10-11</span>
-  <h1>Nine of seventy-nine measurements survive their own controls.</h1>
-  <p class="lede">Fifteen token-saving products, measured one at a time against matched controls on two repositories and three coding agents. <strong>LeanCTX</strong> reduces weighted token cost on Fastify under all three agents. Six further products reduce it on Fastify under Claude Code. Nothing is established on the Beets repository, and eight of the fifteen products have no supported result anywhere.</p>
+  <span class="tag">Independent test &middot; published 11 October 2026</span>
+  <h1>Fifteen products promise to cut your AI coding bill. Seven of them worked.</h1>
+  <p class="lede">And even that comes with a catch. Six of the seven only proved themselves
+  with <strong>one</strong> AI assistant on <strong>one</strong> codebase. The honest headline is
+  not that these tools fail &mdash; it is that the savings they advertise are usually
+  <strong>smaller than the random variation</strong> you get from running the same job twice.</p>
   <div class="cta">
-    <a class="btn primary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Read the technical report</a>
-    <a class="btn" href="#results">See the results</a>
+    <a class="btn primary" href="#found">What we found</a>
+    <a class="btn" href="#method">How we tested</a>
+    <a class="btn" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Full technical report</a>
   </div>
-  <p class="note"><strong>Every value on this page is weighted token cost</strong>
-  (<code>fresh input + 0.1 × cached input + 6 × output</code>), measured against that runtime's own
-  bare control on the same repository. No raw-token result is shown. This is a screening study, not
-  a leaderboard — most cells hold a single replicate.</p>
+
+  <div class="primer">
+    <h2>If you have never heard of any of this</h2>
+    <p><b>AI coding assistants</b> are programs that write and fix software for you. To change one
+    line in a real project, an assistant may read dozens of files first &mdash; and you are billed
+    for every chunk of text it reads and writes. Those chunks are called <b>tokens</b>. On a serious
+    task the bill adds up quickly.</p>
+    <p>So a small industry has appeared selling <b>add-ons</b> that promise to cut that bill: they
+    compress what the assistant reads, index your code so it searches instead of browsing, or trim
+    the conversation as it grows. Most of the savings figures you see for these products come from
+    the companies selling them.</p>
+    <p>We are not one of those companies. We do not sell any of these products and none of them paid
+    for or saw this test. We ran the same programming jobs over and over &mdash; once with each
+    add-on installed and once with nothing installed &mdash; and compared the bills.</p>
+  </div>
 </div></header>
+
 <div class="shell">
   <div class="stats">
-    <div class="stat"><b>9 of 79</b><span>Measurements backed by two replicates that clear their own control</span></div>
-    <div class="stat"><b>4 of 5</b><span>Thin single-replicate claims that did not survive a second replicate</span></div>
-    <div class="stat"><b>8 of 15</b><span>Products with no supported result on any runtime or repository</span></div>
-    <div class="stat"><b>54.5%</b><span>Widest control band — the variation a result must exceed to count</span></div>
+    <div class="stat"><b>15</b><span>Products tested, each on its own against a matched no-add-on comparison</span></div>
+    <div class="stat"><b>7</b><span>Products that produced at least one saving we could confirm</span></div>
+    <div class="stat"><b>1</b><span>Product that worked under every assistant we tried it with</span></div>
+    <div class="stat"><b>up to 54%</b><span>How much two identical runs can differ with no add-on at all &mdash; the noise a real saving has to beat</span></div>
   </div>
 </div>
 
-<section id="finding"><div class="shell">
-  <h2>The host agent matters as much as the tool.</h2>
-  <p class="sub">The same integration can cut weighted token cost on one runtime and raise it on
-  another. Caveman costs 9.7% and 20.6% more on Codex, saves 25.0% and 32.1% on Claude Code, and is
-  indistinguishable from the control on OpenCode. Serena costs more on both Codex lanes and saves
-  about a quarter on both Claude Code lanes. This is the central result, and it is why a
-  single-runtime recommendation is not supportable from this corpus.</p>
+<section id="found"><div class="shell">
+  <h2>What we found</h2>
+  <p class="sub">Three things, in order of how confident we are about them.</p>
   <div class="grid">
-    <div class="box"><h3>The repository matters too</h3><p>Ten of thirty-five product–runtime pairs
-    change direction between the two fixtures alone. SigMap on Claude Code saves 18.6% on Fastify
-    and costs 51.8% more on Beets. A product evaluated on one repository has not been evaluated.</p></div>
-    <div class="box"><h3>Claude Code is where these products pay</h3><p>Ten of thirteen reduce cost
-    on both Claude Code lanes. On Codex only five of fifteen do, and several are substantially more
-    expensive — CodeGraph reaches +72.4% on Beets.</p></div>
-    <div class="box"><h3>Savings can carry a cost</h3><p>LeanCTX's OpenCode integration denies the
-    agent's native file tools. It is the largest saving measured — and the only arm that
-    reproducibly loses a task its control always passes. Reported as an association, not a
-    demonstrated mechanism.</p></div>
+    <div class="box">
+      <h3>1. One product worked everywhere we looked</h3>
+      <p><b>LeanCTX</b> cut the bill under all three assistants we tested &mdash; by 25%, 35% and
+      65% &mdash; and it is the only product that managed that. But all three of those results come
+      from the same codebase, so "everywhere" means three assistants, not three kinds of project.</p>
+    </div>
+    <div class="box">
+      <h3>2. Six more worked in one specific setup</h3>
+      <p><b>Token Savior, Caveman, Serena, Cartog, Ponytail</b> and <b>RTK</b> each cut the bill by
+      14&ndash;26%, but only with Claude Code on that same codebase. We cannot say whether they work
+      anywhere else, because where we checked, the result did not hold up.</p>
+    </div>
+    <div class="box">
+      <h3>3. For the other eight, we cannot tell you</h3>
+      <p><b>CodeGraph, CodeScope, Graphify, RepoWise, SigMap, Snip, TokenJuice</b> and
+      <b>jCodeMunch</b> produced no result we could confirm. Several of their readings looked like
+      large savings. None of them survived a closer look.</p>
+      <p>That means <em>unproven</em>, not <em>useless</em>. It is a real and important difference.</p>
+    </div>
   </div>
+  <div class="callout"><strong>The single most useful thing to take away:</strong> which AI
+  assistant you use affects the bill at least as much as which add-on you install. The same product
+  cut costs by a quarter under one assistant and made them worse under another. There is no
+  product here we can recommend without also naming the assistant you are running it with.</div>
+</div></section>
+
+<section id="split"><div class="shell">
+  <h2>There are two different ways to save, and most tools only do one</h2>
+  <p class="sub">An assistant's bill is simply <b>how many steps it takes</b> multiplied by
+  <b>how much each step costs</b>. Splitting the saving into those two halves tells you what a
+  product is actually doing &mdash; and they turn out to work in genuinely different ways.</p>
+  <div class="card" id="split-card">
+  <table>
+    <caption>The seven confirmed products, split into their two factors. A figure is shown in
+    colour only where the change is larger than the variation we saw between identical no-add-on
+    runs; greyed figures are within that noise and should be read as "no detectable change".
+    Each figure is the middle value of two runs.</caption>
+    <thead><tr>
+      <th scope="col">Product</th>
+      <th scope="col" class="num">Total bill</th>
+      <th scope="col" class="num">Steps taken</th>
+      <th scope="col" class="num">Cost per step</th>
+      <th scope="col">How it saved</th>
+    </tr></thead>
+    <tbody>
+      <tr><th scope="row">LeanCTX<span class="rt">Claude Code</span></th><td class="num"><strong>-35.4%</strong></td><td class="num"><span class="val neg">-14.5%</span><span class="raw">69 &rarr; 59</span></td><td class="num"><span class="val neg">-24.2%</span><span class="raw">9,269 &rarr; 7,026</span></td><td class="how">Both</td></tr>
+      <tr><th scope="row">LeanCTX<span class="rt">OpenCode</span></th><td class="num"><strong>-64.7%</strong></td><td class="num"><span class="val dim">+4.7%</span><span class="raw">139 &rarr; 146</span></td><td class="num"><span class="val neg">-66.2%</span><span class="raw">8,257 &rarr; 2,792</span></td><td class="how">Cheaper steps</td></tr>
+      <tr><th scope="row">LeanCTX<span class="rt">Codex CLI</span></th><td class="num"><strong>-24.7%</strong></td><td class="num"><span class="val pos">+10.3%</span><span class="raw">73 &rarr; 80</span></td><td class="num"><span class="val neg">-34.6%</span><span class="raw">10,825 &rarr; 7,084</span></td><td class="how">Cheaper steps, but more of them</td></tr>
+      <tr><th scope="row">Token Savior<span class="rt">Claude Code</span></th><td class="num"><strong>-25.6%</strong></td><td class="num"><span class="val dim">-0.7%</span><span class="raw">69 &rarr; 68</span></td><td class="num"><span class="val neg">-25.0%</span><span class="raw">9,269 &rarr; 6,952</span></td><td class="how">Cheaper steps</td></tr>
+      <tr><th scope="row">Caveman<span class="rt">Claude Code</span></th><td class="num"><strong>-25.0%</strong></td><td class="num"><span class="val neg">-25.4%</span><span class="raw">69 &rarr; 52</span></td><td class="num"><span class="val dim">+0.4%</span><span class="raw">9,269 &rarr; 9,310</span></td><td class="how">Fewer steps</td></tr>
+      <tr><th scope="row">Serena<span class="rt">Claude Code</span></th><td class="num"><strong>-24.4%</strong></td><td class="num"><span class="val dim">-10.1%</span><span class="raw">69 &rarr; 62</span></td><td class="num"><span class="val neg">-15.6%</span><span class="raw">9,269 &rarr; 7,821</span></td><td class="how">Cheaper steps</td></tr>
+      <tr><th scope="row">Cartog<span class="rt">Claude Code</span></th><td class="num"><strong>-23.5%</strong></td><td class="num"><span class="val dim">-2.9%</span><span class="raw">69 &rarr; 67</span></td><td class="num"><span class="val neg">-21.3%</span><span class="raw">9,269 &rarr; 7,297</span></td><td class="how">Cheaper steps</td></tr>
+      <tr><th scope="row">Ponytail<span class="rt">Claude Code</span></th><td class="num"><strong>-23.4%</strong></td><td class="num"><span class="val neg">-18.1%</span><span class="raw">69 &rarr; 56</span></td><td class="num"><span class="val dim">-4.9%</span><span class="raw">9,269 &rarr; 8,816</span></td><td class="how">Fewer steps</td></tr>
+      <tr><th scope="row">RTK<span class="rt">Claude Code</span></th><td class="num"><strong>-14.2%</strong></td><td class="num"><span class="val dim">-4.3%</span><span class="raw">69 &rarr; 66</span></td><td class="num"><span class="val neg">-10.9%</span><span class="raw">9,269 &rarr; 8,263</span></td><td class="how">Cheaper steps</td></tr>    </tbody>
+  </table>
+  </div>
+  <div class="grid" style="margin-top:1.2rem">
+    <div class="box"><h3>Fewer steps</h3><p><b>Caveman</b> and <b>Ponytail</b> save by getting the
+    assistant to the answer in less back-and-forth &mdash; Caveman cuts 69 steps to 52. Each step
+    still costs what it always did.</p></div>
+    <div class="box"><h3>Cheaper steps</h3><p><b>Token Savior, Serena, Cartog</b> and <b>RTK</b> do
+    the opposite: the assistant works through roughly the same number of steps, but each one is
+    cheaper because it is handling less text.</p></div>
+    <div class="box"><h3>Both at once &mdash; rare</h3><p>Only <b>LeanCTX under Claude Code</b>
+    did both. Under the other two assistants it took <em>more</em> steps and still won overall,
+    because it made each step so much cheaper &mdash; on OpenCode, 8,257 down to 2,792.</p></div>
+  </div>
+  <p class="body">This matters if you are choosing one. A "fewer steps" tool is doing something to
+  how the assistant works; a "cheaper steps" tool is doing something to what it reads. The two are
+  not interchangeable, and a product that helps on one codebase may have nothing to trim on yours.</p>
+</div></section>
+
+<section id="noise"><div class="shell">
+  <h2>Why we could only confirm seven out of fifteen</h2>
+  <p class="sub">Not because the other eight failed. Because of a problem that affects every number
+  on this page, including the good ones.</p>
+  <p class="body">Run the exact same programming job twice, with no add-on installed at all, and you
+  do not get the same bill. You get two different bills. We ran those no-add-on comparison jobs
+  repeatedly to find out how different.</p>
+  <p class="body">The answer was uncomfortable. In the best case the two bills were 9% apart. In the
+  worst case &mdash; Claude Code on the Beets codebase &mdash; <strong>they were 54% apart</strong>.
+  Nothing changed between those runs except the assistant's own choices.</p>
+  <div class="callout"><strong>So here is the bar a product has to clear.</strong> If a tool claims
+  to save 20%, and the same job varies by 54% on its own, a single run showing "20% cheaper" tells
+  you almost nothing. It could be the tool. It could just as easily be the same randomness you see
+  with nothing installed. We only count a result when we ran it at least twice <em>and</em> the
+  saving was bigger than that background variation.</div>
+  <p class="body">We also tested whether that bar was too strict, by taking the five most borderline
+  single-run results &mdash; the ones that only just looked like savings &mdash; and running each a
+  second time. <strong>Four of the five disappeared.</strong> One product that looked 26% cheaper
+  came back at 11%. Another that looked 17% cheaper came back at 1%. The one result that did
+  survive had the <em>narrowest</em> margin of the five, and the widest margin was among those that
+  failed &mdash; so a big-looking number on a single run told us nothing about whether it was real.</p>
+  <p class="body">There is one more thing we would rather not report, because it makes our own
+  numbers less comfortable: every single time we added another no-add-on run to check this
+  background variation, <strong>the variation got wider, never narrower</strong>. On one setup it
+  went from 17% to 24%; on another from 2% to 15%, which wiped out six results we had previously
+  counted as real. We have no reason to think we have seen the full range yet.</p>
 </div></section>
 
 <section id="results"><div class="shell">
-  <h2>Weighted token cost against the matched control.</h2>
-  <p class="sub">Bars diverge from a centre line: <strong>left is cheaper</strong> than that
-  runtime's own bare control on that repository, right is costlier. Every bar shares one scale, and
-  every value is printed beside its bar — colour is never the only channel. <code>n</code> is the
-  number of retained replicates in that cell.</p>
-  <div class="legend">
-    <span class="key"><span class="sw" style="background:var(--neg)"></span> Lower cost than control</span>
-    <span class="key"><span class="sw" style="background:var(--pos)"></span> Higher cost than control</span>
-    <span class="key"><span class="sw" style="background:var(--track)"></span> No qualified run</span>
-    <span class="key">† single replicate, or inside the control’s own band — not a supported result</span>
+  <h2>Every result we recorded</h2>
+  <p class="sub">All fifteen products, under three AI assistants, on two real open-source codebases.
+  Nothing is hidden: readings we could not confirm are shown here too, clearly marked, because
+  leaving them out would make the confirmed ones look more solid than they are.</p>
+  <div class="grid" style="margin-bottom:1.4rem">
+    <div class="box"><h3>The three assistants</h3><p><b>Claude Code</b> (Anthropic),
+    <b>Codex CLI</b> (OpenAI) and <b>OpenCode</b> (open source). Each is compared only against
+    itself with no add-on &mdash; never against the others.</p></div>
+    <div class="box"><h3>The two codebases</h3><p><b>Fastify</b>, a widely used JavaScript web
+    server, and <b>Beets</b>, a Python music library manager. Both are real projects with real
+    histories, not exercises written for this test.</p></div>
+    <div class="box"><h3>How to read a row</h3><p>A bar to the <b>left</b> means cheaper than the
+    same assistant with no add-on; to the <b>right</b>, more expensive. The percentage is always
+    printed, so you never have to judge by colour.</p></div>
   </div>
-  <div class="card">
+  <div class="legend">
+    <span class="key"><span class="sw" style="background:var(--neg)"></span> Cheaper than no add-on</span>
+    <span class="key"><span class="sw" style="background:var(--pos)"></span> More expensive</span>
+    <span class="key"><span class="ok">confirmed</span> ran at least twice <em>and</em> beat the background noise &mdash; everything unmarked did not, so treat it as a reading rather than a result</span>
+  </div>
+  <div class="card" id="matrix">
   <table>
-    <caption>Change in weighted token cost versus the matched runtime control, by product,
-    runtime and repository. Descriptive treatment-to-control deltas — not a stable ranking.</caption>
+    <caption>Change in cost against the same assistant running the same jobs with no add-on
+    installed, on the same codebase. These are descriptions of what we measured, not a league
+    table &mdash; see the limits below before ordering anything by these numbers.</caption>
     <thead>
       <tr><th scope="col" rowspan="2">Product</th>
         <th scope="col" colspan="2" class="grp">Codex CLI</th>
         <th scope="col" colspan="2" class="grp">Claude Code</th>
-        <th scope="col" colspan="2" class="grp">OpenCode CLI <span style="text-transform:none;font-weight:500">(12 of 16)</span></th></tr>
+        <th scope="col" colspan="2" class="grp">OpenCode</th></tr>
       <tr><th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
           <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th>
           <th scope="col" class="grp">Fastify</th><th scope="col">Beets</th></tr>
     </thead>
     <tbody>
       <tr><th scope="row">Cartog</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.05%"></span></div>
-          <span class="val neg">-26.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.96%"></span></div>
-          <span class="val pos">+1.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.25%"></span></div>
-          <span class="val neg">-23.5%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.55%"></span></div>
-          <span class="val neg">-10.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.39%"></span></div>
-          <span class="val neg">-20.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:19.03%"></span></div>
-          <span class="val pos">+27.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.02%"></span></div><span class="val neg">-26.1%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.97%"></span></div><span class="val pos">+1.4%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.23%"></span></div><span class="val neg">-23.5%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.53%"></span></div><span class="val neg">-10.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.36%"></span></div><span class="val neg">-20.8%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:18.99%"></span></div><span class="val pos">+27.5%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">Caveman</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:6.67%"></span></div>
-          <span class="val pos">+9.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:14.23%"></span></div>
-          <span class="val pos">+20.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.29%"></span></div>
-          <span class="val neg">-25.0%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.10%"></span></div>
-          <span class="val neg">-30.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:3.57%"></span></div>
-          <span class="val neg">-5.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.68%"></span></div>
-          <span class="val pos">+2.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:6.70%"></span></div><span class="val pos">+9.7%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:14.23%"></span></div><span class="val pos">+20.6%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.27%"></span></div><span class="val neg">-25.0%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.06%"></span></div><span class="val neg">-30.5%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:3.59%"></span></div><span class="val neg">-5.2%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.66%"></span></div><span class="val pos">+2.4%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">CodeGraph</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.48%"></span></div>
-          <span class="val pos">+3.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:50.00%"></span></div>
-          <span class="val pos">+72.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div>
-          <span class="val pos">+1.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.05%"></span></div>
-          <span class="val pos">+5.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.42%"></span></div>
-          <span class="val neg">-15.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.60%"></span></div>
-          <span class="val neg">-0.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.49%"></span></div><span class="val pos">+3.6%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:50.00%"></span></div><span class="val pos">+72.4%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div><span class="val pos">+1.1%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.07%"></span></div><span class="val pos">+5.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.43%"></span></div><span class="val neg">-15.1%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.62%"></span></div><span class="val neg">-0.9%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">CodeScope</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.78%"></span></div>
-          <span class="val neg">-4.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.13%"></span></div>
-          <span class="val neg">-3.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.73%"></span></div>
-          <span class="val neg">-18.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:3.37%"></span></div>
-          <span class="val pos">+4.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.76%"></span></div><span class="val neg">-4.0%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.14%"></span></div><span class="val neg">-3.1%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><span class="na">not tested</span></td>
+        <td class="cell"><span class="na">not tested</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.71%"></span></div><span class="val neg">-18.4%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:3.38%"></span></div><span class="val pos">+4.9%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">Graphify</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.32%"></span></div>
-          <span class="val neg">-26.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.99%"></span></div>
-          <span class="val pos">+4.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div>
-          <span class="val neg">-12.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.34%"></span></div>
-          <span class="val neg">-28.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.73%"></span></div>
-          <span class="val pos">+1.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:33.50%"></span></div>
-          <span class="val pos">+48.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.30%"></span></div><span class="val neg">-26.5%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.97%"></span></div><span class="val pos">+4.3%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div><span class="val neg">-12.8%</span><span class="n">2 runs</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.34%"></span></div><span class="val neg">-28.0%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div><span class="val pos">+1.1%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:33.49%"></span></div><span class="val pos">+48.5%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">LeanCTX</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.04%"></span></div>
-          <span class="val neg">-24.7%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.67%"></span></div>
-          <span class="val neg">-1.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.43%"></span></div>
-          <span class="val neg">-35.4%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:26.43%"></span></div>
-          <span class="val neg">-38.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:44.67%"></span></div>
-          <span class="val neg">-64.7%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:9.19%"></span></div>
-          <span class="val neg">-13.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.06%"></span></div><span class="val neg">-24.7%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.69%"></span></div><span class="val neg">-1.0%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.45%"></span></div><span class="val neg">-35.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:26.45%"></span></div><span class="val neg">-38.3%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:44.68%"></span></div><span class="val neg">-64.7%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:9.19%"></span></div><span class="val neg">-13.3%</span><span class="n">2 runs</span></td>
       </tr>
       <tr><th scope="row">Ponytail</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.49%"></span></div>
-          <span class="val neg">-2.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:5.24%"></span></div>
-          <span class="val pos">+7.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.17%"></span></div>
-          <span class="val neg">-23.4%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.22%"></span></div>
-          <span class="val neg">-30.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.79%"></span></div>
-          <span class="val neg">-11.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:9.17%"></span></div>
-          <span class="val pos">+13.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.52%"></span></div><span class="val neg">-2.2%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:5.25%"></span></div><span class="val pos">+7.6%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.16%"></span></div><span class="val neg">-23.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.20%"></span></div><span class="val neg">-30.7%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.80%"></span></div><span class="val neg">-11.3%</span><span class="n">2 runs</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:9.19%"></span></div><span class="val pos">+13.3%</span><span class="n">2 runs</span></td>
       </tr>
       <tr><th scope="row">RTK</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.34%"></span></div>
-          <span class="val neg">-9.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.79%"></span></div>
-          <span class="val neg">-12.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.81%"></span></div>
-          <span class="val neg">-14.2%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.45%"></span></div>
-          <span class="val neg">-22.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.19%"></span></div>
-          <span class="val pos">+1.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.35%"></span></div><span class="val neg">-9.2%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.77%"></span></div><span class="val neg">-12.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.81%"></span></div><span class="val neg">-14.2%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.47%"></span></div><span class="val neg">-22.4%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><span class="na">not tested</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.17%"></span></div><span class="val pos">+1.7%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">RepoWise</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.82%"></span></div>
-          <span class="val neg">-8.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.51%"></span></div>
-          <span class="val neg">-0.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.80%"></span></div><span class="val neg">-8.4%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.48%"></span></div><span class="val neg">-0.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><span class="na">not tested</span></td>
+        <td class="cell"><span class="na">not tested</span></td>
+        <td class="cell grp"><span class="na">not tested</span></td>
+        <td class="cell"><span class="na">not tested</span></td>
       </tr>
       <tr><th scope="row">Serena</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.56%"></span></div>
-          <span class="val pos">+0.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.77%"></span></div>
-          <span class="val pos">+19.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.83%"></span></div>
-          <span class="val neg">-24.4%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.62%"></span></div>
-          <span class="val neg">-24.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.15%"></span></div>
-          <span class="val neg">-19.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.39%"></span></div>
-          <span class="val neg">-7.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.55%"></span></div><span class="val pos">+0.8%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.74%"></span></div><span class="val pos">+19.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.85%"></span></div><span class="val neg">-24.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.64%"></span></div><span class="val neg">-24.1%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.12%"></span></div><span class="val neg">-19.0%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.39%"></span></div><span class="val neg">-7.8%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">SigMap</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.12%"></span></div>
-          <span class="val neg">-0.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:12.35%"></span></div>
-          <span class="val pos">+17.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.26%"></span></div>
-          <span class="val neg">-9.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:38.23%"></span></div>
-          <span class="val pos">+55.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.16%"></span></div>
-          <span class="val neg">-17.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.83%"></span></div>
-          <span class="val pos">+20.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.14%"></span></div><span class="val neg">-0.2%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:12.36%"></span></div><span class="val pos">+17.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.28%"></span></div><span class="val neg">-9.1%</span><span class="n">2 runs</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:38.19%"></span></div><span class="val pos">+55.3%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.15%"></span></div><span class="val neg">-17.6%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.81%"></span></div><span class="val pos">+20.0%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">Snip</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.19%"></span></div>
-          <span class="val neg">-22.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.57%"></span></div>
-          <span class="val neg">-3.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.81%"></span></div>
-          <span class="val neg">-12.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.67%"></span></div>
-          <span class="val neg">-21.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.19%"></span></div><span class="val neg">-22.0%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.56%"></span></div><span class="val neg">-3.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div><span class="val neg">-12.8%</span><span class="n">2 runs</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.64%"></span></div><span class="val neg">-21.2%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><span class="na">not tested</span></td>
+        <td class="cell"><span class="na">not tested</span></td>
       </tr>
       <tr><th scope="row">Token Savior</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.73%"></span></div>
-          <span class="val neg">-1.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.27%"></span></div>
-          <span class="val pos">+3.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.72%"></span></div>
-          <span class="val neg">-25.6%</span><span class="n">n=2</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:32.36%"></span></div>
-          <span class="val neg">-46.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
-        <td class="cell"><span class="na" title="no qualified run">not run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.76%"></span></div><span class="val neg">-1.1%</span><span class="n">2 runs</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.28%"></span></div><span class="val pos">+3.3%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.68%"></span></div><span class="val neg">-25.6%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:32.32%"></span></div><span class="val neg">-46.8%</span><span class="n">2 runs</span></td>
+        <td class="cell grp"><span class="na">not tested</span></td>
+        <td class="cell"><span class="na">not tested</span></td>
       </tr>
       <tr><th scope="row">TokenJuice</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.83%"></span></div>
-          <span class="val neg">-18.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.43%"></span></div>
-          <span class="val pos">+0.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.20%"></span></div>
-          <span class="val pos">+6.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.82%"></span></div>
-          <span class="val neg">-27.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:38.06%"></span></div>
-          <span class="val neg">-55.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.34%"></span></div>
-          <span class="val neg">-9.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.85%"></span></div><span class="val neg">-18.6%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.41%"></span></div><span class="val pos">+0.6%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.21%"></span></div><span class="val pos">+6.1%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.78%"></span></div><span class="val neg">-27.2%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:38.05%"></span></div><span class="val neg">-55.1%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.35%"></span></div><span class="val neg">-9.2%</span><span class="n">2 runs</span></td>
       </tr>
       <tr><th scope="row">jCodeMunch</th>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.79%"></span></div>
-          <span class="val pos">+11.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:29.74%"></span></div>
-          <span class="val pos">+43.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.59%"></span></div>
-          <span class="val neg">-11.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.91%"></span></div>
-          <span class="val neg">-12.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.92%"></span></div>
-          <span class="val neg">-4.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
-        <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.91%"></span></div>
-          <span class="val pos">+11.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
-        </td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.80%"></span></div><span class="val pos">+11.3%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:29.70%"></span></div><span class="val pos">+43.0%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.60%"></span></div><span class="val neg">-11.0%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.91%"></span></div><span class="val neg">-12.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.90%"></span></div><span class="val neg">-4.2%</span><span class="n">1 run</span></td>
+        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.94%"></span></div><span class="val pos">+11.5%</span><span class="n">1 run</span></td>
       </tr>
     </tbody>
   </table>
   </div>
-</div></section>
-
-<section id="coverage"><div class="shell">
-  <h2>Coverage is uneven, and that is stated rather than smoothed.</h2>
-  <p class="sub">Every arm is reported at the depth it actually holds. No arm is complete: Codex and
-  Claude Code each leave products unmeasured, and OpenCode has run every profile its apparatus can
-  execute while four remain blocked outright.</p>
-  <div class="grid">
-    <div class="box"><h3>Codex CLI — 15 products</h3><p>Complete, with Headroom excluded on
-    resource grounds by owner direction. Controls: 3 replicates per repository.</p></div>
-    <div class="box"><h3>Claude Code — 13 products</h3><p>Near-complete. Controls: 5 replicates on
-    Fastify, 6 on Beets — the deepest control pool in the corpus.</p></div>
-    <div class="box"><h3>OpenCode CLI — 12 of 16</h3><p>Every profile the apparatus can execute has been run. The remaining four are blocked: RepoWise has no adapter treatment, and LowFat, DCP and SDL-MCP are advertised as runnable but have no runner configuration at all. Snip
-    and Token Savior have no runnable OpenCode profile at all, so this arm cannot mirror the Codex
-    sweep even with unlimited budget.</p></div>
-  </div>
+  <p class="body">Two patterns are worth pointing out. First, look along any row: the same product
+  routinely helps under one assistant and hurts under another. Second, look at the Beets columns:
+  <strong>not one result on that codebase could be confirmed</strong>, under any assistant. Whatever
+  these products do, we could not show them doing it on that project.</p>
+  <p class="body">Coverage is uneven and we have not smoothed it over. Some products have more runs
+  behind them than others &mdash; and not at random: when an early run looked promising, we spent
+  budget repeating it, and when it looked bad, we usually did not. <strong>So a product with more
+  runs behind it is not a better product</strong>, it is one we chose to look at harder. Cells
+  marked <em>not tested</em> are combinations we could not run at all: the product has no working
+  integration for that assistant, so there was nothing to measure.</p>
 </div></section>
 
 <section id="limits"><div class="shell">
-  <h2>Read the boundary before the headline.</h2>
-  <p class="sub">What this study does not establish, stated as plainly as what it does.</p>
+  <h2>What this test does <em>not</em> tell you</h2>
+  <p class="sub">Written out plainly, because every one of these would be easy to overclaim.</p>
   <ul class="clean">
-    <li><strong>It is not a leaderboard.</strong> Most cells hold one replicate. A single replicate
-    can support “not worth carrying forward”; it cannot support a ranked effect size.</li>
-    <li><strong>The deeper arms are a selected sample.</strong> Products that screened well were
-    resampled; products that screened badly were not. More replicates is not evidence of a better
-    product.</li>
-    <li><strong>Overlapping ranges mean indistinguishable</strong>, and are reported that way rather
-    than ordered.</li>
-    <li><strong>Mechanism is not isolated.</strong> Interception, retrieval depth, persistent
-    instructions, tool schemas and trajectory length are all plausible contributors; this design
-    separates none of them.</li>
-    <li><strong>Effect sizes do not transfer across runtimes.</strong> A Claude Code figure is not
-    an estimate of the same product's Codex or OpenCode figure.</li>
-    <li><strong>Correctness is reported, not averaged away.</strong> 861 of 894 task
-    outcomes passed. The failures are not spread across the corpus: 32 of 33 fall on Beets, and 20
-    are the same task under Claude Code, which its own bare control also fails.</li>
+    <li><b>It is not a ranking.</b> Six of the seven confirmed products land between 14% and 26%
+    cheaper, all measured against the same comparison. That 11-point range is <em>narrower than the
+    14% run-to-run variation of the comparison itself</em>, so the apparent ordering between them is
+    not something this data supports.</li>
+    <li><b>"Not confirmed" does not mean "does not work."</b> Eight products have no confirmed
+    result. That is a statement about how much evidence we gathered, not a verdict on the product.
+    Most of them simply have one run where two or more were needed.</li>
+    <li><b>Almost everything rests on one codebase.</b> Every confirmed result is from Fastify.
+    Nothing was confirmed on Beets. A product tested on one project has not been tested on
+    yours.</li>
+    <li><b>We cannot tell you why any of this happens.</b> We measured what the bill did, not what
+    caused it. On OpenCode, several products changed the bill substantially while the assistant
+    never visibly called them once &mdash; so whatever is happening is often invisible even to
+    us.</li>
+    <li><b>Two of the three assistants run the same underlying AI model.</b> Codex CLI and OpenCode
+    both use GPT-5.6-sol; Claude Code uses Claude Opus 5. So when Claude Code behaves differently,
+    we cannot separate the assistant from the model inside it.</li>
+    <li><b>Correct work was not a condition for counting the bill.</b> 861 of 894 individual tasks
+    were completed correctly. We counted the cost either way, because excluding the expensive
+    failures would flatter every product. Nearly all failures were on Beets, and twenty were a
+    single task that Claude Code fails with no add-on installed at all.</li>
+    <li><b>Prices change, products change.</b> This is a snapshot taken in 2026. The assistants were
+    frozen at fixed versions for the whole test &mdash; one of them auto-updated partway through an
+    earlier round and we had to discard that work.</li>
   </ul>
 </div></section>
 
+<section id="method"><div class="shell">
+  <h2>How we tested</h2>
+  <p class="sub">The same recipe every time, so that the only thing that changes between two runs
+  is the add-on being tested.</p>
+  <ol class="steps">
+    <li><b>Pick real work.</b> We took two real open-source projects and broke six genuine behaviours
+    in each &mdash; bugs drawn from the projects' own histories, each one caught by a test the
+    project already had. So there is always an objective answer to "did the assistant fix it?"</li>
+    <li><b>Write the instructions once.</b> Each job describes the symptom and the expected
+    behaviour. It never names the file, the function or the test to look at &mdash; being told
+    where to look would remove exactly the searching these add-ons are supposed to make cheaper.
+    Every assistant gets byte-for-byte identical instructions, and nothing ever tells it to use the
+    add-on.</li>
+    <li><b>Install each product properly.</b> Whatever the makers recommend &mdash; their plugin,
+    their instructions, their settings &mdash; we install it as documented. We never nudge the
+    assistant to use it. If it goes unused, that is a real outcome and we report it.</li>
+    <li><b>Run with, and without.</b> Each product is tested on its own, never stacked with
+    another, against the same assistant running the same jobs with nothing installed.</li>
+    <li><b>Repeat, and publish what comes back.</b> We never re-ran a job because we disliked the
+    number it produced. Every run we kept is published, including the bad ones. When a run was
+    ruined by our own equipment &mdash; a broken setting, a dead connection, a full disk &mdash; we
+    deleted it, said so, and recorded what it cost us.</li>
+  </ol>
+  <div class="callout"><strong>How we count the bill.</strong> Text the assistant has already seen
+  is billed at a fraction of new text, and text it writes costs several times more than text it
+  reads. Adding raw token counts together would therefore be misleading. Every figure on this page
+  is a <b>weighted token cost</b>: <code>new text read + 0.1 &times; re-read text + 6 &times; text
+  written</code>. It is a cost model, not a specific vendor's price list, and it is the only
+  measure we use anywhere.</div>
+</div></section>
+
 <section id="data"><div class="shell">
-  <h2>Inspect the evidence.</h2>
-  <p class="sub">Every figure on this page is reproducible from the machine authority in the
-  repository. Invalidated runs, exclusions and disclosed spend that bought no measurement are
-  published alongside the results.</p>
+  <h2>Check our work</h2>
+  <p class="sub">Every number here comes from a file you can open. We would rather you verified this
+  than believed it.</p>
   <div class="grid">
-    <div class="box"><h3>Technical report</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Lifecycle V2 single-treatment screening</a> — method, results, threats to validity.</p></div>
-    <div class="box"><h3>Session registry</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">data/workflow-sessions.json</a> — every retained session with its token telemetry.</p></div>
-    <div class="box"><h3>Artifacts &amp; receipts</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations">sources/evaluations/</a> — per-session artifacts, protocols and audit receipts.</p></div>
+    <div class="box"><h3>The full technical report</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Lifecycle V2 single-treatment screening</a>
+    &mdash; the same findings with the statistics, the exact comparisons and the threats to
+    validity spelled out.</p></div>
+    <div class="box"><h3>The raw measurements</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">workflow-sessions.json</a>
+    &mdash; every run we kept, with its token counts, its step counts and which comparison it
+    belongs to.</p></div>
+    <div class="box"><h3>What went wrong, and what it cost</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations">sources/evaluations/</a>
+    &mdash; the artifacts from each run, plus written receipts for every run we threw away and
+    every mistake we found in our own equipment.</p></div>
   </div>
 </div></section>
+
 </main>
 <footer><div class="shell">
-  <p>Lifecycle V2 single-treatment screening · final for this phase · 2026-10-11 ·
-  supersedes the archived <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md">Phase 2 Lifecycle V1 screening</a>,
-  whose corpus was deleted when V1 was retired.</p>
-  <p>All values are weighted token cost. Negative means cheaper than that runtime's own bare control.</p>
+  <p>Token Optimization Research &mdash; an independent measurement study of token-reduction tools
+  for AI coding assistants. Published 11 October 2026. No product in this study was sponsored by,
+  reviewed by, or disclosed in advance to its maker.</p>
+  <p>This page supersedes an earlier round whose measurements were discarded after we found a fault
+  in our own setup. Both the fault and the discarded work are documented in the repository.</p>
 </div></footer>
 </body>
 </html>

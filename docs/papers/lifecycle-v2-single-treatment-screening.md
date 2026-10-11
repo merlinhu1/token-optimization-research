@@ -123,6 +123,45 @@ Only unmarked readings are supported.
 | TokenJuice | -18.6%† (n=1) | +0.6%† (n=1) | +6.1%† (n=1) | -27.2%† (n=1) | -55.1%† (n=1) | -9.2%† (n=2) |
 | jCodeMunch | +11.3%† (n=1) | +43.0%† (n=1) | -11.0%† (n=1) | -12.9%† (n=1) | -4.2%† (n=1) | +11.5%† (n=1) |
 
+## Cost decomposition
+
+[ADR 0008](../architecture/decision-records/0008-bounded-task-family-and-cost-decomposition.md)
+requires weighted cost to be published as its two factors, **agent steps times weighted cost per
+step**, because a total alone hides which factor a tool moved. For the nine supported cells:
+
+| Product | Runtime | Total | Agent steps | Weighted cost per step | Saving carried by |
+|---|---|---:|---:|---:|---|
+| LeanCTX | Claude Code | -35.4% | **-14.5%** (69&nbsp;&rarr;&nbsp;59) | **-24.2%** (9,269&nbsp;&rarr;&nbsp;7,026) | both |
+| LeanCTX | OpenCode | -64.7% | +4.7% † (139&nbsp;&rarr;&nbsp;146) | **-66.2%** (8,257&nbsp;&rarr;&nbsp;2,792) | cost per step |
+| LeanCTX | Codex | -24.7% | **+10.3%** (73&nbsp;&rarr;&nbsp;80) | **-34.6%** (10,825&nbsp;&rarr;&nbsp;7,084) | cost per step (steps rose) |
+| Token Savior | Claude Code | -25.6% | -0.7% † (69&nbsp;&rarr;&nbsp;68) | **-25.0%** (9,269&nbsp;&rarr;&nbsp;6,952) | cost per step |
+| Caveman | Claude Code | -25.0% | **-25.4%** (69&nbsp;&rarr;&nbsp;52) | +0.4% † (9,269&nbsp;&rarr;&nbsp;9,310) | steps |
+| Serena | Claude Code | -24.4% | -10.1% † (69&nbsp;&rarr;&nbsp;62) | **-15.6%** (9,269&nbsp;&rarr;&nbsp;7,821) | cost per step |
+| Cartog | Claude Code | -23.5% | -2.9% † (69&nbsp;&rarr;&nbsp;67) | **-21.3%** (9,269&nbsp;&rarr;&nbsp;7,297) | cost per step |
+| Ponytail | Claude Code | -23.4% | **-18.1%** (69&nbsp;&rarr;&nbsp;56) | -4.9% † (9,269&nbsp;&rarr;&nbsp;8,816) | steps |
+| RTK | Claude Code | -14.2% | -4.3% † (69&nbsp;&rarr;&nbsp;66) | **-10.9%** (9,269&nbsp;&rarr;&nbsp;8,263) | cost per step |
+
+All cells are Fastify. `†` marks a factor whose change does not exceed the control pool's own
+replicate-to-replicate spread on that same factor, and which therefore carries no weight:
+
+| Runtime | Control spread, steps | Control spread, cost per step |
+|---|---:|---:|
+| Claude Code (Fastify) | 10.9% | 5.5% |
+| Codex (Fastify) | 10.1% | 10.0% |
+| OpenCode (Fastify) | 12.4% | 10.6% |
+
+The factors separate the corpus into two mechanisms. **Caveman and Ponytail save on step count**
+and leave cost per step inside its control spread. **Token Savior, Serena, Cartog and RTK save on
+cost per step** and leave step count inside its control spread. **LeanCTX under Claude Code is the
+only cell that moves both factors.** Under Codex and OpenCode, LeanCTX spends *more* steps and still
+wins on the total, because the per-step reduction is large enough to absorb the increase — on
+OpenCode, 8,257 to 2,792 per step against a 4.7% rise in steps.
+
+The two factors are medians taken independently, so they do not multiply back to the total exactly;
+they are reported as two separate observed quantities, not as a factorisation of one. Four of 145
+sessions carry no step telemetry, and both factor medians are computed over the replicates that do;
+the totals elsewhere in this report use every retained replicate.
+
 ## Coverage
 
 Codex holds 15 products, Claude Code 13, OpenCode 12 of 16 runnable profiles. Four OpenCode profiles
