@@ -131,6 +131,32 @@ from PROFILE_META with no matching tool configuration, so `screening-ablation` o
 readiness. Snip and Token Savior have no OpenCode profile at all. All four blockers were found at
 zero provider spend.
 
+## Task correctness
+
+Task verifiers do not gate token-sample retention, so a replicate whose agent produced a bad repair
+still contributes its weighted token cost. That makes correctness something to report rather than
+something to filter on, and the distribution matters more than the headline rate.
+
+861 of 894 task outcomes passed. The 33 failures do not spread evenly:
+
+| Where | Failures |
+|---|---|
+| Claude Code, Beets | 30 |
+| OpenCode, Beets | 2 |
+| Claude Code, Fastify | 1 |
+| Codex, either fixture | 0 |
+
+Twenty of the thirty-three are one task, `beets-membership-query-hashable-v2`, which fails 20 of 35
+Claude Code attempts and 0 of 39 Codex and OpenCode attempts. The Claude Code bare control fails it
+too, so it is a property of that task under that agent rather than an effect of any product. The
+remaining four Claude Code control failures and the two OpenCode Beets failures are likewise spread
+across different tasks and different sessions.
+
+The practical consequence is a confound confined to the Beets lanes: a Claude Code Beets replicate
+that abandons this task early spends fewer tokens than one that keeps working on it, which inflates
+the apparent variance of exactly the lane where nothing clears its control anyway. It is one more
+reason the Beets result is reported as absent rather than as null.
+
 ## Threats to validity
 
 | Threat | Control |
