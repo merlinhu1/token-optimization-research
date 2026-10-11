@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The runtime decides whether a token-saving tool saves tokens</title>
+<title>Nine supported results from seventy-nine measurements</title>
 <meta name="description" content="A matched Lifecycle V2 screening of 15 token-saving integrations across three coding-agent runtimes. In 12 of 26 comparisons the direction of the effect changes with the runtime.">
 <style>
 :root{
@@ -101,12 +101,9 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></div>
 <main id="top">
 <header class="hero"><div class="shell">
-  <span class="tag">Lifecycle V2 · current evidence · 2026-09-28</span>
-  <h1>The runtime decides whether a token-saving tool saves tokens.</h1>
-  <p class="lede">Fifteen products, measured one at a time against matched controls on two real
-  repositories and three coding-agent runtimes. In <strong>15 of 26</strong> comparisons that exist
-  on more than one runtime, the same product changes the <em>direction</em> of its effect when the
-  host agent changes.</p>
+  <span class="tag">Lifecycle V2 · final for this phase · 2026-10-11</span>
+  <h1>Nine of seventy-nine measurements survive their own controls.</h1>
+  <p class="lede">Fifteen token-saving products, measured one at a time against matched controls on two repositories and three coding agents. <strong>LeanCTX</strong> reduces weighted token cost on Fastify under all three agents. Six further products reduce it on Fastify under Claude Code. Nothing is established on the Beets repository, and eight of the fifteen products have no supported result anywhere.</p>
   <div class="cta">
     <a class="btn primary" href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Read the technical report</a>
     <a class="btn" href="#results">See the results</a>
@@ -118,10 +115,10 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></header>
 <div class="shell">
   <div class="stats">
-    <div class="stat"><b>35 of 79</b><span>Readings that exceed their own control pool’s replicate-to-replicate spread</span></div>
-    <div class="stat"><b>10 of 35</b><span>Product–runtime pairs where the two repositories disagree on direction</span></div>
-    <div class="stat"><b>59 of 79</b><span>Readings resting on a single replicate, where run-to-run stability is unmeasured</span></div>
-    <div class="stat"><b>693 / 726</b><span>Recorded task outcomes passing their controller verifiers</span></div>
+    <div class="stat"><b>9 of 79</b><span>Measurements backed by two replicates that clear their own control</span></div>
+    <div class="stat"><b>4 of 5</b><span>Thin single-replicate claims that did not survive a second replicate</span></div>
+    <div class="stat"><b>8 of 15</b><span>Products with no supported result on any runtime or repository</span></div>
+    <div class="stat"><b>54.5%</b><span>Widest control band — the variation a result must exceed to count</span></div>
   </div>
 </div>
 
@@ -156,7 +153,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
     <span class="key"><span class="sw" style="background:var(--neg)"></span> Lower cost than control</span>
     <span class="key"><span class="sw" style="background:var(--pos)"></span> Higher cost than control</span>
     <span class="key"><span class="sw" style="background:var(--track)"></span> No qualified run</span>
-    <span class="key">† within the control’s own spread — not distinguishable from it</span>
+    <span class="key">† single replicate, or inside the control’s own band — not a supported result</span>
   </div>
   <div class="card">
   <table>
@@ -174,126 +171,126 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
     <tbody>
       <tr><th scope="row">Cartog</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:18.05%"></span></div>
-          <span class="val neg">-26.1%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.05%"></span></div>
+          <span class="val neg">-26.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.96%"></span></div>
-          <span class="val pos">+1.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+1.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:10.17%"></span></div>
-          <span class="val neg">-14.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.25%"></span></div>
+          <span class="val neg">-23.5%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.97%"></span></div>
-          <span class="val neg">-13.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.55%"></span></div>
+          <span class="val neg">-10.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.39%"></span></div>
-          <span class="val neg">-20.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-20.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:18.09%"></span></div>
-          <span class="val pos">+26.2%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:19.03%"></span></div>
+          <span class="val pos">+27.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">Caveman</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:6.67%"></span></div>
-          <span class="val pos">+9.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+9.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:14.23%"></span></div>
-          <span class="val pos">+20.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:14.23%"></span></div>
+          <span class="val pos">+20.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.29%"></span></div>
           <span class="val neg">-25.0%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:22.21%"></span></div>
-          <span class="val neg">-32.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.10%"></span></div>
+          <span class="val neg">-30.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:3.57%"></span></div>
-          <span class="val neg">-5.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-5.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.93%"></span></div>
-          <span class="val pos">+1.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.68%"></span></div>
+          <span class="val pos">+2.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">CodeGraph</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.48%"></span></div>
-          <span class="val pos">+3.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+3.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:50.00%"></span></div>
-          <span class="val pos">+72.4%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:50.00%"></span></div>
+          <span class="val pos">+72.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div>
-          <span class="val pos">+1.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+1.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.37%"></span></div>
-          <span class="val pos">+3.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.05%"></span></div>
+          <span class="val pos">+5.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.42%"></span></div>
-          <span class="val neg">-15.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-15.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.33%"></span></div>
-          <span class="val neg">-1.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.60%"></span></div>
+          <span class="val neg">-0.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">CodeScope</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.78%"></span></div>
-          <span class="val neg">-4.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-4.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.13%"></span></div>
-          <span class="val neg">-3.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-3.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.73%"></span></div>
-          <span class="val neg">-18.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-18.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:2.59%"></span></div>
-          <span class="val pos">+3.8%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:3.37%"></span></div>
+          <span class="val pos">+4.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">Graphify</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:18.32%"></span></div>
-          <span class="val neg">-26.5%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.32%"></span></div>
+          <span class="val neg">-26.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.99%"></span></div>
-          <span class="val pos">+4.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+4.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div>
-          <span class="val neg">-12.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <span class="val neg">-12.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:20.49%"></span></div>
-          <span class="val neg">-29.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.34%"></span></div>
+          <span class="val neg">-28.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.73%"></span></div>
-          <span class="val pos">+1.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+1.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:32.41%"></span></div>
-          <span class="val pos">+46.9%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:33.50%"></span></div>
+          <span class="val pos">+48.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">LeanCTX</th>
@@ -303,82 +300,82 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.67%"></span></div>
-          <span class="val neg">-1.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <span class="val neg">-1.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.43%"></span></div>
           <span class="val neg">-35.4%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:27.41%"></span></div>
-          <span class="val neg">-39.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:26.43%"></span></div>
+          <span class="val neg">-38.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:44.67%"></span></div>
           <span class="val neg">-64.7%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.83%"></span></div>
-          <span class="val neg">-14.2%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:9.19%"></span></div>
+          <span class="val neg">-13.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
       </tr>
       <tr><th scope="row">Ponytail</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.49%"></span></div>
-          <span class="val neg">-2.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-2.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:5.24%"></span></div>
-          <span class="val pos">+7.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+7.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.17%"></span></div>
           <span class="val neg">-23.4%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:22.32%"></span></div>
-          <span class="val neg">-32.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.22%"></span></div>
+          <span class="val neg">-30.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.82%"></span></div>
-          <span class="val neg">-25.8%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.79%"></span></div>
+          <span class="val neg">-11.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:8.34%"></span></div>
-          <span class="val pos">+12.1%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:9.17%"></span></div>
+          <span class="val pos">+13.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
       </tr>
       <tr><th scope="row">RTK</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.34%"></span></div>
-          <span class="val neg">-9.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-9.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:8.79%"></span></div>
-          <span class="val neg">-12.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.79%"></span></div>
+          <span class="val neg">-12.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.81%"></span></div>
           <span class="val neg">-14.2%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.69%"></span></div>
-          <span class="val neg">-24.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.45%"></span></div>
+          <span class="val neg">-22.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.44%"></span></div>
-          <span class="val pos">+0.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.19%"></span></div>
+          <span class="val pos">+1.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">RepoWise</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.82%"></span></div>
-          <span class="val neg">-8.4%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-8.4%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.51%"></span></div>
-          <span class="val neg">-0.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-0.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
@@ -388,145 +385,145 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
       <tr><th scope="row">Serena</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.56%"></span></div>
-          <span class="val pos">+0.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+0.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:13.77%"></span></div>
-          <span class="val pos">+19.9%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.77%"></span></div>
+          <span class="val pos">+19.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.83%"></span></div>
           <span class="val neg">-24.4%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:17.83%"></span></div>
-          <span class="val neg">-25.8%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.62%"></span></div>
+          <span class="val neg">-24.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.15%"></span></div>
-          <span class="val neg">-19.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-19.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:6.07%"></span></div>
-          <span class="val neg">-8.8%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.39%"></span></div>
+          <span class="val neg">-7.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">SigMap</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.12%"></span></div>
-          <span class="val neg">-0.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-0.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:12.35%"></span></div>
-          <span class="val pos">+17.9%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:12.35%"></span></div>
+          <span class="val pos">+17.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:12.85%"></span></div>
-          <span class="val neg">-18.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.26%"></span></div>
+          <span class="val neg">-9.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:35.76%"></span></div>
-          <span class="val pos">+51.8%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:38.23%"></span></div>
+          <span class="val pos">+55.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.16%"></span></div>
-          <span class="val neg">-17.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-17.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:12.95%"></span></div>
-          <span class="val pos">+18.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.83%"></span></div>
+          <span class="val pos">+20.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
       <tr><th scope="row">Snip</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:15.19%"></span></div>
-          <span class="val neg">-22.0%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.19%"></span></div>
+          <span class="val neg">-22.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.57%"></span></div>
-          <span class="val neg">-3.7%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-3.7%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:14.99%"></span></div>
-          <span class="val neg">-21.7%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.81%"></span></div>
+          <span class="val neg">-12.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.92%"></span></div>
-          <span class="val neg">-23.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.67%"></span></div>
+          <span class="val neg">-21.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
       </tr>
       <tr><th scope="row">Token Savior</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:11.59%"></span></div>
-          <span class="val neg">-16.8%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.73%"></span></div>
+          <span class="val neg">-1.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.27%"></span></div>
-          <span class="val pos">+3.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+3.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.72%"></span></div>
           <span class="val neg">-25.6%</span><span class="n">n=2</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:33.21%"></span></div>
-          <span class="val neg">-48.1%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:32.36%"></span></div>
+          <span class="val neg">-46.8%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
         <td class="cell"><span class="na" title="no qualified run">not run</span></td>
       </tr>
       <tr><th scope="row">TokenJuice</th>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:12.83%"></span></div>
-          <span class="val neg">-18.6%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.83%"></span></div>
+          <span class="val neg">-18.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.43%"></span></div>
-          <span class="val pos">+0.6%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+0.6%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.20%"></span></div>
-          <span class="val pos">+6.1%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+6.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.98%"></span></div>
-          <span class="val neg">-28.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.82%"></span></div>
+          <span class="val neg">-27.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:38.06%"></span></div>
-          <span class="val neg">-55.1%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:38.06%"></span></div>
+          <span class="val neg">-55.1%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:7.01%"></span></div>
-          <span class="val neg">-10.1%</span><span class="n">n=2</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.34%"></span></div>
+          <span class="val neg">-9.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=2</span>
         </td>
       </tr>
       <tr><th scope="row">jCodeMunch</th>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.79%"></span></div>
-          <span class="val pos">+11.3%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val pos">+11.3%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:29.74%"></span></div>
-          <span class="val pos">+43.0%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:29.74%"></span></div>
+          <span class="val pos">+43.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.59%"></span></div>
-          <span class="val neg">-11.0%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-11.0%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.30%"></span></div>
-          <span class="val neg">-14.9%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.91%"></span></div>
+          <span class="val neg">-12.9%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
           <div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.92%"></span></div>
-          <span class="val neg">-4.2%</span><span class="nz" title="within the control pool&#39;s own spread">†</span><span class="n">n=1</span>
+          <span class="val neg">-4.2%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
         <td class="cell">
-          <div class="track"><span class="axis"></span><span class="fill pos" style="left:50%;width:7.09%"></span></div>
-          <span class="val pos">+10.3%</span><span class="n">n=1</span>
+          <div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.91%"></span></div>
+          <span class="val pos">+11.5%</span><span class="nz" title="single replicate, or inside the control band">†</span><span class="n">n=1</span>
         </td>
       </tr>
     </tbody>
@@ -584,7 +581,7 @@ footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);f
 </div></section>
 </main>
 <footer><div class="shell">
-  <p>Lifecycle V2 single-treatment screening · evidence current as of 2026-09-28 ·
+  <p>Lifecycle V2 single-treatment screening · final for this phase · 2026-10-11 ·
   supersedes the archived <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/phase-2-natural-use-screening.md">Phase 2 Lifecycle V1 screening</a>,
   whose corpus was deleted when V1 was retired.</p>
   <p>All values are weighted token cost. Negative means cheaper than that runtime's own bare control.</p>
