@@ -111,7 +111,61 @@ ol.steps b{color:var(--ink)}
 .callout strong{color:var(--ink)}
 footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--faint);font-size:.85rem}
 footer p{max-width:78ch}
-@media (max-width:660px){.nav{display:none}h1{max-width:none}}
+@media (max-width:660px){h1{max-width:none}}
+/* ---- The six-column matrix only fits above ~1178px. Below that, each row
+   becomes its own card rather than a sideways-scrolling strip. ---- */
+@media (max-width:1177px){
+  .card{overflow-x:visible;padding:.9rem}
+  #matrix table,#split table{min-width:0}
+  table,thead,tbody,tr,th,td{display:block;width:auto}
+  thead{position:absolute;left:-9999px}
+  caption{display:block;width:auto;text-align:left;padding-bottom:.7rem}
+  tbody tr{border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem;margin:.8rem 0;background:var(--bg)}
+  tbody tr+tr th,tbody tr+tr td{border-top:none}
+  tbody th{font-size:1.05rem;padding:0 0 .5rem;border-bottom:1px solid var(--line);margin-bottom:.3rem}
+  tbody td{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;padding:.45rem 0;text-align:left}
+  tbody td+td{border-top:1px dotted var(--line)}
+  tbody td::before{content:attr(data-label);flex:0 0 47%;font-size:.78rem;color:var(--faint);font-weight:600;line-height:1.35}
+  .grp{border-left:none}
+  .track{display:none}
+  .val{min-width:0;margin-left:0;font-size:.98rem}
+  /* bars are hidden here, so carry the direction on the number itself */
+  .val.neg{color:var(--neg)}
+  .val.pos{color:var(--pos)}
+  .val.dim{color:var(--faint)}
+  .raw{display:inline;font-size:.75rem;margin-left:.35rem}
+  .num{text-align:left}
+  .how{white-space:normal}
+  .rt{display:inline;margin-left:.45rem;font-size:.85rem}
+  .n{margin-left:.1rem}
+  .ok{margin-left:.25rem}
+  .legend{gap:.6rem;font-size:.84rem}
+}
+/* Wide enough for more than one card abreast, too narrow for the table. */
+@media (min-width:660px) and (max-width:1177px){
+  tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.9rem;align-items:start}
+  tbody tr{margin:0}
+}
+@media (max-width:430px){
+  tbody td::before{flex-basis:100%}
+  tbody td{gap:.25rem;padding:.5rem 0}
+}
+.toc{display:none}
+@media (max-width:720px){
+  .topbar .nav{display:none}
+  .toc{display:flex;flex-wrap:wrap;gap:.45rem;margin:.2rem 0 .5rem}
+  .toc span{flex:0 0 100%;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--faint);font-weight:700;margin-bottom:.15rem}
+  .toc a{font-size:.85rem;text-decoration:none;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:999px;padding:.35rem .7rem}
+  .tag{font-size:.72rem;white-space:nowrap}
+  .hero{padding:2.2rem 0 1rem}
+  .stats{gap:.7rem;margin:1.6rem 0 .5rem}
+  .stat{padding:.9rem 1rem}
+  .lede{font-size:1.05rem}
+  ol.steps li{padding-left:2.2rem}
+  .brand{font-size:.85rem}
+}
 .skip{position:absolute;left:1rem;top:-4rem;background:var(--ink);color:var(--bg);padding:.7rem 1rem;border-radius:.6rem;z-index:30}
 .skip:focus{top:1rem}
 </style>
@@ -164,6 +218,12 @@ footer p{max-width:78ch}
     <div class="stat"><b>1</b><span>Product that worked under every assistant we tried it with</span></div>
     <div class="stat"><b>up to 54%</b><span>How much two identical runs can differ with no add-on at all &mdash; the noise a real saving has to beat</span></div>
   </div>
+  <nav class="toc" aria-label="Contents">
+    <span>On this page</span>
+    <a href="#found">What we found</a><a href="#split">How they save</a>
+    <a href="#noise">Why so few</a><a href="#results">Full results</a>
+    <a href="#limits">Limits</a><a href="#method">How we tested</a><a href="#data">Check our work</a>
+  </nav>
 </div>
 
 <section id="found"><div class="shell">
@@ -215,15 +275,15 @@ footer p{max-width:78ch}
       <th scope="col">How it saved</th>
     </tr></thead>
     <tbody>
-      <tr><th scope="row">LeanCTX<span class="rt">Claude Code</span></th><td class="num"><strong>-35.4%</strong></td><td class="num"><span class="val neg">-14.5%</span><span class="raw">69 &rarr; 59</span></td><td class="num"><span class="val neg">-24.2%</span><span class="raw">9,269 &rarr; 7,026</span></td><td class="how">Both</td></tr>
-      <tr><th scope="row">LeanCTX<span class="rt">OpenCode</span></th><td class="num"><strong>-64.7%</strong></td><td class="num"><span class="val dim">+4.7%</span><span class="raw">139 &rarr; 146</span></td><td class="num"><span class="val neg">-66.2%</span><span class="raw">8,257 &rarr; 2,792</span></td><td class="how">Cheaper steps</td></tr>
-      <tr><th scope="row">LeanCTX<span class="rt">Codex CLI</span></th><td class="num"><strong>-24.7%</strong></td><td class="num"><span class="val pos">+10.3%</span><span class="raw">73 &rarr; 80</span></td><td class="num"><span class="val neg">-34.6%</span><span class="raw">10,825 &rarr; 7,084</span></td><td class="how">Cheaper steps, but more of them</td></tr>
-      <tr><th scope="row">Token Savior<span class="rt">Claude Code</span></th><td class="num"><strong>-25.6%</strong></td><td class="num"><span class="val dim">-0.7%</span><span class="raw">69 &rarr; 68</span></td><td class="num"><span class="val neg">-25.0%</span><span class="raw">9,269 &rarr; 6,952</span></td><td class="how">Cheaper steps</td></tr>
-      <tr><th scope="row">Caveman<span class="rt">Claude Code</span></th><td class="num"><strong>-25.0%</strong></td><td class="num"><span class="val neg">-25.4%</span><span class="raw">69 &rarr; 52</span></td><td class="num"><span class="val dim">+0.4%</span><span class="raw">9,269 &rarr; 9,310</span></td><td class="how">Fewer steps</td></tr>
-      <tr><th scope="row">Serena<span class="rt">Claude Code</span></th><td class="num"><strong>-24.4%</strong></td><td class="num"><span class="val dim">-10.1%</span><span class="raw">69 &rarr; 62</span></td><td class="num"><span class="val neg">-15.6%</span><span class="raw">9,269 &rarr; 7,821</span></td><td class="how">Cheaper steps</td></tr>
-      <tr><th scope="row">Cartog<span class="rt">Claude Code</span></th><td class="num"><strong>-23.5%</strong></td><td class="num"><span class="val dim">-2.9%</span><span class="raw">69 &rarr; 67</span></td><td class="num"><span class="val neg">-21.3%</span><span class="raw">9,269 &rarr; 7,297</span></td><td class="how">Cheaper steps</td></tr>
-      <tr><th scope="row">Ponytail<span class="rt">Claude Code</span></th><td class="num"><strong>-23.4%</strong></td><td class="num"><span class="val neg">-18.1%</span><span class="raw">69 &rarr; 56</span></td><td class="num"><span class="val dim">-4.9%</span><span class="raw">9,269 &rarr; 8,816</span></td><td class="how">Fewer steps</td></tr>
-      <tr><th scope="row">RTK<span class="rt">Claude Code</span></th><td class="num"><strong>-14.2%</strong></td><td class="num"><span class="val dim">-4.3%</span><span class="raw">69 &rarr; 66</span></td><td class="num"><span class="val neg">-10.9%</span><span class="raw">9,269 &rarr; 8,263</span></td><td class="how">Cheaper steps</td></tr>    </tbody>
+      <tr><th scope="row">LeanCTX<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-35.4%</strong></td><td class="num" data-label="Steps taken"><span class="val neg">-14.5%</span><span class="raw">69 &rarr; 59</span></td><td class="num" data-label="Cost per step"><span class="val neg">-24.2%</span><span class="raw">9,269 &rarr; 7,026</span></td><td class="how" data-label="How it saved">Both</td></tr>
+      <tr><th scope="row">LeanCTX<span class="rt">OpenCode</span></th><td class="num" data-label="Total bill"><strong>-64.7%</strong></td><td class="num" data-label="Steps taken"><span class="val dim">+4.7%</span><span class="raw">139 &rarr; 146</span></td><td class="num" data-label="Cost per step"><span class="val neg">-66.2%</span><span class="raw">8,257 &rarr; 2,792</span></td><td class="how" data-label="How it saved">Cheaper steps</td></tr>
+      <tr><th scope="row">LeanCTX<span class="rt">Codex CLI</span></th><td class="num" data-label="Total bill"><strong>-24.7%</strong></td><td class="num" data-label="Steps taken"><span class="val pos">+10.3%</span><span class="raw">73 &rarr; 80</span></td><td class="num" data-label="Cost per step"><span class="val neg">-34.6%</span><span class="raw">10,825 &rarr; 7,084</span></td><td class="how" data-label="How it saved">Cheaper steps, but more of them</td></tr>
+      <tr><th scope="row">Token Savior<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-25.6%</strong></td><td class="num" data-label="Steps taken"><span class="val dim">-0.7%</span><span class="raw">69 &rarr; 68</span></td><td class="num" data-label="Cost per step"><span class="val neg">-25.0%</span><span class="raw">9,269 &rarr; 6,952</span></td><td class="how" data-label="How it saved">Cheaper steps</td></tr>
+      <tr><th scope="row">Caveman<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-25.0%</strong></td><td class="num" data-label="Steps taken"><span class="val neg">-25.4%</span><span class="raw">69 &rarr; 52</span></td><td class="num" data-label="Cost per step"><span class="val dim">+0.4%</span><span class="raw">9,269 &rarr; 9,310</span></td><td class="how" data-label="How it saved">Fewer steps</td></tr>
+      <tr><th scope="row">Serena<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-24.4%</strong></td><td class="num" data-label="Steps taken"><span class="val dim">-10.1%</span><span class="raw">69 &rarr; 62</span></td><td class="num" data-label="Cost per step"><span class="val neg">-15.6%</span><span class="raw">9,269 &rarr; 7,821</span></td><td class="how" data-label="How it saved">Cheaper steps</td></tr>
+      <tr><th scope="row">Cartog<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-23.5%</strong></td><td class="num" data-label="Steps taken"><span class="val dim">-2.9%</span><span class="raw">69 &rarr; 67</span></td><td class="num" data-label="Cost per step"><span class="val neg">-21.3%</span><span class="raw">9,269 &rarr; 7,297</span></td><td class="how" data-label="How it saved">Cheaper steps</td></tr>
+      <tr><th scope="row">Ponytail<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-23.4%</strong></td><td class="num" data-label="Steps taken"><span class="val neg">-18.1%</span><span class="raw">69 &rarr; 56</span></td><td class="num" data-label="Cost per step"><span class="val dim">-4.9%</span><span class="raw">9,269 &rarr; 8,816</span></td><td class="how" data-label="How it saved">Fewer steps</td></tr>
+      <tr><th scope="row">RTK<span class="rt">Claude Code</span></th><td class="num" data-label="Total bill"><strong>-14.2%</strong></td><td class="num" data-label="Steps taken"><span class="val dim">-4.3%</span><span class="raw">69 &rarr; 66</span></td><td class="num" data-label="Cost per step"><span class="val neg">-10.9%</span><span class="raw">9,269 &rarr; 8,263</span></td><td class="how" data-label="How it saved">Cheaper steps</td></tr>    </tbody>
   </table>
   </div>
   <div class="grid" style="margin-top:1.2rem">
@@ -307,124 +367,124 @@ footer p{max-width:78ch}
     </thead>
     <tbody>
       <tr><th scope="row">Cartog</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.02%"></span></div><span class="val neg">-26.1%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.97%"></span></div><span class="val pos">+1.4%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.23%"></span></div><span class="val neg">-23.5%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.53%"></span></div><span class="val neg">-10.9%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.36%"></span></div><span class="val neg">-20.8%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:18.99%"></span></div><span class="val pos">+27.5%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.02%"></span></div><span class="val neg">-26.1%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.97%"></span></div><span class="val pos">+1.4%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.23%"></span></div><span class="val neg">-23.5%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.53%"></span></div><span class="val neg">-10.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.36%"></span></div><span class="val neg">-20.8%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:18.99%"></span></div><span class="val pos">+27.5%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">Caveman</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:6.70%"></span></div><span class="val pos">+9.7%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:14.23%"></span></div><span class="val pos">+20.6%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.27%"></span></div><span class="val neg">-25.0%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.06%"></span></div><span class="val neg">-30.5%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:3.59%"></span></div><span class="val neg">-5.2%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.66%"></span></div><span class="val pos">+2.4%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:6.70%"></span></div><span class="val pos">+9.7%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:14.23%"></span></div><span class="val pos">+20.6%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.27%"></span></div><span class="val neg">-25.0%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.06%"></span></div><span class="val neg">-30.5%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:3.59%"></span></div><span class="val neg">-5.2%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.66%"></span></div><span class="val pos">+2.4%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">CodeGraph</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.49%"></span></div><span class="val pos">+3.6%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:50.00%"></span></div><span class="val pos">+72.4%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div><span class="val pos">+1.1%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.07%"></span></div><span class="val pos">+5.9%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.43%"></span></div><span class="val neg">-15.1%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.62%"></span></div><span class="val neg">-0.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.49%"></span></div><span class="val pos">+3.6%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:50.00%"></span></div><span class="val pos">+72.4%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div><span class="val pos">+1.1%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.07%"></span></div><span class="val pos">+5.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:10.43%"></span></div><span class="val neg">-15.1%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.62%"></span></div><span class="val neg">-0.9%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">CodeScope</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.76%"></span></div><span class="val neg">-4.0%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.14%"></span></div><span class="val neg">-3.1%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><span class="na">not tested</span></td>
-        <td class="cell"><span class="na">not tested</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.71%"></span></div><span class="val neg">-18.4%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:3.38%"></span></div><span class="val pos">+4.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.76%"></span></div><span class="val neg">-4.0%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.14%"></span></div><span class="val neg">-3.1%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><span class="na">not tested</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><span class="na">not tested</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.71%"></span></div><span class="val neg">-18.4%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:3.38%"></span></div><span class="val pos">+4.9%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">Graphify</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.30%"></span></div><span class="val neg">-26.5%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.97%"></span></div><span class="val pos">+4.3%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div><span class="val neg">-12.8%</span><span class="n">2 runs</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.34%"></span></div><span class="val neg">-28.0%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div><span class="val pos">+1.1%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:33.49%"></span></div><span class="val pos">+48.5%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.30%"></span></div><span class="val neg">-26.5%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.97%"></span></div><span class="val pos">+4.3%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div><span class="val neg">-12.8%</span><span class="n">2 runs</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:19.34%"></span></div><span class="val neg">-28.0%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.76%"></span></div><span class="val pos">+1.1%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:33.49%"></span></div><span class="val pos">+48.5%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">LeanCTX</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.06%"></span></div><span class="val neg">-24.7%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.69%"></span></div><span class="val neg">-1.0%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.45%"></span></div><span class="val neg">-35.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:26.45%"></span></div><span class="val neg">-38.3%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:44.68%"></span></div><span class="val neg">-64.7%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:9.19%"></span></div><span class="val neg">-13.3%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.06%"></span></div><span class="val neg">-24.7%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.69%"></span></div><span class="val neg">-1.0%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:24.45%"></span></div><span class="val neg">-35.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:26.45%"></span></div><span class="val neg">-38.3%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:44.68%"></span></div><span class="val neg">-64.7%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:9.19%"></span></div><span class="val neg">-13.3%</span><span class="n">2 runs</span></td>
       </tr>
       <tr><th scope="row">Ponytail</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.52%"></span></div><span class="val neg">-2.2%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:5.25%"></span></div><span class="val pos">+7.6%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.16%"></span></div><span class="val neg">-23.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.20%"></span></div><span class="val neg">-30.7%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.80%"></span></div><span class="val neg">-11.3%</span><span class="n">2 runs</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:9.19%"></span></div><span class="val pos">+13.3%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:1.52%"></span></div><span class="val neg">-2.2%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:5.25%"></span></div><span class="val pos">+7.6%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.16%"></span></div><span class="val neg">-23.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:21.20%"></span></div><span class="val neg">-30.7%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.80%"></span></div><span class="val neg">-11.3%</span><span class="n">2 runs</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:9.19%"></span></div><span class="val pos">+13.3%</span><span class="n">2 runs</span></td>
       </tr>
       <tr><th scope="row">RTK</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.35%"></span></div><span class="val neg">-9.2%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.77%"></span></div><span class="val neg">-12.7%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.81%"></span></div><span class="val neg">-14.2%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.47%"></span></div><span class="val neg">-22.4%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><span class="na">not tested</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.17%"></span></div><span class="val pos">+1.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.35%"></span></div><span class="val neg">-9.2%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.77%"></span></div><span class="val neg">-12.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:9.81%"></span></div><span class="val neg">-14.2%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.47%"></span></div><span class="val neg">-22.4%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><span class="na">not tested</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:1.17%"></span></div><span class="val pos">+1.7%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">RepoWise</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.80%"></span></div><span class="val neg">-8.4%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.48%"></span></div><span class="val neg">-0.7%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><span class="na">not tested</span></td>
-        <td class="cell"><span class="na">not tested</span></td>
-        <td class="cell grp"><span class="na">not tested</span></td>
-        <td class="cell"><span class="na">not tested</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.80%"></span></div><span class="val neg">-8.4%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.48%"></span></div><span class="val neg">-0.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><span class="na">not tested</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><span class="na">not tested</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><span class="na">not tested</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><span class="na">not tested</span></td>
       </tr>
       <tr><th scope="row">Serena</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.55%"></span></div><span class="val pos">+0.8%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.74%"></span></div><span class="val pos">+19.9%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.85%"></span></div><span class="val neg">-24.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.64%"></span></div><span class="val neg">-24.1%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.12%"></span></div><span class="val neg">-19.0%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.39%"></span></div><span class="val neg">-7.8%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.55%"></span></div><span class="val pos">+0.8%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.74%"></span></div><span class="val pos">+19.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:16.85%"></span></div><span class="val neg">-24.4%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:16.64%"></span></div><span class="val neg">-24.1%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:13.12%"></span></div><span class="val neg">-19.0%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:5.39%"></span></div><span class="val neg">-7.8%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">SigMap</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.14%"></span></div><span class="val neg">-0.2%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:12.36%"></span></div><span class="val pos">+17.9%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.28%"></span></div><span class="val neg">-9.1%</span><span class="n">2 runs</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:38.19%"></span></div><span class="val pos">+55.3%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.15%"></span></div><span class="val neg">-17.6%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.81%"></span></div><span class="val pos">+20.0%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.14%"></span></div><span class="val neg">-0.2%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:12.36%"></span></div><span class="val pos">+17.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.28%"></span></div><span class="val neg">-9.1%</span><span class="n">2 runs</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:38.19%"></span></div><span class="val pos">+55.3%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.15%"></span></div><span class="val neg">-17.6%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:13.81%"></span></div><span class="val pos">+20.0%</span><span class="n">1 run</span></td>
       </tr>
       <tr><th scope="row">Snip</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.19%"></span></div><span class="val neg">-22.0%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.56%"></span></div><span class="val neg">-3.7%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div><span class="val neg">-12.8%</span><span class="n">2 runs</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.64%"></span></div><span class="val neg">-21.2%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><span class="na">not tested</span></td>
-        <td class="cell"><span class="na">not tested</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:15.19%"></span></div><span class="val neg">-22.0%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.56%"></span></div><span class="val neg">-3.7%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.84%"></span></div><span class="val neg">-12.8%</span><span class="n">2 runs</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:14.64%"></span></div><span class="val neg">-21.2%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><span class="na">not tested</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><span class="na">not tested</span></td>
       </tr>
       <tr><th scope="row">Token Savior</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.76%"></span></div><span class="val neg">-1.1%</span><span class="n">2 runs</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.28%"></span></div><span class="val pos">+3.3%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.68%"></span></div><span class="val neg">-25.6%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:32.32%"></span></div><span class="val neg">-46.8%</span><span class="n">2 runs</span></td>
-        <td class="cell grp"><span class="na">not tested</span></td>
-        <td class="cell"><span class="na">not tested</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:0.76%"></span></div><span class="val neg">-1.1%</span><span class="n">2 runs</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:2.28%"></span></div><span class="val pos">+3.3%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg" style="right:50%;width:17.68%"></span></div><span class="val neg">-25.6%</span><span class="n">2 runs</span><span class="ok" title="ran twice or more, and the change is bigger than the no-add-on range">confirmed</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:32.32%"></span></div><span class="val neg">-46.8%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><span class="na">not tested</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><span class="na">not tested</span></td>
       </tr>
       <tr><th scope="row">TokenJuice</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.85%"></span></div><span class="val neg">-18.6%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.41%"></span></div><span class="val pos">+0.6%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.21%"></span></div><span class="val pos">+6.1%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.78%"></span></div><span class="val neg">-27.2%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:38.05%"></span></div><span class="val neg">-55.1%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.35%"></span></div><span class="val neg">-9.2%</span><span class="n">2 runs</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:12.85%"></span></div><span class="val neg">-18.6%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:0.41%"></span></div><span class="val pos">+0.6%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:4.21%"></span></div><span class="val pos">+6.1%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:18.78%"></span></div><span class="val neg">-27.2%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:38.05%"></span></div><span class="val neg">-55.1%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:6.35%"></span></div><span class="val neg">-9.2%</span><span class="n">2 runs</span></td>
       </tr>
       <tr><th scope="row">jCodeMunch</th>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.80%"></span></div><span class="val pos">+11.3%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:29.70%"></span></div><span class="val pos">+43.0%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.60%"></span></div><span class="val neg">-11.0%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.91%"></span></div><span class="val neg">-12.9%</span><span class="n">1 run</span></td>
-        <td class="cell grp"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.90%"></span></div><span class="val neg">-4.2%</span><span class="n">1 run</span></td>
-        <td class="cell"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.94%"></span></div><span class="val pos">+11.5%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Codex CLI &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.80%"></span></div><span class="val pos">+11.3%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Codex CLI &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:29.70%"></span></div><span class="val pos">+43.0%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="Claude Code &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:7.60%"></span></div><span class="val neg">-11.0%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="Claude Code &middot; Beets"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:8.91%"></span></div><span class="val neg">-12.9%</span><span class="n">1 run</span></td>
+        <td class="cell grp" data-label="OpenCode &middot; Fastify"><div class="track"><span class="axis"></span><span class="fill neg faint" style="right:50%;width:2.90%"></span></div><span class="val neg">-4.2%</span><span class="n">1 run</span></td>
+        <td class="cell" data-label="OpenCode &middot; Beets"><div class="track"><span class="axis"></span><span class="fill pos faint" style="left:50%;width:7.94%"></span></div><span class="val pos">+11.5%</span><span class="n">1 run</span></td>
       </tr>
     </tbody>
   </table>
