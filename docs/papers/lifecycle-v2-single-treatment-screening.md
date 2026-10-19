@@ -94,7 +94,7 @@ control, then given a second replicate. **Four of the five did not survive.**
 
 The only survivor had the *thinnest* margin and the *widest* margin failed, so the ratio of effect to
 control noise carried no predictive power across this range. **No reading resting on one replicate
-should be treated as an established effect, at any margin.** 59 of 79 cells rest on one replicate.
+should be treated as an established effect, at any margin.** 54 of 79 cells rest on one replicate.
 
 Treatment stability is also unpredictable: across the 20 multi-replicate cells it ranges from 1.5%
 to 49.0%, and in 9 of 20 the treatment is *less* stable than its own control. A replicate count

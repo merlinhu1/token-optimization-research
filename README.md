@@ -1,79 +1,90 @@
 # Token Optimization Research
 
-Research infrastructure for measuring weighted token cost and software quality in realistic coding-agent workflows. Weighted token cost (`fresh input + 0.1 × cached input + 6 × output`) is the repository's sole token metric; raw provider counters are calculation/audit telemetry only.
+An independent benchmark of add-ons that claim to cut what AI coding agents cost to run.
 
-## Current evaluation portfolio
+**Results: <https://merlinhu1.github.io/token-optimization-research/>**
+(technical report: [`docs/papers/lifecycle-v2-single-treatment-screening.md`](docs/papers/lifecycle-v2-single-treatment-screening.md))
 
-The active portfolio is **Lifecycle V2** for two medium-project lanes. Both lanes have passed provider-free qualification and both now carry provider-backed results; Beets was repinned on 2026-08-22 to reach a minable window of upstream history and was rebaselined afterwards. Counts and role splits are in the generated corpus summary below rather than restated here. Each runtime carries its own baselines and a treatment is only read against a baseline from its own runtime, because the runtimes differ from each other by more than any treatment effect measured so far. New Codex CLI and OpenCode evaluations use GPT-5.6 Sol/medium; new Claude Code evaluations use direct-Anthropic Claude Opus 5/medium. High-effort conditions are historical only because the added deliberation can increase trajectory divergence. Each task pre-seeds an authentic semantic regression from completed upstream behavior and gives the agent a normal software-engineering objective: implement the requested outcome correctly, search and inspect related code, preserve prior work, and validate appropriately. Prompts state the observable symptom and never name the file, function, or test, so locating the defect remains real retrieval work, and they do not disclose evaluator scoring or controller commands. The controller applies every regression as one composite start before prompt 1; after the final prompt it runs each task verifier and one frozen project-wide compile command. Every task requires affected-component compilation plus one narrow essential-behavior smoke check. Broader tests, behavioral fidelity, style, maintainability, and source review are diagnostics. The active lifecycle portfolio is:
+The one metric is **weighted token cost**: `fresh input + 0.1 × cached input + 6 × output`.
+Raw provider counters are kept only to calculate and audit it.
+
+## How it works
+
+- **Two real codebases.** Fastify (JavaScript) and Beets (Python), each pinned to an upstream commit.
+- **Six real bugs per codebase.** Each task re-breaks behaviour from the project's own history that an
+  existing upstream test already checks. All six are seeded before the first prompt.
+- **Symptom-only prompts.** Prompts describe what is wrong, never name a file, function or test, and are
+  byte-identical between the no-add-on control and every add-on.
+- **Each agent is its own control.** An add-on is only compared with the same agent, model and codebase
+  running bare. Active agents and models are registered in
+  [`data/evaluation-agent-runtimes.json`](data/evaluation-agent-runtimes.json).
+- **Acceptance is lenient and never gates retention.** Each task must compile and pass one narrow
+  behaviour check; broader tests and source review are diagnostics only.
 
 | Sequence | Fixture | Ordered stages |
 |---|---|---|
 | `fastify-lifecycle-sequence-v2` | Fastify | 6 bounded defect repairs |
 | `beets-lifecycle-sequence-v2` | Beets | 6 bounded defect repairs |
 
+## Current corpus
+
 <!-- generated:corpus-summary -->
 The active registry contains 147 accepted provider-backed sessions: 18 baselines, 11 replacement-runtime controls, 118 individual-tool treatments. By sequence: 73 `beets-lifecycle-sequence-v2`, 74 `fastify-lifecycle-sequence-v2`. By runtime: Claude Code 69, Codex CLI 39, OpenCode CLI 39.
 
-Weighted token cost decomposes as agent steps times weighted cost per step. `05d5af94b07a` holds 18 replicates (128, 118, 124, 179, 128, 191, 120, 107, 136, 112, 101, 133, 90, 135, 129, 120, 127, 105 agent steps, spread 112.2%); weighted cost per step spread 167.9%; `4c934a33cbd1` holds 17 replicates (136, 129, 125, 166, 123, 125, 132, 133, 110, 135, 128, 126, 122, 126, 145, 142, 126 agent steps, spread 50.9%); weighted cost per step spread 239.5%; `94cb0f4a5c49` holds 34 replicates (71, 52, 52, 74, 72, 89, 58, 110, 65, 67, 76, 64, 56, 68, 74, 69, 72, 75, 62, 68, 69, 65, 62, 56, 73, 71, 96, 55, 51, 61, 58, 66, 71, 81 agent steps, spread 115.7%); weighted cost per step spread 79.3%; `c86863838e8b` holds 20 replicates (64, 64, 63, 123, 77, 60, 67, 73, 75, 78, 100, 69, 90, 78, 78, 61, 67, 67, 67, 78 agent steps, spread 105.0%); weighted cost per step spread 169.5%; `dc16afea3ad5` holds 21 replicates (69, 73, 76, 138, 72, 68, 64, 68, 86, 71, 106, 78, 80, 72, 84, 85, 82, 68, 74, 81, 83 agent steps, spread 115.6%); weighted cost per step spread 76.2%; `e257557e288c` holds 33 replicates (66, 36, 35, 50, 45, 51, 52, 54, 51, 39, 64, 42, 44, 54, 55, 51, 39, 53, 47, 54, 49, 44, 47, 79, 51, 49, 54, 51, 39, 37, 38, 45, 49 agent steps, spread 125.7%); weighted cost per step spread 163.0%.
+Weighted token cost decomposes as agent steps × weighted cost per step. Each pool mixes its controls with every treatment measured against them, so these spreads describe the pool, not any one product.
+
+| Pool | Runtime · sequence | Sessions | Agent steps (min–median–max) | Step spread | Cost-per-step spread |
+|---|---|---:|---|---:|---:|
+| `05d5af94b07a` | OpenCode CLI · `beets-lifecycle-sequence-v2` | 18 | 90–125.5–191 | 112.2% | 167.9% |
+| `4c934a33cbd1` | OpenCode CLI · `fastify-lifecycle-sequence-v2` | 17 | 110–128–166 | 50.9% | 239.5% |
+| `94cb0f4a5c49` | Claude Code · `fastify-lifecycle-sequence-v2` | 34 | 51–68–110 | 115.7% | 79.3% |
+| `c86863838e8b` | Codex CLI · `beets-lifecycle-sequence-v2`; OpenCode CLI · `beets-lifecycle-sequence-v2` | 20 | 60–71–123 | 105.0% | 169.5% |
+| `dc16afea3ad5` | Codex CLI · `fastify-lifecycle-sequence-v2`; OpenCode CLI · `fastify-lifecycle-sequence-v2` | 21 | 64–76–138 | 115.6% | 76.2% |
+| `e257557e288c` | Claude Code · `beets-lifecycle-sequence-v2` | 33 | 35–49–79 | 125.7% | 163.0% |
 <!-- /generated:corpus-summary -->
 
-## Retired evidence
+## Where things are
 
-Lifecycle V0 was retired on 2026-08-14 under [`sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json`](sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json). Its 212 sessions, their compact artifact roots, and 224 frozen protocols were deleted from the active corpus at the experiment owner's direction.
+| Path | What it holds |
+|---|---|
+| [`docs/index.html`](docs/index.html) | The results site. Its figures are generated by `scripts/update_site_data.py`. |
+| [`docs/papers/`](docs/papers/README.md) | Research papers and phase reports |
+| [`docs/evaluations/`](docs/evaluations/README.md) | Evaluation design and operator guidance; the [runbook](docs/evaluations/operations/runbook.md) is generated |
+| [`docs/research/`](docs/research/README.md) | Roadmap and research direction |
+| [`docs/tool-dossiers/`](docs/tool-dossiers/README.md) | Tool index and source-inspection dossiers |
+| `data/workflow-sessions.json` | Every retained provider-backed run: the source of every result |
+| `data/workflow-task-sequences.json` | Lifecycle V2 task contracts |
+| `data/repository-fixtures.json` | Pinned fixture readiness |
+| `sources/evaluations/fixtures/` | Task prompts, start patches, controller acceptance, qualification evidence |
+| [`templates/`](templates/README.md) | Blank outlines and reusable templates |
 
-The retirement is a design judgement, not an allegation about any individual run. V0 prompts used solution-directed task assistance: they prescribed target files, symbols, implementation steps, and validation commands to reduce trajectory variance. That suppresses the repository search and exploration where context-reduction tools actually act, so a V0 token delta is not attributable to a tool's effect on realistic agent work. Provider totals from those runs were real; the workload they measured was not representative. The receipt records that fault separately from the two narrower ones already adjudicated — the 2026-07-18 official-integration parity failures and the Baseline V3 verifier-environment defect corrected by V4.
-
-Papers reporting V0 results are retained and annotated rather than withdrawn, because negative findings and exclusions are part of the research record ([ADR 0003](docs/architecture/decision-records/0003-methodology-and-reporting.md)). Their numbers are no longer reproducible from this repository. Terraform was a V0-only lane and has no active fixture or task contract.
-
-## Documentation
-
-Start with [`docs/README.md`](docs/README.md). The main destinations are:
-
-- [`docs/papers/`](docs/papers/README.md) — completed research papers and phase reports;
-- [`docs/evaluations/`](docs/evaluations/README.md) — evaluation design and operator guidance;
-- [`docs/research/`](docs/research/README.md) — current roadmap and research direction;
-- [`docs/tool-dossiers/`](docs/tool-dossiers/README.md) — tool index and source-inspection dossiers;
-- [`templates/`](templates/README.md) — blank outlines and reusable templates.
-
-## Source of truth
-
-- `data/workflow-task-sequences.json` — Lifecycle V2 contracts.
-- `data/repository-fixtures.json` — pinned fixture readiness.
-- `sources/evaluations/fixtures/` — task prompts, start patches, controller acceptance, and generated V2 qualification evidence.
-- `data/workflow-sessions.json` — active retained provider-backed controls and objective-eligible treatment samples; corrupted treatments are represented only by deletion receipts.
-- `docs/evaluations/operations/runbook.md` — generated operator runbook.
-- `docs/papers/opencode-four-tool-screen-20260808.md` — archived pre-correction OpenCode Lifecycle V1 screen.
-- `docs/papers/phase-2-natural-use-screening.md` — archived pre-correction Lifecycle V1 screening report.
-- `sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json` — Lifecycle V0 retirement adjudication.
+Start with [`docs/README.md`](docs/README.md) for the full index, and read [`AGENTS.md`](AGENTS.md) before
+changing anything that affects evaluation state.
 
 ## Validation
 
-`make check` runs the full `AGENTS.md` required-checks gate — generated-runbook drift, both
-contract test suites, repository validation, and a working-tree comparison that fails if the checks themselves changed tracked or untracked state. Run it
-before finishing any change to evaluation state; nothing runs it automatically.
-
 ```bash
+python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt   # once
 make check
 ```
 
-Individual entry points:
+`make check` is the whole gate: generated-surface drift (runbook, corpus summary, site data), both
+contract test suites, repository validation, and a check that the run left the working tree unchanged.
+Nothing runs it automatically, so run it before finishing any change to evaluation state. It fails
+closed without `jsonschema`, which is why scripts go through `make` or `.venv/bin/python3`.
+
+Regenerate derived surfaces after a registry change:
 
 ```bash
-python3 scripts/validate_repository.py
-python3 scripts/test_workflow_evaluation_contract.py
-python3 scripts/test_claude_code_usage_contract.py
+.venv/bin/python3 scripts/update_workflow_runbook.py
+.venv/bin/python3 scripts/update_registry_summaries.py
+.venv/bin/python3 scripts/update_site_data.py
 ```
 
-Both require `jsonschema` (see `requirements-dev.txt`): every registry record is gated on
-`schemas/workflow-session-record.schema.json`, and validation fails closed without it.
+## History
 
-Fixture qualification evidence is executable and generated by:
-
-```bash
-python3 scripts/generate_workflow_qualification.py fastify-lifecycle-sequence-v2 sources/evaluations/fixtures/medium/fastify-fastify/repo
-python3 scripts/generate_workflow_qualification.py beets-lifecycle-sequence-v2 sources/evaluations/fixtures/medium/beetbox-beets/repo
-```
-
-Executed provider-free integration matrices are published with `scripts/publish_integration_qualification.py`; the publisher rejects nonzero lanes, provider-backed session creation, failed preparation, failed host integration, failed warmup, or failed MCP handshakes.
-
-See `AGENTS.md` before changing evaluation contracts.
+Lifecycle V0 was retired on 2026-08-14 because its prompts named target files and steps, which
+suppresses the search that context tools act on
+([receipt](sources/evaluations/audits/lifecycle-v0-framework-retired-20260814.json)). Lifecycle V1 was
+superseded on 2026-08-16. Papers from earlier generations are kept and annotated rather than withdrawn
+([ADR 0003](docs/architecture/decision-records/0003-methodology-and-reporting.md)).

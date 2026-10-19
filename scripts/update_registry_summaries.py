@@ -22,6 +22,7 @@ import argparse
 import collections
 import json
 import re
+import statistics
 import sys
 from pathlib import Path
 
@@ -76,33 +77,37 @@ def render_decomposition(sessions: list[dict]) -> str:
     resolve: per-step cost reproduces closely across replicates, step count does not.
     """
     plans: dict[str, list[dict]] = collections.defaultdict(list)
+    labels: dict[str, set[str]] = collections.defaultdict(set)
     for session in sessions:
         usage = session.get("cumulative_token_usage") or {}
         plan = (session.get("baseline_pool") or {}).get("protocol_fingerprint")
         if plan and isinstance(usage.get("agent_steps"), int):
             plans[plan].append(usage)
+            runtime = (session.get("agent") or {}).get("runtime_id")
+            sequence = (session.get("task_sequence") or {}).get("sequence_id")
+            if runtime and sequence:
+                labels[plan].add(f"{RUNTIME_LABELS.get(runtime, runtime)} · `{sequence}`")
     if not plans:
         return ""
-    parts: list[str] = []
+    rows = [
+        "| Pool | Runtime · sequence | Sessions | Agent steps (min–median–max) | Step spread | Cost-per-step spread |",
+        "|---|---|---:|---|---:|---:|",
+    ]
     for plan_id, usages in sorted(plans.items()):
-        steps = [float(u["agent_steps"]) for u in usages]
+        steps = sorted(int(u["agent_steps"]) for u in usages)
         per_step = [float(u["weighted_token_cost_per_step"]) for u in usages if u.get("weighted_token_cost_per_step")]
-        fragment = (
-            f"`{plan_id}` holds {_plural(len(usages), 'replicate')} "
-            f"({', '.join(str(int(s)) for s in steps)} agent steps"
-        )
-        step_spread = _spread(steps)
+        step_spread = _spread([float(s) for s in steps])
         cost_spread = _spread(per_step) if len(per_step) == len(usages) else None
-        if step_spread is not None:
-            fragment += f", spread {step_spread:.1f}%"
-        fragment += ")"
-        if cost_spread is not None:
-            fragment += f"; weighted cost per step spread {cost_spread:.1f}%"
-        parts.append(fragment)
+        rows.append(
+            f"| `{plan_id}` | {'; '.join(sorted(labels[plan_id])) or '–'} | {len(usages)} "
+            f"| {steps[0]}–{statistics.median(steps):g}–{steps[-1]} "
+            f"| {f'{step_spread:.1f}%' if step_spread is not None else '–'} "
+            f"| {f'{cost_spread:.1f}%' if cost_spread is not None else '–'} |"
+        )
     return (
-        "Weighted token cost decomposes as agent steps times weighted cost per step. "
-        + "; ".join(parts)
-        + "."
+        "Weighted token cost decomposes as agent steps × weighted cost per step. Each pool mixes "
+        "its controls with every treatment measured against them, so these spreads describe the "
+        "pool, not any one product.\n\n" + "\n".join(rows)
     )
 
 
