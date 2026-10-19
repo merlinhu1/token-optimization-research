@@ -3,21 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Token Add-on Benchmark</title>
+<title>Token Tool Benchmark</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="An independent benchmark of 15 add-ons that claim to cut the cost of AI coding agents, measured against the same agents running with no add-on.">
+<meta name="description" content="Independent benchmark: 15 token-saving tools vs. no-tool controls across Claude Code, Codex CLI and OpenCode.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: a benchmark board. Headline tiles, then one chart card per question, each titled,
-   defined in one line, and told which direction is better. Prose lives in captions. */
+/* Layout: a benchmark board. One line of headline figures, then one chart per question. */
 :root{
   --plane:#f3f4f6; --card:#ffffff; --ink:#111418; --ink-2:#4d5560; --muted:#737b86;
-  --grid:#e6e8ec; --axis:#c2c7cf; --line:#e1e4e9; --chip:#eceff3;
-  --accent:#2a78d6; --flat:#bcc2cb; --neg:#2a78d6; --pos:#e34948;
-  --noise:rgb(237 161 0/.17); --noise-ink:#8a5d00; --ring:#ffffff;
-  --tip-bg:#111418; --tip-ink:#f3f4f6;
+  --grid:#e9ebee; --axis:#c2c7cf; --line:#e1e4e9; --chip:#eceff3;
+  --accent:#2a78d6; --flat:#b4bac3; --neg:#2a78d6; --pos:#e34948;
+  --noise:rgba(237,161,0,.17); --noise-ink:#8a5d00; --ring:#ffffff;
   --f-display:"IBM Plex Sans Condensed","Arial Narrow",ui-sans-serif,system-ui,sans-serif;
   --f-body:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-data:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -25,21 +23,19 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --plane:#0e1013; --card:#171a1f; --ink:#eef0f3; --ink-2:#b7bdc6; --muted:#8a919b;
-  --grid:#252930; --axis:#3a4049; --line:#2a2f37; --chip:#222730;
-  --accent:#3987e5; --flat:#4f5661; --neg:#3987e5; --pos:#e66767;
-  --noise:rgb(201 133 0/.15); --noise-ink:#e0b25a; --ring:#171a1f;
-  --tip-bg:#eef0f3; --tip-ink:#111418; color-scheme:dark}}
+  --grid:#23272e; --axis:#3a4049; --line:#2a2f37; --chip:#222730;
+  --accent:#3987e5; --flat:#565e69; --neg:#3987e5; --pos:#e66767;
+  --noise:rgba(201,133,0,.16); --noise-ink:#e0b25a; --ring:#171a1f; color-scheme:dark}}
 :root[data-theme="dark"]{
   --plane:#0e1013; --card:#171a1f; --ink:#eef0f3; --ink-2:#b7bdc6; --muted:#8a919b;
-  --grid:#252930; --axis:#3a4049; --line:#2a2f37; --chip:#222730;
-  --accent:#3987e5; --flat:#4f5661; --neg:#3987e5; --pos:#e66767;
-  --noise:rgb(201 133 0/.15); --noise-ink:#e0b25a; --ring:#171a1f;
-  --tip-bg:#eef0f3; --tip-ink:#111418; color-scheme:dark}
+  --grid:#23272e; --axis:#3a4049; --line:#2a2f37; --chip:#222730;
+  --accent:#3987e5; --flat:#565e69; --neg:#3987e5; --pos:#e66767;
+  --noise:rgba(201,133,0,.16); --noise-ink:#e0b25a; --ring:#171a1f; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:4rem}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--plane);color:var(--ink);font:15px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;
+body{margin:0;background:var(--plane);color:var(--ink);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--plane)}
 a{color:var(--accent);text-underline-offset:2px}
@@ -50,324 +46,240 @@ a{color:var(--accent);text-underline-offset:2px}
   backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
   padding-inline:max(16px,env(safe-area-inset-left,0px))}
 .top .wrap{display:flex;align-items:center;gap:1.5rem;min-height:3.25rem}
-.brand{font:700 1rem/1 var(--f-display);letter-spacing:.01em;color:var(--ink);text-decoration:none;margin-right:auto;white-space:nowrap}
+.brand{font:700 1rem/1 var(--f-display);color:var(--ink);text-decoration:none;margin-right:auto;white-space:nowrap}
 .top nav{display:flex;gap:1.1rem;font-size:.86rem}
 .top nav a{color:var(--ink-2);text-decoration:none}
 .top nav a:hover{color:var(--accent)}
 @media (max-width:760px){.top nav{display:none}}
 
-header.hero{padding-block:2.6rem 1.4rem}
-.eyebrow{font:500 .74rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-h1{font:700 clamp(2rem,5vw,3.1rem)/1.05 var(--f-display);letter-spacing:-.01em;margin:.7rem 0 .8rem;max-width:24ch;text-wrap:balance}
-.nw{white-space:nowrap}
-.lede{font-size:1.06rem;color:var(--ink-2);max-width:64ch;margin:0}
+header.hero{padding-block:2.4rem .6rem}
+.eyebrow{font:500 .72rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+h1{font:700 clamp(2rem,5vw,3.1rem)/1.05 var(--f-display);letter-spacing:-.01em;margin:.7rem 0 .6rem;max-width:24ch;text-wrap:balance}
+.lede{font-size:1rem;color:var(--ink-2);margin:0}
 .lede b{color:var(--ink);font-weight:600}
 
-.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
-  border-radius:var(--r);overflow:hidden;margin-block:1.6rem .4rem}
-.tile{background:var(--card);padding:1.1rem 1.15rem 1.2rem;min-width:0}
-.tile .big{font:700 2.6rem/1 var(--f-display);letter-spacing:-.01em}
-.tile .big small{font-size:1.3rem;color:var(--muted);font-weight:600}
-.tile p{margin:.55rem 0 0;font-size:.88rem;color:var(--ink-2);line-height:1.45}
-@media (max-width:860px){.tiles{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:420px){.tile .big{font-size:2.2rem}}
+.kpis{display:flex;flex-wrap:wrap;gap:1.4rem 2.6rem;margin:1.8rem 0 .4rem;padding:0;list-style:none}
+.kpis li{min-width:0;max-width:15rem}
+.kpis b{display:block;font:700 2.7rem/1 var(--f-display);letter-spacing:-.01em}
+.kpis b small{font-size:1.4rem;color:var(--muted);font-weight:600}
+.kpis li > span{display:block;font-size:.84rem;color:var(--ink-2);margin-top:.35rem;line-height:1.4}
+.kpis .warn b{color:var(--noise-ink)}
+@media (max-width:640px){.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem 1.4rem}.kpis b{font-size:2.2rem}}
 
-section{padding-block:1.4rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.25rem 1.3rem 1.1rem;min-width:0}
-.card h2{font:700 1.32rem/1.2 var(--f-display);margin:0;text-wrap:balance}
-.def{margin:.35rem 0 0;color:var(--ink-2);font-size:.9rem;max-width:80ch}
+section{padding-block:1.2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.25rem 1rem;min-width:0}
+.card h2{font:700 1.3rem/1.2 var(--f-display);margin:0;text-wrap:balance}
+.def{margin:.3rem 0 0;color:var(--ink-2);font-size:.88rem}
 .def .dir{white-space:nowrap;color:var(--ink);font-weight:600}
-.controls{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;margin:1rem 0 .4rem}
+.controls{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;margin:.9rem 0 .2rem}
 .seg{display:inline-flex;background:var(--chip);border-radius:9px;padding:3px;gap:2px}
 .seg button{font:500 .84rem/1 var(--f-body);color:var(--ink-2);background:none;border:0;border-radius:7px;padding:.5rem .75rem;cursor:pointer;white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0/.12)}
 .seg button:hover{color:var(--ink)}
-.ctl-label{font:500 .7rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:.4rem}
 .ctl{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem}
-.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;font-size:.8rem;color:var(--ink-2);margin:.5rem 0 .2rem}
+.ctl-label{font:500 .7rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:.4rem}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font-size:.8rem;color:var(--ink-2);margin:.6rem 0 0}
 .legend span{display:inline-flex;align-items:center;gap:.4rem}
 .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--ink-2)}
-.chart{position:relative;width:100%}
-.chart svg{display:block;width:100%;height:auto;overflow:visible}
-.chart text{font-family:var(--f-body)}
-.note{font-size:.84rem;color:var(--ink-2);margin:.6rem 0 0;max-width:86ch}
-.note b{color:var(--ink)}
-.untested{font-size:.8rem;color:var(--muted);margin:.4rem 0 0}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
-@media (max-width:620px){.two{grid-template-columns:1fr}}
-.panel-title{font:600 .8rem/1.2 var(--f-body);color:var(--ink);margin:.8rem 0 .1rem}
-.panel-title span{color:var(--muted);font-weight:400}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--ink-2)}
+.ring{width:9px;height:9px;border-radius:50%;display:inline-block;border:2px solid var(--ink-2)}
+.chart{width:100%;min-height:200px}
+.untested{font-size:.8rem;color:var(--muted);margin:.2rem 0 0}
+details.tv{margin-top:.6rem;font-size:.84rem}
+details.tv summary{cursor:pointer;color:var(--ink-2)}
+.scroll{overflow-x:auto;margin-top:.6rem}
+table.heat{border-collapse:collapse;width:100%;min-width:620px;font-size:.8rem}
+table.heat th,table.heat td{padding:.35rem .4rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.heat th{color:var(--ink-2);font-weight:600}
+table.heat tbody th{text-align:left;color:var(--ink)}
+table.heat td{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+table.heat td.ok{color:var(--accent);font-weight:600}
 
-.tip{position:absolute;z-index:4;pointer-events:none;background:var(--tip-bg);color:var(--tip-ink);border-radius:8px;
-  padding:.55rem .7rem;font-size:.78rem;line-height:1.45;max-width:260px;box-shadow:0 6px 20px rgb(0 0 0/.18)}
-.tip b{font-weight:600}
-.tip .t-num{font-family:var(--f-data)}
-
-.scroll{overflow-x:auto;margin-top:1rem;-webkit-overflow-scrolling:touch}
-table.heat{border-collapse:separate;border-spacing:3px;width:100%;min-width:640px;font-size:.82rem}
-table.heat th{font-weight:600;text-align:center;color:var(--ink-2);padding:.25rem .3rem}
-table.heat thead tr:first-child th{font:600 .74rem/1.2 var(--f-data);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-table.heat thead tr:last-child th{font-weight:500;font-size:.78rem}
-table.heat tbody th{text-align:left;color:var(--ink);white-space:nowrap;padding-right:.6rem;position:sticky;left:0;background:var(--card);z-index:1}
-table.heat td{text-align:center;padding:.45rem .2rem;border-radius:6px;font:500 .8rem/1.1 var(--f-data);font-variant-numeric:tabular-nums;white-space:nowrap;position:relative}
-table.heat td small{display:block;font:400 .66rem/1.2 var(--f-body);color:var(--ink-2);margin-top:2px}
-table.heat td.ok{box-shadow:inset 0 0 0 2px var(--ink)}
-table.heat td.na{color:var(--muted);background:repeating-linear-gradient(45deg,transparent 0 5px,var(--grid) 5px 6px)}
-.scale{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink-2)}
-.scale i{display:block;width:140px;height:10px;border-radius:2px;background:linear-gradient(90deg,
-  color-mix(in oklab,var(--neg) 60%,var(--card)),var(--card),color-mix(in oklab,var(--pos) 60%,var(--card)));border:1px solid var(--line)}
-.okkey{display:inline-block;width:16px;height:12px;border-radius:3px;box-shadow:inset 0 0 0 2px var(--ink)}
-
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin-top:1rem}
-.cols > div{min-width:0}
-.cols h3{font:600 .95rem/1.3 var(--f-body);margin:0 0 .3rem}
-.cols p{margin:0;font-size:.86rem;color:var(--ink-2)}
-code.f{font:500 .8rem/1.5 var(--f-data);background:var(--chip);border-radius:6px;padding:.15rem .4rem;color:var(--ink);overflow-wrap:anywhere}
-ul.caveats{margin:.9rem 0 0;padding:0;list-style:none;display:grid;gap:.7rem;max-width:84ch}
-ul.caveats li{padding-left:1.1rem;position:relative;font-size:.9rem;color:var(--ink-2)}
-ul.caveats li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--muted)}
-ul.caveats b{color:var(--ink)}
-footer{padding-block:1.6rem 3rem;color:var(--muted);font-size:.8rem}
-footer p{max-width:84ch;margin:.3rem 0}
+ul.list{margin:.7rem 0 0;padding:0;list-style:none;display:grid;gap:.5rem}
+ul.list li{padding-left:1rem;position:relative;font-size:.88rem;color:var(--ink-2)}
+ul.list li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;border-radius:50%;background:var(--muted)}
+ul.list b{color:var(--ink)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.duo > section{min-width:0}
+@media (max-width:760px){.duo{grid-template-columns:1fr}}
+code.f{font:500 .8rem/1.5 var(--f-data);background:var(--chip);border-radius:6px;padding:.1rem .4rem;color:var(--ink);overflow-wrap:anywhere}
+.links{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin:.9rem 0 0;font-size:.9rem;font-weight:500}
+footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
+.nojs{padding:1rem;color:var(--ink-2)}
 </style>
 </head>
 <body>
 <div class="top"><div class="wrap">
-  <a class="brand" href="#top">Token Add-on Benchmark</a>
-  <nav aria-label="Sections"><a href="#results">Results</a><a href="#noise">Noise</a><a href="#factors">How savings happen</a><a href="#all">All readings</a><a href="#method">Method</a><a href="https://github.com/merlinhu1/token-optimization-research">GitHub</a></nav>
+  <a class="brand" href="#top">Token Tool Benchmark</a>
+  <nav aria-label="Sections"><a href="#results">Results</a><a href="#noise">Noise</a><a href="#factors">Steps vs. cost</a><a href="#all">All cells</a><a href="#method">Method</a><a href="https://github.com/merlinhu1/token-optimization-research">GitHub</a></nav>
 </div></div>
 
 <main class="wrap" id="top">
 <header class="hero">
   <div class="eyebrow">Independent benchmark · data as of <span data-k="as_of">—</span></div>
-  <h1>Do token-saving <span class="nw">add-ons</span> make AI coding agents cheaper?</h1>
-  <p class="lede">We installed <b data-k="n_products">15</b> add-ons into <b>3</b> coding agents, gave each agent
-  the same six real bug fixes on <b>2</b> open-source codebases, and compared the bill with the same
-  agent running bare. <b data-k="n_runs">—</b> complete runs; no vendor sponsored or saw this test.</p>
-
-  <div class="tiles" role="list">
-    <div class="tile" role="listitem"><div class="big"><span data-k="confirmed">—</span> <small>of <span data-k="cells">—</span></small></div>
-      <p>add-on × agent × codebase combinations where a saving held on two or more runs and beat the noise</p></div>
-    <div class="tile" role="listitem"><div class="big" data-k="max_band">—</div>
-      <p>gap between the cheapest and costliest identical run with <b>no add-on</b> (<span data-k="max_band_where">—</span>)</p></div>
-    <div class="tile" role="listitem"><div class="big" data-k="beets_confirmed">—</div>
-      <p>confirmed savings on the Python codebase, under any agent</p></div>
-    <div class="tile" role="listitem"><div class="big">4 <small>of 5</small></div>
-      <p>borderline one-run savings that disappeared when the same test was run a second time</p></div>
-  </div>
+  <h1>Do token-saving tools cut coding-agent cost?</h1>
+  <p class="lede"><b data-k="n_products">15</b> tools · <b>3</b> agents · <b>2</b> repos · <b data-k="n_runs">—</b> runs, each tool against the same agent with no tool.</p>
+  <ul class="kpis">
+    <li><b><span data-k="confirmed">—</span><small>/<span data-k="cells">—</span></small></b><span>cells beat control noise</span></li>
+    <li class="warn"><b data-k="max_band">—</b><span>run-to-run spread with no tool (<span data-k="max_band_where">—</span>)</span></li>
+    <li><b data-k="beets_confirmed">—</b><span>confirmed cells on the Python repo</span></li>
+    <li><b>4<small>/5</small></b><span>marginal single-run wins lost on rerun</span></li>
+  </ul>
 </header>
+<noscript><p class="nojs">The charts need JavaScript. The underlying data is in <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">workflow-sessions.json</a>.</p></noscript>
 
 <section id="results"><div class="card">
-  <h2>Change in cost against the same agent with no add-on</h2>
-  <p class="def">Median weighted token cost across runs, relative to that agent's own no-add-on runs on the same codebase. Bars left of zero are cheaper. <span class="dir">Lower is cheaper.</span></p>
-  <div class="controls" role="group" aria-label="Choose agent and codebase">
+  <h2>Weighted token cost vs. no-tool control</h2>
+  <p class="def">Median of runs. <span class="dir">Lower is better.</span></p>
+  <div class="controls" role="group" aria-label="Choose agent and repo">
     <div class="ctl"><span class="ctl-label">Agent</span><div class="seg" id="seg-agent"></div></div>
-    <div class="ctl"><span class="ctl-label">Codebase</span><div class="seg" id="seg-code"></div></div>
+    <div class="ctl"><span class="ctl-label">Repo</span><div class="seg" id="seg-code"></div></div>
   </div>
   <div class="legend" aria-hidden="true">
-    <span><i class="sw" style="background:var(--accent)"></i>Confirmed: 2+ runs, outside the noise band</span>
+    <span><i class="sw" style="background:var(--accent)"></i>Confirmed (n≥2, outside control range)</span>
     <span><i class="sw" style="background:var(--flat)"></i>Not confirmed</span>
-    <span><i class="sw" style="background:var(--noise)"></i>No-add-on run-to-run range</span>
-    <span><i class="dot"></i>One run</span>
+    <span><i class="sw" style="background:var(--noise)"></i>Control range</span>
+    <span><i class="dot"></i>Individual run</span>
   </div>
-  <div class="chart" id="chart-results"></div>
+  <div class="chart" id="chart-results" role="img" aria-label="Change in weighted token cost by tool"></div>
   <p class="untested" id="untested"></p>
-  <p class="note">Bars inside the shaded band cannot be told apart from running the same job twice. Gaps between
-  confirmed bars are also smaller than that band, so <b>the order is not a ranking</b>. Products with more runs were
-  re-run because their first result looked promising, so run count is not a quality signal.</p>
 </div></section>
 
+<div class="duo">
 <section id="noise"><div class="card">
-  <h2>The same job, run again with no add-on, costs a different amount</h2>
-  <p class="def">Each dot is one complete run of the same six tasks with nothing installed, placed relative to that setup's median. The width of each range is the bar any saving has to clear. <span class="dir">Narrower is easier to measure.</span></p>
-  <div class="chart" id="chart-noise"></div>
-  <p class="note">Every time another no-add-on run was added, the range widened or stayed put; it never narrowed. The true spread is probably wider than shown.</p>
+  <h2>Control noise</h2>
+  <p class="def">Same tasks, no tool. Each dot is one run, % from median.</p>
+  <div class="chart" id="chart-noise" role="img" aria-label="Run-to-run spread of no-tool controls"></div>
 </div></section>
 
 <section id="factors"><div class="card">
-  <h2>Fewer steps, or cheaper steps</h2>
-  <p class="def">Cost = agent steps × cost per step. Each confirmed saving split into its two factors. Grey bars sit inside that factor's own no-add-on range and carry no weight. <span class="dir">Lower is cheaper.</span></p>
-  <div class="two">
-    <div><p class="panel-title">Agent steps <span>· how many actions the agent took</span></p><div class="chart" id="chart-steps"></div></div>
-    <div><p class="panel-title">Cost per step <span>· how much text each action carried</span></p><div class="chart" id="chart-cps"></div></div>
-  </div>
-  <p class="note">Add-ons save in different ways. Some shorten the agent's path to the fix and leave each step's cost alone; others leave the path alone and make each step carry less text.</p>
+  <h2>Fewer steps or cheaper steps?</h2>
+  <p class="def">Confirmed cells. Cost = steps × cost per step. Lines mark equal total saving.</p>
+  <div class="chart" id="chart-factors" role="img" aria-label="Change in agent steps against change in cost per step"></div>
 </div></section>
+</div>
 
 <section id="all"><div class="card">
-  <h2>Every reading</h2>
-  <p class="def">All <span data-k="cells">—</span> combinations, including the ones that did not hold up. The cell colour shows the measured change; the small figure is the number of runs. <span class="dir">Blue is cheaper, red is costlier.</span></p>
-  <div class="legend" style="margin-top:.8rem">
-    <span class="scale">cheaper <i></i> costlier</span>
-    <span><i class="okkey"></i>Confirmed</span>
-    <span><i class="sw" style="background:repeating-linear-gradient(45deg,transparent 0 3px,var(--axis) 3px 4px)"></i>Not tested: no working integration for that agent</span>
+  <h2>All <span data-k="cells">—</span> cells</h2>
+  <p class="def">Median change per tool, agent and repo. <span class="dir">Left is cheaper.</span></p>
+  <div class="legend" aria-hidden="true">
+    <span><i class="dot"></i>Fastify (JS)</span>
+    <span><i class="ring"></i>Beets (Python)</span>
+    <span><i class="dot" style="background:var(--accent)"></i>Confirmed</span>
   </div>
-  <div class="scroll"><table class="heat" id="heat"></table></div>
-  <p class="note"><span data-k="single">—</span> of <span data-k="cells">—</span> combinations rest on a single run. Read those as screens, not effects.</p>
+  <div class="chart" id="chart-all" role="img" aria-label="Every cell by tool, agent and repo"></div>
+  <details class="tv"><summary>Table view</summary><div class="scroll"><table class="heat" id="heat"></table></div></details>
 </div></section>
 
-<section id="caveats">
-  <div class="card">
-    <h2>Before you quote a number</h2>
-    <ul class="caveats">
-      <li><b>Not a ranking.</b> Confirmed savings that sit within one noise band of each other are indistinguishable.</li>
-      <li><b>Unconfirmed is not the same as useless.</b> Most products have a single run where two or more were needed.</li>
-      <li><b>One codebase carries every confirmed result.</b> Nothing was confirmed on the Python codebase, so nothing here says how an add-on behaves on your project.</li>
-      <li><b>Agent and model are tied together.</b> Codex CLI and OpenCode both run <span data-k="model_gpt">GPT-5.6 Sol</span>; Claude Code runs <span data-k="model_claude">Claude Opus 5</span>. A Claude Code difference cannot be split between the agent and its model.</li>
-      <li><b>Cost is counted whether or not the fix was right.</b> <span data-k="tasks_passed">—</span> of <span data-k="tasks_attempted">—</span> tasks were fixed correctly; dropping the failures would flatter every product.</li>
-      <li><b>A snapshot.</b> Agents were frozen at fixed versions for the whole test. Newer versions of any product or agent may behave differently.</li>
-    </ul>
-  </div>
-</section>
+<div class="duo">
+<section id="caveats"><div class="card">
+  <h2>Caveats</h2>
+  <ul class="list">
+    <li><b>Not a ranking.</b> Confirmed effects overlap within control noise.</li>
+    <li><b>Unconfirmed ≠ ineffective.</b> <span data-k="single">—</span> of <span data-k="cells">—</span> cells are n=1.</li>
+    <li><b>Run counts are selected.</b> Promising cells got reruns.</li>
+    <li><b>Agent and model are confounded.</b> Claude Code runs <span data-k="model_claude">Claude Opus 5</span>; Codex CLI and OpenCode run <span data-k="model_gpt">GPT-5.6 Sol</span>.</li>
+    <li><b>Cost counted pass or fail.</b> <span data-k="tasks_passed">—</span>/<span data-k="tasks_attempted">—</span> tasks passed.</li>
+  </ul>
+</div></section>
 
 <section id="method"><div class="card">
-  <h2>How the test works</h2>
-  <div class="cols">
-    <div><h3>Real bugs, real tests</h3><p>Six behaviours from each project's own history are broken, and each one is checked by a test the project already had.</p></div>
-    <div><h3>Identical instructions</h3><p>Every run gets byte-for-byte the same prompts. They describe the symptom, never name a file, and never mention the add-on.</p></div>
-    <div><h3>Installed as documented</h3><p>Each add-on is installed the way its makers recommend, tested alone, and never nudged into use.</p></div>
-    <div><h3>One cost formula</h3><p>Weighted token cost: <code class="f">new input + 0.1 × cached input + 6 × output</code>. Every number on this page uses it.</p></div>
-  </div>
-  <div class="cols" style="margin-top:1.4rem">
-    <div><h3>Full technical report</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Lifecycle V2 single-treatment screening</a>: statistics, exact comparisons, threats to validity.</p></div>
-    <div><h3>Raw measurements</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">workflow-sessions.json</a>: every retained run with its token counts and step counts. This page is generated from it.</p></div>
-    <div><h3>Run artifacts and receipts</h3><p><a href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations">sources/evaluations/</a>: diffs and evidence for each run, plus a written receipt for every run that was discarded.</p></div>
-  </div>
+  <h2>Method</h2>
+  <ul class="list">
+    <li>6 seeded upstream regressions per repo, each checked by an existing upstream test.</li>
+    <li>Symptom-only prompts, byte-identical across arms. The tool is never mentioned.</li>
+    <li>Tools installed per vendor docs, one at a time. Agent versions pinned.</li>
+    <li>Metric: <code class="f">fresh input + 0.1 × cached + 6 × output</code></li>
+  </ul>
+  <p class="links"><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Paper</a>
+  <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">Raw data</a>
+  <a href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations">Run artifacts</a></p>
 </div></section>
+</div>
 </main>
 
-<footer><div class="wrap">
-  <p>Token Add-on Benchmark, an independent measurement study. No product was sponsored by, reviewed by, or disclosed in advance to its maker.</p>
-  <p>Every figure is computed from the registry by <code class="f">scripts/update_site_data.py</code>.</p>
-</div></footer>
+<footer><div class="wrap">Independent study. No vendor sponsored, reviewed, or saw results in advance.</div></footer>
 
 <!-- generated:site-data -->
 <script type="application/json" id="site-data">{"agents":[{"id":"claude-code","model":"Claude Opus 5 · medium","name":"Claude Code"},{"id":"codex-cli","model":"GPT-5.6 Sol · medium","name":"Codex CLI"},{"id":"opencode-cli","model":"GPT-5.6 Sol · medium","name":"OpenCode"}],"as_of":"2026-10-05","cells":[{"agent":"claude-code","change_pct":-10.9,"codebase":"beets","confirmed":false,"cost_per_step":[7182,7004],"cost_per_step_pct":-2.5,"product":"Cartog","run_change_pct":[-10.9],"runs":1,"steps":[52.5,54],"steps_pct":2.9},{"agent":"claude-code","change_pct":-30.5,"codebase":"beets","confirmed":false,"cost_per_step":[7182,8100],"cost_per_step_pct":12.8,"product":"Caveman","run_change_pct":[-41.7,-19.4],"runs":2,"steps":[52.5,36.5],"steps_pct":-30.5},{"agent":"claude-code","change_pct":5.9,"codebase":"beets","confirmed":false,"cost_per_step":[7182,11527],"cost_per_step_pct":60.5,"product":"CodeGraph","run_change_pct":[5.9],"runs":1,"steps":[52.5,39],"steps_pct":-25.7},{"agent":"claude-code","change_pct":-28.0,"codebase":"beets","confirmed":false,"cost_per_step":[7182,5970],"cost_per_step_pct":-16.9,"product":"Graphify","run_change_pct":[-38.4,-17.6],"runs":2,"steps":[52.5,51.0],"steps_pct":-2.9},{"agent":"claude-code","change_pct":-38.3,"codebase":"beets","confirmed":false,"cost_per_step":[7182,5756],"cost_per_step_pct":-19.9,"product":"LeanCTX","run_change_pct":[-42.5,-34.0],"runs":2,"steps":[52.5,45.5],"steps_pct":-13.3},{"agent":"claude-code","change_pct":-30.7,"codebase":"beets","confirmed":false,"cost_per_step":[7182,8127],"cost_per_step_pct":13.1,"product":"Ponytail","run_change_pct":[-41.6,-19.9],"runs":2,"steps":[52.5,36.5],"steps_pct":-30.5},{"agent":"claude-code","change_pct":-22.4,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6888],"cost_per_step_pct":-4.1,"product":"RTK","run_change_pct":[-37.6,-7.1],"runs":2,"steps":[52.5,47.5],"steps_pct":-9.5},{"agent":"claude-code","change_pct":-24.1,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6450],"cost_per_step_pct":-10.2,"product":"Serena","run_change_pct":[-25.4,-22.7],"runs":2,"steps":[52.5,50.0],"steps_pct":-4.8},{"agent":"claude-code","change_pct":55.3,"codebase":"beets","confirmed":false,"cost_per_step":[7182,14035],"cost_per_step_pct":95.4,"product":"SigMap","run_change_pct":[55.3],"runs":1,"steps":[52.5,47],"steps_pct":-10.5},{"agent":"claude-code","change_pct":-21.2,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6194],"cost_per_step_pct":-13.8,"product":"Snip","run_change_pct":[-21.2],"runs":1,"steps":[52.5,54],"steps_pct":2.9},{"agent":"claude-code","change_pct":-46.8,"codebase":"beets","confirmed":false,"cost_per_step":[7182,5434],"cost_per_step_pct":-24.3,"product":"Token Savior","run_change_pct":[-50.9,-42.8],"runs":2,"steps":[52.5,41.5],"steps_pct":-21.0},{"agent":"claude-code","change_pct":-27.2,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6058],"cost_per_step_pct":-15.7,"product":"TokenJuice","run_change_pct":[-27.2],"runs":1,"steps":[52.5,51],"steps_pct":-2.9},{"agent":"claude-code","change_pct":-12.9,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6725],"cost_per_step_pct":-6.4,"product":"jCodeMunch","run_change_pct":[-12.9],"runs":1,"steps":[52.5,55],"steps_pct":4.8},{"agent":"claude-code","change_pct":-23.5,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,7297],"cost_per_step_pct":-21.3,"product":"Cartog","run_change_pct":[-32.3,-14.7],"runs":2,"steps":[69.0,67.0],"steps_pct":-2.9},{"agent":"claude-code","change_pct":-25.0,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,9310],"cost_per_step_pct":0.4,"product":"Caveman","run_change_pct":[-35.0,-15.1],"runs":2,"steps":[69.0,51.5],"steps_pct":-25.4},{"agent":"claude-code","change_pct":1.1,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,11769],"cost_per_step_pct":27.0,"product":"CodeGraph","run_change_pct":[1.1],"runs":1,"steps":[69.0,55],"steps_pct":-20.3},{"agent":"claude-code","change_pct":-12.8,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7549],"cost_per_step_pct":-18.6,"product":"Graphify","run_change_pct":[-15.2,-10.4],"runs":2,"steps":[69.0,74.0],"steps_pct":7.2},{"agent":"claude-code","change_pct":-35.4,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,7026],"cost_per_step_pct":-24.2,"product":"LeanCTX","run_change_pct":[-36.7,-34.1],"runs":2,"steps":[69.0,59.0],"steps_pct":-14.5},{"agent":"claude-code","change_pct":-23.4,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,8816],"cost_per_step_pct":-4.9,"product":"Ponytail","run_change_pct":[-32.3,-14.5],"runs":2,"steps":[69.0,56.5],"steps_pct":-18.1},{"agent":"claude-code","change_pct":-14.2,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,8263],"cost_per_step_pct":-10.9,"product":"RTK","run_change_pct":[-29.6,1.2],"runs":2,"steps":[69.0,66.0],"steps_pct":-4.3},{"agent":"claude-code","change_pct":-24.4,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,7821],"cost_per_step_pct":-15.6,"product":"Serena","run_change_pct":[-30.7,-18.0],"runs":2,"steps":[69.0,62.0],"steps_pct":-10.1},{"agent":"claude-code","change_pct":-9.1,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,8733],"cost_per_step_pct":-5.8,"product":"SigMap","run_change_pct":[-18.6,0.5],"runs":2,"steps":[69.0,66.5],"steps_pct":-3.6},{"agent":"claude-code","change_pct":-12.8,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7332],"cost_per_step_pct":-20.9,"product":"Snip","run_change_pct":[-21.7,-3.8],"runs":2,"steps":[69.0,76.0],"steps_pct":10.1},{"agent":"claude-code","change_pct":-25.6,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,6952],"cost_per_step_pct":-25.0,"product":"Token Savior","run_change_pct":[-29.0,-22.3],"runs":2,"steps":[69.0,68.5],"steps_pct":-0.7},{"agent":"claude-code","change_pct":6.1,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7075],"cost_per_step_pct":-23.7,"product":"TokenJuice","run_change_pct":[6.1],"runs":1,"steps":[69.0,96],"steps_pct":39.1},{"agent":"claude-code","change_pct":-11.0,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7702],"cost_per_step_pct":-16.9,"product":"jCodeMunch","run_change_pct":[-11.0],"runs":1,"steps":[69.0,74],"steps_pct":7.2},{"agent":"codex-cli","change_pct":1.4,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7665],"cost_per_step_pct":-18.1,"product":"Cartog","run_change_pct":[1.4],"runs":1,"steps":[64,78],"steps_pct":21.9},{"agent":"codex-cli","change_pct":20.6,"codebase":"beets","confirmed":false,"cost_per_step":[9360,9236],"cost_per_step_pct":-1.3,"product":"Caveman","run_change_pct":[20.6],"runs":1,"steps":[64,77],"steps_pct":20.3},{"agent":"codex-cli","change_pct":72.4,"codebase":"beets","confirmed":false,"cost_per_step":[9360,13032],"cost_per_step_pct":39.2,"product":"CodeGraph","run_change_pct":[72.4],"runs":1,"steps":[64,78],"steps_pct":21.9},{"agent":"codex-cli","change_pct":-3.1,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8530],"cost_per_step_pct":-8.9,"product":"CodeScope","run_change_pct":[-3.1],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":4.3,"codebase":"beets","confirmed":false,"cost_per_step":[9360,10085],"cost_per_step_pct":7.7,"product":"Graphify","run_change_pct":[4.3],"runs":1,"steps":[64,61],"steps_pct":-4.7},{"agent":"codex-cli","change_pct":-1.0,"codebase":"beets","confirmed":false,"cost_per_step":[9360,6984],"cost_per_step_pct":-25.4,"product":"LeanCTX","run_change_pct":[-1.7,-0.2],"runs":2,"steps":[64,84.0],"steps_pct":31.2},{"agent":"codex-cli","change_pct":7.6,"codebase":"beets","confirmed":false,"cost_per_step":[9360,10573],"cost_per_step_pct":13.0,"product":"Ponytail","run_change_pct":[7.6],"runs":1,"steps":[64,60],"steps_pct":-6.2},{"agent":"codex-cli","change_pct":-12.7,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7682],"cost_per_step_pct":-17.9,"product":"RTK","run_change_pct":[-12.7],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":-0.7,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8737],"cost_per_step_pct":-6.7,"product":"RepoWise","run_change_pct":[-0.7],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":19.9,"codebase":"beets","confirmed":false,"cost_per_step":[9360,9688],"cost_per_step_pct":3.5,"product":"Serena","run_change_pct":[19.9],"runs":1,"steps":[64,73],"steps_pct":14.1},{"agent":"codex-cli","change_pct":17.9,"codebase":"beets","confirmed":false,"cost_per_step":[9360,10375],"cost_per_step_pct":10.8,"product":"SigMap","run_change_pct":[17.9],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":-3.7,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7570],"cost_per_step_pct":-19.1,"product":"Snip","run_change_pct":[-3.7],"runs":1,"steps":[64,75],"steps_pct":17.2},{"agent":"codex-cli","change_pct":3.3,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7808],"cost_per_step_pct":-16.6,"product":"Token Savior","run_change_pct":[3.3],"runs":1,"steps":[64,78],"steps_pct":21.9},{"agent":"codex-cli","change_pct":0.6,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8599],"cost_per_step_pct":-8.1,"product":"TokenJuice","run_change_pct":[0.6],"runs":1,"steps":[64,69],"steps_pct":7.8},{"agent":"codex-cli","change_pct":43.0,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8435],"cost_per_step_pct":-9.9,"product":"jCodeMunch","run_change_pct":[43.0],"runs":1,"steps":[64,100],"steps_pct":56.2},{"agent":"codex-cli","change_pct":-26.1,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,7766],"cost_per_step_pct":-28.3,"product":"Cartog","run_change_pct":[-26.1],"runs":1,"steps":[73,72],"steps_pct":-1.4},{"agent":"codex-cli","change_pct":9.7,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,11528],"cost_per_step_pct":6.5,"product":"Caveman","run_change_pct":[9.7],"runs":1,"steps":[73,72],"steps_pct":-1.4},{"agent":"codex-cli","change_pct":3.6,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,11044],"cost_per_step_pct":2.0,"product":"CodeGraph","run_change_pct":[3.6],"runs":1,"steps":[73,71],"steps_pct":-2.7},{"agent":"codex-cli","change_pct":-4.0,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,10684],"cost_per_step_pct":-1.3,"product":"CodeScope","run_change_pct":[-4.0],"runs":1,"steps":[73,68],"steps_pct":-6.8},{"agent":"codex-cli","change_pct":-26.5,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,6544],"cost_per_step_pct":-39.5,"product":"Graphify","run_change_pct":[-26.5],"runs":1,"steps":[73,85],"steps_pct":16.4},{"agent":"codex-cli","change_pct":-24.7,"codebase":"fastify","confirmed":true,"cost_per_step":[10825,7084],"cost_per_step_pct":-34.6,"product":"LeanCTX","run_change_pct":[-25.9,-23.4],"runs":2,"steps":[73,80.5],"steps_pct":10.3},{"agent":"codex-cli","change_pct":-2.2,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,10891],"cost_per_step_pct":0.6,"product":"Ponytail","run_change_pct":[-2.2],"runs":1,"steps":[73,68],"steps_pct":-6.8},{"agent":"codex-cli","change_pct":-9.2,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,10742],"cost_per_step_pct":-0.8,"product":"RTK","run_change_pct":[-9.2],"runs":1,"steps":[73,64],"steps_pct":-12.3},{"agent":"codex-cli","change_pct":-8.4,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,9368],"cost_per_step_pct":-13.5,"product":"RepoWise","run_change_pct":[-8.4],"runs":1,"steps":[73,74],"steps_pct":1.4},{"agent":"codex-cli","change_pct":0.8,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,11222],"cost_per_step_pct":3.7,"product":"Serena","run_change_pct":[0.8],"runs":1,"steps":[73,68],"steps_pct":-6.8},{"agent":"codex-cli","change_pct":-0.2,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,9215],"cost_per_step_pct":-14.9,"product":"SigMap","run_change_pct":[-0.2],"runs":1,"steps":[73,82],"steps_pct":12.3},{"agent":"codex-cli","change_pct":-22.0,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,6866],"cost_per_step_pct":-36.6,"product":"Snip","run_change_pct":[-22.0],"runs":1,"steps":[73,86],"steps_pct":17.8},{"agent":"codex-cli","change_pct":-1.1,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,8979],"cost_per_step_pct":-17.1,"product":"Token Savior","run_change_pct":[-16.8,14.7],"runs":2,"steps":[73,83.5],"steps_pct":14.4},{"agent":"codex-cli","change_pct":-18.6,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,7902],"cost_per_step_pct":-27.0,"product":"TokenJuice","run_change_pct":[-18.6],"runs":1,"steps":[73,78],"steps_pct":6.8},{"agent":"codex-cli","change_pct":11.3,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,7946],"cost_per_step_pct":-26.6,"product":"jCodeMunch","run_change_pct":[11.3],"runs":1,"steps":[73,106],"steps_pct":45.2},{"agent":"opencode-cli","change_pct":27.5,"codebase":"beets","confirmed":false,"cost_per_step":[4685,6296],"cost_per_step_pct":34.4,"product":"Cartog","run_change_pct":[27.5],"runs":1,"steps":[118,112],"steps_pct":-5.1},{"agent":"opencode-cli","change_pct":2.4,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4567],"cost_per_step_pct":-2.5,"product":"Caveman","run_change_pct":[2.4],"runs":1,"steps":[118,124],"steps_pct":5.1},{"agent":"opencode-cli","change_pct":-0.9,"codebase":"beets","confirmed":false,"cost_per_step":[4685,5122],"cost_per_step_pct":9.3,"product":"CodeGraph","run_change_pct":[-0.9],"runs":1,"steps":[118,107],"steps_pct":-9.3},{"agent":"opencode-cli","change_pct":4.9,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4494],"cost_per_step_pct":-4.1,"product":"CodeScope","run_change_pct":[4.9],"runs":1,"steps":[118,129],"steps_pct":9.3},{"agent":"opencode-cli","change_pct":48.5,"codebase":"beets","confirmed":false,"cost_per_step":[4685,6172],"cost_per_step_pct":31.7,"product":"Graphify","run_change_pct":[48.5],"runs":1,"steps":[118,133],"steps_pct":12.7},{"agent":"opencode-cli","change_pct":-13.3,"codebase":"beets","confirmed":false,"cost_per_step":[4685,2592],"cost_per_step_pct":-44.7,"product":"LeanCTX","run_change_pct":[-14.9,-11.7],"runs":2,"steps":[118,185.0],"steps_pct":56.8},{"agent":"opencode-cli","change_pct":13.3,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4912],"cost_per_step_pct":4.8,"product":"Ponytail","run_change_pct":[12.0,14.6],"runs":2,"steps":[118,127.5],"steps_pct":8.1},{"agent":"opencode-cli","change_pct":1.7,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4135],"cost_per_step_pct":-11.7,"product":"RTK","run_change_pct":[1.7],"runs":1,"steps":[118,136],"steps_pct":15.3},{"agent":"opencode-cli","change_pct":-7.8,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4247],"cost_per_step_pct":-9.3,"product":"Serena","run_change_pct":[-7.8],"runs":1,"steps":[118,120],"steps_pct":1.7},{"agent":"opencode-cli","change_pct":20.0,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4915],"cost_per_step_pct":4.9,"product":"SigMap","run_change_pct":[20.0],"runs":1,"steps":[118,135],"steps_pct":14.4},{"agent":"opencode-cli","change_pct":-9.2,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4616],"cost_per_step_pct":-1.5,"product":"TokenJuice","run_change_pct":[-18.1,-0.2],"runs":2,"steps":[118,110.5],"steps_pct":-6.4},{"agent":"opencode-cli","change_pct":11.5,"codebase":"beets","confirmed":false,"cost_per_step":[4685,6846],"cost_per_step_pct":46.1,"product":"jCodeMunch","run_change_pct":[11.5],"runs":1,"steps":[118,90],"steps_pct":-23.7},{"agent":"opencode-cli","change_pct":-20.8,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8278],"cost_per_step_pct":0.3,"product":"Cartog","run_change_pct":[-20.8],"runs":1,"steps":[139.0,110],"steps_pct":-20.9},{"agent":"opencode-cli","change_pct":-5.2,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8725],"cost_per_step_pct":5.7,"product":"Caveman","run_change_pct":[-5.2],"runs":1,"steps":[139.0,125],"steps_pct":-10.1},{"agent":"opencode-cli","change_pct":-15.1,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7343],"cost_per_step_pct":-11.1,"product":"CodeGraph","run_change_pct":[-15.1],"runs":1,"steps":[139.0,133],"steps_pct":-4.3},{"agent":"opencode-cli","change_pct":-18.4,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7446],"cost_per_step_pct":-9.8,"product":"CodeScope","run_change_pct":[-18.4],"runs":1,"steps":[139.0,126],"steps_pct":-9.4},{"agent":"opencode-cli","change_pct":1.1,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,9080],"cost_per_step_pct":10.0,"product":"Graphify","run_change_pct":[1.1],"runs":1,"steps":[139.0,128],"steps_pct":-7.9},{"agent":"opencode-cli","change_pct":-64.7,"codebase":"fastify","confirmed":true,"cost_per_step":[8257,2792],"cost_per_step_pct":-66.2,"product":"LeanCTX","run_change_pct":[-69.8,-59.5],"runs":2,"steps":[139.0,145.5],"steps_pct":4.7},{"agent":"opencode-cli","change_pct":-11.3,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8182],"cost_per_step_pct":-0.9,"product":"Ponytail","run_change_pct":[-25.8,3.3],"runs":2,"steps":[139.0,124.5],"steps_pct":-10.4},{"agent":"opencode-cli","change_pct":-19.0,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7055],"cost_per_step_pct":-14.6,"product":"Serena","run_change_pct":[-19.0],"runs":1,"steps":[139.0,132],"steps_pct":-5.0},{"agent":"opencode-cli","change_pct":-17.6,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7767],"cost_per_step_pct":-5.9,"product":"SigMap","run_change_pct":[-17.6],"runs":1,"steps":[139.0,122],"steps_pct":-12.2},{"agent":"opencode-cli","change_pct":-55.1,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,3826],"cost_per_step_pct":-53.7,"product":"TokenJuice","run_change_pct":[-55.1],"runs":1,"steps":[139.0,135],"steps_pct":-2.9},{"agent":"opencode-cli","change_pct":-4.2,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8742],"cost_per_step_pct":5.9,"product":"jCodeMunch","run_change_pct":[-4.2],"runs":1,"steps":[139.0,126],"steps_pct":-9.4}],"codebases":[{"id":"fastify","language":"JavaScript","name":"Fastify"},{"id":"beets","language":"Python","name":"Beets"}],"metric":"fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens","pools":[{"agent":"claude-code","band_pct":54.5,"codebase":"beets","cost_per_step_band_pct":64.4,"run_offset_pct":[-27.1,-22.2,-3.0,0.0,4.7,6.2,12.6],"runs":7,"steps_band_pct":88.1},{"agent":"claude-code","band_pct":13.7,"codebase":"fastify","cost_per_step_band_pct":5.5,"run_offset_pct":[-7.5,-4.7,0.0,2.7,5.1],"runs":5,"steps_band_pct":10.9},{"agent":"codex-cli","band_pct":8.8,"codebase":"beets","cost_per_step_band_pct":8.8,"run_offset_pct":[-4.2,0.0,4.2],"runs":3,"steps_band_pct":1.6},{"agent":"codex-cli","band_pct":13.0,"codebase":"fastify","cost_per_step_band_pct":10.0,"run_offset_pct":[-3.8,0.0,8.7],"runs":3,"steps_band_pct":10.1},{"agent":"opencode-cli","band_pct":14.5,"codebase":"beets","cost_per_step_band_pct":6.5,"run_offset_pct":[-10.8,0.0,2.2],"runs":3,"steps_band_pct":21.9},{"agent":"opencode-cli","band_pct":23.6,"codebase":"fastify","cost_per_step_band_pct":10.6,"run_offset_pct":[-13.5,-0.8,0.8,6.9],"runs":4,"steps_band_pct":12.4}],"products":["Cartog","Caveman","CodeGraph","CodeScope","Graphify","jCodeMunch","LeanCTX","Ponytail","RepoWise","RTK","Serena","SigMap","Snip","Token Savior","TokenJuice"],"totals":{"cells":79,"confirmed":9,"control_runs":25,"single_run_cells":54,"tasks_attempted":894,"tasks_passed":861,"treatment_runs":104}}</script>
 <!-- /generated:site-data -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.6.0/echarts.min.js"></script>
 <script>
 (() => {
   const D = JSON.parse(document.getElementById("site-data").textContent);
-  const NS = "http://www.w3.org/2000/svg";
   const agentName = Object.fromEntries(D.agents.map(a => [a.id, a.name]));
   const codeName = Object.fromEntries(D.codebases.map(c => [c.id, c.name]));
-  const codeLang = Object.fromEntries(D.codebases.map(c => [c.id, c.language]));
+  const short = id => codeName[id] + (id === "fastify" ? " (JS)" : " (Python)");
   const pool = (a, c) => D.pools.find(p => p.agent === a && p.codebase === c);
   const fmt = v => v == null ? "–" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%";
-  const runs = n => n + (n === 1 ? " run" : " runs");
+  const tick = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v) + "%";
   const T = D.totals;
 
-  // ---- headline numbers
+  // ---- headline figures
   const widest = D.pools.reduce((a, b) => (b.band_pct > a.band_pct ? b : a));
   const models = Object.fromEntries(D.agents.map(a => [a.id, a.model.split(" · ")[0]]));
   const fill = {
     as_of: new Date(D.as_of + "T00:00:00Z").toLocaleDateString("en-GB", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}),
-    n_products: D.products.length,
-    n_runs: T.treatment_runs + T.control_runs,
+    n_products: D.products.length, n_runs: T.treatment_runs + T.control_runs,
     confirmed: T.confirmed, cells: T.cells, single: T.single_run_cells,
     max_band: widest.band_pct.toFixed(1) + "%",
-    max_band_where: agentName[widest.agent] + " · " + codeName[widest.codebase] + ", " + runs(widest.runs),
+    max_band_where: `${agentName[widest.agent]} · ${codeName[widest.codebase]}, n=${widest.runs}`,
     beets_confirmed: D.cells.filter(c => c.codebase === "beets" && c.confirmed).length,
     tasks_passed: T.tasks_passed, tasks_attempted: T.tasks_attempted,
     model_gpt: models["codex-cli"], model_claude: models["claude-code"],
   };
   document.querySelectorAll("[data-k]").forEach(el => { const v = fill[el.dataset.k]; if (v != null) el.textContent = v; });
 
-  // ---- svg helpers
-  const el = (tag, attrs = {}, parent) => {
-    const n = document.createElementNS(NS, tag);
-    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
-    if (parent) parent.appendChild(n);
-    return n;
-  };
-  const txt = (parent, x, y, s, attrs = {}) => { const t = el("text", {x, y, ...attrs}, parent); t.textContent = s; return t; };
-  // Bar from the zero line to v, rounded only at the data end.
-  const bar = (x0, x1, y, h, r) => {
-    const left = Math.min(x0, x1), w = Math.abs(x1 - x0), rr = Math.min(r, w / 2, h / 2);
-    if (w < 0.5) return `M${x0},${y}h0.5v${h}h-0.5z`;
-    return x1 >= x0
-      ? `M${left},${y}h${w - rr}a${rr},${rr} 0 0 1 ${rr},${rr}v${h - 2 * rr}a${rr},${rr} 0 0 1 -${rr},${rr}h-${w - rr}z`
-      : `M${left + w},${y}h-${w - rr}a${rr},${rr} 0 0 0 -${rr},${rr}v${h - 2 * rr}a${rr},${rr} 0 0 0 ${rr},${rr}h${w - rr}z`;
-  };
-  const niceDomain = (vals, pad, step) => [Math.floor((Math.min(0, ...vals) - pad) / step) * step, Math.ceil((Math.max(0, ...vals) + pad) / step) * step];
+  // ---- table view
+  (() => {
+    const cols = D.agents.flatMap(a => D.codebases.map(c => [a, c]));
+    const head = `<thead><tr><th scope="col" style="text-align:left">Tool</th>${cols.map(([a, c]) => `<th scope="col">${a.name} · ${c.name}</th>`).join("")}</tr></thead>`;
+    const body = D.products.map(p => `<tr><th scope="row">${p}</th>` + cols.map(([a, cb]) => {
+      const c = D.cells.find(x => x.product === p && x.agent === a.id && x.codebase === cb.id);
+      return c ? `<td class="${c.confirmed ? "ok" : ""}">${fmt(c.change_pct)} <small>n=${c.runs}${c.confirmed ? " ✓" : ""}</small></td>` : `<td>–</td>`;
+    }).join("") + "</tr>").join("");
+    document.getElementById("heat").innerHTML = head + `<tbody>${body}</tbody>`;
+  })();
 
-  // ---- tooltip
-  function tooltip(host) {
-    const tip = document.createElement("div");
-    tip.className = "tip"; tip.hidden = true; tip.setAttribute("role", "tooltip");
-    host.appendChild(tip);
-    return {
-      show(html, x, y) {
-        tip.innerHTML = html; tip.hidden = false;
-        const hw = host.clientWidth, tw = tip.offsetWidth;
-        tip.style.left = Math.max(0, Math.min(hw - tw, x + 14)) + "px";
-        tip.style.top = Math.max(0, y - tip.offsetHeight - 10) + "px";
-      },
-      hide() { tip.hidden = true; },
-    };
+  if (!window.echarts) return;
+
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const font = "IBM Plex Sans, system-ui, sans-serif", mono = "IBM Plex Mono, ui-monospace, monospace";
+  let C;
+  const readTheme = () => (C = Object.fromEntries(["ink", "ink-2", "muted", "grid", "axis", "accent", "flat", "noise", "noise-ink", "ring", "card"].map(k => [k, css("--" + k)])));
+  const narrow = () => document.documentElement.clientWidth < 640;
+  const tipBase = () => ({
+    backgroundColor: C.ink, borderWidth: 0, padding: [8, 10], extraCssText: "border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.2)",
+    textStyle: {color: C.card, fontFamily: font, fontSize: 12, lineHeight: 18},
+  });
+  const valueAxis = (min, max, extra = {}) => ({
+    type: "value", min, max,
+    axisLabel: {color: C.muted, fontFamily: mono, fontSize: 11, formatter: tick},
+    splitLine: {lineStyle: {color: C.grid}}, axisLine: {show: false}, axisTick: {show: false}, ...extra,
+  });
+  const nice = (vals, pad, step) => [Math.floor((Math.min(0, ...vals) - pad) / step) * step, Math.ceil((Math.max(0, ...vals) + pad) / step) * step];
+  const charts = {};
+  const mount = (id, h) => {
+    const el = document.getElementById(id);
+    el.style.height = h + "px";
+    if (!charts[id]) charts[id] = echarts.init(el, null, {renderer: "svg"});
+    else charts[id].resize();
+    return charts[id];
+  };
+
+  function cellTip(c) {
+    const p = pool(c.agent, c.codebase);
+    return `<b>${c.product}</b> · ${agentName[c.agent]} · ${short(c.codebase)}<br>`
+      + `Median ${fmt(c.change_pct)} (n=${c.runs})`
+      + (c.runs > 1 ? `<br>Runs: ${c.run_change_pct.map(fmt).join(", ")}` : "")
+      + `<br>Control range ±${p.band_pct.toFixed(1)}%`
+      + `<br>Steps ${fmt(c.steps_pct)} · cost/step ${fmt(c.cost_per_step_pct)}`
+      + `<br><b>${c.confirmed ? "Confirmed" : c.runs < 2 ? "n=1: screen only" : "Within control range"}</b>`;
   }
 
-  /* Diverging horizontal bars. rows: {label, sub, value, runs, band, strong, tip} */
-  function divergingBars(host, rows, {domain, showBandLabel = false, ariaLabel}) {
-    host.textContent = "";
-    const W = Math.max(260, host.clientWidth);
-    // Narrow screens stack the name above a full-width bar instead of squeezing the plot.
-    const stacked = W < 520;
-    const rowH = stacked ? 46 : 36;
-    const L = stacked ? 0 : 168, R = stacked ? 0 : 70, top = showBandLabel ? 22 : 6, axisH = 26;
-    const plotW = W - L - R;
-    const H = top + rows.length * rowH + axisH;
-    const x = v => L + (v - domain[0]) / (domain[1] - domain[0]) * plotW;
-    const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img", "aria-label": ariaLabel}, host);
-    const step = plotW < 300 ? 40 : 20;
-    const g = el("g", {}, svg);
-    for (let t = Math.ceil(domain[0] / step) * step; t <= domain[1]; t += step) {
-      el("line", {x1: x(t), x2: x(t), y1: top, y2: top + rows.length * rowH, stroke: t === 0 ? "var(--axis)" : "var(--grid)", "stroke-width": 1}, g);
-      const anchor = x(t) < 22 ? "start" : x(t) > W - 22 ? "end" : "middle";
-      txt(g, x(t), top + rows.length * rowH + 17, t === 0 ? "0" : fmt(t).replace(".0", ""), {"text-anchor": anchor, "font-size": 11, fill: "var(--muted)", "font-family": "var(--f-data)"});
-    }
-    const t = tooltip(host);
-    rows.forEach((r, i) => {
-      const y = top + i * rowH;
-      const mid = stacked ? y + 32 : y + rowH / 2;
-      const row = el("g", {tabindex: 0, role: "listitem", "aria-label": `${r.label}${r.sub ? ", " + r.sub : ""}: ${fmt(r.value)}`}, svg);
-      if (r.band != null) el("rect", {x: x(-r.band), y, width: x(r.band) - x(-r.band), height: rowH, fill: "var(--noise)"}, row);
-      el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, row);
-      if (stacked) {
-        const name = txt(row, 0, y + 15, r.label, {"font-size": 12.5, "font-weight": 600, fill: "var(--ink)"});
-        if (r.sub) { const s = el("tspan", {"font-size": 11, "font-weight": 400, fill: "var(--muted)", dx: 6}, name); s.textContent = r.sub; }
-      } else {
-        txt(row, 0, r.sub ? mid - 2 : mid + 4, r.label, {"font-size": 13.5, "font-weight": 600, fill: "var(--ink)"});
-        if (r.sub) txt(row, 0, mid + 12, r.sub, {"font-size": 11, fill: "var(--muted)"});
-      }
-      if (r.value != null) {
-        const h = stacked ? 12 : 14;
-        el("path", {d: bar(x(0), x(r.value), mid - h / 2, h, 4), fill: r.strong ? "var(--accent)" : "var(--flat)"}, row);
-        (r.runs || []).forEach(v => el("circle", {cx: x(v), cy: mid, r: 3.5, fill: "var(--ink-2)", stroke: "var(--ring)", "stroke-width": 2}, row));
-        txt(row, W, stacked ? y + 15 : mid + 4, fmt(r.value), {"text-anchor": "end", "font-size": stacked ? 12.5 : 13, "font-weight": r.strong ? 600 : 400,
-          fill: r.strong ? "var(--ink)" : "var(--ink-2)", "font-family": "var(--f-data)"});
-      }
-      const on = e => {
-        const b = host.getBoundingClientRect();
-        const px = e && e.clientX != null ? e.clientX - b.left : x(r.value ?? 0);
-        t.show(r.tip, px, y + (e && e.clientY != null ? e.clientY - b.top - y : 0));
-      };
-      row.addEventListener("pointermove", on);
-      row.addEventListener("pointerleave", () => t.hide());
-      row.addEventListener("focus", () => t.show(r.tip, x(r.value ?? 0), y));
-      row.addEventListener("blur", () => t.hide());
-    });
-    if (showBandLabel && rows.length && rows[0].band != null) {
-      txt(svg, x(0), 13, `no-add-on range ±${rows[0].band.toFixed(1)}%`, {"text-anchor": "middle", "font-size": 11, "font-weight": 500, fill: "var(--noise-ink)"});
-    }
-    svg.setAttribute("role", "list");
-    svg.setAttribute("aria-label", ariaLabel);
-  }
-
-  // ---- chart 1: results by agent and codebase
-  const allVals = D.cells.flatMap(c => [c.change_pct, ...c.run_change_pct]);
-  const resultsDomain = niceDomain(allVals, 4, 10);
+  // ---- 1. results bar chart
+  const domain = nice(D.cells.flatMap(c => [c.change_pct, ...c.run_change_pct]), 3, 10);
   const state = {agent: "claude-code", code: "fastify"};
   function seg(id, items, key) {
     const box = document.getElementById(id);
@@ -384,117 +296,168 @@ footer p{max-width:84ch;margin:.3rem 0}
     });
   }
   seg("seg-agent", D.agents.map(a => ({id: a.id, label: a.name})), "agent");
-  seg("seg-code", D.codebases.map(c => ({id: c.id, label: `${c.name} · ${c.language}`})), "code");
+  seg("seg-code", D.codebases.map(c => ({id: c.id, label: short(c.id)})), "code");
 
-  function cellTip(c) {
-    const p = pool(c.agent, c.codebase);
-    return `<b>${c.product}</b> · ${agentName[c.agent]} · ${codeName[c.codebase]}<br>`
-      + `Median change <span class="t-num">${fmt(c.change_pct)}</span> over ${runs(c.runs)}`
-      + (c.runs > 1 ? `<br>Each run: <span class="t-num">${c.run_change_pct.map(fmt).join(", ")}</span>` : "")
-      + `<br>No-add-on range <span class="t-num">±${p.band_pct.toFixed(1)}%</span>`
-      + `<br>Steps <span class="t-num">${fmt(c.steps_pct)}</span> · cost per step <span class="t-num">${fmt(c.cost_per_step_pct)}</span>`
-      + `<br><b>${c.confirmed ? "Confirmed" : c.runs < 2 ? "One run only: a screen, not an effect" : "Inside the noise band"}</b>`;
-  }
   function drawResults() {
     const p = pool(state.agent, state.code);
     const cells = D.cells.filter(c => c.agent === state.agent && c.codebase === state.code).sort((a, b) => a.change_pct - b.change_pct);
-    divergingBars(document.getElementById("chart-results"), cells.map(c => ({
-      label: c.product, sub: runs(c.runs) + (c.confirmed ? " · confirmed" : ""), value: c.change_pct,
-      runs: c.runs > 1 ? c.run_change_pct : [], band: p.band_pct, strong: c.confirmed, tip: cellTip(c),
-    })), {domain: resultsDomain, showBandLabel: true,
-      ariaLabel: `Change in weighted token cost for each add-on under ${agentName[state.agent]} on ${codeName[state.code]}`});
-    const tested = new Set(cells.map(c => c.product));
+    const rowH = narrow() ? 30 : 32;
+    const ch = mount("chart-results", cells.length * rowH + 70);
+    const names = cells.map(c => c.product);
+    // Phones zoom to the selected view; wider screens keep one scale across views.
+    const dom = narrow() ? nice([...cells.flatMap(c => [c.change_pct, ...c.run_change_pct]), p.band_pct, -p.band_pct], 3, 10) : domain;
+    ch.setOption({
+      animationDurationUpdate: 600, animationEasingUpdate: "cubicOut",
+      textStyle: {fontFamily: font},
+      grid: {left: 4, right: 4, top: 28, bottom: 24, containLabel: true},
+      tooltip: {...tipBase(), trigger: "item", formatter: q => cellTip(cells[q.seriesIndex === 0 ? q.dataIndex : q.value[1]])},
+      xAxis: valueAxis(dom[0], dom[1], {interval: narrow() ? (dom[1] - dom[0] > 80 ? 40 : 20) : 20}),
+      yAxis: [
+        {type: "category", inverse: true, data: names, axisLine: {show: false}, axisTick: {show: false},
+          axisLabel: {formatter: (v, i) => narrow() ? `{n|${v}}` : `{n|${v}}  {s|n=${cells[i].runs}}`,
+            rich: {n: {color: C.ink, fontWeight: 600, fontSize: 12.5, fontFamily: font}, s: {color: C.muted, fontSize: 11, fontFamily: font}}}},
+        {type: "category", inverse: true, data: cells.map(c => fmt(c.change_pct)), position: "right", axisLine: {show: false}, axisTick: {show: false},
+          axisLabel: {formatter: (v, i) => cells[i].confirmed ? `{b|${v}}` : `{d|${v}}`,
+            rich: {b: {color: C.ink, fontWeight: 600, fontFamily: mono, fontSize: 12}, d: {color: C.muted, fontFamily: mono, fontSize: 12}}}},
+      ],
+      series: [
+        {id: "bars", type: "bar", barWidth: Math.round(rowH * 0.45),
+          data: cells.map(c => ({value: c.change_pct, itemStyle: {color: c.confirmed ? C.accent : C.flat, borderRadius: c.change_pct < 0 ? [4, 0, 0, 4] : [0, 4, 4, 0]}})),
+          markArea: {silent: true, itemStyle: {color: C.noise}, label: {show: true, position: "top", color: C["noise-ink"], fontSize: 11, fontWeight: 500, formatter: `control range ±${p.band_pct.toFixed(1)}%`},
+            data: [[{xAxis: -p.band_pct}, {xAxis: p.band_pct}]]},
+          markLine: {silent: true, symbol: "none", label: {show: false}, lineStyle: {color: C.axis, type: "solid", width: 1}, data: [{xAxis: 0}]}},
+        {id: "runs", type: "scatter", symbolSize: 7, z: 5,
+          itemStyle: {color: C["ink-2"], borderColor: C.ring, borderWidth: 1.5},
+          data: cells.flatMap((c, i) => c.runs > 1 ? c.run_change_pct.map(v => [v, i]) : [])},
+      ],
+    }, {replaceMerge: ["series", "yAxis"]});
+    const tested = new Set(names);
     const missing = D.products.filter(n => !tested.has(n));
-    document.getElementById("untested").textContent = missing.length
-      ? `Not tested with ${agentName[state.agent]} (no working integration): ${missing.join(", ")}.` : "";
+    document.getElementById("untested").textContent = missing.length ? `No ${agentName[state.agent]} integration: ${missing.join(", ")}` : "";
   }
 
-  // ---- chart 2: no-add-on noise
+  // ---- 2. control noise
   function drawNoise() {
-    const host = document.getElementById("chart-noise");
-    host.textContent = "";
     const pools = [...D.pools].sort((a, b) => b.band_pct - a.band_pct);
-    const W = Math.max(260, host.clientWidth), stacked = W < 520;
-    const L = stacked ? 0 : 168, R = stacked ? 0 : 130, rowH = stacked ? 46 : 40, top = 8, axisH = 26;
-    const vals = pools.flatMap(p => p.run_offset_pct);
-    const lim = Math.ceil((Math.max(...vals.map(Math.abs)) + 2) / 10) * 10;
-    const x = v => L + (v + lim) / (2 * lim) * (W - L - R);
-    const H = top + pools.length * rowH + axisH;
-    const svg = el("svg", {viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "list",
-      "aria-label": "Spread of no-add-on runs for each agent and codebase"}, host);
-    for (let t = -lim; t <= lim; t += 10) {
-      el("line", {x1: x(t), x2: x(t), y1: top, y2: top + pools.length * rowH, stroke: t === 0 ? "var(--axis)" : "var(--grid)"}, svg);
-      txt(svg, x(t), top + pools.length * rowH + 17, t === 0 ? "median" : fmt(t).replace(".0", ""), {"text-anchor": "middle", "font-size": 11, fill: "var(--muted)", "font-family": "var(--f-data)"});
-    }
-    const tip = tooltip(host);
-    pools.forEach((p, i) => {
-      const y = top + i * rowH, mid = stacked ? y + 32 : y + rowH / 2;
-      const g = el("g", {tabindex: 0, role: "listitem", "aria-label": `${agentName[p.agent]}, ${codeName[p.codebase]}: ${p.band_pct}% between cheapest and costliest of ${p.runs} runs`}, svg);
-      el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g);
-      if (stacked) {
-        const name = txt(g, 0, y + 15, agentName[p.agent], {"font-size": 12.5, "font-weight": 600, fill: "var(--ink)"});
-        const s = el("tspan", {"font-size": 11, "font-weight": 400, fill: "var(--muted)", dx: 6}, name);
-        s.textContent = `${codeName[p.codebase]} · ${runs(p.runs)}`;
-      } else {
-        txt(g, 0, mid - 2, agentName[p.agent], {"font-size": 13.5, "font-weight": 600, fill: "var(--ink)"});
-        txt(g, 0, mid + 12, `${codeName[p.codebase]} · ${codeLang[p.codebase]}`, {"font-size": 11, fill: "var(--muted)"});
-      }
-      const lo = Math.min(...p.run_offset_pct), hi = Math.max(...p.run_offset_pct);
-      el("rect", {x: x(lo), y: mid - 5, width: Math.max(2, x(hi) - x(lo)), height: 10, rx: 5, fill: "var(--noise)"}, g);
-      p.run_offset_pct.forEach(v => el("circle", {cx: x(v), cy: mid, r: 4.5, fill: "var(--noise-ink)", stroke: "var(--ring)", "stroke-width": 2}, g));
-      txt(g, W, stacked ? y + 15 : mid - 1, p.band_pct.toFixed(1) + "%", {"text-anchor": "end", "font-size": stacked ? 12.5 : 13.5, "font-weight": 600, fill: "var(--ink)", "font-family": "var(--f-data)"});
-      if (!stacked) txt(g, W, mid + 13, runs(p.runs), {"text-anchor": "end", "font-size": 11, fill: "var(--muted)"});
-      const html = `<b>${agentName[p.agent]} · ${codeName[p.codebase]}</b>, no add-on<br>${runs(p.runs)}: <span class="t-num">${p.run_offset_pct.map(fmt).join(", ")}</span> from median<br>Cheapest to costliest: <span class="t-num">${p.band_pct.toFixed(1)}%</span>`;
-      g.addEventListener("pointermove", e => { const b = host.getBoundingClientRect(); tip.show(html, e.clientX - b.left, y); });
-      g.addEventListener("pointerleave", () => tip.hide());
-      g.addEventListener("focus", () => tip.show(html, x(0), y));
-      g.addEventListener("blur", () => tip.hide());
-    });
+    const ch = mount("chart-noise", pools.length * 44 + 50);
+    const lim = Math.ceil((Math.max(...pools.flatMap(p => p.run_offset_pct.map(Math.abs))) + 2) / 10) * 10;
+    const tipFor = p => `<b>${agentName[p.agent]} · ${short(p.codebase)}</b>, no tool<br>n=${p.runs}: ${p.run_offset_pct.map(fmt).join(", ")}<br>Cheapest to costliest: ${p.band_pct.toFixed(1)}%`;
+    ch.setOption({
+      textStyle: {fontFamily: font},
+      grid: {left: 4, right: 4, top: 10, bottom: 24, containLabel: true},
+      tooltip: {...tipBase(), trigger: "item", formatter: q => tipFor(pools[q.seriesIndex === 0 ? q.value[2] : q.value[1]])},
+      xAxis: valueAxis(-lim, lim, {interval: 10}),
+      yAxis: [
+        {type: "category", inverse: true, data: pools.map(p => `${agentName[p.agent]}|${short(p.codebase)}`), axisLine: {show: false}, axisTick: {show: false},
+          axisLabel: {lineHeight: 15, formatter: v => { const [a, b] = v.split("|"); return `{n|${a}}\n{s|${b}}`; },
+            rich: {n: {color: C.ink, fontWeight: 600, fontSize: 12, fontFamily: font}, s: {color: C.muted, fontSize: 10.5, fontFamily: font}}}},
+        {type: "category", inverse: true, position: "right", data: pools.map(p => p.band_pct.toFixed(1) + "%"), axisLine: {show: false}, axisTick: {show: false},
+          axisLabel: {color: C.ink, fontWeight: 600, fontFamily: mono, fontSize: 12.5}},
+      ],
+      series: [
+        {type: "custom", renderItem: (params, api) => {
+          const a = api.coord([api.value(0), api.value(2)]), b = api.coord([api.value(1), api.value(2)]);
+          return {type: "rect", shape: {x: a[0], y: a[1] - 6, width: Math.max(2, b[0] - a[0]), height: 12, r: 6}, style: {fill: C.noise}};
+        }, encode: {x: [0, 1], y: 2}, data: pools.map((p, i) => [Math.min(...p.run_offset_pct), Math.max(...p.run_offset_pct), i]),
+          markLine: {silent: true, symbol: "none", label: {show: false}, lineStyle: {color: C.axis, type: "solid"}, data: [{xAxis: 0}]}},
+        {type: "scatter", symbolSize: 9, itemStyle: {color: C["noise-ink"], borderColor: C.ring, borderWidth: 1.5},
+          data: pools.flatMap((p, i) => p.run_offset_pct.map(v => [v, i]))},
+      ],
+    }, true);
   }
 
-  // ---- chart 3: factor split of confirmed cells
+  // ---- 3. steps vs cost per step
   function drawFactors() {
-    // Grouped by agent so each agent's no-add-on range reads as one band.
-    const order = D.agents.map(a => a.id);
-    const conf = D.cells.filter(c => c.confirmed)
-      .sort((a, b) => order.indexOf(a.agent) - order.indexOf(b.agent) || a.codebase.localeCompare(b.codebase) || a.change_pct - b.change_pct);
-    const dom = niceDomain(conf.flatMap(c => [c.steps_pct, c.cost_per_step_pct]), 4, 10);
-    const rows = (key, bandKey, what) => conf.map(c => {
-      const band = pool(c.agent, c.codebase)[bandKey];
-      return {label: c.product, sub: `${agentName[c.agent]} · ${codeName[c.codebase]}`, value: c[key], band,
-        strong: Math.abs(c[key]) > band,
-        tip: `<b>${c.product}</b> · ${agentName[c.agent]} · ${codeName[c.codebase]}<br>${what}: <span class="t-num">${(key === "steps_pct" ? c.steps : c.cost_per_step).map(v => Math.round(v).toLocaleString("en")).join(" → ")}</span> (<span class="t-num">${fmt(c[key])}</span>)<br>No-add-on range <span class="t-num">±${band.toFixed(1)}%</span>`};
+    const conf = D.cells.filter(c => c.confirmed);
+    const xs = nice(conf.map(c => c.steps_pct), 6, 10), ys = nice(conf.map(c => c.cost_per_step_pct), 6, 10);
+    const ch = mount("chart-factors", 330);
+    const iso = t => {
+      const pts = [];
+      for (let x = xs[0]; x <= xs[1] + 1e-9; x += 0.5) {
+        const y = ((1 + t / 100) / (1 + x / 100) - 1) * 100;
+        if (y >= ys[0] && y <= ys[1]) pts.push([x, y]);
+      }
+      return pts;
+    };
+    const shortAgent = {"claude-code": "Claude Code", "codex-cli": "Codex", "opencode-cli": "OpenCode"};
+    ch.setOption({
+      textStyle: {fontFamily: font},
+      grid: {left: 26, right: 46, top: 14, bottom: 30, containLabel: true},
+      tooltip: {...tipBase(), trigger: "item", formatter: q => q.seriesType === "scatter"
+        ? (c => `<b>${c.product}</b> · ${agentName[c.agent]} · ${short(c.codebase)}<br>Total ${fmt(c.change_pct)}<br>Steps ${c.steps.map(Math.round).join(" → ")} (${fmt(c.steps_pct)})<br>Cost/step ${c.cost_per_step.map(v => v.toLocaleString("en")).join(" → ")} (${fmt(c.cost_per_step_pct)})`)(conf[q.dataIndex])
+        : ""},
+      xAxis: valueAxis(xs[0], xs[1], {name: "Agent steps", nameLocation: "middle", nameGap: 26, nameTextStyle: {color: C["ink-2"], fontSize: 11.5}}),
+      yAxis: valueAxis(ys[0], ys[1], {name: "Cost per step", nameLocation: "middle", nameGap: 44, nameTextStyle: {color: C["ink-2"], fontSize: 11.5}}),
+      series: [
+        ...[0, -25, -50].map(t => ({type: "line", data: iso(t), showSymbol: false, smooth: true, silent: true, z: 1,
+          lineStyle: {color: t === 0 ? C.axis : C.flat, width: 1},
+          endLabel: {show: true, color: C.muted, fontSize: 10.5, fontFamily: mono, formatter: () => (t === 0 ? "0%" : tick(t))}})),
+        {type: "scatter", symbolSize: 12, z: 5, itemStyle: {color: C.accent, borderColor: C.ring, borderWidth: 2},
+          data: conf.map(c => ({value: [c.steps_pct, c.cost_per_step_pct], label: {position: c.steps_pct > xs[1] - 25 ? "left" : "right"}})),
+          label: {show: true, position: "right", color: C.ink, fontSize: 11, fontFamily: font,
+            formatter: q => conf[q.dataIndex].product + (conf[q.dataIndex].agent !== "claude-code" ? ` · ${shortAgent[conf[q.dataIndex].agent]}` : "")},
+          labelLayout: {moveOverlap: "shiftY"}},
+      ],
+    }, true);
+  }
+
+  // ---- 4. all cells, one panel per agent
+  function drawAll() {
+    const prods = D.products, agents = D.agents, n = narrow();
+    const rowH = 22, head = 28, axisH = 28, gap = 22, labelW = 96;
+    const panelH = prods.length * rowH;
+    const H = n ? agents.length * (head + panelH + axisH) : head + panelH + axisH;
+    const ch = mount("chart-all", H);
+    const W = ch.getWidth();
+    const dom = nice(D.cells.map(c => c.change_pct), 3, 10);
+    const pw = n ? W - labelW - 12 : (W - labelW - gap * (agents.length - 1) - 12) / agents.length;
+    const grids = [], xAxes = [], yAxes = [], series = [], titles = [];
+    agents.forEach((a, j) => {
+      const left = n ? labelW : labelW + j * (pw + gap);
+      const top = n ? j * (head + panelH + axisH) + head : head;
+      grids.push({left, top, width: pw, height: panelH});
+      titles.push({text: a.name, left: left + pw / 2, top: top - head + 4, textAlign: "center", textStyle: {fontSize: 12.5, fontWeight: 600, color: C.ink, fontFamily: font}});
+      xAxes.push({...valueAxis(dom[0], dom[1], {interval: pw < 260 ? 40 : 20}), gridIndex: j});
+      yAxes.push({type: "category", inverse: true, data: prods, gridIndex: j, axisLine: {show: false}, axisTick: {show: false},
+        axisLabel: {show: n || j === 0, color: C.ink, fontSize: 11.5, fontWeight: 500, fontFamily: font},
+        splitLine: {show: true, lineStyle: {color: C.grid}}});
+      series.push({type: "scatter", xAxisIndex: j, yAxisIndex: j, data: [], silent: true,
+        markLine: {silent: true, symbol: "none", label: {show: false}, lineStyle: {color: C.axis, type: "solid"}, data: [{xAxis: 0}]}});
+      D.codebases.forEach((cb, k) => {
+        const cells = D.cells.filter(c => c.agent === a.id && c.codebase === cb.id);
+        series.push({type: "scatter", name: cb.name, xAxisIndex: j, yAxisIndex: j, z: k ? 4 : 5,
+          symbol: "circle",
+          data: cells.map(c => ({value: [c.change_pct, prods.indexOf(c.product)], cell: c,
+            symbolSize: c.confirmed ? 12 : 9,
+            itemStyle: k
+              ? {color: C.card, borderColor: c.confirmed ? C.accent : C["ink-2"], borderWidth: 2}
+              : {color: c.confirmed ? C.accent : C["ink-2"], borderColor: C.ring, borderWidth: 1.5}})),
+        });
+      });
     });
-    divergingBars(document.getElementById("chart-steps"), rows("steps_pct", "steps_band_pct", "Median steps"), {domain: dom, ariaLabel: "Change in agent steps for each confirmed saving"});
-    divergingBars(document.getElementById("chart-cps"), rows("cost_per_step_pct", "cost_per_step_band_pct", "Median cost per step"), {domain: dom, ariaLabel: "Change in cost per step for each confirmed saving"});
+    ch.setOption({
+      textStyle: {fontFamily: font}, title: titles, grid: grids, xAxis: xAxes, yAxis: yAxes, series,
+      tooltip: {...tipBase(), trigger: "item", formatter: q => q.data && q.data.cell ? cellTip(q.data.cell) : ""},
+    }, true);
   }
 
-  // ---- table: every reading
-  function drawHeat() {
-    const cols = D.agents.flatMap(a => D.codebases.map(c => [a, c]));
-    const tbl = document.getElementById("heat");
-    const head = `<thead><tr><th></th>${D.agents.map(a => `<th scope="colgroup" colspan="${D.codebases.length}">${a.name}</th>`).join("")}</tr>`
-      + `<tr><th scope="col" style="text-align:left">Add-on</th>${cols.map(([, c]) => `<th scope="col">${c.name}</th>`).join("")}</tr></thead>`;
-    const body = D.products.map(prod => `<tr><th scope="row">${prod}</th>` + cols.map(([a, cb]) => {
-      const c = D.cells.find(x => x.product === prod && x.agent === a.id && x.codebase === cb.id);
-      if (!c) return `<td class="na" aria-label="not tested">–</td>`;
-      const k = Math.min(Math.abs(c.change_pct) / 60, 1) * 58;
-      const tone = c.change_pct < 0 ? "var(--neg)" : "var(--pos)";
-      return `<td class="${c.confirmed ? "ok" : ""}" style="background:color-mix(in oklab,${tone} ${k.toFixed(0)}%,var(--card))" title="${c.product} · ${a.name} · ${cb.name}: ${fmt(c.change_pct)}, ${runs(c.runs)}${c.confirmed ? ", confirmed" : ""}">${fmt(c.change_pct)}<small>${runs(c.runs)}${c.confirmed ? " ✓" : ""}</small></td>`;
-    }).join("") + "</tr>").join("");
-    tbl.innerHTML = head + `<tbody>${body}</tbody>`;
-    tbl.setAttribute("aria-label", "Change in weighted token cost for every add-on, agent and codebase");
-  }
+  const drawAllCharts = () => { readTheme(); drawResults(); drawNoise(); drawFactors(); drawAll(); };
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(drawAllCharts);
 
-  const drawAll = () => { drawResults(); drawNoise(); drawFactors(); };
-  drawHeat();
-  drawAll();
-  let w = document.body.clientWidth, raf;
-  new ResizeObserver(() => {
-    if (document.body.clientWidth === w) return;
-    w = document.body.clientWidth;
-    cancelAnimationFrame(raf); raf = requestAnimationFrame(drawAll);
-  }).observe(document.body);
+  let lastW = document.documentElement.clientWidth, t;
+  addEventListener("resize", () => {
+    clearTimeout(t);
+    t = setTimeout(() => {
+      const w = document.documentElement.clientWidth;
+      if (w === lastW) return;
+      lastW = w;
+      Object.values(charts).forEach(c => c.resize());
+      drawAllCharts();
+    }, 120);
+  });
+  const rethemed = () => { Object.values(charts).forEach(c => c.dispose()); Object.keys(charts).forEach(k => delete charts[k]); drawAllCharts(); };
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rethemed);
+  new MutationObserver(rethemed).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
 })();
 </script>
 </body>
