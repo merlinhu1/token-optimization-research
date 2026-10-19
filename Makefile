@@ -3,7 +3,7 @@
 PYTHON ?= $(shell test -x .venv/bin/python3 && echo .venv/bin/python3 || echo python3)
 SHELL := /bin/bash
 
-.PHONY: check validate test runbook summaries
+.PHONY: check validate test runbook summaries site
 
 # The full AGENTS.md required-checks gate, and its one executable definition, so
 # the instruction list documents this target instead of drifting from it. Nothing
@@ -16,7 +16,7 @@ SHELL := /bin/bash
 check:
 	@before="$$(git status --porcelain)"; \
 	status=0; \
-	$(MAKE) --no-print-directory runbook summaries validate || status=$$?; \
+	$(MAKE) --no-print-directory runbook summaries site validate || status=$$?; \
 	git diff --check || status=$$?; \
 	after="$$(git status --porcelain)"; \
 	if [ "$$before" != "$$after" ]; then \
@@ -38,3 +38,6 @@ runbook:
 
 summaries:
 	$(PYTHON) scripts/update_registry_summaries.py --check
+
+site:
+	$(PYTHON) scripts/update_site_data.py --check

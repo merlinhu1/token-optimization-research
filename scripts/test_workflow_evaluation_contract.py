@@ -3874,17 +3874,19 @@ class PublishedSchemaGateTest(unittest.TestCase):
         body = summaries.render_decomposition(
             [session("sample-beets", 40, 292473.2), session("sample-beets", 47, 298045.8)]
         )
-        self.assertIn("40, 47 agent steps", body)
-        self.assertIn("spread 17.5%", body)
-        self.assertIn("weighted cost per step spread 15.3%", body)
+        row = next(line for line in body.splitlines() if "sample-beets" in line)
+        self.assertIn("40–43.5–47", row)
+        self.assertIn("17.5%", row)
+        self.assertIn("15.3%", row)
 
         # Runtimes without step telemetry contribute nothing rather than a false zero.
         self.assertEqual(summaries.render_decomposition([{"baseline_pool": {"protocol_fingerprint": "p"}}]), "")
         self.assertEqual(summaries.render_decomposition([]), "")
         # A single replicate has a step count but no spread to report.
         single = summaries.render_decomposition([session("sample-x", 12, 1200.0)])
-        self.assertIn("12 agent steps", single)
-        self.assertNotIn("spread", single)
+        row = next(line for line in single.splitlines() if "sample-x" in line)
+        self.assertIn("12–12–12", row)
+        self.assertNotIn("%", row)
 
     def test_registry_summaries_are_generated_and_current(self) -> None:
         """Registry-derived prose is generated, not hand-reconciled, and drift fails the gate."""
