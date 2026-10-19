@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Token Tool Benchmark</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Independent benchmark: 15 token-saving tools vs. no-tool controls across Claude Code, Codex CLI and OpenCode.">
+<meta name="description" content="An independent test of 15 add-ons that promise to lower the cost of AI coding assistants. Most savings could not be told apart from normal run-to-run variation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: a benchmark board. One line of headline figures, then one chart per question. */
+/* Layout: a benchmark board for a business reader. Headline findings first, then one chart per
+   finding, each titled with its conclusion and followed by how to read it and why it matters. */
 :root{
   --plane:#f3f4f6; --card:#ffffff; --ink:#111418; --ink-2:#4d5560; --muted:#737b86;
-  --grid:#e9ebee; --axis:#c2c7cf; --line:#e1e4e9; --chip:#eceff3;
-  --accent:#2a78d6; --flat:#b4bac3; --neg:#2a78d6; --pos:#e34948;
+  --grid:#e9ebee; --axis:#c2c7cf; --line:#e1e4e9; --chip:#eceff3; --soft:#f6f7f9;
+  --accent:#2a78d6; --flat:#b4bac3;
   --noise:rgba(237,161,0,.17); --noise-ink:#8a5d00; --ring:#ffffff;
   --f-display:"IBM Plex Sans Condensed","Arial Narrow",ui-sans-serif,system-ui,sans-serif;
   --f-body:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -23,19 +24,19 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --plane:#0e1013; --card:#171a1f; --ink:#eef0f3; --ink-2:#b7bdc6; --muted:#8a919b;
-  --grid:#23272e; --axis:#3a4049; --line:#2a2f37; --chip:#222730;
-  --accent:#3987e5; --flat:#565e69; --neg:#3987e5; --pos:#e66767;
+  --grid:#23272e; --axis:#3a4049; --line:#2a2f37; --chip:#222730; --soft:#1c2026;
+  --accent:#3987e5; --flat:#565e69;
   --noise:rgba(201,133,0,.16); --noise-ink:#e0b25a; --ring:#171a1f; color-scheme:dark}}
 :root[data-theme="dark"]{
   --plane:#0e1013; --card:#171a1f; --ink:#eef0f3; --ink-2:#b7bdc6; --muted:#8a919b;
-  --grid:#23272e; --axis:#3a4049; --line:#2a2f37; --chip:#222730;
-  --accent:#3987e5; --flat:#565e69; --neg:#3987e5; --pos:#e66767;
+  --grid:#23272e; --axis:#3a4049; --line:#2a2f37; --chip:#222730; --soft:#1c2026;
+  --accent:#3987e5; --flat:#565e69;
   --noise:rgba(201,133,0,.16); --noise-ink:#e0b25a; --ring:#171a1f; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:4rem}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--plane);color:var(--ink);font:15px/1.55 var(--f-body);-webkit-font-smoothing:antialiased;
+body{margin:0;background:var(--plane);color:var(--ink);font:15.5px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--plane)}
 a{color:var(--accent);text-underline-offset:2px}
@@ -50,155 +51,242 @@ a{color:var(--accent);text-underline-offset:2px}
 .top nav{display:flex;gap:1.1rem;font-size:.86rem}
 .top nav a{color:var(--ink-2);text-decoration:none}
 .top nav a:hover{color:var(--accent)}
-@media (max-width:760px){.top nav{display:none}}
+@media (max-width:860px){.top nav{display:none}}
 
-header.hero{padding-block:2.4rem .6rem}
+header.hero{padding-block:2.6rem .4rem}
 .eyebrow{font:500 .72rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-h1{font:700 clamp(2rem,5vw,3.1rem)/1.05 var(--f-display);letter-spacing:-.01em;margin:.7rem 0 .6rem;max-width:24ch;text-wrap:balance}
-.lede{font-size:1rem;color:var(--ink-2);margin:0}
+h1{font:700 clamp(2rem,5vw,3.1rem)/1.06 var(--f-display);letter-spacing:-.01em;margin:.7rem 0 .8rem;max-width:22ch;text-wrap:balance}
+.lede{font-size:1.08rem;color:var(--ink-2);margin:0;max-width:66ch}
 .lede b{color:var(--ink);font-weight:600}
 
-.kpis{display:flex;flex-wrap:wrap;gap:1.4rem 2.6rem;margin:1.8rem 0 .4rem;padding:0;list-style:none}
-.kpis li{min-width:0;max-width:15rem}
+h2.sec{font:700 1.5rem/1.2 var(--f-display);margin:2.2rem 0 .2rem}
+.sec-sub{color:var(--ink-2);margin:0 0 1rem;max-width:70ch}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem 2rem;margin:1rem 0 0;padding:0;list-style:none}
+.kpis li{min-width:0}
 .kpis b{display:block;font:700 2.7rem/1 var(--f-display);letter-spacing:-.01em}
 .kpis b small{font-size:1.4rem;color:var(--muted);font-weight:600}
-.kpis li > span{display:block;font-size:.84rem;color:var(--ink-2);margin-top:.35rem;line-height:1.4}
+.kpis li > p{font-size:.9rem;color:var(--ink-2);margin:.5rem 0 0;line-height:1.45}
+.kpis li > p strong{color:var(--ink);font-weight:600;display:block;margin-bottom:.15rem}
 .kpis .warn b{color:var(--noise-ink)}
-@media (max-width:640px){.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem 1.4rem}.kpis b{font-size:2.2rem}}
+@media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}}
+@media (max-width:420px){.kpis b{font-size:2.2rem}}
 
-section{padding-block:1.2rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.2rem 1.25rem 1rem;min-width:0}
-.card h2{font:700 1.3rem/1.2 var(--f-display);margin:0;text-wrap:balance}
-.def{margin:.3rem 0 0;color:var(--ink-2);font-size:.88rem}
-.def .dir{white-space:nowrap;color:var(--ink);font-weight:600}
-.controls{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;margin:.9rem 0 .2rem}
-.seg{display:inline-flex;background:var(--chip);border-radius:9px;padding:3px;gap:2px}
+.advice{margin:1.6rem 0 0;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.advice h3{font:600 1rem/1.3 var(--f-body);margin:0 0 .5rem}
+.advice ol{margin:0;padding-left:1.2rem;display:grid;gap:.35rem;color:var(--ink-2);font-size:.93rem}
+.advice ol b{color:var(--ink)}
+
+.terms{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.2rem 0 0;padding:0;list-style:none}
+.terms li{font-size:.85rem;color:var(--ink-2);min-width:0}
+.terms b{display:block;color:var(--ink);font-size:.86rem}
+@media (max-width:860px){.terms{grid-template-columns:1fr 1fr}}
+
+section{padding-block:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.3rem 1.35rem 1.1rem;min-width:0}
+.kicker{font:500 .7rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 .45rem}
+.card h2{font:700 1.45rem/1.2 var(--f-display);margin:0;text-wrap:balance;max-width:40ch}
+.what{margin:.45rem 0 0;color:var(--ink-2);font-size:.95rem;max-width:72ch}
+.finding{margin:.8rem 0 0;padding:.6rem .8rem;border-radius:8px;background:var(--soft);font-size:.92rem;color:var(--ink)}
+.finding:empty{display:none}
+.controls{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;margin:1rem 0 .2rem}
+.seg{display:inline-flex;flex-wrap:wrap;background:var(--chip);border-radius:9px;padding:3px;gap:2px}
 .seg button{font:500 .84rem/1 var(--f-body);color:var(--ink-2);background:none;border:0;border-radius:7px;padding:.5rem .75rem;cursor:pointer;white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0/.12)}
 .seg button:hover{color:var(--ink)}
 .ctl{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem}
 .ctl-label{font:500 .7rem/1 var(--f-data);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:.4rem}
-.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font-size:.8rem;color:var(--ink-2);margin:.6rem 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;font-size:.82rem;color:var(--ink-2);margin:.7rem 0 0}
 .legend span{display:inline-flex;align-items:center;gap:.4rem}
 .sw{width:14px;height:10px;border-radius:2px;display:inline-block}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--ink-2)}
 .ring{width:9px;height:9px;border-radius:50%;display:inline-block;border:2px solid var(--ink-2)}
-.chart{width:100%;min-height:200px}
-.untested{font-size:.8rem;color:var(--muted);margin:.2rem 0 0}
-details.tv{margin-top:.6rem;font-size:.84rem}
+.chart{width:100%;min-height:200px;margin-top:.3rem}
+.untested{font-size:.82rem;color:var(--muted);margin:.2rem 0 0}
+.explain{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.6rem;margin:.9rem 0 0;padding-top:.9rem;border-top:1px solid var(--line)}
+.explain p{margin:0;font-size:.9rem;color:var(--ink-2)}
+.explain p b{display:block;color:var(--ink);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;font-family:var(--f-data);font-weight:500}
+@media (max-width:700px){.explain{grid-template-columns:1fr}}
+details.tv{margin-top:.8rem;font-size:.86rem}
 details.tv summary{cursor:pointer;color:var(--ink-2)}
 .scroll{overflow-x:auto;margin-top:.6rem}
-table.heat{border-collapse:collapse;width:100%;min-width:620px;font-size:.8rem}
+table.heat{border-collapse:collapse;width:100%;min-width:640px;font-size:.8rem}
 table.heat th,table.heat td{padding:.35rem .4rem;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 table.heat th{color:var(--ink-2);font-weight:600}
 table.heat tbody th{text-align:left;color:var(--ink)}
 table.heat td{font-family:var(--f-data);font-variant-numeric:tabular-nums}
 table.heat td.ok{color:var(--accent);font-weight:600}
 
-ul.list{margin:.7rem 0 0;padding:0;list-style:none;display:grid;gap:.5rem}
-ul.list li{padding-left:1rem;position:relative;font-size:.88rem;color:var(--ink-2)}
-ul.list li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;border-radius:50%;background:var(--muted)}
+ul.list{margin:.8rem 0 0;padding:0;list-style:none;display:grid;gap:.6rem}
+ul.list li{padding-left:1rem;position:relative;font-size:.92rem;color:var(--ink-2)}
+ul.list li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--muted)}
 ul.list b{color:var(--ink)}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .duo > section{min-width:0}
-@media (max-width:760px){.duo{grid-template-columns:1fr}}
+@media (max-width:860px){.duo{grid-template-columns:1fr}}
 code.f{font:500 .8rem/1.5 var(--f-data);background:var(--chip);border-radius:6px;padding:.1rem .4rem;color:var(--ink);overflow-wrap:anywhere}
 .links{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;margin:.9rem 0 0;font-size:.9rem;font-weight:500}
-footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
+footer{padding-block:1.4rem 3rem;color:var(--muted);font-size:.82rem}
 .nojs{padding:1rem;color:var(--ink-2)}
 </style>
 </head>
 <body>
 <div class="top"><div class="wrap">
   <a class="brand" href="#top">Token Tool Benchmark</a>
-  <nav aria-label="Sections"><a href="#results">Results</a><a href="#noise">Noise</a><a href="#factors">Steps vs. cost</a><a href="#all">All cells</a><a href="#method">Method</a><a href="https://github.com/merlinhu1/token-optimization-research">GitHub</a></nav>
+  <nav aria-label="Sections"><a href="#answer">Short answer</a><a href="#results">Results</a><a href="#noise">Variation</a><a href="#factors">How savings happen</a><a href="#all">All results</a><a href="#method">How we tested</a></nav>
 </div></div>
 
 <main class="wrap" id="top">
 <header class="hero">
   <div class="eyebrow">Independent benchmark · data as of <span data-k="as_of">—</span></div>
-  <h1>Do token-saving tools cut coding-agent cost?</h1>
-  <p class="lede"><b data-k="n_products">15</b> tools · <b>3</b> agents · <b>2</b> repos · <b data-k="n_runs">—</b> runs, each tool against the same agent with no tool.</p>
-  <ul class="kpis">
-    <li><b><span data-k="confirmed">—</span><small>/<span data-k="cells">—</span></small></b><span>cells beat control noise</span></li>
-    <li class="warn"><b data-k="max_band">—</b><span>run-to-run spread with no tool (<span data-k="max_band_where">—</span>)</span></li>
-    <li><b data-k="beets_confirmed">—</b><span>confirmed cells on the Python repo</span></li>
-    <li><b>4<small>/5</small></b><span>marginal single-run wins lost on rerun</span></li>
-  </ul>
+  <h1>Do cost-cutting add-ons for AI coding assistants actually save money?</h1>
+  <p class="lede">AI coding assistants are billed by how much text they read and write. A growing number of
+  add-on tools promise to shrink that bill. We installed <b data-k="n_products">15</b> of them into
+  <b>3</b> popular assistants, gave every setup the same real bug-fixing work on <b>2</b> open-source
+  projects, and compared the bill with the same assistant running without any add-on, across
+  <b data-k="n_runs">—</b> complete test runs.</p>
 </header>
 <noscript><p class="nojs">The charts need JavaScript. The underlying data is in <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">workflow-sessions.json</a>.</p></noscript>
 
+<section id="answer">
+  <h2 class="sec">The short answer</h2>
+  <p class="sec-sub">Some tools do lower the bill, but far fewer than the claims suggest, and only under specific conditions.</p>
+  <ul class="kpis">
+    <li><b><span data-k="confirmed">—</span><small>/<span data-k="cells">—</span></small></b>
+      <p><strong>proven savings</strong>Of <span data-k="cells">—</span> tool, assistant and project combinations, only these showed a saving that held up when the test was repeated.</p></li>
+    <li class="warn"><b data-k="max_band">—</b>
+      <p><strong>cost swing with no tool at all</strong>The same job, run again on the same assistant with nothing installed, cost up to this much more (<span data-k="max_band_where">—</span>).</p></li>
+    <li><b data-k="beets_confirmed">—</b>
+      <p><strong>proven savings on the second project</strong>Every proven saving came from the JavaScript project. None carried over to the Python project.</p></li>
+    <li><b>4<small>/5</small></b>
+      <p><strong>early wins that vanished</strong>Of five savings that looked real after one test, four disappeared when we ran the test again.</p></li>
+  </ul>
+  <div class="advice">
+    <h3>What this means if you are buying or rolling out one of these tools</h3>
+    <ol>
+      <li><b>Ask for repeated measurements.</b> A single before-and-after comparison can show a 20–50% "saving" by chance.</li>
+      <li><b>Test on your own code.</b> A tool that helped on one project showed no proven benefit on the other.</li>
+      <li><b>Test with your own assistant.</b> The same tool lowered costs with one assistant and raised them with another.</li>
+    </ol>
+  </div>
+  <ul class="terms">
+    <li><b>AI coding assistant</b>Software such as Claude Code, Codex CLI or OpenCode that reads a codebase and makes changes on its own.</li>
+    <li><b>Token cost</b>What the assistant is billed for: text read at full price, re-read text at a tenth, written text at six times.</li>
+    <li><b>Baseline</b>The same assistant doing the same work with no add-on installed. Every tool is compared against its own baseline.</li>
+    <li><b>Proven saving</b>Tested at least twice, and cheaper by more than the baseline's own run-to-run swing.</li>
+  </ul>
+</section>
+
 <section id="results"><div class="card">
-  <h2>Weighted token cost vs. no-tool control</h2>
-  <p class="def">Median of runs. <span class="dir">Lower is better.</span></p>
-  <div class="controls" role="group" aria-label="Choose agent and repo">
-    <div class="ctl"><span class="ctl-label">Agent</span><div class="seg" id="seg-agent"></div></div>
-    <div class="ctl"><span class="ctl-label">Repo</span><div class="seg" id="seg-code"></div></div>
+  <p class="kicker">Finding 1</p>
+  <h2>Most tools did not produce a saving we could count on</h2>
+  <p class="what">Each bar is one tool's effect on the bill, compared with the same assistant working without it.
+  Pick an assistant and a project to see its results.</p>
+  <div class="controls" role="group" aria-label="Choose assistant and project">
+    <div class="ctl"><span class="ctl-label">Assistant</span><div class="seg" id="seg-agent"></div></div>
+    <div class="ctl"><span class="ctl-label">Project</span><div class="seg" id="seg-code"></div></div>
   </div>
+  <p class="finding" id="finding-results"></p>
   <div class="legend" aria-hidden="true">
-    <span><i class="sw" style="background:var(--accent)"></i>Confirmed (n≥2, outside control range)</span>
-    <span><i class="sw" style="background:var(--flat)"></i>Not confirmed</span>
-    <span><i class="sw" style="background:var(--noise)"></i>Control range</span>
-    <span><i class="dot"></i>Individual run</span>
+    <span><i class="sw" style="background:var(--accent)"></i>Proven saving</span>
+    <span><i class="sw" style="background:var(--flat)"></i>Not proven</span>
+    <span><i class="sw" style="background:var(--noise)"></i>Normal swing with no tool</span>
+    <span><i class="dot"></i>One test run</span>
   </div>
-  <div class="chart" id="chart-results" role="img" aria-label="Change in weighted token cost by tool"></div>
+  <div class="chart" id="chart-results" role="img" aria-label="Change in cost by tool"></div>
   <p class="untested" id="untested"></p>
+  <div class="explain">
+    <p><b>How to read it</b>Bars to the left of zero mean a lower bill. The shaded band is how much the bill
+    moves between identical runs with no tool installed. A bar ending inside the band could be luck.
+    Dots show each individual test run behind a bar.</p>
+    <p><b>Why it matters</b>Most bars are grey. Vendor figures are usually based on one comparison, and a
+    single comparison here was often enough to show a large saving that later disappeared. Bars are
+    sorted for readability; the proven savings are too close together to rank.</p>
+  </div>
 </div></section>
 
-<div class="duo">
 <section id="noise"><div class="card">
-  <h2>Control noise</h2>
-  <p class="def">Same tasks, no tool. Each dot is one run, % from median.</p>
-  <div class="chart" id="chart-noise" role="img" aria-label="Run-to-run spread of no-tool controls"></div>
+  <p class="kicker">Finding 2</p>
+  <h2>The same job does not cost the same twice</h2>
+  <p class="what">Before measuring any tool, we ran each assistant on the same work several times with nothing
+  installed. Each dot is one of those runs, placed by how far its cost landed from the typical run.</p>
+  <p class="finding" id="finding-noise"></p>
+  <div class="chart" id="chart-noise" role="img" aria-label="Run-to-run cost swing with no tool"></div>
+  <div class="explain">
+    <p><b>How to read it</b>The wider the band, the more the bill varies on its own. The percentage on the
+    right is the gap between the cheapest and the most expensive run.</p>
+    <p><b>Why it matters</b>This swing is the bar every tool has to clear. If a project's bill can move 54%
+    between two identical runs, a tool that saves 20% cannot be told apart from luck without many runs.
+    Each time we added another run, the band grew wider or stayed the same; it never narrowed.</p>
+  </div>
 </div></section>
 
 <section id="factors"><div class="card">
-  <h2>Fewer steps or cheaper steps?</h2>
-  <p class="def">Confirmed cells. Cost = steps × cost per step. Lines mark equal total saving.</p>
-  <div class="chart" id="chart-factors" role="img" aria-label="Change in agent steps against change in cost per step"></div>
+  <p class="kicker">Finding 3</p>
+  <h2>Tools save money in two different ways</h2>
+  <p class="what">An assistant's bill is the number of steps it takes multiplied by the cost of each step. For
+  every proven saving, this chart shows which of the two the tool changed.</p>
+  <p class="finding" id="finding-factors"></p>
+  <div class="chart" id="chart-factors" role="img" aria-label="Change in steps taken against change in cost per step"></div>
+  <div class="explain">
+    <p><b>How to read it</b>Further left means the assistant took fewer steps. Further down means each step
+    was cheaper. The curved lines connect points with the same total saving: 0%, 25% and 50%.</p>
+    <p><b>Why it matters</b>A "fewer steps" tool changes how the assistant works through a problem. A
+    "cheaper steps" tool trims what the assistant reads. They solve different problems, so one may suit
+    your codebase when the other does not.</p>
+  </div>
 </div></section>
-</div>
 
 <section id="all"><div class="card">
-  <h2>All <span data-k="cells">—</span> cells</h2>
-  <p class="def">Median change per tool, agent and repo. <span class="dir">Left is cheaper.</span></p>
+  <p class="kicker">Finding 4</p>
+  <h2>Results depend on the assistant and the project</h2>
+  <p class="what">Every result from the study in one view: each tool, under each of the three assistants, on both
+  projects.</p>
+  <p class="finding" id="finding-all"></p>
   <div class="legend" aria-hidden="true">
-    <span><i class="dot"></i>Fastify (JS)</span>
-    <span><i class="ring"></i>Beets (Python)</span>
-    <span><i class="dot" style="background:var(--accent)"></i>Confirmed</span>
+    <span><i class="dot"></i>JavaScript project (Fastify)</span>
+    <span><i class="ring"></i>Python project (Beets)</span>
+    <span><i class="dot" style="background:var(--accent)"></i>Proven saving</span>
   </div>
-  <div class="chart" id="chart-all" role="img" aria-label="Every cell by tool, agent and repo"></div>
-  <details class="tv"><summary>Table view</summary><div class="scroll"><table class="heat" id="heat"></table></div></details>
+  <div class="chart" id="chart-all" role="img" aria-label="Every result by tool, assistant and project"></div>
+  <div class="explain">
+    <p><b>How to read it</b>Each row is a tool, each panel an assistant. Dots left of the centre line lowered
+    the bill; dots to the right raised it. A missing dot means the tool has no working version for that
+    assistant.</p>
+    <p><b>Why it matters</b>Dots for the same tool often land on both sides of the line. Choosing the
+    assistant can move the bill as much as choosing the add-on.</p>
+  </div>
+  <details class="tv"><summary>Show every result as a table</summary><div class="scroll"><table class="heat" id="heat"></table></div></details>
 </div></section>
 
 <div class="duo">
 <section id="caveats"><div class="card">
-  <h2>Caveats</h2>
+  <h2>What this study cannot tell you</h2>
   <ul class="list">
-    <li><b>Not a ranking.</b> Confirmed effects overlap within control noise.</li>
-    <li><b>Unconfirmed ≠ ineffective.</b> <span data-k="single">—</span> of <span data-k="cells">—</span> cells are n=1.</li>
-    <li><b>Run counts are selected.</b> Promising cells got reruns.</li>
-    <li><b>Agent and model are confounded.</b> Claude Code runs <span data-k="model_claude">Claude Opus 5</span>; Codex CLI and OpenCode run <span data-k="model_gpt">GPT-5.6 Sol</span>.</li>
-    <li><b>Cost counted pass or fail.</b> <span data-k="tasks_passed">—</span>/<span data-k="tasks_attempted">—</span> tasks passed.</li>
+    <li><b>It is not a ranking.</b> The proven savings sit closer together than the normal swing, so we cannot say which tool is best.</li>
+    <li><b>"Not proven" does not mean "does not work".</b> <span data-k="single">—</span> of <span data-k="cells">—</span> combinations were only tested once, which is not enough to decide either way.</li>
+    <li><b>Some tools were tested more than others.</b> Promising first results were re-tested, so more test runs say nothing about quality.</li>
+    <li><b>Assistant and AI model are tied together.</b> Claude Code uses <span data-k="model_claude">Claude Opus 5</span>; Codex CLI and OpenCode use <span data-k="model_gpt">GPT-5.6 Sol</span>.</li>
+    <li><b>We counted the cost whether or not the fix was right.</b> <span data-k="tasks_passed">—</span> of <span data-k="tasks_attempted">—</span> fixes passed the project's own tests.</li>
   </ul>
 </div></section>
 
 <section id="method"><div class="card">
-  <h2>Method</h2>
+  <h2>How we tested</h2>
   <ul class="list">
-    <li>6 seeded upstream regressions per repo, each checked by an existing upstream test.</li>
-    <li>Symptom-only prompts, byte-identical across arms. The tool is never mentioned.</li>
-    <li>Tools installed per vendor docs, one at a time. Agent versions pinned.</li>
-    <li>Metric: <code class="f">fresh input + 0.1 × cached + 6 × output</code></li>
+    <li><b>Real work.</b> Six genuine bugs per project, taken from each project's own history and checked by the project's own tests.</li>
+    <li><b>Same instructions every time.</b> The assistant is told the symptom only, never where to look and never to use the add-on.</li>
+    <li><b>Fair installation.</b> Each tool installed the way its maker recommends, tested on its own, with assistant versions frozen for the whole study.</li>
+    <li><b>One cost measure.</b> <code class="f">new text + 0.1 × re-read text + 6 × written text</code>, mirroring how AI providers price usage.</li>
   </ul>
-  <p class="links"><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Paper</a>
+  <p class="links"><a href="https://github.com/merlinhu1/token-optimization-research/blob/main/docs/papers/lifecycle-v2-single-treatment-screening.md">Technical report</a>
   <a href="https://github.com/merlinhu1/token-optimization-research/blob/main/data/workflow-sessions.json">Raw data</a>
-  <a href="https://github.com/merlinhu1/token-optimization-research/tree/main/sources/evaluations">Run artifacts</a></p>
+  <a href="https://github.com/merlinhu1/token-optimization-research">Source code</a></p>
 </div></section>
 </div>
 </main>
 
-<footer><div class="wrap">Independent study. No vendor sponsored, reviewed, or saw results in advance.</div></footer>
+<footer><div class="wrap">Independent study. No tool maker sponsored this test, reviewed it, or saw the results in advance. Every figure is calculated from the published raw data.</div></footer>
 
 <!-- generated:site-data -->
 <script type="application/json" id="site-data">{"agents":[{"id":"claude-code","model":"Claude Opus 5 · medium","name":"Claude Code"},{"id":"codex-cli","model":"GPT-5.6 Sol · medium","name":"Codex CLI"},{"id":"opencode-cli","model":"GPT-5.6 Sol · medium","name":"OpenCode"}],"as_of":"2026-10-05","cells":[{"agent":"claude-code","change_pct":-10.9,"codebase":"beets","confirmed":false,"cost_per_step":[7182,7004],"cost_per_step_pct":-2.5,"product":"Cartog","run_change_pct":[-10.9],"runs":1,"steps":[52.5,54],"steps_pct":2.9},{"agent":"claude-code","change_pct":-30.5,"codebase":"beets","confirmed":false,"cost_per_step":[7182,8100],"cost_per_step_pct":12.8,"product":"Caveman","run_change_pct":[-41.7,-19.4],"runs":2,"steps":[52.5,36.5],"steps_pct":-30.5},{"agent":"claude-code","change_pct":5.9,"codebase":"beets","confirmed":false,"cost_per_step":[7182,11527],"cost_per_step_pct":60.5,"product":"CodeGraph","run_change_pct":[5.9],"runs":1,"steps":[52.5,39],"steps_pct":-25.7},{"agent":"claude-code","change_pct":-28.0,"codebase":"beets","confirmed":false,"cost_per_step":[7182,5970],"cost_per_step_pct":-16.9,"product":"Graphify","run_change_pct":[-38.4,-17.6],"runs":2,"steps":[52.5,51.0],"steps_pct":-2.9},{"agent":"claude-code","change_pct":-38.3,"codebase":"beets","confirmed":false,"cost_per_step":[7182,5756],"cost_per_step_pct":-19.9,"product":"LeanCTX","run_change_pct":[-42.5,-34.0],"runs":2,"steps":[52.5,45.5],"steps_pct":-13.3},{"agent":"claude-code","change_pct":-30.7,"codebase":"beets","confirmed":false,"cost_per_step":[7182,8127],"cost_per_step_pct":13.1,"product":"Ponytail","run_change_pct":[-41.6,-19.9],"runs":2,"steps":[52.5,36.5],"steps_pct":-30.5},{"agent":"claude-code","change_pct":-22.4,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6888],"cost_per_step_pct":-4.1,"product":"RTK","run_change_pct":[-37.6,-7.1],"runs":2,"steps":[52.5,47.5],"steps_pct":-9.5},{"agent":"claude-code","change_pct":-24.1,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6450],"cost_per_step_pct":-10.2,"product":"Serena","run_change_pct":[-25.4,-22.7],"runs":2,"steps":[52.5,50.0],"steps_pct":-4.8},{"agent":"claude-code","change_pct":55.3,"codebase":"beets","confirmed":false,"cost_per_step":[7182,14035],"cost_per_step_pct":95.4,"product":"SigMap","run_change_pct":[55.3],"runs":1,"steps":[52.5,47],"steps_pct":-10.5},{"agent":"claude-code","change_pct":-21.2,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6194],"cost_per_step_pct":-13.8,"product":"Snip","run_change_pct":[-21.2],"runs":1,"steps":[52.5,54],"steps_pct":2.9},{"agent":"claude-code","change_pct":-46.8,"codebase":"beets","confirmed":false,"cost_per_step":[7182,5434],"cost_per_step_pct":-24.3,"product":"Token Savior","run_change_pct":[-50.9,-42.8],"runs":2,"steps":[52.5,41.5],"steps_pct":-21.0},{"agent":"claude-code","change_pct":-27.2,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6058],"cost_per_step_pct":-15.7,"product":"TokenJuice","run_change_pct":[-27.2],"runs":1,"steps":[52.5,51],"steps_pct":-2.9},{"agent":"claude-code","change_pct":-12.9,"codebase":"beets","confirmed":false,"cost_per_step":[7182,6725],"cost_per_step_pct":-6.4,"product":"jCodeMunch","run_change_pct":[-12.9],"runs":1,"steps":[52.5,55],"steps_pct":4.8},{"agent":"claude-code","change_pct":-23.5,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,7297],"cost_per_step_pct":-21.3,"product":"Cartog","run_change_pct":[-32.3,-14.7],"runs":2,"steps":[69.0,67.0],"steps_pct":-2.9},{"agent":"claude-code","change_pct":-25.0,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,9310],"cost_per_step_pct":0.4,"product":"Caveman","run_change_pct":[-35.0,-15.1],"runs":2,"steps":[69.0,51.5],"steps_pct":-25.4},{"agent":"claude-code","change_pct":1.1,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,11769],"cost_per_step_pct":27.0,"product":"CodeGraph","run_change_pct":[1.1],"runs":1,"steps":[69.0,55],"steps_pct":-20.3},{"agent":"claude-code","change_pct":-12.8,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7549],"cost_per_step_pct":-18.6,"product":"Graphify","run_change_pct":[-15.2,-10.4],"runs":2,"steps":[69.0,74.0],"steps_pct":7.2},{"agent":"claude-code","change_pct":-35.4,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,7026],"cost_per_step_pct":-24.2,"product":"LeanCTX","run_change_pct":[-36.7,-34.1],"runs":2,"steps":[69.0,59.0],"steps_pct":-14.5},{"agent":"claude-code","change_pct":-23.4,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,8816],"cost_per_step_pct":-4.9,"product":"Ponytail","run_change_pct":[-32.3,-14.5],"runs":2,"steps":[69.0,56.5],"steps_pct":-18.1},{"agent":"claude-code","change_pct":-14.2,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,8263],"cost_per_step_pct":-10.9,"product":"RTK","run_change_pct":[-29.6,1.2],"runs":2,"steps":[69.0,66.0],"steps_pct":-4.3},{"agent":"claude-code","change_pct":-24.4,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,7821],"cost_per_step_pct":-15.6,"product":"Serena","run_change_pct":[-30.7,-18.0],"runs":2,"steps":[69.0,62.0],"steps_pct":-10.1},{"agent":"claude-code","change_pct":-9.1,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,8733],"cost_per_step_pct":-5.8,"product":"SigMap","run_change_pct":[-18.6,0.5],"runs":2,"steps":[69.0,66.5],"steps_pct":-3.6},{"agent":"claude-code","change_pct":-12.8,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7332],"cost_per_step_pct":-20.9,"product":"Snip","run_change_pct":[-21.7,-3.8],"runs":2,"steps":[69.0,76.0],"steps_pct":10.1},{"agent":"claude-code","change_pct":-25.6,"codebase":"fastify","confirmed":true,"cost_per_step":[9269,6952],"cost_per_step_pct":-25.0,"product":"Token Savior","run_change_pct":[-29.0,-22.3],"runs":2,"steps":[69.0,68.5],"steps_pct":-0.7},{"agent":"claude-code","change_pct":6.1,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7075],"cost_per_step_pct":-23.7,"product":"TokenJuice","run_change_pct":[6.1],"runs":1,"steps":[69.0,96],"steps_pct":39.1},{"agent":"claude-code","change_pct":-11.0,"codebase":"fastify","confirmed":false,"cost_per_step":[9269,7702],"cost_per_step_pct":-16.9,"product":"jCodeMunch","run_change_pct":[-11.0],"runs":1,"steps":[69.0,74],"steps_pct":7.2},{"agent":"codex-cli","change_pct":1.4,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7665],"cost_per_step_pct":-18.1,"product":"Cartog","run_change_pct":[1.4],"runs":1,"steps":[64,78],"steps_pct":21.9},{"agent":"codex-cli","change_pct":20.6,"codebase":"beets","confirmed":false,"cost_per_step":[9360,9236],"cost_per_step_pct":-1.3,"product":"Caveman","run_change_pct":[20.6],"runs":1,"steps":[64,77],"steps_pct":20.3},{"agent":"codex-cli","change_pct":72.4,"codebase":"beets","confirmed":false,"cost_per_step":[9360,13032],"cost_per_step_pct":39.2,"product":"CodeGraph","run_change_pct":[72.4],"runs":1,"steps":[64,78],"steps_pct":21.9},{"agent":"codex-cli","change_pct":-3.1,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8530],"cost_per_step_pct":-8.9,"product":"CodeScope","run_change_pct":[-3.1],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":4.3,"codebase":"beets","confirmed":false,"cost_per_step":[9360,10085],"cost_per_step_pct":7.7,"product":"Graphify","run_change_pct":[4.3],"runs":1,"steps":[64,61],"steps_pct":-4.7},{"agent":"codex-cli","change_pct":-1.0,"codebase":"beets","confirmed":false,"cost_per_step":[9360,6984],"cost_per_step_pct":-25.4,"product":"LeanCTX","run_change_pct":[-1.7,-0.2],"runs":2,"steps":[64,84.0],"steps_pct":31.2},{"agent":"codex-cli","change_pct":7.6,"codebase":"beets","confirmed":false,"cost_per_step":[9360,10573],"cost_per_step_pct":13.0,"product":"Ponytail","run_change_pct":[7.6],"runs":1,"steps":[64,60],"steps_pct":-6.2},{"agent":"codex-cli","change_pct":-12.7,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7682],"cost_per_step_pct":-17.9,"product":"RTK","run_change_pct":[-12.7],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":-0.7,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8737],"cost_per_step_pct":-6.7,"product":"RepoWise","run_change_pct":[-0.7],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":19.9,"codebase":"beets","confirmed":false,"cost_per_step":[9360,9688],"cost_per_step_pct":3.5,"product":"Serena","run_change_pct":[19.9],"runs":1,"steps":[64,73],"steps_pct":14.1},{"agent":"codex-cli","change_pct":17.9,"codebase":"beets","confirmed":false,"cost_per_step":[9360,10375],"cost_per_step_pct":10.8,"product":"SigMap","run_change_pct":[17.9],"runs":1,"steps":[64,67],"steps_pct":4.7},{"agent":"codex-cli","change_pct":-3.7,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7570],"cost_per_step_pct":-19.1,"product":"Snip","run_change_pct":[-3.7],"runs":1,"steps":[64,75],"steps_pct":17.2},{"agent":"codex-cli","change_pct":3.3,"codebase":"beets","confirmed":false,"cost_per_step":[9360,7808],"cost_per_step_pct":-16.6,"product":"Token Savior","run_change_pct":[3.3],"runs":1,"steps":[64,78],"steps_pct":21.9},{"agent":"codex-cli","change_pct":0.6,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8599],"cost_per_step_pct":-8.1,"product":"TokenJuice","run_change_pct":[0.6],"runs":1,"steps":[64,69],"steps_pct":7.8},{"agent":"codex-cli","change_pct":43.0,"codebase":"beets","confirmed":false,"cost_per_step":[9360,8435],"cost_per_step_pct":-9.9,"product":"jCodeMunch","run_change_pct":[43.0],"runs":1,"steps":[64,100],"steps_pct":56.2},{"agent":"codex-cli","change_pct":-26.1,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,7766],"cost_per_step_pct":-28.3,"product":"Cartog","run_change_pct":[-26.1],"runs":1,"steps":[73,72],"steps_pct":-1.4},{"agent":"codex-cli","change_pct":9.7,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,11528],"cost_per_step_pct":6.5,"product":"Caveman","run_change_pct":[9.7],"runs":1,"steps":[73,72],"steps_pct":-1.4},{"agent":"codex-cli","change_pct":3.6,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,11044],"cost_per_step_pct":2.0,"product":"CodeGraph","run_change_pct":[3.6],"runs":1,"steps":[73,71],"steps_pct":-2.7},{"agent":"codex-cli","change_pct":-4.0,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,10684],"cost_per_step_pct":-1.3,"product":"CodeScope","run_change_pct":[-4.0],"runs":1,"steps":[73,68],"steps_pct":-6.8},{"agent":"codex-cli","change_pct":-26.5,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,6544],"cost_per_step_pct":-39.5,"product":"Graphify","run_change_pct":[-26.5],"runs":1,"steps":[73,85],"steps_pct":16.4},{"agent":"codex-cli","change_pct":-24.7,"codebase":"fastify","confirmed":true,"cost_per_step":[10825,7084],"cost_per_step_pct":-34.6,"product":"LeanCTX","run_change_pct":[-25.9,-23.4],"runs":2,"steps":[73,80.5],"steps_pct":10.3},{"agent":"codex-cli","change_pct":-2.2,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,10891],"cost_per_step_pct":0.6,"product":"Ponytail","run_change_pct":[-2.2],"runs":1,"steps":[73,68],"steps_pct":-6.8},{"agent":"codex-cli","change_pct":-9.2,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,10742],"cost_per_step_pct":-0.8,"product":"RTK","run_change_pct":[-9.2],"runs":1,"steps":[73,64],"steps_pct":-12.3},{"agent":"codex-cli","change_pct":-8.4,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,9368],"cost_per_step_pct":-13.5,"product":"RepoWise","run_change_pct":[-8.4],"runs":1,"steps":[73,74],"steps_pct":1.4},{"agent":"codex-cli","change_pct":0.8,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,11222],"cost_per_step_pct":3.7,"product":"Serena","run_change_pct":[0.8],"runs":1,"steps":[73,68],"steps_pct":-6.8},{"agent":"codex-cli","change_pct":-0.2,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,9215],"cost_per_step_pct":-14.9,"product":"SigMap","run_change_pct":[-0.2],"runs":1,"steps":[73,82],"steps_pct":12.3},{"agent":"codex-cli","change_pct":-22.0,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,6866],"cost_per_step_pct":-36.6,"product":"Snip","run_change_pct":[-22.0],"runs":1,"steps":[73,86],"steps_pct":17.8},{"agent":"codex-cli","change_pct":-1.1,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,8979],"cost_per_step_pct":-17.1,"product":"Token Savior","run_change_pct":[-16.8,14.7],"runs":2,"steps":[73,83.5],"steps_pct":14.4},{"agent":"codex-cli","change_pct":-18.6,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,7902],"cost_per_step_pct":-27.0,"product":"TokenJuice","run_change_pct":[-18.6],"runs":1,"steps":[73,78],"steps_pct":6.8},{"agent":"codex-cli","change_pct":11.3,"codebase":"fastify","confirmed":false,"cost_per_step":[10825,7946],"cost_per_step_pct":-26.6,"product":"jCodeMunch","run_change_pct":[11.3],"runs":1,"steps":[73,106],"steps_pct":45.2},{"agent":"opencode-cli","change_pct":27.5,"codebase":"beets","confirmed":false,"cost_per_step":[4685,6296],"cost_per_step_pct":34.4,"product":"Cartog","run_change_pct":[27.5],"runs":1,"steps":[118,112],"steps_pct":-5.1},{"agent":"opencode-cli","change_pct":2.4,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4567],"cost_per_step_pct":-2.5,"product":"Caveman","run_change_pct":[2.4],"runs":1,"steps":[118,124],"steps_pct":5.1},{"agent":"opencode-cli","change_pct":-0.9,"codebase":"beets","confirmed":false,"cost_per_step":[4685,5122],"cost_per_step_pct":9.3,"product":"CodeGraph","run_change_pct":[-0.9],"runs":1,"steps":[118,107],"steps_pct":-9.3},{"agent":"opencode-cli","change_pct":4.9,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4494],"cost_per_step_pct":-4.1,"product":"CodeScope","run_change_pct":[4.9],"runs":1,"steps":[118,129],"steps_pct":9.3},{"agent":"opencode-cli","change_pct":48.5,"codebase":"beets","confirmed":false,"cost_per_step":[4685,6172],"cost_per_step_pct":31.7,"product":"Graphify","run_change_pct":[48.5],"runs":1,"steps":[118,133],"steps_pct":12.7},{"agent":"opencode-cli","change_pct":-13.3,"codebase":"beets","confirmed":false,"cost_per_step":[4685,2592],"cost_per_step_pct":-44.7,"product":"LeanCTX","run_change_pct":[-14.9,-11.7],"runs":2,"steps":[118,185.0],"steps_pct":56.8},{"agent":"opencode-cli","change_pct":13.3,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4912],"cost_per_step_pct":4.8,"product":"Ponytail","run_change_pct":[12.0,14.6],"runs":2,"steps":[118,127.5],"steps_pct":8.1},{"agent":"opencode-cli","change_pct":1.7,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4135],"cost_per_step_pct":-11.7,"product":"RTK","run_change_pct":[1.7],"runs":1,"steps":[118,136],"steps_pct":15.3},{"agent":"opencode-cli","change_pct":-7.8,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4247],"cost_per_step_pct":-9.3,"product":"Serena","run_change_pct":[-7.8],"runs":1,"steps":[118,120],"steps_pct":1.7},{"agent":"opencode-cli","change_pct":20.0,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4915],"cost_per_step_pct":4.9,"product":"SigMap","run_change_pct":[20.0],"runs":1,"steps":[118,135],"steps_pct":14.4},{"agent":"opencode-cli","change_pct":-9.2,"codebase":"beets","confirmed":false,"cost_per_step":[4685,4616],"cost_per_step_pct":-1.5,"product":"TokenJuice","run_change_pct":[-18.1,-0.2],"runs":2,"steps":[118,110.5],"steps_pct":-6.4},{"agent":"opencode-cli","change_pct":11.5,"codebase":"beets","confirmed":false,"cost_per_step":[4685,6846],"cost_per_step_pct":46.1,"product":"jCodeMunch","run_change_pct":[11.5],"runs":1,"steps":[118,90],"steps_pct":-23.7},{"agent":"opencode-cli","change_pct":-20.8,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8278],"cost_per_step_pct":0.3,"product":"Cartog","run_change_pct":[-20.8],"runs":1,"steps":[139.0,110],"steps_pct":-20.9},{"agent":"opencode-cli","change_pct":-5.2,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8725],"cost_per_step_pct":5.7,"product":"Caveman","run_change_pct":[-5.2],"runs":1,"steps":[139.0,125],"steps_pct":-10.1},{"agent":"opencode-cli","change_pct":-15.1,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7343],"cost_per_step_pct":-11.1,"product":"CodeGraph","run_change_pct":[-15.1],"runs":1,"steps":[139.0,133],"steps_pct":-4.3},{"agent":"opencode-cli","change_pct":-18.4,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7446],"cost_per_step_pct":-9.8,"product":"CodeScope","run_change_pct":[-18.4],"runs":1,"steps":[139.0,126],"steps_pct":-9.4},{"agent":"opencode-cli","change_pct":1.1,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,9080],"cost_per_step_pct":10.0,"product":"Graphify","run_change_pct":[1.1],"runs":1,"steps":[139.0,128],"steps_pct":-7.9},{"agent":"opencode-cli","change_pct":-64.7,"codebase":"fastify","confirmed":true,"cost_per_step":[8257,2792],"cost_per_step_pct":-66.2,"product":"LeanCTX","run_change_pct":[-69.8,-59.5],"runs":2,"steps":[139.0,145.5],"steps_pct":4.7},{"agent":"opencode-cli","change_pct":-11.3,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8182],"cost_per_step_pct":-0.9,"product":"Ponytail","run_change_pct":[-25.8,3.3],"runs":2,"steps":[139.0,124.5],"steps_pct":-10.4},{"agent":"opencode-cli","change_pct":-19.0,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7055],"cost_per_step_pct":-14.6,"product":"Serena","run_change_pct":[-19.0],"runs":1,"steps":[139.0,132],"steps_pct":-5.0},{"agent":"opencode-cli","change_pct":-17.6,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,7767],"cost_per_step_pct":-5.9,"product":"SigMap","run_change_pct":[-17.6],"runs":1,"steps":[139.0,122],"steps_pct":-12.2},{"agent":"opencode-cli","change_pct":-55.1,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,3826],"cost_per_step_pct":-53.7,"product":"TokenJuice","run_change_pct":[-55.1],"runs":1,"steps":[139.0,135],"steps_pct":-2.9},{"agent":"opencode-cli","change_pct":-4.2,"codebase":"fastify","confirmed":false,"cost_per_step":[8257,8742],"cost_per_step_pct":5.9,"product":"jCodeMunch","run_change_pct":[-4.2],"runs":1,"steps":[139.0,126],"steps_pct":-9.4}],"codebases":[{"id":"fastify","language":"JavaScript","name":"Fastify"},{"id":"beets","language":"Python","name":"Beets"}],"metric":"fresh_input_tokens + 0.1 * cached_input_tokens + 6 * output_tokens","pools":[{"agent":"claude-code","band_pct":54.5,"codebase":"beets","cost_per_step_band_pct":64.4,"run_offset_pct":[-27.1,-22.2,-3.0,0.0,4.7,6.2,12.6],"runs":7,"steps_band_pct":88.1},{"agent":"claude-code","band_pct":13.7,"codebase":"fastify","cost_per_step_band_pct":5.5,"run_offset_pct":[-7.5,-4.7,0.0,2.7,5.1],"runs":5,"steps_band_pct":10.9},{"agent":"codex-cli","band_pct":8.8,"codebase":"beets","cost_per_step_band_pct":8.8,"run_offset_pct":[-4.2,0.0,4.2],"runs":3,"steps_band_pct":1.6},{"agent":"codex-cli","band_pct":13.0,"codebase":"fastify","cost_per_step_band_pct":10.0,"run_offset_pct":[-3.8,0.0,8.7],"runs":3,"steps_band_pct":10.1},{"agent":"opencode-cli","band_pct":14.5,"codebase":"beets","cost_per_step_band_pct":6.5,"run_offset_pct":[-10.8,0.0,2.2],"runs":3,"steps_band_pct":21.9},{"agent":"opencode-cli","band_pct":23.6,"codebase":"fastify","cost_per_step_band_pct":10.6,"run_offset_pct":[-13.5,-0.8,0.8,6.9],"runs":4,"steps_band_pct":12.4}],"products":["Cartog","Caveman","CodeGraph","CodeScope","Graphify","jCodeMunch","LeanCTX","Ponytail","RepoWise","RTK","Serena","SigMap","Snip","Token Savior","TokenJuice"],"totals":{"cells":79,"confirmed":9,"control_runs":25,"single_run_cells":54,"tasks_attempted":894,"tasks_passed":861,"treatment_runs":104}}</script>
@@ -210,10 +298,11 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
   const D = JSON.parse(document.getElementById("site-data").textContent);
   const agentName = Object.fromEntries(D.agents.map(a => [a.id, a.name]));
   const codeName = Object.fromEntries(D.codebases.map(c => [c.id, c.name]));
-  const short = id => codeName[id] + (id === "fastify" ? " (JS)" : " (Python)");
+  const project = id => `${codeName[id]} (${D.codebases.find(c => c.id === id).language})`;
   const pool = (a, c) => D.pools.find(p => p.agent === a && p.codebase === c);
   const fmt = v => v == null ? "–" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1) + "%";
   const tick = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v) + "%";
+  const runs = n => n === 1 ? "1 run" : n + " runs";
   const T = D.totals;
 
   // ---- headline figures
@@ -224,12 +313,32 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
     n_products: D.products.length, n_runs: T.treatment_runs + T.control_runs,
     confirmed: T.confirmed, cells: T.cells, single: T.single_run_cells,
     max_band: widest.band_pct.toFixed(1) + "%",
-    max_band_where: `${agentName[widest.agent]} · ${codeName[widest.codebase]}, n=${widest.runs}`,
+    max_band_where: `${agentName[widest.agent]} on ${project(widest.codebase)}, ${runs(widest.runs)}`,
     beets_confirmed: D.cells.filter(c => c.codebase === "beets" && c.confirmed).length,
     tasks_passed: T.tasks_passed, tasks_attempted: T.tasks_attempted,
     model_gpt: models["codex-cli"], model_claude: models["claude-code"],
   };
   document.querySelectorAll("[data-k]").forEach(el => { const v = fill[el.dataset.k]; if (v != null) el.textContent = v; });
+
+  // ---- findings that depend on the data
+  const sentence = (id, html) => { document.getElementById(id).innerHTML = html; };
+  (() => {
+    const lo = D.pools.reduce((a, b) => (b.band_pct < a.band_pct ? b : a));
+    sentence("finding-noise", `With no tool installed, the bill swung by <b>${lo.band_pct.toFixed(1)}%</b> at best (${agentName[lo.agent]} on ${project(lo.codebase)}) and by <b>${widest.band_pct.toFixed(1)}%</b> at worst (${agentName[widest.agent]} on ${project(widest.codebase)}).`);
+
+    const conf = D.cells.filter(c => c.confirmed);
+    const kind = c => {
+      const p = pool(c.agent, c.codebase);
+      const s = c.steps_pct < -p.steps_band_pct, k = c.cost_per_step_pct < -p.cost_per_step_band_pct;
+      return s && k ? "both" : s ? "steps" : k ? "cost" : "neither";
+    };
+    const count = what => conf.filter(c => kind(c) === what).length;
+    sentence("finding-factors", `Of the ${conf.length} proven savings, <b>${count("cost")}</b> came from cheaper steps, <b>${count("steps")}</b> from fewer steps, and <b>${count("both")}</b> from both.`);
+
+    const byTool = D.products.map(p => D.cells.filter(c => c.product === p));
+    const mixed = byTool.filter(cs => cs.some(c => c.change_pct < 0) && cs.some(c => c.change_pct > 0)).length;
+    sentence("finding-all", `<b>${mixed} of ${D.products.length}</b> tools lowered the bill in at least one setup and raised it in another.`);
+  })();
 
   // ---- table view
   (() => {
@@ -237,7 +346,7 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
     const head = `<thead><tr><th scope="col" style="text-align:left">Tool</th>${cols.map(([a, c]) => `<th scope="col">${a.name} · ${c.name}</th>`).join("")}</tr></thead>`;
     const body = D.products.map(p => `<tr><th scope="row">${p}</th>` + cols.map(([a, cb]) => {
       const c = D.cells.find(x => x.product === p && x.agent === a.id && x.codebase === cb.id);
-      return c ? `<td class="${c.confirmed ? "ok" : ""}">${fmt(c.change_pct)} <small>n=${c.runs}${c.confirmed ? " ✓" : ""}</small></td>` : `<td>–</td>`;
+      return c ? `<td class="${c.confirmed ? "ok" : ""}">${fmt(c.change_pct)} <small>${runs(c.runs)}${c.confirmed ? " ✓" : ""}</small></td>` : `<td>not available</td>`;
     }).join("") + "</tr>").join("");
     document.getElementById("heat").innerHTML = head + `<tbody>${body}</tbody>`;
   })();
@@ -250,7 +359,7 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
   const readTheme = () => (C = Object.fromEntries(["ink", "ink-2", "muted", "grid", "axis", "accent", "flat", "noise", "noise-ink", "ring", "card"].map(k => [k, css("--" + k)])));
   const narrow = () => document.documentElement.clientWidth < 640;
   const tipBase = () => ({
-    backgroundColor: C.ink, borderWidth: 0, padding: [8, 10], extraCssText: "border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.2)",
+    backgroundColor: C.ink, borderWidth: 0, padding: [8, 10], extraCssText: "border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:280px;white-space:normal",
     textStyle: {color: C.card, fontFamily: font, fontSize: 12, lineHeight: 18},
   });
   const valueAxis = (min, max, extra = {}) => ({
@@ -268,14 +377,15 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
     return charts[id];
   };
 
+  const status = c => c.confirmed ? "Proven saving" : c.runs < 2 ? "Only tested once: not enough to decide" : "Within the normal swing: not proven";
   function cellTip(c) {
     const p = pool(c.agent, c.codebase);
-    return `<b>${c.product}</b> · ${agentName[c.agent]} · ${short(c.codebase)}<br>`
-      + `Median ${fmt(c.change_pct)} (n=${c.runs})`
-      + (c.runs > 1 ? `<br>Runs: ${c.run_change_pct.map(fmt).join(", ")}` : "")
-      + `<br>Control range ±${p.band_pct.toFixed(1)}%`
-      + `<br>Steps ${fmt(c.steps_pct)} · cost/step ${fmt(c.cost_per_step_pct)}`
-      + `<br><b>${c.confirmed ? "Confirmed" : c.runs < 2 ? "n=1: screen only" : "Within control range"}</b>`;
+    return `<b>${c.product}</b> with ${agentName[c.agent]} on ${project(c.codebase)}<br>`
+      + `Change in bill: <b>${fmt(c.change_pct)}</b> (${runs(c.runs)})`
+      + (c.runs > 1 ? `<br>Individual runs: ${c.run_change_pct.map(fmt).join(", ")}` : "")
+      + `<br>Normal swing with no tool: ±${p.band_pct.toFixed(1)}%`
+      + `<br>Steps taken ${fmt(c.steps_pct)} · cost per step ${fmt(c.cost_per_step_pct)}`
+      + `<br><b>${status(c)}</b>`;
   }
 
   // ---- 1. results bar chart
@@ -296,15 +406,18 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
     });
   }
   seg("seg-agent", D.agents.map(a => ({id: a.id, label: a.name})), "agent");
-  seg("seg-code", D.codebases.map(c => ({id: c.id, label: short(c.id)})), "code");
+  seg("seg-code", D.codebases.map(c => ({id: c.id, label: project(c.id)})), "code");
 
   function drawResults() {
     const p = pool(state.agent, state.code);
     const cells = D.cells.filter(c => c.agent === state.agent && c.codebase === state.code).sort((a, b) => a.change_pct - b.change_pct);
+    const proven = cells.filter(c => c.confirmed).length;
+    const cheaper = cells.filter(c => c.change_pct < 0).length;
+    sentence("finding-results", `With ${agentName[state.agent]} on ${project(state.code)}: <b>${proven} of ${cells.length}</b> tools showed a proven saving. `
+      + `${cheaper} came out cheaper at least on paper, but the normal swing here is <b>±${p.band_pct.toFixed(1)}%</b>, so only the blue bars clear it.`);
     const rowH = narrow() ? 30 : 32;
     const ch = mount("chart-results", cells.length * rowH + 70);
     const names = cells.map(c => c.product);
-    // Phones zoom to the selected view; wider screens keep one scale across views.
     const dom = narrow() ? nice([...cells.flatMap(c => [c.change_pct, ...c.run_change_pct]), p.band_pct, -p.band_pct], 3, 10) : domain;
     ch.setOption({
       animationDurationUpdate: 600, animationEasingUpdate: "cubicOut",
@@ -314,7 +427,7 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
       xAxis: valueAxis(dom[0], dom[1], {interval: narrow() ? (dom[1] - dom[0] > 80 ? 40 : 20) : 20}),
       yAxis: [
         {type: "category", inverse: true, data: names, axisLine: {show: false}, axisTick: {show: false},
-          axisLabel: {formatter: (v, i) => narrow() ? `{n|${v}}` : `{n|${v}}  {s|n=${cells[i].runs}}`,
+          axisLabel: {formatter: (v, i) => narrow() ? `{n|${v}}` : `{n|${v}}  {s|${runs(cells[i].runs)}}`,
             rich: {n: {color: C.ink, fontWeight: 600, fontSize: 12.5, fontFamily: font}, s: {color: C.muted, fontSize: 11, fontFamily: font}}}},
         {type: "category", inverse: true, data: cells.map(c => fmt(c.change_pct)), position: "right", axisLine: {show: false}, axisTick: {show: false},
           axisLabel: {formatter: (v, i) => cells[i].confirmed ? `{b|${v}}` : `{d|${v}}`,
@@ -323,7 +436,7 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
       series: [
         {id: "bars", type: "bar", barWidth: Math.round(rowH * 0.45),
           data: cells.map(c => ({value: c.change_pct, itemStyle: {color: c.confirmed ? C.accent : C.flat, borderRadius: c.change_pct < 0 ? [4, 0, 0, 4] : [0, 4, 4, 0]}})),
-          markArea: {silent: true, itemStyle: {color: C.noise}, label: {show: true, position: "top", color: C["noise-ink"], fontSize: 11, fontWeight: 500, formatter: `control range ±${p.band_pct.toFixed(1)}%`},
+          markArea: {silent: true, itemStyle: {color: C.noise}, label: {show: true, position: "top", color: C["noise-ink"], fontSize: 11, fontWeight: 500, formatter: `normal swing ±${p.band_pct.toFixed(1)}%`},
             data: [[{xAxis: -p.band_pct}, {xAxis: p.band_pct}]]},
           markLine: {silent: true, symbol: "none", label: {show: false}, lineStyle: {color: C.axis, type: "solid", width: 1}, data: [{xAxis: 0}]}},
         {id: "runs", type: "scatter", symbolSize: 7, z: 5,
@@ -333,22 +446,22 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
     }, {replaceMerge: ["series", "yAxis"]});
     const tested = new Set(names);
     const missing = D.products.filter(n => !tested.has(n));
-    document.getElementById("untested").textContent = missing.length ? `No ${agentName[state.agent]} integration: ${missing.join(", ")}` : "";
+    document.getElementById("untested").textContent = missing.length ? `Not available for ${agentName[state.agent]}: ${missing.join(", ")}` : "";
   }
 
-  // ---- 2. control noise
+  // ---- 2. no-tool variation
   function drawNoise() {
     const pools = [...D.pools].sort((a, b) => b.band_pct - a.band_pct);
-    const ch = mount("chart-noise", pools.length * 44 + 50);
+    const ch = mount("chart-noise", pools.length * 46 + 50);
     const lim = Math.ceil((Math.max(...pools.flatMap(p => p.run_offset_pct.map(Math.abs))) + 2) / 10) * 10;
-    const tipFor = p => `<b>${agentName[p.agent]} · ${short(p.codebase)}</b>, no tool<br>n=${p.runs}: ${p.run_offset_pct.map(fmt).join(", ")}<br>Cheapest to costliest: ${p.band_pct.toFixed(1)}%`;
+    const tipFor = p => `<b>${agentName[p.agent]} on ${project(p.codebase)}</b>, no tool installed<br>${runs(p.runs)}: ${p.run_offset_pct.map(fmt).join(", ")} from the typical run<br>Cheapest to most expensive: <b>${p.band_pct.toFixed(1)}%</b>`;
     ch.setOption({
       textStyle: {fontFamily: font},
       grid: {left: 4, right: 4, top: 10, bottom: 24, containLabel: true},
       tooltip: {...tipBase(), trigger: "item", formatter: q => tipFor(pools[q.seriesIndex === 0 ? q.value[2] : q.value[1]])},
       xAxis: valueAxis(-lim, lim, {interval: 10}),
       yAxis: [
-        {type: "category", inverse: true, data: pools.map(p => `${agentName[p.agent]}|${short(p.codebase)}`), axisLine: {show: false}, axisTick: {show: false},
+        {type: "category", inverse: true, data: pools.map(p => `${agentName[p.agent]}|${project(p.codebase)}`), axisLine: {show: false}, axisTick: {show: false},
           axisLabel: {lineHeight: 15, formatter: v => { const [a, b] = v.split("|"); return `{n|${a}}\n{s|${b}}`; },
             rich: {n: {color: C.ink, fontWeight: 600, fontSize: 12, fontFamily: font}, s: {color: C.muted, fontSize: 10.5, fontFamily: font}}}},
         {type: "category", inverse: true, position: "right", data: pools.map(p => p.band_pct.toFixed(1) + "%"), axisLine: {show: false}, axisTick: {show: false},
@@ -370,7 +483,7 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
   function drawFactors() {
     const conf = D.cells.filter(c => c.confirmed);
     const xs = nice(conf.map(c => c.steps_pct), 6, 10), ys = nice(conf.map(c => c.cost_per_step_pct), 6, 10);
-    const ch = mount("chart-factors", 330);
+    const ch = mount("chart-factors", narrow() ? 360 : 400);
     const iso = t => {
       const pts = [];
       for (let x = xs[0]; x <= xs[1] + 1e-9; x += 0.5) {
@@ -379,29 +492,29 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
       }
       return pts;
     };
-    const shortAgent = {"claude-code": "Claude Code", "codex-cli": "Codex", "opencode-cli": "OpenCode"};
+    const shortAgent = {"claude-code": "Claude Code", "codex-cli": "Codex CLI", "opencode-cli": "OpenCode"};
     ch.setOption({
       textStyle: {fontFamily: font},
-      grid: {left: 26, right: 46, top: 14, bottom: 30, containLabel: true},
+      grid: {left: 26, right: 60, top: 14, bottom: 34, containLabel: true},
       tooltip: {...tipBase(), trigger: "item", formatter: q => q.seriesType === "scatter"
-        ? (c => `<b>${c.product}</b> · ${agentName[c.agent]} · ${short(c.codebase)}<br>Total ${fmt(c.change_pct)}<br>Steps ${c.steps.map(Math.round).join(" → ")} (${fmt(c.steps_pct)})<br>Cost/step ${c.cost_per_step.map(v => v.toLocaleString("en")).join(" → ")} (${fmt(c.cost_per_step_pct)})`)(conf[q.dataIndex])
+        ? (c => `<b>${c.product}</b> with ${agentName[c.agent]} on ${project(c.codebase)}<br>Total change in bill: <b>${fmt(c.change_pct)}</b><br>Steps taken: ${c.steps.map(Math.round).join(" → ")} (${fmt(c.steps_pct)})<br>Cost per step: ${c.cost_per_step.map(v => v.toLocaleString("en")).join(" → ")} (${fmt(c.cost_per_step_pct)})`)(conf[q.dataIndex])
         : ""},
-      xAxis: valueAxis(xs[0], xs[1], {name: "Agent steps", nameLocation: "middle", nameGap: 26, nameTextStyle: {color: C["ink-2"], fontSize: 11.5}}),
-      yAxis: valueAxis(ys[0], ys[1], {name: "Cost per step", nameLocation: "middle", nameGap: 44, nameTextStyle: {color: C["ink-2"], fontSize: 11.5}}),
+      xAxis: valueAxis(xs[0], xs[1], {name: "← fewer steps     Change in steps taken     more steps →", nameLocation: "middle", nameGap: 28, nameTextStyle: {color: C["ink-2"], fontSize: 11.5}}),
+      yAxis: valueAxis(ys[0], ys[1], {name: "← cheaper     Change in cost per step", nameLocation: "middle", nameGap: 46, nameTextStyle: {color: C["ink-2"], fontSize: 11.5}}),
       series: [
         ...[0, -25, -50].map(t => ({type: "line", data: iso(t), showSymbol: false, smooth: true, silent: true, z: 1,
           lineStyle: {color: t === 0 ? C.axis : C.flat, width: 1},
-          endLabel: {show: true, color: C.muted, fontSize: 10.5, fontFamily: mono, formatter: () => (t === 0 ? "0%" : tick(t))}})),
-        {type: "scatter", symbolSize: 12, z: 5, itemStyle: {color: C.accent, borderColor: C.ring, borderWidth: 2},
+          endLabel: {show: true, color: C.muted, fontSize: 10.5, fontFamily: mono, formatter: () => t === 0 ? "0%" : tick(t)}})),
+        {type: "scatter", symbolSize: 13, z: 5, itemStyle: {color: C.accent, borderColor: C.ring, borderWidth: 2},
           data: conf.map(c => ({value: [c.steps_pct, c.cost_per_step_pct], label: {position: c.steps_pct > xs[1] - 25 ? "left" : "right"}})),
-          label: {show: true, position: "right", color: C.ink, fontSize: 11, fontFamily: font,
-            formatter: q => conf[q.dataIndex].product + (conf[q.dataIndex].agent !== "claude-code" ? ` · ${shortAgent[conf[q.dataIndex].agent]}` : "")},
+          label: {show: true, color: C.ink, fontSize: 11.5, fontFamily: font,
+            formatter: q => conf[q.dataIndex].product + (conf[q.dataIndex].agent !== "claude-code" ? ` (${shortAgent[conf[q.dataIndex].agent]})` : "")},
           labelLayout: {moveOverlap: "shiftY"}},
       ],
     }, true);
   }
 
-  // ---- 4. all cells, one panel per agent
+  // ---- 4. every result, one panel per assistant
   function drawAll() {
     const prods = D.products, agents = D.agents, n = narrow();
     const rowH = 22, head = 28, axisH = 28, gap = 22, labelW = 96;
@@ -425,8 +538,7 @@ footer{padding-block:1.2rem 3rem;color:var(--muted);font-size:.8rem}
         markLine: {silent: true, symbol: "none", label: {show: false}, lineStyle: {color: C.axis, type: "solid"}, data: [{xAxis: 0}]}});
       D.codebases.forEach((cb, k) => {
         const cells = D.cells.filter(c => c.agent === a.id && c.codebase === cb.id);
-        series.push({type: "scatter", name: cb.name, xAxisIndex: j, yAxisIndex: j, z: k ? 4 : 5,
-          symbol: "circle",
+        series.push({type: "scatter", name: cb.name, xAxisIndex: j, yAxisIndex: j, z: k ? 4 : 5, symbol: "circle",
           data: cells.map(c => ({value: [c.change_pct, prods.indexOf(c.product)], cell: c,
             symbolSize: c.confirmed ? 12 : 9,
             itemStyle: k
