@@ -106,12 +106,13 @@ def build() -> dict:
             controls[key(s)].append(s["cumulative_token_usage"])
         else:
             treatments[key(s) + (product_of(s["profile"]["profile_id"]),)].append(
-                s["cumulative_token_usage"]
+                ((s["replicate_index"], s["date"], s["session_id"]), s["cumulative_token_usage"])
             )
 
     cells = []
     pools_used = set()
-    for (agent, codebase, pool, product), runs in sorted(treatments.items()):
+    for (agent, codebase, pool, product), ordered in sorted(treatments.items()):
+        runs = [usage for _, usage in sorted(ordered, key=lambda item: item[0])]
         control = controls.get((agent, codebase, pool))
         if not control:
             raise SystemExit(f"{product} on {agent}/{codebase} has no control pool {pool}")
@@ -130,6 +131,8 @@ def build() -> dict:
             "runs": len(runs),
             "change_pct": change,
             "run_change_pct": sorted(pct(u["weighted_token_cost"], c_cost) for u in runs),
+            # The first run on its own is the single-run screen a reader would otherwise act on.
+            "first_run_pct": pct(runs[0]["weighted_token_cost"], c_cost),
             "steps_pct": pct(steps, c_steps) if steps and c_steps else None,
             "cost_per_step_pct": pct(cps, c_cps) if cps and c_cps else None,
             "steps": [c_steps, steps],
