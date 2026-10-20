@@ -7,6 +7,10 @@
     <script type="application/json" id="site-data">...</script>
     <!-- /generated:site-data -->
 
+The link-preview tags live in a second block, generated:share-meta, because crawlers do not run
+scripts. The preview image itself, docs/og.png, is rendered from the same data by
+scripts/render_share_card.py.
+
 Hand-typed figures on the site went stale twice, so this generator owns them and `--check`
 fails when the checked-in block differs from what the registry implies.
 
@@ -19,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import html
 import json
 import re
 import statistics
@@ -29,6 +34,20 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "data/workflow-sessions.json"
 TARGET = ROOT / "docs/index.html"
 BLOCK = "site-data"
+META_BLOCK = "share-meta"
+TITLE = "The Token Savings Illusion"
+SITE_URL = "https://merlinhu1.github.io/token-optimization-research/"
+SHARE_IMAGE = "og.png"
+SHARE_SIZE = (1200, 630)
+# The five thinnest single-run savings that were re-run to test whether a first result predicts
+# the second (screening paper, "Single replicates do not survive"), ordered by margin at one run.
+RETEST = (
+    ("Ponytail", "opencode-cli", "fastify"),
+    ("Cartog", "claude-code", "fastify"),
+    ("Token Savior", "codex-cli", "fastify"),
+    ("SigMap", "claude-code", "fastify"),
+    ("Snip", "claude-code", "fastify"),
+)
 
 CONTROL_ROLES = ("baseline", "replacement_runtime")
 AGENTS = {
@@ -160,6 +179,11 @@ def build() -> dict:
     if len(pools) != len({(p["agent"], p["codebase"]) for p in pools}):
         raise SystemExit("two control pools serve one agent and codebase; the site assumes one")
 
+    index = {(c["product"], c["agent"], c["codebase"]): c for c in cells}
+    missing = [r for r in RETEST if r not in index]
+    if missing:
+        raise SystemExit(f"retest cells missing from the registry: {missing}")
+
     tasks_attempted = sum(s["software_quality"]["tasks_attempted"] for s in sessions)
     tasks_passed = sum(s["software_quality"]["tasks_passed"] for s in sessions)
     return {
@@ -173,6 +197,7 @@ def build() -> dict:
         "products": sorted({c["product"] for c in cells}, key=str.lower),
         "pools": pools,
         "cells": cells,
+        "retest": [{"product": p, "agent": a, "codebase": c} for p, a, c in RETEST],
         "totals": {
             "cells": len(cells),
             "confirmed": sum(c["confirmed"] for c in cells),
@@ -185,9 +210,52 @@ def build() -> dict:
     }
 
 
-def render() -> str:
-    payload = json.dumps(build(), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+def render(data: dict) -> str:
+    payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
     return f'<script type="application/json" id="site-data">{payload}</script>'
+
+
+def headline(data: dict) -> dict[str, str]:
+    """The share-preview wording; its numbers come from the same build as the charts."""
+    widest = max(data["pools"], key=lambda p: p["band_pct"])
+    return {
+        "lead": f"Same tasks. Same agents. No optimizers. Up to {widest['band_pct']:.1f}% cost difference.",
+        "follow": (
+            f"We tested {len(data['products'])} AI coding optimizers to find out which savings were "
+            "real—and which disappeared on a second run."
+        ),
+    }
+
+
+def render_meta(data: dict) -> str:
+    """Link-preview tags. Crawlers do not run scripts, so these cannot be filled client-side."""
+    words = headline(data)
+    description = html.escape(f"{words['lead']} {words['follow']}", quote=True)
+    image = f"{SITE_URL}{SHARE_IMAGE}?v={data['as_of']}"
+    alt = html.escape(f"The Token Savings Illusion. {words['lead']}", quote=True)
+    return "\n".join([
+        f'<meta name="description" content="{description}">',
+        '<meta property="og:type" content="article">',
+        f'<meta property="og:title" content="{TITLE}">',
+        f'<meta property="og:description" content="{description}">',
+        f'<meta property="og:url" content="{SITE_URL}">',
+        f'<meta property="og:image" content="{image}">',
+        f'<meta property="og:image:width" content="{SHARE_SIZE[0]}">',
+        f'<meta property="og:image:height" content="{SHARE_SIZE[1]}">',
+        f'<meta property="og:image:alt" content="{alt}">',
+        '<meta name="twitter:card" content="summary_large_image">',
+        f'<meta name="twitter:title" content="{TITLE}">',
+        f'<meta name="twitter:description" content="{description}">',
+        f'<meta name="twitter:image" content="{image}">',
+        f'<meta name="twitter:image:alt" content="{alt}">',
+    ])
+
+
+def apply_block(text: str, name: str, body: str) -> str:
+    pattern = re.compile(rf"(<!-- generated:{name} -->\n).*?(\n<!-- /generated:{name} -->)", re.DOTALL)
+    if not pattern.search(text):
+        raise SystemExit(f"missing <!-- generated:{name} --> block in {TARGET.relative_to(ROOT)}")
+    return pattern.sub(lambda m: f"{m.group(1)}{body}{m.group(2)}", text)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -195,14 +263,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--check", action="store_true", help="fail if the checked-in block is stale")
     args = parser.parse_args(argv)
 
-    pattern = re.compile(
-        rf"(<!-- generated:{BLOCK} -->\n).*?(\n<!-- /generated:{BLOCK} -->)", re.DOTALL
-    )
+    data = build()
     current = TARGET.read_text()
-    if not pattern.search(current):
-        raise SystemExit(f"missing <!-- generated:{BLOCK} --> block in {TARGET.relative_to(ROOT)}")
-    body = render()
-    updated = pattern.sub(lambda m: f"{m.group(1)}{body}{m.group(2)}", current)
+    updated = apply_block(current, BLOCK, render(data))
+    updated = apply_block(updated, META_BLOCK, render_meta(data))
     if current == updated:
         return 0
     if args.check:

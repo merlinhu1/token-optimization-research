@@ -247,7 +247,7 @@ Treatment execution is availability/natural-use only after faithful product inst
 | Kind | Examples | Rule |
 |---|---|---|
 | Machine authority | `data/*.json` | Edit directly; it is the source the rest derives from. |
-| Generated | `docs/evaluations/operations/runbook.md`, `generated:corpus-summary` blocks, the `generated:site-data` block in `docs/index.html`, `qualification-*.json`, `sources/evaluations/audits/lifecycle-v2-task-entries.json` | Never hand-edit. Change the generator, then regenerate. |
+| Generated | `docs/evaluations/operations/runbook.md`, `generated:corpus-summary` blocks, the `generated:site-data` and `generated:share-meta` blocks and `og.png` in `docs/`, `qualification-*.json`, `sources/evaluations/audits/lifecycle-v2-task-entries.json` | Never hand-edit. Change the generator, then regenerate. |
 | Frozen evidence | `sources/evaluations/protocols/*`, `sources/evaluations/archive/**`, executed audits and session records | Never rewrite in place. Supersede and archive instead. |
 | Narrative | `README.md`, `docs/**` | Hand-maintained; must be reconciled whenever the state it describes changes. |
 | Fixture checkouts | `sources/evaluations/fixtures/*/*/repo/` | Gitignored, disposable, rebuilt by `setup.sh`. |
@@ -311,10 +311,13 @@ After such an action:
    - `.venv/bin/python3 scripts/update_registry_summaries.py` for the `generated:corpus-summary`
      blocks in `README.md` and `sources/evaluations/README.md`;
    - `.venv/bin/python3 scripts/update_site_data.py` for the results site's `generated:site-data`
-     block in `docs/index.html`.
+     and `generated:share-meta` blocks in `docs/index.html`;
+   - `.venv/bin/python3 scripts/render_share_card.py` for the link-preview image `docs/og.png`.
 
-   `make check` fails when any of these is stale, so do not restate corpus counts, role splits, or
-   runtime splits in prose by hand — put them in a generated block instead.
+   `make check` fails when any of the text blocks is stale, so do not restate corpus counts, role
+   splits, or runtime splits in prose by hand — put them in a generated block instead. The preview
+   image needs Chromium and network access, so `make check` cannot gate it: rerun it whenever
+   `update_site_data.py` reports a change.
 3. Reconcile the narrative that generation cannot own: `docs/evaluations/README.md`,
    `docs/research/roadmap.md`, and any interpretation claim that depends on the changed state.
 4. Reconcile active prompts, templates, repo-local skills, schemas, and architecture decision records
